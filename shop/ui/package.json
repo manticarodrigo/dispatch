@@ -1,0 +1,36 @@
+{
+  "name": "portal",
+  "license": "UNLICENSED",
+  "scripts": {
+    "ancient": "clojure -Sdeps '{:deps {com.github.liquidz/antq {:mvn/version \"RELEASE\"}}}' -m antq.core",
+    "report": "shadow-cljs run shadow.cljs.build-report app target/build-report.html",
+    "shadow:watch": "shadow-cljs watch app",
+    "shadow:frisk": "shadow-cljs run re-frisk-remote.core/start",
+    "shadow:release": "shadow-cljs release app",
+    "postcss:watch": "postcss src/css/tailwind.css -o ./public/css/main.css --verbose -w",
+    "postcss:release": "NODE_ENV=production postcss src/css/tailwind.css -o ./public/css/main.css --verbose",
+    "watch": "run-p -l *:watch shadow:frisk",
+    "release": "run-s *:release"
+  },
+  "dependencies": {
+    "@capacitor/app": "^1.1.1",
+    "@capacitor/core": "^3.6.0",
+    "@capacitor/haptics": "1.1.4",
+    "@capacitor/keyboard": "^1.2.3",
+    "@capacitor/status-bar": "1.0.8",
+    "highlight.js": "11.5.1",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-router": "^6.3.0",
+    "react-router-dom": "^6.3.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.8",
+    "cssnano": "^5.1.12",
+    "npm-run-all": "^4.1.5",
+    "postcss": "^8.4.14",
+    "postcss-cli": "^10.0.0",
+    "shadow-cljs": "2.19.6",
+    "tailwindcss": "^3.1.8"
+  }
+}

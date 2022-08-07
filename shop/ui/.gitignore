@@ -1,0 +1,10 @@
+# output
+/target/
+/public/js/
+/public/css/
+
+# node dependencies
+/node_modules/
+
+# shadow-cljs cache, port files
+/.shadow-cljs/
