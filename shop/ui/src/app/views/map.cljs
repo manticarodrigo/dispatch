@@ -1,53 +1,30 @@
 (ns app.views.map
   (:require
-;;    [reagent.core :as r]
-;;    [re-frame.core :as rf]
-   [app.subs]))
-
-;; (defn- input-container []
-;;   (let [value (r/atom "")]
-;;     (fn []
-;;       [ion/item
-;;        [ion/textarea {:slot :start :placeholder "Todo ..."
-;;                       :auto-grow true :autofocus true
-;;                       :inputmode "text"
-;;                       :value @value
-;;                       :on-ion-change #(reset! value (.. % -detail -value))}]
-;;        [ion/button {:slot "end" :icon-only true
-;;                     :on-click (fn []
-;;                                 (rf/dispatch [:todos/add @value])
-;;                                 (reset! value ""))}
-;;         [ion/icon {:icon icons/add}]]])))
-
-;; (defn- todo-item [{:keys [key text checked]}]
-;;   [ion/item {:key key}
-;;    [ion/checkbox {:slot "start" :checked checked
-;;                   :on-ion-change #(rf/dispatch [:todos/check key])}]
-;;    [ion/text
-;;     {:style {:text-decoration (if checked :line-through :none)}} text]
-
-;;    [ion/button {:slot "end" :icon-only true
-;;                 :on-click #(rf/dispatch [:todos/delete key])}
-;;     [ion/icon {:icon icons/trash}]]])
+   [reagent.core :as r]
+   [app.config :as config]
+   ["@capacitor/google-maps" :refer (GoogleMap)]))
 
 
-;; (defn- todos []
-;;   (let [todos (rf/subscribe [:todos/all])]
-;;     [ion/list
-;;      [input-container]
-;;      (for [todo @todos]
-;;        [todo-item todo])]))
+(defn- create-map [el]
+  (.create GoogleMap
+           (clj->js {:id "portal-map"
+                     :element el
+                     :apiKey (config/env :google-maps-api-key)
+                     :config {:center {:lat 33.6 :lng -117.9}
+                              :zoom 8}})))
 
-;; (defn- todo-screen []
-;;   [ion/app
-;;    [ion/header
-;;     [ion/toolbar
-;;      [ion/title "Todo List"]]]
-;;    [ion/content {:class "IosPadding"}
-;;     [ion/grid
-;;      [ion/row
-;;       [todos]]]]])
+(defn- map-view []
+  (let [!map (clojure.core/atom nil)]
+    (r/create-class
+     {:component-did-mount (fn [] (create-map @!map))
+      :reagent-render
+      (fn []
+        [:capacitor-google-map
+         {:ref (fn [el] (reset! !map el))
+          :style {:display "block"
+                  :width "100%"
+                  :height "100%"}}])})))
 
 (defn page []
-  [:div
-   [:p "Hello world!"]])
+  [:div {:class "w-full h-screen bg-blue-600"}
+   [map-view]])

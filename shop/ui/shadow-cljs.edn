@@ -4,9 +4,13 @@
  :dev-http {8280 "public"}
 
  :dependencies
- [[reagent "1.1.1"]
+ [;; env
+  [adzerk/env "0.4.0"]
+  ;; ui
+  [reagent "1.1.1"]
   [re-frame "1.2.0"]
   [re-frisk-remote "1.6.0"]
+  ;; tooling
   [cider/cider-nrepl "0.28.5"]]
 
  :builds
