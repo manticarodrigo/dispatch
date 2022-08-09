@@ -1,5 +1,5 @@
 (ns app.db)
 
 (def default-db
-  {:location {:center {:lat 33.6 :lng -117.9}
-              :zoom 8}})
+  {:location {:coords {:lat 0 :lng 0}
+              :zoom 0}})

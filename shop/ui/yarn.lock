@@ -21,28 +21,12 @@
   resolved "https://registry.yarnpkg.com/@capacitor/geolocation/-/geolocation-4.0.1.tgz#2567caf704abe5321e0e2d94fa2285252c205e9a"
   integrity sha512-5dxXfDU1rCkn8xrXk6cQwUr+F2ZRycZoU5zi8MFVnH7JvHruV3B152Uz+urRkF/GtKQrgvxEW78GbejOW+nfYw==
 
-"@capacitor/google-maps@^4.0.1":
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/@capacitor/google-maps/-/google-maps-4.0.1.tgz#d6dad73f1fdd2b70145ac3aa2a3aec5d3c7fc68b"
-  integrity sha512-dV0Ji35SOPM5fSdATGpH3/QxUkzwrzudV0MTWqKsB4vw0ArHH9LMAKJyKo5WhSuHpU1DXvmeLvyDSDoRoaqNXA==
-  dependencies:
-    "@googlemaps/js-api-loader" "^1.13.7"
-    "@googlemaps/markerclusterer" "^2.0.7"
-
-"@googlemaps/js-api-loader@^1.13.7":
+"@googlemaps/js-api-loader@^1.14.3":
   version "1.14.3"
   resolved "https://registry.yarnpkg.com/@googlemaps/js-api-loader/-/js-api-loader-1.14.3.tgz#d7a161cd547be04ad46a1cb176e6c2647f6d74a7"
   integrity sha512-6iIb+qpGgQpgIHmIFO44WhE1rDUxPVHuezNFL30wRJnkvhwFm94tD291UvNg9L05hLDSoL16jd0lbqqmdy4C5g==
   dependencies:
     fast-deep-equal "^3.1.3"
-
-"@googlemaps/markerclusterer@^2.0.7":
-  version "2.0.10"
-  resolved "https://registry.yarnpkg.com/@googlemaps/markerclusterer/-/markerclusterer-2.0.10.tgz#3ffd88180f491ad6bc3a1014b11edbd19cb8f1bc"
-  integrity sha512-3UdPE2XH+DkFRTWIxEOcKdTqb3O9dMMxBn5jlhSae//uBGPqv9iHv9dz4l6/0Mwt7YcYmkwSpQZMc61WvZI/Qg==
-  dependencies:
-    fast-deep-equal "^3.1.3"
-    supercluster "^7.1.3"
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
@@ -1144,11 +1128,6 @@ jsonfile@^6.0.1:
   optionalDependencies:
     graceful-fs "^4.1.6"
 
-kdbush@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/kdbush/-/kdbush-3.0.0.tgz#f8484794d47004cc2d85ed3a79353dbe0abc2bf0"
-  integrity sha512-hRkd6/XW4HTsA9vjVpY9tuXJYLSlelnkTmVFu4M9/7MIYQtFcHpbugAU7UbOfjOiVSVYl2fqgBuJ32JUmRo5Ew==
-
 lilconfig@^2.0.3, lilconfig@^2.0.5, lilconfig@^2.0.6:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/lilconfig/-/lilconfig-2.0.6.tgz#32a384558bd58af3d4c6e077dd1ad1d397bc69d4"
@@ -2169,13 +2148,6 @@ stylehacks@^5.1.0:
   dependencies:
     browserslist "^4.16.6"
     postcss-selector-parser "^6.0.4"
-
-supercluster@^7.1.3:
-  version "7.1.5"
-  resolved "https://registry.yarnpkg.com/supercluster/-/supercluster-7.1.5.tgz#65a6ce4a037a972767740614c19051b64b8be5a3"
-  integrity sha512-EulshI3pGUM66o6ZdH3ReiFcvHpM3vAigyK+vcxdjpJyEbIIrtbmBdY23mGgnI24uXiGFvrGq9Gkum/8U7vJWg==
-  dependencies:
-    kdbush "^3.0.0"
 
 supports-color@^5.3.0:
   version "5.5.0"

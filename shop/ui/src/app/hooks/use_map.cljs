@@ -5,17 +5,59 @@
    [react]
    [re-frame.core :as rf]
    [app.config :as config]
-   [app.subs]
-   ["@capacitor/google-maps" :refer (GoogleMap)]
+   ["@googlemaps/js-api-loader" :refer (Loader)]
    ["@capacitor/geolocation" :refer (Geolocation)]))
 
 
-(defn- create-map [element config]
-  (.create GoogleMap
-           (clj->js {:id "portal-map"
-                     :element element
-                     :apiKey (config/env :google-maps-api-key)
-                     :config config})))
+(def loader (Loader.
+             (clj->js
+              {:apiKey (config/env :google-maps-api-key)
+               :version "weekly"})))
+
+(defn- create-map [element]
+  (new js/Promise
+       (fn [resolve _]
+         (go
+           (<p! (.load loader))
+           (resolve
+            (js/google.maps.Map.
+             element
+             (clj->js
+              {:center {:lat 0,
+                        :lng 0}
+               :zoom 4})))))))
+
+(defn- create-lat-lng [lat lng]
+  (js/google.maps.LatLng. lat lng))
+
+(defn- create-marker [map name lat lng]
+  (js/google.maps.Marker. (clj->js
+                           {:map map
+                            :position (create-lat-lng lat lng)
+                            :title name})))
+
+(defn- move-marker [marker lat lng]
+  (.setPosition marker (create-lat-lng lat lng)))
+
+(defn- handle-position-change [^GoogleMap map-instance]
+  (let [!location-marker (clojure.core/atom nil)]
+    (fn [pos err]
+      (go
+        (if (some? pos)
+          (let [coords (.-coords pos)
+                lat (.-latitude coords)
+                lng (.-longitude coords)]
+            (.setCenter map-instance #js{:lat lat :lng lng})
+            (.setZoom map-instance 12)
+
+            (rf/dispatch [:location/update {:coords {:lat lat :lng lng}
+                                            :zoom 12}])
+
+            (if (some? @!location-marker)
+              (move-marker @!location-marker lat lng)
+              (reset! !location-marker (create-marker map-instance "My location" lat lng))))
+
+          (js/console.log err))))))
 
 ;; (defn- request-permissions []
 ;;   (go (let [permissions (<p! (.checkPermissions Geolocation))]
@@ -37,48 +79,17 @@
              :maximumAge 0})
    cb))
 
-(defn- handle-position-change [^GoogleMap map-instance]
-  (let [!location-marker-id (clojure.core/atom nil)]
-    (fn [pos err]
-      (go
-        (if (some? pos)
-          (let [coords (.-coords pos)
-                lat (.-latitude coords)
-                lng (.-longitude coords)
-                opts {:coordinate
-                      {:lat lat :lng lng}}]
-            (js/console.log #js{:lat lat :lng lng})
-
-            (.setCamera map-instance (clj->js
-                                      opts))
-            ;; (js/console.log "location marker id: " @!location-marker-id)
-            ;; (when-let [id @!location-marker-id]
-            ;;   (reset! !location-marker-id nil)
-            ;;   (js/console.log "clearing marker: " id)
-            ;;   (<p! (.removeMarker
-            ;;         map-instance
-            ;;         @!location-marker-id)))
-            ;; (reset!
-            ;;  !location-marker-id
-            ;;  (<p! (.addMarker
-            ;;        map-instance
-            ;;        (clj->js
-            ;;         (assoc opts :title "Your position")))))
-            )
-          (js/console.log err))))))
-
 (defn hook []
   (let [!map-el (clojure.core/atom nil)
         !map-instance (clojure.core/atom nil)
-        !location-watch-id (clojure.core/atom nil)
-        !location (rf/subscribe [:location/current])]
+        !location-watch-id (clojure.core/atom nil)]
     (react/useEffect
      (fn []
        (go
-         (reset! !map-instance (<p! (create-map @!map-el @!location)))
+         (reset! !map-instance (<p! (create-map @!map-el)))
          (reset! !location-watch-id (<p! (watch-position (handle-position-change @!map-instance))))
          (js/console.log "watch id: " @!location-watch-id)
-         (js/console.log "map: " @!map-instance))
-       (fn [] (.destroy @!map-instance)))
+         (js/console.log "map instance: " @!map-instance))
+       (fn []))
      #js[])
     !map-el))

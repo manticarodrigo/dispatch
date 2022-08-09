@@ -4,11 +4,9 @@
 
 (defn map-component []
   (let [!map-el (use-map/hook)]
-    [:capacitor-google-map
+    [:div
      {:ref (fn [el] (reset! !map-el el))
-      :style {:display "block"
-              :width "100%"
-              :height "100%"}}]))
+      :class "w-full h-full"}]))
 
 (defn component []
   [:f> map-component])

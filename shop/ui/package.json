@@ -15,7 +15,7 @@
   "dependencies": {
     "@capacitor/core": "^4.0.1",
     "@capacitor/geolocation": "^4.0.1",
-    "@capacitor/google-maps": "^4.0.1",
+    "@googlemaps/js-api-loader": "^1.14.3",
     "highlight.js": "11.5.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
