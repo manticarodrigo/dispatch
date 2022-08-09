@@ -5,11 +5,10 @@
     "ancient": "clojure -Sdeps '{:deps {com.github.liquidz/antq {:mvn/version \"RELEASE\"}}}' -m antq.core",
     "report": "shadow-cljs run shadow.cljs.build-report app target/build-report.html",
     "shadow:watch": ". ./env/dev.env && shadow-cljs watch app",
-    "shadow:frisk": "shadow-cljs run re-frisk-remote.core/start",
     "shadow:release": "shadow-cljs release app",
     "postcss:watch": "postcss src/css/tailwind.css -o ./public/css/main.css --verbose -w",
     "postcss:release": "NODE_ENV=production postcss src/css/tailwind.css -o ./public/css/main.css --verbose",
-    "watch": "run-p -l *:watch shadow:frisk",
+    "watch": "run-p -l *:watch",
     "release": "run-s *:release"
   },
   "dependencies": {
@@ -28,7 +27,7 @@
     "npm-run-all": "^4.1.5",
     "postcss": "^8.4.14",
     "postcss-cli": "^10.0.0",
-    "shadow-cljs": "2.19.6",
+    "shadow-cljs": "2.19.8",
     "tailwindcss": "^3.1.8"
   }
 }

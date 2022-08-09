@@ -2,14 +2,12 @@
   (:require
    [reagent.dom :as dom]
    [re-frame.core :as rf]
-   [re-frisk-remote.core :as re-frisk-remote]
    [app.config :as config]
    [app.events :as events]
    [app.views.map :as map-view]))
 
 (defn dev-setup []
   (when config/debug?
-    (re-frisk-remote/enable)
     (println "dev mode")))
 
 (defn ^:dev/after-load mount-root []
