@@ -2,7 +2,7 @@
   (:require
    [re-frame.core :as rf]))
 
-;; (rf/reg-sub
-;;  :todos/all
-;;  (fn [db _]
-;;    (:todos db)))
+(rf/reg-sub
+ :location/current
+ (fn [db _]
+   (:location db)))

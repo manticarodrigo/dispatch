@@ -16,6 +16,11 @@
   dependencies:
     tslib "^2.1.0"
 
+"@capacitor/geolocation@^4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@capacitor/geolocation/-/geolocation-4.0.1.tgz#2567caf704abe5321e0e2d94fa2285252c205e9a"
+  integrity sha512-5dxXfDU1rCkn8xrXk6cQwUr+F2ZRycZoU5zi8MFVnH7JvHruV3B152Uz+urRkF/GtKQrgvxEW78GbejOW+nfYw==
+
 "@capacitor/google-maps@^4.0.1":
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/@capacitor/google-maps/-/google-maps-4.0.1.tgz#d6dad73f1fdd2b70145ac3aa2a3aec5d3c7fc68b"
