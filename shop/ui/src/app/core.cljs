@@ -4,7 +4,7 @@
    [re-frame.core :as rf]
    [app.config :as config]
    [app.events :as events]
-   [app.views.map :as map-view]))
+   [app.views.gmap :as gmap]))
 
 (defn dev-setup []
   (when config/debug?
@@ -14,7 +14,7 @@
   (rf/clear-subscription-cache!)
   (let [root-el (.getElementById js/document "app")]
     (dom/unmount-component-at-node root-el)
-    (dom/render [map-view/page] root-el)))
+    (dom/render [gmap/view] root-el)))
 
 (defn init []
   (rf/dispatch-sync [::events/initialize-db])
