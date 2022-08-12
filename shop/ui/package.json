@@ -4,26 +4,21 @@
   "scripts": {
     "ancient": "clojure -Sdeps '{:deps {com.github.liquidz/antq {:mvn/version \"RELEASE\"}}}' -m antq.core",
     "report": "shadow-cljs run shadow.cljs.build-report app target/build-report.html",
-    "shadow:watch": "sh -c \"shadow-cljs watch app --config-merge '$(cat ./config/dev.edn | xargs)'\"",
-    "shadow:release": "shadow-cljs release app",
-    "tailwind:run": "tailwindcss -i src/css/tailwind.css -o ./public/css/main.css",
-    "tailwind:watch": "yarn tailwind:run --watch",
-    "tailwind:release": "yarn tailwind:run --minify ",
-    "watch": "run-p -l *:watch",
-    "release": "run-s *:release"
+    "watch": "sh -c \"shadow-cljs watch app --config-merge '$(cat ./config/dev.edn | xargs)'\"",
+    "release": "shadow-cljs release app"
   },
   "dependencies": {
     "@capacitor/core": "^4.0.1",
     "@capacitor/geolocation": "^4.0.1",
     "@googlemaps/js-api-loader": "^1.14.3",
     "highlight.js": "11.5.1",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
     "react-router": "^6.3.0",
     "react-router-dom": "^6.3.0"
   },
   "devDependencies": {
-    "npm-run-all": "^4.1.5",
+    "postcss": "^8.4.16",
     "shadow-cljs": "2.19.8",
     "tailwindcss": "^3.1.8"
   }

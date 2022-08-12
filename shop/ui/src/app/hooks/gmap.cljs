@@ -8,14 +8,14 @@
    ["@googlemaps/js-api-loader" :refer (Loader)]
    ["@capacitor/geolocation" :refer (Geolocation)]
    [app.config :as config]
-   [app.utils.gmap :refer (map-styles)]
-   [app.subs :as subs]))
+   [app.subs :as subs]
+   [app.utils.gmap :refer (map-styles)]))
 
 
 (defonce ^:private loader
   (Loader.
    (clj->js
-    {:apiKey (config/env :google-maps-api-key)
+    {:apiKey config/GOOGLE_MAPS_API_KEY
      :version "weekly"})))
 
 (defonce ^:private initial-zoom 4)
