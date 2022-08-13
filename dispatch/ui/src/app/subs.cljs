@@ -11,6 +11,11 @@
    (:location db)))
 
 (rf/reg-sub
- :ref-location/current
+ :stops/current
  (fn [db]
-   (:ref-location db)))
+   (:stops db)))
+
+(rf/reg-sub
+ :route/current
+ (fn [db]
+   (:route db)))

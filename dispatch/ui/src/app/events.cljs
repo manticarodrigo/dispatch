@@ -11,8 +11,15 @@
             db/default-db))
 
 (rf/reg-event-db
- :location/update
+ :location/set
  [trim-v]
- (fn [db [val]]
+ (fn [db [v]]
    (assoc
-    db :location val)))
+    db :location v)))
+
+(rf/reg-event-db
+ :route/set
+ [trim-v]
+ (fn [db [v]]
+   (assoc
+    db :route v)))
