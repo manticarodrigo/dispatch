@@ -27,16 +27,16 @@
 (defonce ^:private !location-watch-id (atom nil))
 
 (defn- create-map [el]
-  (new js/Promise
-       (fn [resolve _]
-         (go
-           (<p! (.load loader))
-           (resolve
-            (js/google.maps.Map.
-             el (clj->js {:center {:lat 0 :lng 0}
-                          :zoom initial-zoom
-                          :disableDefaultUI true
-                          :styles map-styles})))))))
+  (js/Promise.
+   (fn [resolve _]
+     (go
+       (<p! (.load loader))
+       (resolve
+        (js/google.maps.Map.
+         el (clj->js {:center {:lat 0 :lng 0}
+                      :zoom initial-zoom
+                      :disableDefaultUI true
+                      :styles map-styles})))))))
 
 (defn- create-directions-service []
   (js/google.maps.DirectionsService.))

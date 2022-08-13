@@ -14,5 +14,5 @@
       [:div {:class "text-sm text-slate-50"}
        (if-let [{lat :lat lng :lng} location]
          [:<> (millionths lat) ", " (millionths lng)]
-         "None found.")]]
+         "Not available.")]]
      [gmap/component]]))
