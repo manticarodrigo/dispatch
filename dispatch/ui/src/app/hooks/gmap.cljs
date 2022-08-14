@@ -84,12 +84,14 @@
     (let [position (.-end_location leg)
           title (.-end_address leg)
           label (str (+ 1 idx))
+          last? (->> legs (count) (= (+ 1 idx)))
           marker (js/google.maps.Marker.
                   (clj->js {:position position
                             :title title
-                            :label label
-                            :icon {:url "https://img.icons8.com/ios-glyphs/344/small-business--v2.png"
-                                   :scaledSize (js/google.maps.Size. 20 20)}
+                            :label (when-not last? {:text label :color "white"})
+                            :icon (if last? {:url "/icons/material/flag.svg"
+                                             :anchor (js/google.maps.Point. 5 25)}
+                                      "/icons/material/pin.svg")
                             :map @!map}))]
       (swap! !markers conj marker))))
 
