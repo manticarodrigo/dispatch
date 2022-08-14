@@ -19,7 +19,21 @@
   {:target     :browser
    :output-dir "public/js"
    :asset-path "/js"
+
    :tailwind/output "public/css/main.css"
+   :tailwind/config {:theme
+                     {:font-family
+                      {:sans ["Inter"
+                              "ui-sans-serif"
+                              "system-ui"
+                              "-apple-system"
+                              "BlinkMacSystemFont"
+                              "Segoe UI"
+                              "Roboto"
+                              "Helvetica Neue"
+                              "Arial"
+                              "Noto Sans"
+                              "sans-serif"]}}}
 
    :modules
    {:app {:init-fn app.core/init}}
