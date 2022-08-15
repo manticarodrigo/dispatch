@@ -1,4 +1,4 @@
-(ns app.hooks.route
+(ns app.hooks.use-route
   (:require
    [react]
    [re-frame.core :as rf]
@@ -12,22 +12,13 @@
    [app.utils.logger :as logger]
    [app.utils.google-maps :refer (map-styles)]))
 
-
-(defonce ^:private loader
-  (Loader.
-   (clj->js
-    {:apiKey config/GOOGLE_MAPS_API_KEY
-     :version "weekly"
-    ;;  :region "ES"
-    ;;  :language "es"
-     })))
-
 (defonce ^:private initial-zoom 4)
 (defonce ^:private position-options
   (clj->js {:enableHighAccuracy true
             :timeout 10000
             :maximumAge 0}))
 
+(defonce ^:private !loader (atom nil))
 (defonce ^:private !el (atom nil))
 (defonce ^:private !map (atom nil))
 (defonce ^:private !markers (atom []))
@@ -35,11 +26,23 @@
 (defonce ^:private !directions-renderer (atom nil))
 (defonce ^:private !location-watch-id (atom nil))
 
+(defn- load-map []
+  (reset!
+   !loader
+   (Loader.
+    (clj->js
+     {:id "google-maps-script"
+      :apiKey config/GOOGLE_MAPS_API_KEY
+      :version "weekly"
+      :language (subs/listen [:locale/language])
+      :region (subs/listen [:locale/region])})))
+  (.load @!loader))
+
 (defn- create-map []
   (js/Promise.
    (fn [resolve _]
      (go
-       (<p! (.load loader))
+       (<p! (load-map))
        (resolve
         (js/google.maps.Map.
          @!el (clj->js {:center {:lat 0 :lng 0}
@@ -57,10 +60,6 @@
 
 (defn- create-lat-lng [lat lng]
   (js/google.maps.LatLng. lat lng))
-
-(defn- clear-markers! []
-  (doseq [^Marker marker @!markers] (.setMap marker nil))
-  (reset! !markers []))
 
 (defn- get-lat-lng [location]
   (let [{lat :lat lng :lng} location]
@@ -85,6 +84,10 @@
 (defn- parse-route [legs]
   (mapv parse-leg legs))
 
+(defn- clear-markers! []
+  (doseq [^Marker marker @!markers] (.setMap marker nil))
+  (reset! !markers []))
+
 (defn- create-route-markers [legs]
   (clear-markers!)
   (doseq [[idx leg] (map-indexed vector legs)]
@@ -106,7 +109,6 @@
   (let [^DirectionsRenderer renderer @!directions-renderer
         legs (parse-legs response)
         route (parse-route legs)]
-    (logger/log response)
     (.setOptions renderer #js{:suppressMarkers true})
     (.setDirections renderer response)
     (create-route-markers legs)
@@ -158,8 +160,9 @@
 (def route-context-provider (.-Provider route-context))
 
 (defn use-route []
-  (let [location (subs/listen [:location/current])
-        stops (subs/listen [:stops/current])]
+  (let [locale (subs/listen [:locale])
+        location (subs/listen [:location])
+        stops (subs/listen [:stops])]
 
     (react/useEffect
      (fn []

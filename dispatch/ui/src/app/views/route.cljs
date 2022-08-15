@@ -1,11 +1,12 @@
 (ns app.views.route
   (:require
    [react]
+   [re-frame.core :as rf]
    [clojure.string :as s]
    [app.subs :as subs]
-   [app.hooks.route :refer (use-route
-                            use-route-context
-                            route-context-provider)]
+   [app.hooks.use-route :refer (use-route
+                                use-route-context
+                                route-context-provider)]
    [app.utils.i18n :refer (tr)]))
 
 (defn- list-empty []
@@ -48,24 +49,25 @@
      [detail (tr [:route-view.generic/duration]) (str mins " mins")]]))
 
 (defn- panel-list []
-  (let [route (subs/listen [:route/current])]
+  (let [route (subs/listen [:route])]
     [:<>
      (when (= (count route) 0)
        [:f> list-empty])
-     (for [[idx
-            {address :address
-             distance :distance
-             duration :duration}]
-           (map-indexed vector route)]
-       [:div {:key idx :class "border-b border-slate-200 flex p-2 sm:p-3"}
-        [list-item-number (+ 1 idx)]
-        [list-item-content address
-         [:<>
-          [detail (tr [:route-view.generic/distance]) (:text distance)]
-          [detail (tr [:route-view.generic/duration]) (:text duration)]]]])]))
+     (doall
+      (for [[idx
+             {address :address
+              distance :distance
+              duration :duration}]
+            (map-indexed vector route)]
+        [:div {:key idx :class "border-b border-slate-200 flex p-2 sm:p-3"}
+         [list-item-number (+ 1 idx)]
+         [list-item-content address
+          [:<>
+           [detail (tr [:route-view.generic/distance]) (:text distance)]
+           [detail (tr [:route-view.generic/duration]) (:text duration)]]]]))]))
 
 (defn- panel []
-  [:div {:class "z-10 relative flex-none w-[300px] h-full bg-white drop-shadow-lg"}
+  [:div {:class "z-10 relative flex-none w-[300px] h-full bg-white drop-shadow-lg overflow-y-auto"}
    [panel-header]
    [panel-summary]
    [panel-list]])
@@ -76,9 +78,17 @@
      {:ref (fn [el] (reset! !el el))
       :class "w-full h-full"}]))
 
+(defn- locale-switch []
+  [:div {:class "absolute top-1 right-1"}
+   [:button {:class "m-1 rounded p-1 text-slate-700 hover:text-slate-800 bg-slate-200 hover:bg-slate-300"
+             :on-click #(rf/dispatch [:locale/set {:language "en" :region "US"}])} "EN"]
+   [:button {:class "m-1 rounded p-1 text-slate-700 hover:text-slate-800 bg-slate-200 hover:bg-slate-300"
+             :on-click #(rf/dispatch [:locale/set {:language "es" :region "ES"}])} "ES"]])
+
 (defn route-view []
   (let [props (use-route)]
     [:> route-context-provider {:value props}
      [:div {:class "relative flex w-full h-screen"}
       [panel]
-      [:f> gmap]]]))
+      [:f> gmap]
+      [locale-switch]]]))

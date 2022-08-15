@@ -11,6 +11,13 @@
             db/default-db))
 
 (rf/reg-event-db
+ :locale/set
+ [trim-v]
+ (fn [db [v]]
+   (assoc
+    db :locale v)))
+
+(rf/reg-event-db
  :location/set
  [trim-v]
  (fn [db [v]]

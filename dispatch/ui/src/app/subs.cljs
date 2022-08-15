@@ -5,19 +5,40 @@
   @(rf/subscribe query-vector))
 
 (rf/reg-sub
- :location/current
- (fn [db]
-   (:location db)))
+ :locale
+ #(:locale %))
 
 (rf/reg-sub
- :stops/current
- (fn [db]
-   (:stops db)))
+ :locale/tempura-config
+ #(-> %
+      :locale
+      :language
+      keyword
+      vector))
 
 (rf/reg-sub
- :route/current
- (fn [db]
-   (:route db)))
+ :locale/language
+ #(-> % :locale :language))
+
+(rf/reg-sub
+ :locale/region
+ #(-> % :locale :region))
+
+(rf/reg-sub
+ :origin
+ #(:origin %))
+
+(rf/reg-sub
+ :location
+ #(:location %))
+
+(rf/reg-sub
+ :stops
+ #(:stops %))
+
+(rf/reg-sub
+ :route
+ #(:route %))
 
 (rf/reg-sub
  :route/minutes
