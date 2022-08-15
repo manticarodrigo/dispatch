@@ -5,16 +5,15 @@
    [app.subs :as subs]
    [app.hooks.route :refer (use-route
                             use-route-context
-                            route-context-provider)]))
-
-
+                            route-context-provider)]
+   [app.utils.i18n :refer (tr)]))
 
 (defn- list-empty []
   (let [{get-position :get} (use-route-context)]
     [:div {:class "p-2 sm:p-3"}
-     [:p {:class "text-sm"} "No route found. Please enable location permissions."]
+     [:p {:class "text-sm"} (tr [:route-view.list-empty/message])]
      [:button {:class "mt-2 rounded p-2 text-slate-700 hover:text-slate-800 bg-slate-200 hover:bg-slate-300"
-               :on-click get-position} "Get location"]]))
+               :on-click get-position} (tr [:route-view.list-empty/button])]]))
 
 (defn- list-item-number [num]
   [:div {:class
@@ -38,15 +37,15 @@
 
 (defn- panel-header []
   [:div {:class "border-b border-slate-300 pt-3 pb-2 px-2 bg-slate-50"}
-   [:h1 {:class "font-semibold text-lg sm:text-xl md:text-2xl text-slate-900"} "Route"]])
+   [:h1 {:class "font-semibold text-lg sm:text-xl md:text-2xl text-slate-900"} (tr [:route-view.panel-header/title])]])
 
 (defn- panel-summary []
   (let [mins (subs/listen [:route/minutes])
         kms (subs/listen [:route/kilometers])]
     [:div {:class "p-2 sm:p-3 text-sm text-slate-50 bg-slate-700"}
-     [:h2 {:class "font-semibold text-base text-slate-200"} "Summary"]
-     [detail "Distance" (str kms " km")]
-     [detail "Duration" (str mins " mins")]]))
+     [:h2 {:class "font-semibold text-base text-slate-200"} (tr [:route-view.panel-summary/title])]
+     [detail (tr [:route-view.generic/distance]) (str kms " km")]
+     [detail (tr [:route-view.generic/duration]) (str mins " mins")]]))
 
 (defn- panel-list []
   (let [route (subs/listen [:route/current])]
@@ -62,8 +61,8 @@
         [list-item-number (+ 1 idx)]
         [list-item-content address
          [:<>
-          [detail "Distance" (:text distance)]
-          [detail "Duration" (:text duration)]]]])]))
+          [detail (tr [:route-view.generic/distance]) (:text distance)]
+          [detail (tr [:route-view.generic/duration]) (:text duration)]]]])]))
 
 (defn- panel []
   [:div {:class "z-10 relative flex-none w-[300px] h-full bg-white drop-shadow-lg"}

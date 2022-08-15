@@ -17,7 +17,10 @@
   (Loader.
    (clj->js
     {:apiKey config/GOOGLE_MAPS_API_KEY
-     :version "weekly"})))
+     :version "weekly"
+    ;;  :region "ES"
+    ;;  :language "es"
+     })))
 
 (defonce ^:private initial-zoom 4)
 (defonce ^:private position-options
@@ -103,6 +106,7 @@
   (let [^DirectionsRenderer renderer @!directions-renderer
         legs (parse-legs response)
         route (parse-route legs)]
+    (logger/log response)
     (.setOptions renderer #js{:suppressMarkers true})
     (.setDirections renderer response)
     (create-route-markers legs)
