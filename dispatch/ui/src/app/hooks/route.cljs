@@ -1,16 +1,16 @@
-(ns app.hooks.gmap
+(ns app.hooks.route
   (:require
-   [clojure.core :refer [atom]]
-   [cljs.core.async :refer [go]]
-   [cljs.core.async.interop :refer-macros [<p!]]
    [react]
    [re-frame.core :as rf]
    ["@googlemaps/js-api-loader" :refer (Loader)]
    ["@capacitor/geolocation" :refer (Geolocation)]
+   [clojure.core :refer [atom]]
+   [cljs.core.async :refer [go]]
+   [cljs.core.async.interop :refer-macros [<p!]]
    [app.config :as config]
    [app.subs :as subs]
-   [app.utils.gmap :refer (map-styles)]
-   [app.utils.logger :as logger]))
+   [app.utils.logger :as logger]
+   [app.utils.google-maps :refer (map-styles)]))
 
 
 (defonce ^:private loader
@@ -20,6 +20,10 @@
      :version "weekly"})))
 
 (defonce ^:private initial-zoom 4)
+(defonce ^:private position-options
+  (clj->js {:enableHighAccuracy true
+            :timeout 10000
+            :maximumAge 0}))
 
 (defonce ^:private !el (atom nil))
 (defonce ^:private !map (atom nil))
@@ -28,24 +32,24 @@
 (defonce ^:private !directions-renderer (atom nil))
 (defonce ^:private !location-watch-id (atom nil))
 
-(defn- create-map [el]
+(defn- create-map []
   (js/Promise.
    (fn [resolve _]
      (go
        (<p! (.load loader))
        (resolve
         (js/google.maps.Map.
-         el (clj->js {:center {:lat 0 :lng 0}
-                      :zoom initial-zoom
-                      :disableDefaultUI true
-                      :styles map-styles})))))))
+         @!el (clj->js {:center {:lat 0 :lng 0}
+                        :zoom initial-zoom
+                        :disableDefaultUI true
+                        :styles map-styles})))))))
 
 (defn- create-directions-service []
   (js/google.maps.DirectionsService.))
 
-(defn- create-directions-renderer [map-instance]
+(defn- create-directions-renderer []
   (let [directions-renderer (js/google.maps.DirectionsRenderer.)]
-    (.setMap directions-renderer map-instance)
+    (.setMap directions-renderer @!map)
     directions-renderer))
 
 (defn- create-lat-lng [lat lng]
@@ -112,45 +116,59 @@
               (when (= status "OK")
                 (handle-route-response response))))))
 
-(defn- handle-position-change [pos err]
-  (go
-    (if (some? pos)
-      (let [coords (.-coords pos)
-            lat (.-latitude coords)
-            lng (.-longitude coords)
-            lat-lng {:lat lat :lng lng}]
-        (rf/dispatch [:location/set lat-lng]))
-      (logger/error err))))
+(defn- parse-position [pos]
+  (let [coords (.-coords pos)
+        lat (.-latitude coords)
+        lng (.-longitude coords)]
+    {:lat lat :lng lng}))
 
-(defn- watch-position [cb]
-  (.watchPosition
-   Geolocation
-   (clj->js {:enableHighAccuracy true
-             :timeout 10000
-             :maximumAge 0})
-   cb))
+(defn- get-position []
+  (-> (.getCurrentPosition
+       Geolocation
+       position-options)
+      (.then #(rf/dispatch [:location/set (parse-position %)]))
+      (.catch logger/error)))
+
+(defn- watch-position []
+  (go
+    (reset!
+     !location-watch-id
+     (<p!
+      (.watchPosition
+       Geolocation
+       position-options
+       (fn [pos err]
+         (if (some? pos)
+           (rf/dispatch [:location/set (parse-position pos)])
+           (logger/error err))))))))
 
 (defn- clear-watch [id]
   (.clearWatch Geolocation #js{:id id}))
 
-(defn hook []
+(defonce ^:private route-context (react/createContext {}))
+
+(defn use-route-context []
+  (let [val (react/useContext route-context)]
+    (js->clj val :keywordize-keys true)))
+
+(def route-context-provider (.-Provider route-context))
+
+(defn use-route []
   (let [location (subs/listen [:location/current])
         stops (subs/listen [:stops/current])]
 
     (react/useEffect
      (fn []
        (go
-         (reset! !map (<p! (create-map @!el)))
+         (reset! !map (<p! (create-map)))
          (reset! !directions-service (create-directions-service))
-         (reset! !directions-renderer (create-directions-renderer @!map))
-         (reset! !location-watch-id (<p! (watch-position handle-position-change)))
-         (logger/log "added watch id: " @!location-watch-id))
-
+         (reset! !directions-renderer (create-directions-renderer)))
        (fn []
-         (logger/log "clearing watch id: " @!location-watch-id)
-         (rf/dispatch [:location/set nil])
-         (reset! !location-watch-id nil)
-         (clear-watch @!location-watch-id)))
+         (when (some? @!location-watch-id)
+           (logger/log "clearing watch id: " @!location-watch-id)
+           (rf/dispatch [:location/set nil])
+           (reset! !location-watch-id nil)
+           (clear-watch @!location-watch-id))))
      #js[])
 
     (react/useEffect
@@ -160,4 +178,4 @@
        (fn []))
      #js[location])
 
-    !el))
+    {:ref !el :get get-position :watch watch-position}))

@@ -1,4 +1,4 @@
-(ns app.utils.gmap)
+(ns app.utils.google-maps)
 
 (def map-styles
   [{:elementType "labels.text.fill",
