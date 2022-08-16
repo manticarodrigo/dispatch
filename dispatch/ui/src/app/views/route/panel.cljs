@@ -1,9 +1,10 @@
 (ns app.views.route.panel
   (:require
-   [react-feather
-    :refer (GitPullRequest Clock)
-    :rename {GitPullRequest DistanceIcon Clock DurationIcon}]
+   [reagent.core :as r]
    [re-frame.core :refer (dispatch)]
+   [react-feather
+    :refer (Menu GitPullRequest Clock)
+    :rename {Menu MenuIcon GitPullRequest DistanceIcon Clock DurationIcon}]
    [app.subs :refer (listen)]
    [app.hooks.use-route :refer (use-route-context)]
    [app.utils.i18n :refer (tr locales)]
@@ -51,16 +52,24 @@
      [panel-summary-item (distance-str) (str kms " km") DistanceIcon]
      [panel-summary-item (duration-str) (str mins " mins") DurationIcon]]))
 
+(def ^:private !open (r/atom false))
+
 (defn panel [class]
+  (js/console.log @!open)
   [:div
    {:class
     (class-names
      class
-     "z-10 relative flex-none"
-     "w-[300px] lg:w-[450px] h-full"
-     "text-white bg-black")}
-   [:h1 {:class (class-names padding "font-semibold")}
-    "Ambito " [:span {:class "font-light text-white/[0.8]"} "Dispatch"]]
-   [:f> panel-summary]
-   [:f> panel-controls]
-   [:f> overview]])
+     "z-10 relative flex-none flex flex-col"
+     "w-full lg:w-[450px] lg:h-full"
+     "text-white")}
+   [:div {:class (class-names padding-x "flex items-center h-[60px] bg-black")}
+    [:button {:class "lg:hidden mr-2" :on-click #(swap! !open not)} [:> MenuIcon {:size 20}]]
+    [:h1 {:class (class-names "font-semibold")}
+     "Ambito " [:span {:class "font-light text-white/[0.8]"} "Dispatch"]]]
+   [:div {:class (class-names
+                  (if @!open "flex" "hidden")
+                  "grow flex-none lg:flex flex-col absolute lg:relative top-[60px] lg:top-0 left-0 w-full h-[calc(100vh_-_60px)] bg-black")}
+    [:f> panel-summary]
+    [:f> panel-controls]
+    [:f> overview]]])

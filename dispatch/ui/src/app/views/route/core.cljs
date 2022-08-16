@@ -8,6 +8,6 @@
 (defn route-view []
   (let [props (use-route)]
     [:> route-context-provider {:value props}
-     [:div {:class "relative flex w-full h-screen"}
+     [:div {:class "relative flex flex-col lg:flex-row w-full h-screen"}
       [:f> panel "order-1"]
       [:f> gmap "order-2"]]]))
