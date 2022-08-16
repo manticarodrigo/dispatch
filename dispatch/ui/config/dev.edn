@@ -1,2 +1,4 @@
 {:closure-defines
- {app.config/GOOGLE_MAPS_API_KEY "AIzaSyAVgq9NMzbNqubtOPSoPHpyEYYtxGJdbhs"}}
+ {app.config/REGION "US"
+  app.config/LANGUAGE "en"
+  app.config/GOOGLE_MAPS_API_KEY "AIzaSyAVgq9NMzbNqubtOPSoPHpyEYYtxGJdbhs"}}

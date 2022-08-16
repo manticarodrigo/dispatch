@@ -1,28 +1,33 @@
 (ns app.utils.i18n
   (:require [taoensso.tempura :as tempura]
-            [app.subs :as subs]))
+            [app.config :as config]))
 
 (def ^:private dict
   {:en
-   {:route-view
-    {:generic/distance "Distance"
-     :generic/duration "Duration"
-     :panel-header/title "Route"
-     :panel-summary/title "Summary"
-     :list-empty/message "No route found. Make sure you enable location permissions."
-     :list-empty/button "Get location"}}
+   {:location/title "My location"
+    :location/get "Get location"
+    :location/watch "Watch location"
+    :route-view {:common/distance "Distance"
+                 :common/duration "Duration"
+                 :panel-header/title "Route"
+                 :panel-summary/title "Summary"
+                 :list-empty/message "No route found. Make sure you enable location permissions."}}
    :es
-   {:route-view
-    {:generic/distance "Distancia"
-     :generic/duration "Duración"
-     :panel-header/title "Ruta"
-     :panel-summary/title "Resumen"
-     :list-empty/message "No se ha encontrado ninguna ruta. Asegurese de habilitar los permisos de ubicación."
-     :list-empty/button "Obtener ubicacion"}}})
+   {:location/title "Mi ubicación"
+    :location/get "Obtener ubicación"
+    :location/watch "Observar ubicación"
+    :route-view {:common/distance "Distancia"
+                 :common/duration "Duración"
+                 :panel-header/title "Ruta"
+                 :panel-summary/title "Resumen"
+                 :list-empty/message "No se ha encontrado ninguna ruta. Asegurese de habilitar los permisos de ubicación."}}})
 
 (def ^:private opts {:dict dict})
 
 (defn tr [& args]
   (apply
-   (partial tempura/tr opts (subs/listen [:locale/tempura-config]))
+   (partial tempura/tr opts [(keyword config/LANGUAGE)])
    args))
+
+(def locales {:en-US {:language "en" :region "US"}
+              :es-ES {:language "es" :region "ES"}})

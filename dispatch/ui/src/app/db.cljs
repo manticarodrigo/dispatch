@@ -1,7 +1,9 @@
-(ns app.db)
+(ns app.db
+  (:require [app.config :as config]))
 
 (def default-db
-  {:locale {:language "en" :region "US"}
+  {:locale {:region config/REGION
+            :language config/LANGUAGE}
    :origin nil
    :location nil
    :stops [{:lat 12.103727746418377 :lng -86.2492445291432} ;; galerias

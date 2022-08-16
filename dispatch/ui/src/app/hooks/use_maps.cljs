@@ -8,14 +8,16 @@
    [cljs.core.async.interop :refer-macros [<p!]]
    [app.config :as config]
    [app.subs :as subs]
-   [app.utils.google-maps :refer (map-styles)]))
+   [app.utils.google-maps :refer (map-styles)]
+   [app.utils.i18n :refer (tr)]))
 
 (defonce ^:private initial-zoom 4)
 
 (defonce ^:private !loader (atom nil))
 (defonce ^:private !el (atom nil))
 (defonce ^:private !map (atom nil))
-(defonce ^:private !markers (atom []))
+(defonce ^:private !route-markers (atom []))
+(defonce ^:private !location-marker (atom nil))
 (defonce ^:private !directions-service (atom nil))
 (defonce ^:private !directions-renderer (atom nil))
 
@@ -77,9 +79,13 @@
 (defn- parse-route [legs]
   (mapv parse-leg legs))
 
+(defn- create-marker [opts]
+  (js/google.maps.Marker.
+   (clj->js (assoc opts :map @!map))))
+
 (defn- clear-markers! []
-  (doseq [^Marker marker @!markers] (.setMap marker nil))
-  (reset! !markers []))
+  (doseq [^Marker marker @!route-markers] (.setMap marker nil))
+  (reset! !route-markers []))
 
 (defn- create-route-markers [legs]
   (clear-markers!)
@@ -88,15 +94,16 @@
           title (.-end_address leg)
           label (str (+ 1 idx))
           last? (->> legs (count) (= (+ 1 idx)))
-          marker (js/google.maps.Marker.
-                  (clj->js {:position position
-                            :title title
-                            :label (when-not last? {:text label :color "white"})
-                            :icon (if last? {:url "/icons/material/flag.svg"
-                                             :anchor (js/google.maps.Point. 5 25)}
-                                      "/icons/material/pin.svg")
-                            :map @!map}))]
-      (swap! !markers conj marker))))
+          marker (create-marker
+                  {:position position
+                   :title title
+                   :label (when-not last? {:text label :color "white"})
+                   :icon (if last?
+                           {:url "/icons/route/shop.png"
+                            :scaledSize (js/google.maps.Size. 35 35)}
+                           {:url "/icons/material/pin.svg"})
+                   :zIndex idx})]
+      (swap! !route-markers conj marker))))
 
 (defn- handle-route-response [^DirectionsResult response]
   (let [^DirectionsRenderer renderer @!directions-renderer
@@ -124,7 +131,8 @@
 (def route-context-provider (.-Provider route-context))
 
 (defn use-maps []
-  (let [origin (subs/listen [:origin])
+  (let [location (subs/listen [:location])
+        origin (subs/listen [:origin])
         stops (subs/listen [:stops])]
 
     (react/useEffect
@@ -135,6 +143,22 @@
          (reset! !directions-renderer (create-directions-renderer)))
        #())
      #js[])
+
+    (react/useEffect
+     (fn []
+       (when (some? location)
+         (if-let [marker @!location-marker]
+           (.setPosition marker (get-lat-lng location))
+           (reset!
+            !location-marker
+            (create-marker
+             {:position (get-lat-lng location)
+              :title (tr [:location/title])
+              :icon {:url "/icons/route/delivery.png"
+                     :scaledSize (js/google.maps.Size. 35 35)}
+              :zIndex (count @!route-markers)}))))
+       (fn []))
+     #js[location])
 
     (react/useEffect
      (fn []
