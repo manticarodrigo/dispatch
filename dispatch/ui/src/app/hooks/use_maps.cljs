@@ -8,10 +8,10 @@
    [cljs.core.async.interop :refer-macros [<p!]]
    [app.config :as config]
    [app.subs :as subs]
-   [app.utils.google-maps :refer (map-styles)]
+   [app.utils.google.maps :refer (map-styles)]
    [app.utils.i18n :refer (tr)]))
 
-(defonce ^:private initial-zoom 4)
+(defonce ^:private initial-zoom 2)
 
 (defonce ^:private !loader (atom nil))
 (defonce ^:private !el (atom nil))
@@ -43,7 +43,7 @@
          @!el (clj->js {:center {:lat 0 :lng 0}
                         :zoom initial-zoom
                         :disableDefaultUI true
-                        :styles map-styles})))))))
+                        :styles (:desaturate map-styles)})))))))
 
 (defn- create-directions-service []
   (js/google.maps.DirectionsService.))
@@ -97,11 +97,12 @@
           marker (create-marker
                   {:position position
                    :title title
-                   :label (when-not last? {:text label :color "white"})
+                   :label {:text (if last? "⚑" label) :color "white"}
                    :icon (if last?
-                           {:url "/icons/route/shop.png"
-                            :scaledSize (js/google.maps.Size. 35 35)}
-                           {:url "/icons/material/pin.svg"})
+                           {:url "/icons/material/home.svg"
+                            :scaledSize (js/google.maps.Size. 25 25)}
+                           {:url "/icons/material/pin.svg"
+                            :scaledSize (js/google.maps.Size. 30 30)})
                    :zIndex idx})]
       (swap! !route-markers conj marker))))
 

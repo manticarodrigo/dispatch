@@ -9,7 +9,6 @@
 (rf/reg-sub :locale/language #(-> % :locale :language))
 (rf/reg-sub :locale/region #(-> % :locale :region))
 
-
 (rf/reg-sub :origin #(:origin %))
 (rf/reg-sub :location #(:location %))
 (rf/reg-sub :stops #(:stops %))

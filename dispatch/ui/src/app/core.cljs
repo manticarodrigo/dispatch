@@ -4,7 +4,7 @@
    [re-frame.core :as rf]
    [app.config :as config]
    [app.events :as events]
-   [app.views.route :refer (route-view)]))
+   [app.views.route.core :refer (route-view)]))
 
 (defn dev-setup []
   (when config/debug?
