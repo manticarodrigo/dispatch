@@ -4,6 +4,10 @@
    [day8.re-frame.tracing :refer-macros [fn-traced]]
    [app.db :as db]))
 
+(defn assoc-key [key]
+  (fn [db [v]]
+    (assoc
+     db key v)))
 
 (rf/reg-event-db
  ::initialize-db
@@ -13,20 +17,19 @@
 (rf/reg-event-db
  :locale/set
  [trim-v]
- (fn [db [v]]
-   (assoc
-    db :locale v)))
+ (assoc-key :locale))
+
+(rf/reg-event-db
+ :origin/set
+ [trim-v]
+ (assoc-key :origin))
 
 (rf/reg-event-db
  :location/set
  [trim-v]
- (fn [db [v]]
-   (assoc
-    db :location v)))
+ (assoc-key :location))
 
 (rf/reg-event-db
  :route/set
  [trim-v]
- (fn [db [v]]
-   (assoc
-    db :route v)))
+ (assoc-key :route))
