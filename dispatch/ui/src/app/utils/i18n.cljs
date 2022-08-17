@@ -5,20 +5,20 @@
 (def ^:private dict
   {:en
    {:location/title "My location"
-    :location/get "Get location"
-    :location/watch "Watch location"
+    :location/search "Set origin address"
+    :location/get "Get current location"
+    :location/watch "Watch current location"
     :route-view {:common/distance "Distance"
                  :common/duration "Duration"
-                 :panel-header/title "Route"
-                 :list-empty/message "No route found. Make sure you enable location permissions."}}
+                 :panel-header/title "Route"}}
    :es
    {:location/title "Mi ubicación"
-    :location/get "Obtener ubicación"
-    :location/watch "Observar ubicación"
+    :location/search "Ingresar ubicación de origen"
+    :location/get "Obtener ubicación actual"
+    :location/watch "Observar ubicación actual"
     :route-view {:common/distance "Distancia"
                  :common/duration "Duración"
-                 :panel-header/title "Ruta"
-                 :list-empty/message "No se ha encontrado ninguna ruta. Asegurese de habilitar los permisos de ubicación."}}})
+                 :panel-header/title "Ruta"}}})
 
 (def ^:private opts {:dict dict})
 

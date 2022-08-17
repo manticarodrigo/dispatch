@@ -1,11 +1,9 @@
-(ns app.views.route.overview
+(ns app.views.route.nav.overview
   (:require
    [app.subs :refer (listen)]
-   [app.utils.i18n :refer (tr)]
    [app.utils.string :refer (class-names)]
    [app.views.route.utils :refer (distance-str
                                   duration-str
-                                  padding
                                   padding-x)]))
 
 (defn- overview-item-details [label value]
@@ -28,21 +26,17 @@
     [overview-item-details (distance-str) (:text distance)]
     [overview-item-details (duration-str) (:text duration)]]])
 
-(defn- overview-empty []
-  [:p {:class (class-names padding "text-sm")} (tr [:route-view.list-empty/message])])
-
 (defn overview [class]
   (let [route (listen [:route])]
-    [:ol {:class (class-names
-                  class
-                  "overflow-y-auto")}
-     (when (= (count route) 0)
-       [:f> overview-empty])
-     (doall
-      (for [[idx
-             {address :address
-              distance :distance
-              duration :duration}]
-            (map-indexed vector route)]
-        [:li {:key idx}
-         [overview-item idx address distance duration]]))]))
+    (when (> (count route) 0)
+      [:ol {:class (class-names
+                    class
+                    "overflow-y-auto")}
+       (doall
+        (for [[idx
+               {address :address
+                distance :distance
+                duration :duration}]
+              (map-indexed vector route)]
+          [:li {:key idx}
+           [overview-item idx address distance duration]]))])))
