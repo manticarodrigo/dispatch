@@ -20,6 +20,11 @@
  (assoc-key :locale))
 
 (rf/reg-event-db
+ :search/set
+ [trim-v]
+ (assoc-key :search))
+
+(rf/reg-event-db
  :origin/set
  [trim-v]
  (assoc-key :origin))

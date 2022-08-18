@@ -10,4 +10,5 @@
            {:lat 12.086721023651428 :lng -86.23377698736607} ;; vivian pellas
            {:lat 12.129391854083744 :lng -86.26494075705381} ;; metrocentro
            ]
-   :route []})
+   :route []
+   :search []})

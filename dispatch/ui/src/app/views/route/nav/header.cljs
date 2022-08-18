@@ -7,7 +7,7 @@
     :rename {Menu MenuIcon}]
    [app.utils.i18n :refer (locales)]
    [app.utils.string :refer (class-names)]
-   [app.components.radio-group :refer (radio-group)]
+   [app.components.generic.radio-group :refer (radio-group)]
    [app.views.route.utils :refer (padding-x)]
    [app.views.route.nav.summary :refer (!summary-open)]))
 
@@ -30,7 +30,7 @@
    [:button {:class "lg:hidden mr-2"
              :on-click #(swap! !summary-open not)} [:> MenuIcon {:size 20}]]
    [:h1 {:class (class-names "font-semibold text-xl")}
-    "Ambito " [:span {:class "font-light text-white/[0.8]"} "Dispatch"]]
+    "Ambito " [:span {:class "font-light text-neutral-50"} "Dispatch"]]
    [radio-group
     {:sr-label "Select language"
      :value @!selected-locale-key

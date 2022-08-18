@@ -13,6 +13,13 @@
 (def route-context-provider (.-Provider route-context))
 
 (defn use-route []
-  (let [!el (use-maps)
-        {get-position :get watch-position :watch} (use-location)]
-    {:ref !el :get get-position :watch watch-position}))
+  (let [{!el :ref
+         search-places! :search
+         set-origin! :origin} (use-maps)
+        {get-position :get
+         watch-position :watch} (use-location)]
+    {:ref !el
+     :search search-places!
+     :origin set-origin!
+     :get get-position
+     :watch watch-position}))

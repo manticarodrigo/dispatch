@@ -7,5 +7,5 @@
               class
               "z-10 relative flex-none"
               "w-full lg:w-[450px] lg:h-full"
-              "text-white bg-black")}
+              "text-neutral-50 bg-neutral-900")}
    children])

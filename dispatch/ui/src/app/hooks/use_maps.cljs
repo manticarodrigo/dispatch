@@ -1,7 +1,7 @@
 (ns app.hooks.use-maps
   (:require
    [react]
-   [re-frame.core :as rf]
+   [re-frame.core :refer (dispatch)]
    ["@googlemaps/js-api-loader" :refer (Loader)]
    [clojure.core :refer [atom]]
    [cljs.core.async :refer [go]]
@@ -18,6 +18,8 @@
 (defonce ^:private !map (atom nil))
 (defonce ^:private !route-markers (atom []))
 (defonce ^:private !location-marker (atom nil))
+(defonce ^:private !autocomplete-service (atom nil))
+(defonce ^:private !places-service (atom nil))
 (defonce ^:private !directions-service (atom nil))
 (defonce ^:private !directions-renderer (atom nil))
 
@@ -29,6 +31,7 @@
      {:id "google-maps-script"
       :apiKey config/GOOGLE_MAPS_API_KEY
       :version "weekly"
+      :libraries ["places"]
       :language (subs/listen [:locale/language])
       :region (subs/listen [:locale/region])})))
   (.load @!loader))
@@ -45,6 +48,12 @@
                         :disableDefaultUI true
                         :styles (:desaturate map-styles)})))))))
 
+(defn- create-autocomplete-service []
+  (js/google.maps.places.AutocompleteService.))
+
+(defn- create-places-service []
+  (js/google.maps.places.PlacesService. @!map))
+
 (defn- create-directions-service []
   (js/google.maps.DirectionsService.))
 
@@ -59,6 +68,11 @@
 (defn- get-lat-lng [location]
   (let [{lat :lat lng :lng} location]
     (create-lat-lng lat lng)))
+
+(defn- parse-lat-lng [lat-lng]
+  (let [lat (-> lat-lng .lat)
+        lng (-> lat-lng .lng)]
+    {:lat lat :lng lng}))
 
 (defn- create-route-request [origin stops]
   (let [origin (get-lat-lng origin)
@@ -106,30 +120,44 @@
                    :zIndex idx})]
       (swap! !route-markers conj marker))))
 
-(defn- handle-route-response [^DirectionsResult response]
+(defn- handle-route-response! [^DirectionsResult response]
   (let [^DirectionsRenderer renderer @!directions-renderer
         legs (parse-legs response)
         route (parse-route legs)]
     (.setOptions renderer #js{:suppressMarkers true})
     (.setDirections renderer response)
     (create-route-markers legs)
-    (rf/dispatch [:route/set route])))
+    (dispatch [:route/set route])))
 
-(defn- calc-route [location stops]
+(defn- calc-route! [location stops]
   (let [^DirectionsService service @!directions-service
         request (create-route-request location stops)]
     (.route service request
             (fn [response status]
               (when (= status "OK")
-                (handle-route-response response))))))
+                (handle-route-response! response))))))
 
-(defonce ^:private route-context (react/createContext {}))
+(defn- search-places! [text]
+  (let [^AutocompleteService service @!autocomplete-service]
+    (.getQueryPredictions
+     service
+     #js{:input text}
+     (fn [results status]
+       (when (or (= status js/google.maps.places.PlacesServiceStatus.OK)
+                 (count results))
+         (dispatch [:search/set (js->clj results :keywordize-keys true)]))))))
 
-(defn use-route-context []
-  (let [val (react/useContext route-context)]
-    (js->clj val :keywordize-keys true)))
-
-(def route-context-provider (.-Provider route-context))
+(defn- set-origin! [place-id]
+  (let [^PlacesService service @!places-service]
+    (.getDetails
+     service
+     (clj->js {:placeId place-id,
+               :fields ["geometry"]})
+     (fn [place status]
+       (when (= status js/google.maps.places.PlacesServiceStatus.OK)
+         (dispatch
+          [:origin/set
+           (parse-lat-lng (-> place .-geometry .-location))]))))))
 
 (defn use-maps []
   (let [location (subs/listen [:location])
@@ -140,6 +168,8 @@
      (fn []
        (go
          (reset! !map (<p! (create-map)))
+         (reset! !autocomplete-service (create-autocomplete-service))
+         (reset! !places-service (create-places-service))
          (reset! !directions-service (create-directions-service))
          (reset! !directions-renderer (create-directions-renderer)))
        #())
@@ -164,8 +194,8 @@
     (react/useEffect
      (fn []
        (when (some? origin)
-         (calc-route origin stops))
+         (calc-route! origin stops))
        (fn []))
      #js[origin])
 
-    !el))
+    {:ref !el :search search-places! :origin set-origin!}))

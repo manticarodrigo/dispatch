@@ -1,6 +1,8 @@
-(ns app.components.radio-group
-  (:require ["@headlessui/react" :refer (RadioGroup)]
-            [app.utils.string :refer (class-names)]))
+(ns app.components.generic.radio-group
+  (:require [clojure.string :as s]
+            ["@headlessui/react" :refer (RadioGroup)]
+            [app.utils.string :refer (class-names)]
+            [app.components.generic.button :refer (button-class)]))
 
 (def ^:private Label (.-Label RadioGroup))
 (def ^:private Option (.-Option RadioGroup))
@@ -29,15 +31,16 @@
             :class (fn [props]
                      (let [{active :active checked :checked} (js->clj props :keywordize-keys true)]
                        (class-names
-                        "cursor-pointer outline-0 ring-white"
-                        "border-y border-white/[0.4]  py-1 px-2 font-medium"
-                        (if active "relative z-1 ring-1" "hover:relative hover:z-1 hover:ring-1")
+                        (s/replace button-class #"rounded" "")
+                        "cursor-pointer"
+                        "border-y py-1 px-2"
                         (if first? "rounded-l border-l" "")
                         (if last? "rounded-r border-r" "")
                         (if (or checked active)
                           (class-names
-                           "text-white"
-                           (if checked "bg-white/[0.4]" "bg-white/[0.2]")
+                           "text-neutral-50"
+                           (if checked "bg-neutral-800" "bg-neutral-900")
                            (if active "" ""))
-                          "text-white/[0.8] bg-white/[0.2]"))))}
+                          "text-neutral-50 bg-neutral-900")
+                        )))}
            [:> Label {:as "p"} (:label option)]])))]]])
