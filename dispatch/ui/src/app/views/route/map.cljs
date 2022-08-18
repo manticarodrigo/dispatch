@@ -6,4 +6,4 @@
   (let [{!el :ref} (use-route-context)]
     [:div
      {:ref (fn [el] (reset! !el el))
-      :class (class-names class "w-screen h-[80vh] lg:h-full")}]))
+      :class (class-names class "w-screen h-[calc(100vh_-_60px)] lg:h-full")}]))

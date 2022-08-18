@@ -2,6 +2,7 @@
   (:require [clojure.string :as s]))
 
 (defn class-names [& classes]
-  (s/join
-   " "
-   classes))
+  (->> classes
+       (remove empty?)
+       (map s/trim)
+       (s/join " ")))

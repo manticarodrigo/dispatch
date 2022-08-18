@@ -9,18 +9,22 @@
     :location/watch "Watch current location"
     :location/search "Set origin address"
     :location/search-empty "No results found"
-    :route-view {:common/distance "Distance"
-                 :common/duration "Duration"
-                 :panel-header/title "Route"}}
+    :views {:route
+            {:distance "Total distance"
+             :duration "Estimated time"
+             :summary {:title "Summary"}
+             :overview {:title "Route"}}}}
    :es
    {:location/title "Mi ubicación"
     :location/get "Obtener ubicación actual"
     :location/watch "Observar ubicación actual"
     :location/search "Ingresar ubicación de origen"
     :location/search-empty "No se han encontrado resultados"
-    :route-view {:common/distance "Distancia"
-                 :common/duration "Duración"
-                 :panel-header/title "Ruta"}}})
+    :views {:route
+            {:distance "Distancia total"
+             :duration "Tiempo estimado"
+             :summary {:title "Resumen"}
+             :overview {:title "Ruta"}}}}})
 
 (def ^:private opts {:dict dict})
 

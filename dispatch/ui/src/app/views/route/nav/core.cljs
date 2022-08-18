@@ -9,7 +9,7 @@
 
 (defn nav [class]
   [:<>
-   [container (class-names class "flex flex-col text-neutral-50")
+   [container (class-names class "flex flex-col")
     [:<>
      [:f> header "flex-none"]
      [:f> controls "flex-none"]

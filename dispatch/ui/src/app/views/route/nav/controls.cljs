@@ -21,21 +21,22 @@
          search-address :search
          set-origin :origin}
         (use-route-context)]
-    [:div {:class (class-names class padding "grid grid-cols-2 gap-4")}
-     [:<>
-      (when (nil? origin)
-        [:<>
-         [combobox {:label (label :search-address)
+    (when-not (and origin location)
+      [:div {:class (class-names class padding "grid grid-cols-2 gap-4")}
+       [:<>
+        (if-not origin
+          [:<>
+           [combobox {:label (label :search-address)
+                      :class "col-span-2"
+                      :options search
+                      :option-to-label #(:description %)
+                      :option-to-value #(:place_id %)
+                      :on-text search-address
+                      :on-change set-origin}]
+           [button {:label (label :get-position)
                     :class "col-span-2"
-                    :options search
-                    :option-to-label #(:description %)
-                    :option-to-value #(:place_id %)
-                    :on-text search-address
-                    :on-change set-origin}]
-         [button {:label (label :get-position)
-                  :class "col-span-2"
-                  :on-click get-position}]])
-      (when (and (some? origin) (nil? location))
-        [button {:label (label :watch-position)
-                 :class "col-span-2"
-                 :on-click watch-position}])]]))
+                    :on-click get-position}]]
+
+          [button {:label (label :watch-position)
+                   :class "col-span-2"
+                   :on-click watch-position}])]])))

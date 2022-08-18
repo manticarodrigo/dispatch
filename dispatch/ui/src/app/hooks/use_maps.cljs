@@ -69,7 +69,7 @@
   (let [{lat :lat lng :lng} location]
     (create-lat-lng lat lng)))
 
-(defn- parse-lat-lng [lat-lng]
+(defn- parse-lat-lng [^LatLng lat-lng]
   (let [lat (-> lat-lng .lat)
         lng (-> lat-lng .lng)]
     {:lat lat :lng lng}))
@@ -153,7 +153,7 @@
      service
      (clj->js {:placeId place-id,
                :fields ["geometry"]})
-     (fn [place status]
+     (fn [^PlaceResult place status]
        (when (= status js/google.maps.places.PlacesServiceStatus.OK)
          (dispatch
           [:origin/set

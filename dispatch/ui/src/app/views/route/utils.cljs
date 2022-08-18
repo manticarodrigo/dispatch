@@ -1,9 +1,11 @@
 (ns app.views.route.utils
-  (:require [app.utils.i18n :refer (tr)]))
+  (:require [app.utils.i18n :refer (tr)]
+            [app.utils.string :refer (class-names)]))
 
 
-(defonce distance-str #(tr [:route-view.common/distance]))
-(defonce duration-str #(tr [:route-view.common/duration]))
+(defonce distance-str #(tr [:views.route/distance]))
+(defonce duration-str #(tr [:views.route/duration]))
 
-(defonce padding-x "px-2 sm:px-4 md:px-6 lg:px-8")
-(defonce padding "p-2 sm:p-4 md:p-6 lg:p-8")
+(defonce padding-x "px-3 sm:px-4 md:px-6 lg:px-8")
+(defonce padding-y "py-2 sm:px-3 md:py-4")
+(defonce padding (class-names padding-x padding-y))
