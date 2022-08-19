@@ -1,6 +1,6 @@
 (ns app.hooks.use-location
   (:require
-   [react]
+   [react :refer (useEffect)]
    [re-frame.core :as rf]
    ["@capacitor/geolocation" :refer (Geolocation)]
    [clojure.core :refer [atom]]
@@ -45,7 +45,7 @@
   (.clearWatch Geolocation #js{:id id}))
 
 (defn use-location []
-  (react/useEffect
+  (useEffect
    (fn []
      (fn []
        (when (some? @!location-watch-id)

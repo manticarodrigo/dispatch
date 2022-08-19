@@ -1,15 +1,15 @@
-(ns app.hooks.use-maps
+(ns app.hooks.use-map
   (:require
-   [react]
+   [react :refer (useEffect)]
    [re-frame.core :refer (dispatch)]
    ["@googlemaps/js-api-loader" :refer (Loader)]
-   [clojure.core :refer [atom]]
-   [cljs.core.async :refer [go]]
-   [cljs.core.async.interop :refer-macros [<p!]]
+   ["/app/js/html-marker" :refer (createHTMLMapMarker)]
+   [clojure.core :refer (atom)]
+   [cljs.core.async :refer (go)]
+   [cljs.core.async.interop :refer-macros (<p!)]
    [app.config :as config]
-   [app.subs :as subs]
-   [app.utils.google.maps :refer (map-styles)]
-   [app.utils.i18n :refer (tr)]))
+   [app.subs :refer (listen)]
+   [app.utils.google.maps.styles :refer (styles)]))
 
 (defonce ^:private initial-zoom 2)
 
@@ -17,7 +17,7 @@
 (defonce ^:private !el (atom nil))
 (defonce ^:private !map (atom nil))
 (defonce ^:private !route-markers (atom []))
-(defonce ^:private !location-marker (atom nil))
+(defonce ^:private !location-overlay (atom nil))
 (defonce ^:private !autocomplete-service (atom nil))
 (defonce ^:private !places-service (atom nil))
 (defonce ^:private !directions-service (atom nil))
@@ -32,8 +32,8 @@
       :apiKey config/GOOGLE_MAPS_API_KEY
       :version "weekly"
       :libraries ["places"]
-      :language (subs/listen [:locale/language])
-      :region (subs/listen [:locale/region])})))
+      :language (listen [:locale/language])
+      :region (listen [:locale/region])})))
   (.load @!loader))
 
 (defn- create-map []
@@ -46,7 +46,7 @@
          @!el (clj->js {:center {:lat 0 :lng 0}
                         :zoom initial-zoom
                         :disableDefaultUI true
-                        :styles (:desaturate map-styles)})))))))
+                        :styles (:desaturate styles)})))))))
 
 (defn- create-autocomplete-service []
   (js/google.maps.places.AutocompleteService.))
@@ -107,18 +107,30 @@
     (let [position (.-end_location leg)
           title (.-end_address leg)
           label (str (+ 1 idx))
-          last? (->> legs (count) (= (+ 1 idx)))
           marker (create-marker
                   {:position position
                    :title title
-                   :label {:text (if last? "⚑" label) :color "white"}
-                   :icon (if last?
-                           {:url "/icons/material/home.svg"
-                            :scaledSize (js/google.maps.Size. 25 25)}
-                           {:url "/icons/material/pin.svg"
-                            :scaledSize (js/google.maps.Size. 30 30)})
+                   :label {:text label :color "white"}
+                   :icon {:url "/images/svg/pin.svg"
+                          :scaledSize (js/google.maps.Size. 30 30)}
                    :zIndex idx})]
       (swap! !route-markers conj marker))))
+
+
+
+(def ^:private pulse-html
+  "<span class='relative'>
+     <span class='absolute -translate-x-2 -translate-y-2 flex'>
+       <span class='animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75'></span>
+       <span class='relative inline-flex rounded-full h-4 w-4 bg-blue-500'></span>
+     </span>
+   </span>")
+
+(defn- create-location-overlay []
+  (createHTMLMapMarker
+   (clj->js {:lib js/google
+             :map @!map
+             :html pulse-html})))
 
 (defn- handle-route-response! [^DirectionsResult response]
   (let [^DirectionsRenderer renderer @!directions-renderer
@@ -159,43 +171,36 @@
           [:origin/set
            (parse-lat-lng (-> place .-geometry .-location))]))))))
 
-(defn use-maps []
-  (let [location (subs/listen [:location])
-        origin (subs/listen [:origin])
-        stops (subs/listen [:stops])]
+(defn use-map []
+  (let [location (listen [:location])
+        origin (listen [:origin])
+        stops (listen [:stops])]
 
-    (react/useEffect
+    (useEffect
      (fn []
        (go
          (reset! !map (<p! (create-map)))
          (reset! !autocomplete-service (create-autocomplete-service))
          (reset! !places-service (create-places-service))
          (reset! !directions-service (create-directions-service))
-         (reset! !directions-renderer (create-directions-renderer)))
+         (reset! !directions-renderer (create-directions-renderer))
+         (reset! !location-overlay (create-location-overlay)))
        #())
      #js[])
 
-    (react/useEffect
+    (useEffect
      (fn []
-       (when (some? location)
-         (if-let [marker @!location-marker]
-           (.setPosition marker (get-lat-lng location))
-           (reset!
-            !location-marker
-            (create-marker
-             {:position (get-lat-lng location)
-              :title (tr [:location/title])
-              :icon {:url "/icons/route/delivery.png"
-                     :scaledSize (js/google.maps.Size. 35 35)}
-              :zIndex (count @!route-markers)}))))
+       (when (and @!map location)
+         (when-let [overlay @!location-overlay]
+           (.update overlay (get-lat-lng location))))
        (fn []))
      #js[location])
 
-    (react/useEffect
+    (useEffect
      (fn []
-       (when (some? origin)
+       (when (and @!map origin)
          (calc-route! origin stops))
        (fn []))
      #js[origin])
 
-    {:ref !el :search search-places! :origin set-origin!}))
+    {:ref !el :map @!map :search search-places! :origin set-origin!}))

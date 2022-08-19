@@ -21,7 +21,7 @@
 
 
 (defn- overview-item [idx address distance duration]
-  [:div {:class (class-names  "pb-2 flex")}
+  [:div {:class (class-names  "py-2 flex")}
    [:div {:class "shrink-0"} [overview-item-number (+ 1 idx)]]
    [:p {:class "grow px-2 md:px-4 lg:px-6 text-sm leading-4"} address]
    [:div {:class "shrink-0 flex flex-col items-end text-sm leading-4"}

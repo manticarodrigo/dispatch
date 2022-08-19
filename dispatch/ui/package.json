@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "postcss": "^8.4.16",
-    "shadow-cljs": "2.19.8",
+    "shadow-cljs": "2.19.9",
     "tailwindcss": "^3.1.8"
   }
 }

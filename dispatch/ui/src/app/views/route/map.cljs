@@ -5,5 +5,5 @@
 (defn gmap [class]
   (let [{!el :ref} (use-route-context)]
     [:div
-     {:ref (fn [el] (reset! !el el))
+     {:ref #(reset! !el %)
       :class (class-names class "w-screen h-[calc(100vh_-_60px)] lg:h-full")}]))

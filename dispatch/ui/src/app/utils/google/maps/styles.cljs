@@ -1,4 +1,4 @@
-(ns app.utils.google.maps)
+(ns app.utils.google.maps.styles)
 
 (def transit-off
   {:elementType "all"
@@ -82,6 +82,6 @@
 
 (defn- with-rules [style] (concat style base-rules))
 
-(def map-styles
+(def styles
   {:desaturate (-> desaturate with-rules)
    :simplify (-> simplify with-rules)})
