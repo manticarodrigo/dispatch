@@ -3,13 +3,15 @@
    [react :refer (useEffect)]
    [re-frame.core :refer (dispatch)]
    ["@googlemaps/js-api-loader" :refer (Loader)]
-   ["/app/js/html-marker" :refer (createHTMLMapMarker)]
    [clojure.core :refer (atom)]
    [cljs.core.async :refer (go)]
    [cljs.core.async.interop :refer-macros (<p!)]
    [app.config :as config]
    [app.subs :refer (listen)]
-   [app.utils.google.maps.styles :refer (styles)]))
+   [app.utils.google.maps.styles :refer (styles)]
+   [app.utils.google.maps.overlay :refer (create-overlay)]))
+
+(set! *warn-on-infer* false)
 
 (defonce ^:private initial-zoom 2)
 
@@ -87,7 +89,7 @@
   (let [{:keys [distance duration end_address]} (js->clj leg :keywordize-keys true)]
     {:distance distance :duration duration :address end_address}))
 
-(defn- parse-legs [^DirectionsResult response]
+(defn- parse-legs [response]
   (some-> response (.-routes) (first) (.-legs)))
 
 (defn- parse-route [legs]
@@ -98,7 +100,7 @@
    (clj->js (assoc opts :map @!map))))
 
 (defn- clear-markers! []
-  (doseq [^Marker marker @!route-markers] (.setMap marker nil))
+  (doseq [marker @!route-markers] (.setMap marker nil))
   (reset! !route-markers []))
 
 (defn- create-route-markers [legs]
@@ -127,13 +129,10 @@
    </span>")
 
 (defn- create-location-overlay []
-  (createHTMLMapMarker
-   (clj->js {:lib js/google
-             :map @!map
-             :html pulse-html})))
+  (create-overlay js/google @!map pulse-html))
 
-(defn- handle-route-response! [^DirectionsResult response]
-  (let [^DirectionsRenderer renderer @!directions-renderer
+(defn- handle-route-response! [response]
+  (let [renderer @!directions-renderer
         legs (parse-legs response)
         route (parse-route legs)]
     (.setOptions renderer #js{:suppressMarkers true})
@@ -142,7 +141,7 @@
     (dispatch [:route/set route])))
 
 (defn- calc-route! [location stops]
-  (let [^DirectionsService service @!directions-service
+  (let [service @!directions-service
         request (create-route-request location stops)]
     (.route service request
             (fn [response status]
@@ -150,7 +149,7 @@
                 (handle-route-response! response))))))
 
 (defn- search-places! [text]
-  (let [^AutocompleteService service @!autocomplete-service]
+  (let [service @!autocomplete-service]
     (.getQueryPredictions
      service
      #js{:input text}
@@ -160,12 +159,12 @@
          (dispatch [:search/set (js->clj results :keywordize-keys true)]))))))
 
 (defn- set-origin! [place-id]
-  (let [^PlacesService service @!places-service]
+  (let [service @!places-service]
     (.getDetails
      service
      (clj->js {:placeId place-id,
                :fields ["geometry"]})
-     (fn [^PlaceResult place status]
+     (fn [place status]
        (when (= status js/google.maps.places.PlacesServiceStatus.OK)
          (dispatch
           [:origin/set
