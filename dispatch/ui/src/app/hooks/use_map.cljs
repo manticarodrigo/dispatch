@@ -6,77 +6,59 @@
    [cljs.core.async :refer (go)]
    [cljs.core.async.interop :refer-macros (<p!)]
    [app.subs :refer (listen)]
-   [app.utils.google.maps.core :refer (init-map)]
-   [app.utils.google.maps.autocomplete :refer (init-autocomplete search-places)]
-   [app.utils.google.maps.places :refer (init-places find-place)]
+   [app.utils.google.maps.core :refer (init-api)]
+   [app.utils.google.maps.autocomplete :refer (search-places)]
+   [app.utils.google.maps.places :refer (find-place)]
    [app.utils.google.maps.polyline :refer (set-polyline)]
-   [app.utils.google.maps.overlay :refer (init-overlay update-overlay)]
-   [app.utils.google.maps.directions :refer (init-directions
-                                             calc-route
-                                             set-markers
-                                             parse-lat-lng
-                                             get-lat-lng)]))
+   [app.utils.google.maps.overlay :refer (update-overlay)]
+   [app.utils.google.maps.directions :refer (calc-route set-markers)]))
 
 (set! *warn-on-infer* false)
 
-(def ^:private !ready? (r/atom false))
+(def ^:private !el (atom nil))
+(def ^:private !map (r/atom false))
 
-(defonce ^:private !el (atom nil))
-(defonce ^:private !map (atom nil))
-
+(defn- set-route! [origin stops]
+  (go (dispatch [:route/set (<p! (calc-route origin stops))])))
 (defn- set-origin! [place-id]
-  (go
-    (let [place (<p! (find-place place-id))]
-      (dispatch
-       [:origin/set (parse-lat-lng (-> place .-geometry .-location))]))))
-
+  (go (dispatch [:origin/set (<p! (find-place place-id))])))
 (defn set-search! [text]
-  (go
-    (let [results (<p! (search-places text))]
-      (dispatch
-       [:search/set (js->clj results :keywordize-keys true)]))))
-
-(defn- init-api []
-  (go
-    (reset! !map (<p! (init-map @!el)))
-    (init-directions)
-    (init-overlay @!map)
-    (init-autocomplete)
-    (init-places @!map)
-    (reset! !ready? true)))
+  (go (dispatch [:search/set (<p! (search-places text))])))
 
 (defn use-map []
-  (let [ready? @!ready?
-        location (listen [:location])
+  (let [location (listen [:location])
         origin (listen [:origin])
         stops (listen [:stops])
-        route (listen [:route])
-        legs (some-> route .-legs)
+        legs (listen [:route/legs])
         bounds (listen [:route/bounds])
+        path (listen [:route/path])
         center-route #(do
-                        (.fitBounds @!map bounds)
-                        (.panToBounds @!map bounds))]
-
-    (useEffect #(init-api) #js[])
+                        (.fitBounds @!map (clj->js bounds))
+                        (.panToBounds @!map (clj->js bounds)))]
 
     (useEffect
      (fn []
-       (when (and ready? location)
-         (update-overlay (get-lat-lng location)))
+       (go (reset! !map (<p! (init-api @!el))))
+       #()) #js[])
+
+    (useEffect
+     (fn []
+       (when (and @!map location)
+         (update-overlay (clj->js location)))
        #())
-     #js[ready? location])
+     #js[@!map location])
 
     (useEffect
      (fn []
-       (when ready?
-         (if (seq legs)
+       (when @!map
+         (if (and (seq legs) (seq path))
            (do (set-markers @!map legs)
-               (set-polyline @!map (.-overview_path route))
+               (set-polyline @!map path)
                (center-route))
            (when (and origin (seq stops))
-             (go (dispatch [:route/set (<p! (calc-route origin stops))])))))
+             (set-route! origin stops))))
        #())
-     #js[ready? origin stops legs route])
+     #js[@!map origin stops legs path])
 
     {:ref !el
      :map @!map

@@ -17,7 +17,7 @@
         (fn [results status]
           (when (or (= status js/google.maps.places.PlacesServiceStatus.OK)
                     (count results))
-            (resolve results))))))))
+            (resolve (js->clj results :keywordize-keys true)))))))))
 
 (defn init-autocomplete []
   (reset! !autocomplete-service (create-autocomplete-service)))

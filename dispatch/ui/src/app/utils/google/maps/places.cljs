@@ -1,4 +1,5 @@
-(ns app.utils.google.maps.places)
+(ns app.utils.google.maps.places
+  (:require [app.utils.google.maps.serializer :refer (parse-place)]))
 
 (set! *warn-on-infer* false)
 
@@ -14,9 +15,8 @@
                   :fields ["geometry"]})
         (fn [place status]
           (if (= status js/google.maps.places.PlacesServiceStatus.OK)
-            (resolve place)
+            (resolve (parse-place place))
             (reject status))))))))
-
 
 (defn init-places [gmap]
   (js/google.maps.places.PlacesService. gmap))
