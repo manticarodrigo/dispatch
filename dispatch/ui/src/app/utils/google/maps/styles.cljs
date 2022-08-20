@@ -80,8 +80,55 @@
      :featureType "water"
      :stylers  [{:color "#eaf6f8"}]}]])
 
+(def caen
+  [{:elementType "all",
+    :featureType "administrative",
+    :stylers  [{:visibility "off"}]}
+   {:elementType "labels.text.fill",
+    :featureType "administrative",
+    :stylers  [{:color "#444444"}]}
+   {:elementType "all",
+    :featureType "administrative.neighborhood",
+    :stylers  [{:visibility "off"}]}
+   {:elementType "all",
+    :featureType "administrative.land_parcel",
+    :stylers  [{:visibility "off"}]}
+   {:elementType "all",
+    :featureType "landscape",
+    :stylers  [{:color "#f2f2f2"}]}
+   {:elementType "all",
+    :featureType "landscape.man_made",
+    :stylers  [{:visibility "off"}]}
+   {:elementType "all",
+    :featureType "poi",
+    :stylers  [{:visibility "off"}]}
+   {:elementType "all",
+    :featureType "poi.attraction",
+    :stylers  [{:visibility "off"}]}
+   {:elementType "all",
+    :featureType "poi.park",
+    :stylers  [{:visibility "on"}]}
+   {:elementType "all",
+    :featureType "poi.school",
+    :stylers  [{:visibility "on"}]}
+   {:elementType "labels.text",
+    :featureType "poi.school",
+    :stylers  [{:visibility "off"}]}
+   {:elementType "all",
+    :featureType "road",
+    :stylers
+    [{:saturation (- 100)}  {:lightness "-17"}
+     {:visibility "on"}]} 
+   {:elementType "geometry.fill",
+    :featureType "transit.line",
+    :stylers  [{:saturation "-64"}  {:visibility "on"}]} 
+   {:elementType "all",
+    :featureType "water",
+    :stylers  [{:color "#acc4ce"}  {:visibility "on"}]}])
+
 (defn- with-rules [style] (concat style base-rules))
 
 (def styles
   {:desaturate (-> desaturate with-rules)
-   :simplify (-> simplify with-rules)})
+   :simplify (-> simplify with-rules)
+   :caen (-> caen with-rules)})

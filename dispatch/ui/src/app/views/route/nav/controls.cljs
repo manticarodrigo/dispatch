@@ -8,10 +8,6 @@
    [app.components.generic.combobox :refer (combobox)]
    [app.views.route.utils :refer (padding)]))
 
-(def ^:private label #(% {:search-address (tr [:location/search])
-                          :get-position (tr [:location/get])
-                          :watch-position (tr [:location/watch])}))
-
 (defn controls [class]
   (let [origin (listen [:origin])
         location (listen [:location])
@@ -26,17 +22,17 @@
        [:<>
         (if-not origin
           [:<>
-           [combobox {:label (label :search-address)
+           [combobox {:label (tr [:location/search])
                       :class "col-span-2"
                       :options search
                       :option-to-label #(:description %)
                       :option-to-value #(:place_id %)
                       :on-text search-address
                       :on-change set-origin}]
-           [button {:label (label :get-position)
+           [button {:label (tr [:location/get])
                     :class "col-span-2"
                     :on-click get-position}]]
 
-          [button {:label (label :watch-position)
+          [button {:label (tr [:location/watch])
                    :class "col-span-2"
                    :on-click watch-position}])]])))

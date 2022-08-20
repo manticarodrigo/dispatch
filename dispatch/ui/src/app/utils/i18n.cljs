@@ -5,6 +5,7 @@
 (def ^:private dict
   {:en
    {:location/title "My location"
+    :location/center "Center route"
     :location/get "Get current location"
     :location/watch "Watch current location"
     :location/search "Set origin address"
@@ -16,6 +17,7 @@
              :overview {:title "Route"}}}}
    :es
    {:location/title "Mi ubicación"
+    :location/center "Centrar la ruta"
     :location/get "Obtener ubicación actual"
     :location/watch "Observar ubicación actual"
     :location/search "Ingresar ubicación de origen"

@@ -1,7 +1,6 @@
 (ns app.events
   (:require
    [re-frame.core :as rf :refer [trim-v]]
-   [day8.re-frame.tracing :refer-macros [fn-traced]]
    [app.db :as db]))
 
 (defn assoc-key [key]
@@ -11,8 +10,7 @@
 
 (rf/reg-event-db
  ::initialize-db
- (fn-traced []
-            db/default-db))
+ (fn [] db/seed-db))
 
 (rf/reg-event-db
  :locale/set

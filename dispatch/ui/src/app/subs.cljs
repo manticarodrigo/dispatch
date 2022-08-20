@@ -1,5 +1,6 @@
 (ns app.subs
-  (:require [re-frame.core :as rf]))
+  (:require [re-frame.core :as rf]
+            [app.utils.google.maps.directions :refer (parse-leg)]))
 
 (defn listen [query-vector]
   @(rf/subscribe query-vector))
@@ -13,11 +14,15 @@
 (rf/reg-sub :origin #(:origin %))
 (rf/reg-sub :location #(:location %))
 (rf/reg-sub :stops #(:stops %))
-(rf/reg-sub :route #(:route %))
+
+
+(rf/reg-sub :route #(-> % :route))
+(rf/reg-sub :route/legs #(mapv parse-leg (some-> % :route .-legs)))
+(rf/reg-sub :route/bounds #(some-> % :route .-bounds))
 
 (defn- convert-units [db key denominator]
-  (let [route (:route db)
-        units (mapv #(-> % key :value) route)
+  (let [legs (some-> db :route .-legs)
+        units (mapv (comp #(-> % key :value) parse-leg) legs)
         sum (reduce + units)]
     (js/Math.round (/ sum denominator))))
 

@@ -29,8 +29,8 @@
     [overview-item-details (duration-str) (:text duration)]]])
 
 (defn overview [class]
-  (let [route (listen [:route])]
-    (when (> (count route) 0)
+  (let [legs (listen [:route/legs])]
+    (when (> (count legs) 0)
       [:section {:class (class-names padding)}
        [:h2 {:class (class-names "mb-4 flex font-medium text-l")}
         (tr [:views.route.overview/title])]
@@ -40,6 +40,6 @@
                 {address :address
                  distance :distance
                  duration :duration}]
-               (map-indexed vector route)]
+               (map-indexed vector legs)]
            [:li {:key idx}
             [overview-item idx address distance duration]]))]])))

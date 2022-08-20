@@ -2,6 +2,8 @@
 
 (set! *warn-on-infer* false)
 
+(defonce ^:private !location-overlay (atom nil))
+
 (defn- class
   [map content]
   (this-as
@@ -47,11 +49,30 @@
      (.removeChild container (.-parentNode container))
      (set! (.. this -container) nil))))
 
-(defn create-overlay [google map content]
-  (let [Overlay class]
-    (set! (.. Overlay -prototype) (google.maps.OverlayView.))
-    (set! (.. Overlay -prototype -draw) on-draw)
-    (set! (.. Overlay -prototype -onAdd) on-add)
-    (set! (.. Overlay -prototype -update) on-update)
-    (set! (.. Overlay -prototype -onRemove) on-remove)
-    (Overlay. map content)))
+;; (defn- method [name] 
+;;  (set! (get (.. class -prototype) name) on-draw))
+
+
+(defn- create-overlay [google map content]
+  (let [instance class]
+    (set! (.. instance -prototype) (google.maps.OverlayView.))
+    (set! (.. instance -prototype -draw) on-draw)
+    (set! (.. instance -prototype -onAdd) on-add)
+    (set! (.. instance -prototype -update) on-update)
+    (set! (.. instance -prototype -onRemove) on-remove)
+    (instance. map content)))
+
+(defn update-overlay [latlng]
+  (when-let [instance @!location-overlay]
+    (.update instance latlng)))
+
+(def ^:private html
+  "<span class='relative'>
+     <span class='absolute -translate-x-2 -translate-y-2 flex'>
+       <span class='animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75'></span>
+       <span class='relative inline-flex rounded-full h-4 w-4 bg-blue-500'></span>
+     </span>
+   </span>")
+
+(defn init-overlay [gmap]
+  (reset! !location-overlay (create-overlay js/google gmap html)))

@@ -7,10 +7,12 @@
                    "text-base text-neutral-100 hover:text-neutral-50 focus:text-neutral-50 active:text-neutral-50"
                    "bg-neutral-900 hover:bg-neutral-700 focus:bg-neutral-800 active:bg-neutral-800"))
 
-(defn button [{label :label
+(defn button [{aria-label :aria-label
+               label :label
                class :class
                on-click :on-click}]
-  [:button {:class (class-names
+  [:button {:aria-label aria-label
+            :class (class-names
                     class
                     button-class)
             :on-click on-click}
