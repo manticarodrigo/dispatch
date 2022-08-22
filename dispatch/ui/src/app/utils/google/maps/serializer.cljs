@@ -20,8 +20,8 @@
                 duration
                 end_address
                 end_location]} (js->clj leg :keywordize-keys true)]
-    {:distance distance
-     :duration duration
+    {:distance (:value distance)
+     :duration (:value duration)
      :address end_address
      :location (parse-lat-lng end_location)}))
 

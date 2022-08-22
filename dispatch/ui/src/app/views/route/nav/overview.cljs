@@ -25,8 +25,8 @@
    [:div {:class "shrink-0"} [overview-item-number (+ 1 idx)]]
    [:p {:class "grow px-2 md:px-4 lg:px-6 text-sm leading-4"} address]
    [:div {:class "shrink-0 flex flex-col items-end text-sm leading-4"}
-    [overview-item-details (distance-str) (:text distance)]
-    [overview-item-details (duration-str) (:text duration)]]])
+    [overview-item-details (distance-str) (str (js/Math.round (/ distance 1000)) " " (tr [:units/kilometers]))]
+    [overview-item-details (duration-str) (str (js/Math.round (/ duration 60)) " " (tr [:units/minutes]))]]])
 
 (defn overview [class]
   (let [legs (listen [:route/legs])]

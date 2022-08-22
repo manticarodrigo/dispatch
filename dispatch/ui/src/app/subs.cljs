@@ -22,7 +22,7 @@
 
 (defn- convert-units [db key denominator]
   (let [legs (some-> db :route :legs)
-        units (mapv #(-> % key :value) legs)
+        units (mapv #(key %) legs)
         sum (reduce + units)]
     (js/Math.round (/ sum denominator))))
 

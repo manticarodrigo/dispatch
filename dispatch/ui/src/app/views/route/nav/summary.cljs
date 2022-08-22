@@ -25,5 +25,5 @@
     (when (some? origin)
       [:section {:class (class-names class padding "grid grid-cols-2 gap-4")}
        [:h2 {:class "col-span-2 flex font-medium text-l"} (tr [:views.route.summary/title])]
-       [summary-detail (distance-str) (str kms " km") DistanceIcon]
-       [summary-detail (duration-str) (str mins " mins") DurationIcon]])))
+       [summary-detail (distance-str) (str kms " " (tr [:units/kilometers])) DistanceIcon]
+       [summary-detail (duration-str) (str mins " " (tr [:units/minutes])) DurationIcon]])))
