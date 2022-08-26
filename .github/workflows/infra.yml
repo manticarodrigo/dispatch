@@ -1,0 +1,68 @@
+name: Infra
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  plan_and_apply:
+    name: Plan and Apply
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.0.9
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: us-east-1
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Initialize Terraform
+        run: |
+          cd dispatch/infra/terraform
+          terraform init -input=false -backend-config="key=prod"
+
+      - name: Plan Terraform
+        id: plan
+        continue-on-error: true
+        run: |
+          cd dispatch/infra/terraform
+          terraform plan -var-file=prod.tfvars -input=false -no-color -out=proposed.plan \
+          && terraform show -no-color proposed.plan
+
+      # Sed is taking all lines that begin with one or more spaces followed by a `+` or `-`.
+      # It stores the amount of spaces in `\1` and the +/- in `\2`.
+      # Then replace that portion of the line with `\2\1` (+/- followed by the number of matched spaces).
+      - name: Reformat Plan
+        if: steps.plan.outcome == 'success'
+        run: |
+          echo '${{ steps.plan.outputs.stdout || steps.plan.outputs.stderr }}' \
+          | sed -E 's/^([[:space:]]+)([-+])/\2\1/g' > plan.txt
+
+      - name: Put Plan in Env Var
+        if: steps.plan.outcome == 'success'
+        run: |
+          PLAN=$(cat plan.txt)
+          echo "PLAN<<EOF" >> $GITHUB_ENV
+          echo "$PLAN" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Apply Terraform
+        if: steps.plan.outcome == 'success'
+        id: apply
+        continue-on-error: true
+        run: |
+          cd dispatch/infra/terraform
+          terraform apply \
+            -input=false \
+            -no-color \
+            proposed.plan

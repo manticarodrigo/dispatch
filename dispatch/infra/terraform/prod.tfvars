@@ -1,0 +1,7 @@
+env             = "prod"
+aws_account_id  = "420328682924"
+aws_profile     = "dispatch-prod"
+aws_region      = "us-east-1"
+datomic_ami     = "ami-083226b72f7d13fc9"
+datomic_license = "1b062bd6-8b79-4452-85ba-e0757f59b45d"
+datomic_version = "1.0.6397"
