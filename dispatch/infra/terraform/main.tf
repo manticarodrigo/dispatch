@@ -14,13 +14,12 @@ terraform {
 }
 
 provider "aws" {
-  profile = var.aws_profile
-  region  = var.aws_region
+  allowed_account_ids = [var.aws_account_id]
+  region              = var.aws_region
 }
 
 variable "env" {}
 variable "aws_account_id" {}
-variable "aws_profile" {}
 variable "aws_region" {}
 variable "datomic_ami" {}
 variable "datomic_license" {}
