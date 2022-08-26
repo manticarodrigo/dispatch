@@ -83,17 +83,13 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "16"
-      - name: Change directory
-        run: cd dispatch/ui && pwd
-      - name: Installing dependencies
-        run: yarn install && pwd
       - name: Building project
-        run: yarn release && pwd
+        run: cd dispatch/ui && yarn install && yarn release
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-      - name: Deploy to S3 bucket
-        run: aws s3 sync ./public/ s3://dispatch-prod-site --delete
+      - name: Deploying to S3 bucket
+        run: aws s3 sync dispatch/ui/public/ s3://dispatch-prod-site --delete
