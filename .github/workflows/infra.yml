@@ -42,7 +42,7 @@ jobs:
         continue-on-error: true
         run: |
           cd dispatch/infra/terraform
-          terraform plan -var-file=prod.tfvars -input=false -no-color -out=proposed.plan \
+          terraform plan -input=false -no-color -out=proposed.plan \
           && terraform show -no-color proposed.plan
 
       # Sed is taking all lines that begin with one or more spaces followed by a `+` or `-`.
