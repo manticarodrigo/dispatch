@@ -23,7 +23,6 @@ variable "aws_account_id" {}
 variable "aws_region" {}
 variable "datomic_ami" {}
 variable "datomic_license" {}
-variable "datomic_version" {}
 
 module "vpc" {
   source = "./modules/vpc"

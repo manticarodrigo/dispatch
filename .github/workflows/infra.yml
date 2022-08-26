@@ -8,6 +8,12 @@ on:
 jobs:
   plan_and_apply:
     name: Plan and Apply
+    env:
+      TF_VAR_env: prod
+      TF_VAR_aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
+      TF_VAR_aws_region: us-east-1
+      TF_VAR_datomic_ami: ${{ secrets.DATOMIC_AMI }}
+      TF_VAR_datomic_license: ${{ secrets.DATOMIC_LICENSE }}
     runs-on: ubuntu-20.04
 
     steps:
