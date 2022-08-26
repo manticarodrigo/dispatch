@@ -84,11 +84,11 @@ jobs:
         with:
           node-version: "16"
       - name: Change directory
-        run: cd dispatch/ui
+        run: cd dispatch/ui && echo pwd
       - name: Installing dependencies
-        run: yarn install
+        run: yarn install && echo pwd
       - name: Building project
-        run: yarn release
+        run: yarn release && echo pwd
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
