@@ -39,3 +39,8 @@ module "datomic" {
   vpc_id          = module.vpc.vpc_id
   vpc_ip_block    = module.vpc.vpc_cidr_block
 }
+
+module "ui" {
+  source = "./modules/ui"
+  env    = var.env
+}
