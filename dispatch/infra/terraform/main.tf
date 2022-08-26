@@ -1,3 +1,31 @@
+terraform {
+  required_version = "1.2.8"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "4.27"
+    }
+  }
+
+  backend "s3" {
+    bucket = "dispatch-infra-state"
+  }
+}
+
+provider "aws" {
+  profile = var.aws_profile
+  region  = var.aws_region
+}
+
+variable "env" {}
+variable "aws_account_id" {}
+variable "aws_profile" {}
+variable "aws_region" {}
+variable "datomic_ami" {}
+variable "datomic_license" {}
+variable "datomic_version" {}
+
 module "vpc" {
   source = "./modules/vpc"
 }
