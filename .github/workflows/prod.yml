@@ -1,4 +1,4 @@
-name: Infra
+name: prod
 
 on:
   push:
@@ -6,8 +6,8 @@ on:
       - master
 
 jobs:
-  plan_and_apply:
-    name: Plan and Apply
+  infra:
+    name: Run Terraform plan and apply
     env:
       TF_VAR_env: prod
       TF_VAR_aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
@@ -72,3 +72,28 @@ jobs:
             -input=false \
             -no-color \
             proposed.plan
+  site:
+    name: Build and upload UI
+    needs: [infra]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checking out code
+        uses: actions/checkout@v3
+      - name: Installing Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+      - name: Change directory
+        run: cd dispatch/ui
+      - name: Installing dependencies
+        run: yarn install
+      - name: Building project
+        run: yarn release
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: Deploy to S3 bucket
+        run: aws s3 sync ./public/ s3://dispatch-prod-site --delete
