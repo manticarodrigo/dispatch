@@ -2,31 +2,29 @@ locals {
   bucket_name = "dispatch-${var.env}-site"
 }
 
+resource "aws_s3_bucket" "site_bucket" {
+  bucket = local.bucket_name
+}
 
 data "aws_iam_policy_document" "site_policy" {
   statement {
     actions = [
-      "s3:GetObject"
+      "s3:GetObject",
     ]
     principals {
       identifiers = ["*"]
       type        = "AWS"
     }
     resources = [
-      "arn:aws:s3:::${local.bucket_name}/*"
+      aws_s3_bucket.site_bucket.arn,
+      "${aws_s3_bucket.site_bucket.arn}/*",
     ]
   }
 }
 
-resource "aws_s3_bucket" "site_bucket" {
-  bucket = local.bucket_name
+resource "aws_s3_bucket_policy" "site_policy" {
+  bucket = aws_s3_bucket.site_bucket.id
   policy = data.aws_iam_policy_document.site_policy.json
-
-  lifecycle {
-    ignore_changes = [
-      website
-    ]
-  }
 }
 
 resource "aws_s3_bucket_public_access_block" "site_bucket_access_control" {
