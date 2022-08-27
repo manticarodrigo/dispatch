@@ -1,5 +1,26 @@
-resource "aws_s3_bucket" "site" {
-  bucket = "dispatch-${var.env}-site"
+locals {
+  bucket_name = "dispatch-${var.env}-site"
+}
+
+
+data "aws_iam_policy_document" "site_policy" {
+  statement {
+    actions = [
+      "s3:GetObject"
+    ]
+    principals {
+      identifiers = ["*"]
+      type        = "AWS"
+    }
+    resources = [
+      "arn:aws:s3:::${local.bucket_name}/*"
+    ]
+  }
+}
+
+resource "aws_s3_bucket" "site_bucket" {
+  bucket = local.bucket_name
+  policy = data.aws_iam_policy_document.site_policy.json
 
   lifecycle {
     ignore_changes = [
@@ -8,13 +29,19 @@ resource "aws_s3_bucket" "site" {
   }
 }
 
+resource "aws_s3_bucket_public_access_block" "site_bucket_access_control" {
+  bucket             = aws_s3_bucket.site_bucket.id
+  block_public_acls  = true
+  ignore_public_acls = true
+}
+
 resource "aws_s3_bucket_acl" "site_acl" {
-  bucket = aws_s3_bucket.site.id
+  bucket = aws_s3_bucket.site_bucket.id
   acl    = "public-read"
 }
 
 resource "aws_s3_bucket_website_configuration" "site_config" {
-  bucket = aws_s3_bucket.site.bucket
+  bucket = aws_s3_bucket.site_bucket.bucket
 
   index_document {
     suffix = "index.html"
@@ -27,7 +54,7 @@ resource "aws_s3_bucket_website_configuration" "site_config" {
 
 resource "aws_cloudfront_distribution" "s3_dist" {
   origin {
-    domain_name = aws_s3_bucket.site.bucket_domain_name
+    domain_name = aws_s3_bucket.site_bucket.bucket_domain_name
     origin_id   = "dispatch-${var.env}-site-origin"
   }
 
@@ -43,13 +70,14 @@ resource "aws_cloudfront_distribution" "s3_dist" {
     target_origin_id = "dispatch-${var.env}-site-origin"
 
     forwarded_values {
+      query_string = false
+
       cookies {
-        forward = "none"
+        forward = "all"
       }
-      query_string = true
     }
 
-    viewer_protocol_policy = "allow-all"
+    viewer_protocol_policy = "redirect-to-https"
     max_ttl                = 86400
     default_ttl            = 3600
     min_ttl                = 0
