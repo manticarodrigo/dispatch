@@ -1,7 +1,5 @@
 (ns app.utils.google.maps.autocomplete)
 
-(set! *warn-on-infer* false)
-
 (defonce ^:private !autocomplete-service (atom nil))
 
 (defn- create-autocomplete-service []
@@ -10,7 +8,7 @@
 (defn search-places [text]
   (js/Promise.
    (fn [resolve _]
-     (let [service @!autocomplete-service]
+     (let [^js service @!autocomplete-service]
        (.getQueryPredictions
         service
         #js{:input text}

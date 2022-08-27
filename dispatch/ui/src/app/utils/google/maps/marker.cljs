@@ -1,7 +1,5 @@
 (ns app.utils.google.maps.marker)
 
-(set! *warn-on-infer* false)
-
 (defonce ^:private !markers (atom []))
 
 (defn create-marker! [options]
@@ -10,5 +8,5 @@
     marker))
 
 (defn clear-markers! []
-  (doseq [marker @!markers] (.setMap marker nil))
+  (doseq [^js marker @!markers] (.setMap marker nil))
   (reset! !markers []))

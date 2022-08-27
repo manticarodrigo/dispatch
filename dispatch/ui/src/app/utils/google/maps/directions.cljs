@@ -2,8 +2,6 @@
   (:require [app.utils.google.maps.serializer :refer (parse-route)]
             [app.utils.google.maps.marker :refer (clear-markers! create-marker!)]))
 
-(set! *warn-on-infer* false)
-
 (defonce ^:private !service (atom nil))
 
 (defn- create-service []
@@ -34,7 +32,7 @@
 (defn calc-route [location stops]
   (js/Promise.
    (fn [resolve _]
-     (let [service @!service
+     (let [^js service @!service
            request (create-route-request location stops)]
        (.route service request
                (fn [response status]

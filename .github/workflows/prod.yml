@@ -15,7 +15,6 @@ jobs:
       TF_VAR_datomic_ami: ${{ secrets.DATOMIC_AMI }}
       TF_VAR_datomic_license: ${{ secrets.DATOMIC_LICENSE }}
     runs-on: ubuntu-20.04
-
     steps:
       - name: Check out code
         uses: actions/checkout@v2

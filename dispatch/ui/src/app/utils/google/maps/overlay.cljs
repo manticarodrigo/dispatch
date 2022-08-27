@@ -1,19 +1,17 @@
 (ns app.utils.google.maps.overlay)
 
-(set! *warn-on-infer* false)
-
 (defonce ^:private !location-overlay (atom nil))
 
 (defn- class
   [map content]
   (this-as
-   this
+   ^js this
    (.setMap this map)
    (set! (.-content this) content)))
 
 (defn- on-draw []
   (this-as
-   this
+   ^js this
    (let [container (.. this -container)
          position (.. this -position)
          projection (.getProjection this)
@@ -25,7 +23,7 @@
 
 (defn- on-add []
   (this-as
-   this
+   ^js this
    (let [container (.createElement js/document "div")
          content (.. this -content)]
      (set! (.. container -innerHTML) content)
@@ -36,7 +34,7 @@
 
 (defn- on-update [position]
   (this-as
-   this
+   ^js this
    (let [container (.. this -container)]
      (when-not container (.addContainer this))
      (set! (.. this -position) position)
@@ -44,7 +42,7 @@
 
 (defn- on-remove []
   (this-as
-   this
+   ^js this
    (let [container (.. this -container)]
      (.removeChild container (.-parentNode container))
      (set! (.. this -container) nil))))
@@ -54,7 +52,7 @@
 
 
 (defn- create-overlay [google map content]
-  (let [instance class]
+  (let [^js instance class]
     (set! (.. instance -prototype) (google.maps.OverlayView.))
     (set! (.. instance -prototype -draw) on-draw)
     (set! (.. instance -prototype -onAdd) on-add)
@@ -63,7 +61,7 @@
     (instance. map content)))
 
 (defn update-overlay [latlng]
-  (when-let [instance @!location-overlay]
+  (when-let [^js instance @!location-overlay]
     (.update instance latlng)))
 
 (def ^:private html

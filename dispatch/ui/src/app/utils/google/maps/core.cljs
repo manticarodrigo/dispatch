@@ -12,8 +12,6 @@
    [app.utils.google.maps.overlay :refer (init-overlay)]
    [app.utils.google.maps.directions :refer (init-directions)]))
 
-(set! *warn-on-infer* false)
-
 (defonce ^:private !loader (atom nil))
 (defonce ^:private !map (atom nil))
 

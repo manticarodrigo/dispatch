@@ -1,14 +1,12 @@
 (ns app.utils.google.maps.places
   (:require [app.utils.google.maps.serializer :refer (parse-place)]))
 
-(set! *warn-on-infer* false)
-
 (defonce ^:private !places-service (atom nil))
 
 (defn find-place [place-id]
   (js/Promise.
    (fn [resolve reject]
-     (let [service @!places-service]
+     (let [^js service @!places-service]
        (.getDetails
         service
         (clj->js {:placeId place-id,
