@@ -10,4 +10,5 @@
     [:> route-context-provider {:value props}
      [:div {:class "relative flex flex-col lg:flex-row w-full lg:h-screen overflow-y-auto lg:overflow-hidden"}
       [:f> nav "order-2 lg:order-1"]
-      [:f> gmap "order-1 lg:order-2"]]]))
+      [:f> gmap "order-1 lg:order-2"]
+      [:span {:class "hidden"} "hidden field test"]]]))

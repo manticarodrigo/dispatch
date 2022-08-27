@@ -1,5 +1,4 @@
-{:release-version "v0.0.1"
- :closure-defines
+{:closure-defines
  {app.config/REGION "US"
   app.config/LANGUAGE "en"
   app.config/GOOGLE_MAPS_API_KEY "AIzaSyAVgq9NMzbNqubtOPSoPHpyEYYtxGJdbhs"}}
