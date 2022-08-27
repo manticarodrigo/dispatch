@@ -16,6 +16,7 @@
   {:target     :browser
    :output-dir "public/js"
    :asset-path "/js"
+   :module-hash-names true
 
    :tailwind/output "public/css/main.css"
    :tailwind/config {:theme
@@ -31,6 +32,11 @@
                               "Arial"
                               "Noto Sans"
                               "sans-serif"]}}}
+
+   :build-hooks
+   [(shadow.html/copy-file
+     "public/index.src.html"
+     "public/index.html")]
 
    :modules
    {:app {:init-fn app.core/init}}

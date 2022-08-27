@@ -2,7 +2,7 @@
 /.calva/
 
 # output
-/target/
+/public/index.html
 /public/js/
 /public/css/
 
