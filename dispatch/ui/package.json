@@ -5,7 +5,7 @@
     "ancient": "clojure -Sdeps '{:deps {com.github.liquidz/antq {:mvn/version \"RELEASE\"}}}' -m antq.core",
     "report": "shadow-cljs run shadow.cljs.build-report app target/build-report.html",
     "watch": "sh -c \"shadow-cljs watch app --config-merge '$(cat ./config/dev.edn | xargs)'\"",
-    "release": "sh -c \"shadow-cljs watch app --config-merge '$(cat ./config/prod.edn | xargs)'\""
+    "release": "sh -c \"shadow-cljs release app --config-merge '$(cat ./config/prod.edn | xargs)'\""
   },
   "dependencies": {
     "@capacitor/core": "^4.0.1",
