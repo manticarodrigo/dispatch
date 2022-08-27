@@ -51,9 +51,9 @@
 ;;  (set! (get (.. class -prototype) name) on-draw))
 
 
-(defn- create-overlay [google map content]
+(defn- create-overlay [map content]
   (let [^js instance class]
-    (set! (.. instance -prototype) (google.maps.OverlayView.))
+    (set! (.. instance -prototype) (js/google.maps.OverlayView.))
     (set! (.. instance -prototype -draw) on-draw)
     (set! (.. instance -prototype -onAdd) on-add)
     (set! (.. instance -prototype -update) on-update)
@@ -73,4 +73,4 @@
    </span>")
 
 (defn init-overlay [gmap]
-  (reset! !location-overlay (create-overlay js/google gmap html)))
+  (reset! !location-overlay (create-overlay gmap html)))

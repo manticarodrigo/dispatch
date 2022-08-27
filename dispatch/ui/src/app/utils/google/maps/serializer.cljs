@@ -24,7 +24,7 @@
      :location (parse-lat-lng end_location)}))
 
 (defn parse-route [^js response]
-  (let [route (some-> response .-routes first)
+  (let [^js route (some-> response .-routes first)
         legs (mapv parse-leg (.-legs route))
         bounds (parse-bounds (.-bounds route))
         path (parse-path (.-overview_path route))]

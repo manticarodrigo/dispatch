@@ -13,8 +13,6 @@
    [app.utils.google.maps.overlay :refer (update-overlay)]
    [app.utils.google.maps.directions :refer (calc-route set-markers)]))
 
-(set! *warn-on-infer* false)
-
 (def ^:private !el (atom nil))
 (def ^:private !map (r/atom false))
 
@@ -22,19 +20,21 @@
   (go (dispatch [:route/set (<p! (calc-route origin stops))])))
 (defn- set-origin! [place-id]
   (go (dispatch [:origin/set (<p! (find-place place-id))])))
-(defn set-search! [text]
+(defn- set-search! [text]
   (go (dispatch [:search/set (<p! (search-places text))])))
+
+(defn- center-route []
+  (let [^js gmap @!map
+        bounds (listen [:route/bounds])]
+    (.fitBounds gmap (clj->js bounds))
+    (.panToBounds gmap (clj->js bounds))))
 
 (defn use-map []
   (let [location (listen [:location])
         origin (listen [:origin])
         stops (listen [:stops])
         legs (listen [:route/legs])
-        bounds (listen [:route/bounds])
-        path (listen [:route/path])
-        center-route #(do
-                        (.fitBounds @!map (clj->js bounds))
-                        (.panToBounds @!map (clj->js bounds)))]
+        path (listen [:route/path])]
 
     (useEffect
      (fn []

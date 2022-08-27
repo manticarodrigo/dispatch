@@ -50,7 +50,9 @@
     [(teknql.tailwind/start-watch!)]}
 
    :release
-   {:build-options
+   {:compiler-options
+    {:source-map true}
+    :build-options
     {:ns-aliases
      {day8.re-frame.tracing day8.re-frame.tracing-stubs}}
     :build-hooks
