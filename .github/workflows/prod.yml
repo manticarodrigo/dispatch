@@ -17,51 +17,44 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Check out code
-        uses: actions/checkout@v2
-
+        uses: actions/checkout@v3
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 1.2.8
-
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-region: us-east-1
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-      - name: Initialize Terraform
+      - name: Initialize terraform
         run: |
           cd dispatch/infra/terraform
           terraform init -input=false -backend-config="key=prod"
-
-      - name: Plan Terraform
+      - name: Plan terraform
         id: plan
         continue-on-error: true
         run: |
           cd dispatch/infra/terraform
           terraform plan -input=false -no-color -out=proposed.plan \
           && terraform show -no-color proposed.plan
-
       # Sed is taking all lines that begin with one or more spaces followed by a `+` or `-`.
       # It stores the amount of spaces in `\1` and the +/- in `\2`.
       # Then replace that portion of the line with `\2\1` (+/- followed by the number of matched spaces).
-      - name: Reformat Plan
+      - name: Reformat plan
         if: steps.plan.outcome == 'success'
         run: |
           echo '${{ steps.plan.outputs.stdout || steps.plan.outputs.stderr }}' \
           | sed -E 's/^([[:space:]]+)([-+])/\2\1/g' > plan.txt
-
-      - name: Put Plan in Env Var
+      - name: Put plan in env var
         if: steps.plan.outcome == 'success'
         run: |
           PLAN=$(cat plan.txt)
           echo "PLAN<<EOF" >> $GITHUB_ENV
           echo "$PLAN" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
-
-      - name: Apply Terraform
+      - name: Apply terraform
         if: steps.plan.outcome == 'success'
         id: apply
         continue-on-error: true
@@ -76,13 +69,34 @@ jobs:
     needs: [infra]
     runs-on: ubuntu-latest
     steps:
-      - name: Checking out code
+      - name: Check out code
         uses: actions/checkout@v3
-      - name: Installing Node.js
+      - name: Restore maven cache
+        uses: actions/cache@v3
+        with:
+          path: /root/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('dispatch/ui/shadow-cljs.edn') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Restore npm cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('dispatch/ui/shadow-cljs.edn') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+      - name: Restore shadow-cljs compiler cache
+        uses: actions/cache@v3
+        with:
+          path: dispatch/ui/.shadow-cljs
+          key: ${{ runner.os }}-shadow-cljs-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-shadow-cljs-
+      - name: Install node
         uses: actions/setup-node@v3
         with:
           node-version: "16"
-      - name: Building project
+      - name: Build project
         run: cd dispatch/ui && yarn install && yarn release
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -90,7 +104,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-      - name: Deploying to S3 bucket
+      - name: Deploy to S3 bucket
         run: aws s3 sync dispatch/ui/public/ s3://dispatch-prod-site --delete
       - name: Invalidate CloudFront
         uses: chetan/invalidate-cloudfront-action@v2
