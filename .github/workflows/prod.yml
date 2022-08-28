@@ -7,7 +7,7 @@ on:
 
 jobs:
   infra:
-    name: Run Terraform plan and apply
+    name: Run terraform plan and apply
     env:
       TF_VAR_env: prod
       TF_VAR_aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
@@ -74,22 +74,22 @@ jobs:
       - name: Restore maven cache
         uses: actions/cache@v3
         with:
-          path: /root/.m2/repository
+          path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('dispatch/ui/shadow-cljs.edn') }}
           restore-keys: |
             ${{ runner.os }}-maven-
       - name: Restore npm cache
         uses: actions/cache@v3
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-npm-${{ hashFiles('dispatch/ui/shadow-cljs.edn') }}
+          path: dispatch/ui/node_modules
+          key: ${{ runner.os }}-npm-${{ hashFiles('dispatch/ui/package.json') }}
           restore-keys: |
             ${{ runner.os }}-npm-
       - name: Restore shadow-cljs compiler cache
         uses: actions/cache@v3
         with:
           path: dispatch/ui/.shadow-cljs
-          key: ${{ runner.os }}-shadow-cljs-${{ github.sha }}
+          key: ${{ runner.os }}-shadow-cljs-${{ hashFiles('dispatch/ui/shadow-cljs.edn') }}
           restore-keys: |
             ${{ runner.os }}-shadow-cljs-
       - name: Install node
