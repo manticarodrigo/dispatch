@@ -107,7 +107,7 @@ jobs:
       - name: Deploy to S3 bucket
         run: aws s3 sync dispatch/ui/public/ s3://dispatch-prod-site --delete
       - name: Invalidate CloudFront
-        uses: chetan/invalidate-cloudfront-action@v2
+        uses: chetan/invalidate-cloudfront-action@v2.4
         env:
           DISTRIBUTION: ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID }}
           PATHS: "/index.html"
