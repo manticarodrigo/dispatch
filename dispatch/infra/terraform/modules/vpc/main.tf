@@ -3,7 +3,7 @@ locals {
   region = "us-east-1"
   tags = {
     Owner       = "user"
-    Environment = "staging"
+    Environment = var.env
     Name        = "dispatch"
   }
 }
@@ -13,7 +13,7 @@ locals {
 ################################################################################
 
 module "vpc" {
-  source = "./resources/base"
+  source = "terraform-aws-modules/vpc/aws"
 
   name = local.name
   cidr = "20.10.0.0/16" # 10.0.0.0/8 is reserved for EC2-Classic
@@ -77,7 +77,7 @@ module "vpc" {
 ################################################################################
 
 module "vpc_endpoints" {
-  source = "./resources/endpoints"
+  source = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
 
   vpc_id             = module.vpc.vpc_id
   security_group_ids = [data.aws_security_group.default.id]
@@ -169,7 +169,7 @@ module "vpc_endpoints" {
 }
 
 module "vpc_endpoints_nocreate" {
-  source = "./resources/endpoints"
+  source = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
 
   create = false
 }

@@ -26,6 +26,7 @@ variable "datomic_license" {}
 
 module "vpc" {
   source = "./modules/vpc"
+  env    = var.env
 }
 
 module "datomic" {
