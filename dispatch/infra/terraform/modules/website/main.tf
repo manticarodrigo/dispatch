@@ -52,19 +52,18 @@ resource "aws_s3_bucket_website_configuration" "site_config" {
 }
 
 resource "aws_cloudfront_distribution" "s3_dist" {
+  enabled             = true
+  is_ipv6_enabled     = true
+  default_root_object = "index.html"
+  aliases             = ["dispatch.ambito.app"]
+
   origin {
     domain_name = aws_s3_bucket.site_bucket.bucket_domain_name
     origin_id   = "dispatch-site-origin-${var.env}"
   }
 
-  aliases = ["dispatch.ambito.app"]
-
-  enabled             = true
-  is_ipv6_enabled     = true
-  default_root_object = "index.html"
-
   default_cache_behavior {
-    allowed_methods  = ["HEAD", "DELETE", "POST", "GET", "OPTIONS", "PUT", "PATCH"]
+    allowed_methods  = ["GET", "HEAD"]
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = "dispatch-site-origin-${var.env}"
 
@@ -72,7 +71,7 @@ resource "aws_cloudfront_distribution" "s3_dist" {
       query_string = false
 
       cookies {
-        forward = "all"
+        forward = "none"
       }
     }
 
@@ -89,7 +88,7 @@ resource "aws_cloudfront_distribution" "s3_dist" {
   }
 
   viewer_certificate {
-    cloudfront_default_certificate = true
+    acm_certificate_arn = "arn:aws:acm:us-east-1:420328682924:certificate/704ae56b-10b4-4b18-a389-6269ec8ea0d7"
   }
 
   custom_error_response {
