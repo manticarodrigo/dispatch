@@ -1,9 +1,10 @@
 locals {
-  bucket_name = "dispatch-${var.env}-site"
+  bucket_name = "dispatch-site-${var.env}"
 }
 
 resource "aws_s3_bucket" "site_bucket" {
-  bucket = local.bucket_name
+  bucket        = local.bucket_name
+  force_destroy = true
 }
 
 data "aws_iam_policy_document" "site_policy" {
@@ -53,10 +54,10 @@ resource "aws_s3_bucket_website_configuration" "site_config" {
 resource "aws_cloudfront_distribution" "s3_dist" {
   origin {
     domain_name = aws_s3_bucket.site_bucket.bucket_domain_name
-    origin_id   = "dispatch-${var.env}-site-origin"
+    origin_id   = "dispatch-site-origin-${var.env}"
   }
 
-  aliases = var.aliases
+  aliases = ["dispatch.ambito.app"]
 
   enabled             = true
   is_ipv6_enabled     = true
@@ -65,7 +66,7 @@ resource "aws_cloudfront_distribution" "s3_dist" {
   default_cache_behavior {
     allowed_methods  = ["HEAD", "DELETE", "POST", "GET", "OPTIONS", "PUT", "PATCH"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "dispatch-${var.env}-site-origin"
+    target_origin_id = "dispatch-site-origin-${var.env}"
 
     forwarded_values {
       query_string = false
