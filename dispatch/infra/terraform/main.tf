@@ -49,7 +49,6 @@ module "website" {
 module "domain" {
   source                                 = "./modules/domain"
   env                                    = var.env
-  vpc_id                                 = module.network.vpc_id
   cloudfront_distribution_domain_name    = module.website.domain_name
   cloudfront_distribution_hosted_zone_id = module.website.zone_id
 }
