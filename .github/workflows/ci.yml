@@ -15,6 +15,8 @@ jobs:
       TF_VAR_datomic_ami: ${{ secrets.DATOMIC_AMI }}
       TF_VAR_datomic_license: ${{ secrets.DATOMIC_LICENSE }}
     runs-on: ubuntu-20.04
+    outputs:
+      website_bucket_name: ${{ steps.output.outputs.website_bucket_name }}
     steps:
       - name: Check out code
         uses: actions/checkout@v3
@@ -22,6 +24,7 @@ jobs:
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 1.2.8
+          terraform_wrapper: false
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -34,36 +37,25 @@ jobs:
           terraform init -input=false -backend-config="key=prod"
       - name: Plan terraform
         id: plan
-        continue-on-error: true
         run: |
           cd dispatch/infra/terraform
           terraform plan -input=false -no-color -out=proposed.plan \
           && terraform show -no-color proposed.plan
-      # Sed is taking all lines that begin with one or more spaces followed by a `+` or `-`.
-      # It stores the amount of spaces in `\1` and the +/- in `\2`.
-      # Then replace that portion of the line with `\2\1` (+/- followed by the number of matched spaces).
-      - name: Reformat plan
-        if: steps.plan.outcome == 'success'
-        run: |
-          echo '${{ steps.plan.outputs.stdout || steps.plan.outputs.stderr }}' \
-          | sed -E 's/^([[:space:]]+)([-+])/\2\1/g' > plan.txt
-      - name: Put plan in env var
-        if: steps.plan.outcome == 'success'
-        run: |
-          PLAN=$(cat plan.txt)
-          echo "PLAN<<EOF" >> $GITHUB_ENV
-          echo "$PLAN" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
       - name: Apply terraform
         if: steps.plan.outcome == 'success'
         id: apply
-        continue-on-error: true
         run: |
           cd dispatch/infra/terraform
           terraform apply \
             -input=false \
             -no-color \
             proposed.plan
+      - name: Store output
+        if: steps.plan.outcome == 'success'
+        id: output
+        run: |
+          cd dispatch/infra/terraform
+          echo ::set-output name=website_bucket_name $(terraform output website_bucket_name)
   site:
     name: Build and upload UI
     needs: [infra]
@@ -105,7 +97,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
       - name: Deploy to S3 bucket
-        run: aws s3 sync dispatch/ui/public/ s3://dispatch-prod-site --delete
+        run: aws s3 sync dispatch/ui/public/ s3://${{ needs.infra.outputs.website_bucket_name }} --delete
       - name: Invalidate CloudFront
         uses: chetan/invalidate-cloudfront-action@v2.4
         env:
