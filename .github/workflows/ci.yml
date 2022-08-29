@@ -99,11 +99,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
       - name: Deploy to S3 bucket
-        run: aws s3 sync dispatch/ui/public/ s3://${{ echo needs.infra.outputs.website_bucket_name }} --delete
+        run: aws s3 sync dispatch/ui/public/ s3://$(echo ${{ needs.infra.outputs.website_bucket_name }}) --delete
       - name: Invalidate CloudFront
         uses: chetan/invalidate-cloudfront-action@v2.4
         env:
-          DISTRIBUTION: ${{ echo needs.infra.outputs.website_distribution_id }}
+          DISTRIBUTION: $(echo ${{ needs.infra.outputs.website_distribution_id }})
           PATHS: "/index.html"
           AWS_REGION: "us-east-1"
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
