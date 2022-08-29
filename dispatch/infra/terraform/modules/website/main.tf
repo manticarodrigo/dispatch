@@ -57,7 +57,7 @@ resource "aws_cloudfront_distribution" "s3_dist" {
     origin_id   = "dispatch-site-origin-${var.env}"
   }
 
-  # aliases = ["dispatch.ambito.app"]
+  aliases = ["dispatch.ambito.app"]
 
   enabled             = true
   is_ipv6_enabled     = true
