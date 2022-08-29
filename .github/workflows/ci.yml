@@ -56,8 +56,8 @@ jobs:
         id: output
         run: |
           cd dispatch/infra/terraform
-          echo ::set-output name=website_bucket_name::$(echo terraform output website_bucket_name)
-          echo ::set-output name=website_distribution_id::$(echo terraform output website_distribution_id)
+          echo ::set-output name=website_bucket_name::$(terraform output website_bucket_name | tr -d '"')
+          echo ::set-output name=website_distribution_id::$(terraform output website_distribution_id | tr -d '"')
   site:
     name: Build and upload UI
     needs: [infra]
