@@ -46,6 +46,11 @@ module "website" {
   env    = var.env
 }
 
+module "eks" {
+  source = "./modules/eks"
+  env    = var.env
+}
+
 module "domain" {
   source                                 = "./modules/domain"
   env                                    = var.env
