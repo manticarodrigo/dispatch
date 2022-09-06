@@ -1,7 +1,11 @@
 locals {
-  bucket_name = "dispatch-site-${var.env}"
+  domain      = "ambito.app"
+  bucket_name = "${var.app_name}-site-${var.env}"
+  origin_name = "${var.app_name}-origin-${var.env}"
+  subdomain   = "${var.app_name}.${local.domain}"
 }
 
+# S3
 resource "aws_s3_bucket" "site_bucket" {
   bucket        = local.bucket_name
   force_destroy = true
@@ -51,21 +55,22 @@ resource "aws_s3_bucket_website_configuration" "site_config" {
   }
 }
 
+# Cloudfront
 resource "aws_cloudfront_distribution" "s3_dist" {
   enabled             = true
   is_ipv6_enabled     = true
   default_root_object = "index.html"
-  aliases             = ["dispatch.ambito.app"]
+  aliases             = [local.subdomain]
 
   origin {
     domain_name = aws_s3_bucket.site_bucket.bucket_domain_name
-    origin_id   = "dispatch-site-origin-${var.env}"
+    origin_id   = local.origin_name
   }
 
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "dispatch-site-origin-${var.env}"
+    target_origin_id = local.origin_name
 
     forwarded_values {
       query_string = false
@@ -97,5 +102,36 @@ resource "aws_cloudfront_distribution" "s3_dist" {
     error_code         = 404
     response_code      = 200
     response_page_path = "/index.html"
+  }
+}
+
+
+# Route53
+
+data "aws_route53_zone" "main" {
+  name = local.domain
+}
+
+resource "aws_route53_zone" "subdomain" {
+  name = local.subdomain
+}
+
+resource "aws_route53_record" "subdomain-ns" {
+  zone_id = aws_route53_zone.main.zone_id
+  name    = local.subdomain
+  type    = "NS"
+  ttl     = "30"
+  records = aws_route53_zone.subdomain.name_servers
+}
+
+resource "aws_route53_record" "subdomain-a" {
+  zone_id = data.aws_route53_zone.main.zone_id
+  name    = local.subdomain
+  type    = "A"
+
+  alias {
+    name                   = aws_cloudfront_distribution.s3_dist.domain_name
+    zone_id                = aws_cloudfront_distribution.s3_dist.hosted_zone_id
+    evaluate_target_health = false
   }
 }

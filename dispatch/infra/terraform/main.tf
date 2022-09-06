@@ -19,41 +19,26 @@ provider "aws" {
 }
 
 variable "env" {}
+variable "app_name" {
+  default = "dispatch"
+}
 variable "aws_account_id" {}
 variable "aws_region" {}
-variable "datomic_ami" {}
-variable "datomic_license" {}
 
-module "network" {
-  source = "./modules/network"
-  env    = var.env
-}
-
-module "database" {
-  source          = "./modules/database"
-  env             = var.env
-  aws_account_id  = var.aws_account_id
-  aws_region      = var.aws_region
-  datomic_ami     = var.datomic_ami
-  datomic_license = var.datomic_license
-  subnets         = module.network.database_subnets
-  vpc_id          = module.network.vpc_id
-  vpc_ip_block    = module.network.vpc_cidr_block
-}
-
-module "website" {
-  source = "./modules/website"
-  env    = var.env
+module "ecr" {
+  source   = "./modules/ecr"
+  env      = var.env
+  app_name = var.app_name
 }
 
 module "eks" {
-  source = "./modules/eks"
-  env    = var.env
+  source   = "./modules/eks"
+  env      = var.env
+  app_name = var.app_name
 }
 
-module "domain" {
-  source                                 = "./modules/domain"
-  env                                    = var.env
-  cloudfront_distribution_domain_name    = module.website.domain_name
-  cloudfront_distribution_hosted_zone_id = module.website.zone_id
+module "website" {
+  source   = "./modules/website"
+  env      = var.env
+  app_name = var.app_name
 }

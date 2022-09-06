@@ -2,7 +2,7 @@ module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "3.14.2"
 
-  name = "dispatch-vpc-k8s-${var.env}"
+  name = "${var.app_name}-vpc-k8s-${var.env}"
 
   cidr = "10.0.0.0/16"
   azs  = slice(data.aws_availability_zones.available.names, 0, 3)
