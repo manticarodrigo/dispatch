@@ -18,6 +18,8 @@ provider "aws" {
   region              = var.aws_region
 }
 
+# variables
+
 variable "env" {}
 variable "app_name" {
   default = "dispatch"
@@ -25,21 +27,37 @@ variable "app_name" {
 variable "aws_account_id" {}
 variable "aws_region" {}
 
-module "ecr" {
-  source         = "./modules/ecr"
-  env            = var.env
-  app_name       = var.app_name
-  aws_account_id = var.aws_account_id
-}
+# modules
 
-module "eks" {
-  source   = "./modules/eks"
-  env      = var.env
-  app_name = var.app_name
-}
+# module "ecr" {
+#   source         = "./modules/ecr"
+#   env            = var.env
+#   app_name       = var.app_name
+#   aws_account_id = var.aws_account_id
+# }
+
+# module "eks" {
+#   source   = "./modules/eks"
+#   env      = var.env
+#   app_name = var.app_name
+# }
 
 module "website" {
   source   = "./modules/website"
   env      = var.env
   app_name = var.app_name
+}
+
+# outputs
+
+# output "eks_cluster_id" {
+#   value = module.eks.cluster_id
+# }
+
+output "website_bucket_name" {
+  value = module.website.bucket_name
+}
+
+output "website_distribution_id" {
+  value = module.website.distribution_id
 }
