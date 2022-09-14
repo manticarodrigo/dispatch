@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  infra:
+  infra-base:
     name: Run terraform plan and apply
     env:
       TF_VAR_env: prod
@@ -34,19 +34,19 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - name: Initialize terraform
         run: |
-          cd dispatch/infra/terraform
+          cd dispatch/infra/base
           terraform init -input=false -backend-config="key=prod"
       - name: Plan terraform
         id: plan
         run: |
-          cd dispatch/infra/terraform
+          cd dispatch/infra/base
           terraform plan -input=false -no-color -out=proposed.plan \
           && terraform show -no-color proposed.plan
       - name: Apply terraform
         if: steps.plan.outcome == 'success'
         id: apply
         run: |
-          cd dispatch/infra/terraform
+          cd dispatch/infra/base
           terraform apply \
             -input=false \
             -no-color \
@@ -55,12 +55,12 @@ jobs:
         if: steps.plan.outcome == 'success'
         id: output
         run: |
-          cd dispatch/infra/terraform
+          cd dispatch/infra/base
           echo ::set-output name=website_bucket_name::$(terraform output website_bucket_name | tr -d '"')
           echo ::set-output name=website_distribution_id::$(terraform output website_distribution_id | tr -d '"')
-  site:
+  deploy-site:
     name: Build and upload UI
-    needs: [infra]
+    needs: [infra-base]
     runs-on: ubuntu-latest
     steps:
       - name: Check out code

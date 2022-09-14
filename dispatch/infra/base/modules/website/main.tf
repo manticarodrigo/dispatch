@@ -1,8 +1,8 @@
 locals {
   domain      = "ambito.app"
+  subdomain   = "${var.app_name}.${local.domain}"
   bucket_name = "${var.app_name}-site-${var.env}"
   origin_name = "${var.app_name}-origin-${var.env}"
-  subdomain   = "${var.app_name}.${local.domain}"
 }
 
 # S3
@@ -30,12 +30,6 @@ data "aws_iam_policy_document" "site_policy" {
 resource "aws_s3_bucket_policy" "site_policy" {
   bucket = aws_s3_bucket.site_bucket.id
   policy = data.aws_iam_policy_document.site_policy.json
-}
-
-resource "aws_s3_bucket_public_access_block" "site_bucket_access_control" {
-  bucket             = aws_s3_bucket.site_bucket.id
-  block_public_acls  = true
-  ignore_public_acls = true
 }
 
 resource "aws_s3_bucket_acl" "site_acl" {
@@ -110,18 +104,6 @@ resource "aws_cloudfront_distribution" "s3_dist" {
 
 data "aws_route53_zone" "main" {
   name = local.domain
-}
-
-resource "aws_route53_zone" "subdomain" {
-  name = local.subdomain
-}
-
-resource "aws_route53_record" "subdomain-ns" {
-  zone_id = aws_route53_zone.main.zone_id
-  name    = local.subdomain
-  type    = "NS"
-  ttl     = "30"
-  records = aws_route53_zone.subdomain.name_servers
 }
 
 resource "aws_route53_record" "subdomain-a" {

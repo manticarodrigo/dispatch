@@ -1,3 +1,6 @@
+output "eks_cluster_id" {
+  value = module.eks.cluster_id
+}
 output "website_bucket_name" {
   value = module.website.bucket_name
 }

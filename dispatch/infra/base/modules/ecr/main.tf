@@ -3,7 +3,7 @@ module "ecr" {
 
   repository_name = var.app_name
 
-  repository_read_write_access_arns = ["arn:aws:iam::${aws_account_id}:user/dispatch-github-actions"]
+  repository_read_write_access_arns = ["arn:aws:iam::420328682924:user/dispatch-github-actions"]
 
   repository_lifecycle_policy = jsonencode({
     rules = [

@@ -26,9 +26,10 @@ variable "aws_account_id" {}
 variable "aws_region" {}
 
 module "ecr" {
-  source   = "./modules/ecr"
-  env      = var.env
-  app_name = var.app_name
+  source         = "./modules/ecr"
+  env            = var.env
+  app_name       = var.app_name
+  aws_account_id = var.aws_account_id
 }
 
 module "eks" {
