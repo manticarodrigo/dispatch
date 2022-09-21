@@ -106,7 +106,7 @@
     :db/isComponent true
     :db/doc "Route destination"}])
 
-(def schema
+(def schema-tx
   (into []
         (concat location
                 item

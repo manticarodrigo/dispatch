@@ -1,30 +1,30 @@
 (ns app.core
-  (:require [datomic.api :as d]
-            [app.schema :refer (schema)]
+  (:require [datomic.client.api :as d]
+            [app.schema :refer (schema-tx)]
             [app.seed :refer (seed-tx)]))
 
-(def db-uri "datomic:mem://dispatch")
+(def client (d/client {:server-type :dev-local
+                       :storage-dir :mem
+                       :system "dev"}))
 
-(defn- connect [opts]
-  (d/delete-database opts)
-  (d/create-database opts)
-  (d/connect opts))
-
-(defn- seed [conn]
-  (d/transact conn schema)
-  (d/transact conn seed-tx))
+(defn- connect []
+  (let [opts {:db-name "app"}]
+    (d/delete-database client opts)
+    (d/create-database client opts)
+    (d/connect client opts)))
 
 (defn -main []
-  (let [conn (connect db-uri)
-        db #(d/db conn)
-        res (:tempids @(seed conn))]
-    (println res)
+  (println "app started")
+  (let [conn (connect)
+        schema-res (d/transact conn {:tx-data schema-tx})
+        seed-res (d/transact conn {:tx-data seed-tx})
+        route-id (-> seed-res :tempids (get "temp-route"))
+        db (d/db conn)]
+    (println "route id: " route-id)
     (println "route list: " (d/q
-                             '[:find [?r ...]
+                             '[:find ?r
                                :in $
                                :where
                                [?r :route/driver _]
                                [?r :route/orders _]
-                               [?r :route/origin _]]
-                             (db)))
-    (println "route: " (d/pull (db) '[*] (-> res (get "temp-route"))))))
+                               [?r :route/origin _]] db))))

@@ -1,8 +1,5 @@
 {:paths ["src"]
  :deps
- {org.clojure/clojure {:mvn/version "1.11.1"}
-  com.datomic/datomic-pro {:mvn/version "1.0.6397"}}
- :mvn/repos {"my.datomic.com" {:url "https://my.datomic.com/repo"}}
+ {com.datomic/dev-local {:mvn/version "1.0.243"}}
  :aliases
- {:dev {:extra-deps {com.bhauman/rebel-readline {:mvn/version "0.1.4"}}
-        :main-opts ["-m" "app.core"]}}}
+ {:dev {:main-opts ["-m" "app.core"]}}}
