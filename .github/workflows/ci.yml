@@ -30,6 +30,14 @@ jobs:
           aws-region: us-east-1
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - name: Install node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+      - name: Install api deps
+        run: |
+          cd dispatch/api
+          yarn install
       - name: Initialize terraform
         run: |
           cd dispatch/infra/base
