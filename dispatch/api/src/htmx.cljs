@@ -40,30 +40,10 @@
      "\n"
      (hiccup/html serialized-result))))
 
-(defn get-submit-comment-button
-  [recaptcha-sitekey]
-  (if recaptcha-sitekey
-    [:button {:type "submit"
-              :class "g-recaptcha"
-              :data-sitekey recaptcha-sitekey
-              :data-callback "announce"} "Submit"]
-    [:button {:type "submit"} "Submit"]))
-
-(defn get-recaptcha-callback-js
-  [{:keys [comment-form-id recaptcha-callback-event]}]
-  (str
-   "function announce(token) {\n"
-   "  const event = new Event('" recaptcha-callback-event "');\n"
-   "  const elem = document.querySelector('#" comment-form-id "');\n"
-   "  elem.dispatchEvent(event);\n"
-   "}"))
-
 (defn gen-comments-form
   [{:keys [comment-form-id
            comment-list-div-id
-           post-comment-url
-           recaptcha-callback-event
-           recaptcha-sitekey]
+           post-comment-url]
     :as config}
    post-id]
   [:form
@@ -71,16 +51,14 @@
     :hx-post post-comment-url
     :hx-swap "afterbegin"
     :hx-target (str "#" comment-list-div-id)
-    :hx-trigger (if recaptcha-sitekey (str recaptcha-callback-event ",submit") "submit")
+    :hx-trigger "submit"
     :hx-swap-oob "true"}
    [:input {:type "hidden" :name "post-id" :value post-id}]
    [:label {:for "author"} "Name (optional)"]
    (author-input config false)
    [:label {:for "message"} "Comment"]
    (message-input config false)
-   [:script (get-recaptcha-callback-js config)]
-   [:script {:src "https://www.google.com/recaptcha/api.js"}]
-   (get-submit-comment-button recaptcha-sitekey)])
+   [:button {:type "submit"} "Submit"]])
 
 (def get-comments-form-html (comp #(hiccup/html % true) gen-comments-form))
 
@@ -89,7 +67,6 @@
   (let [defaults {:comment-form-id "comment-form"
                   :comment-list-div-id "comments-list"
                   :post-comment-url "http://localhost:3000/comments"
-                  :recaptcha-callback-event "recaptcha-verified"
                   :author-input-id "author-input"
                   :message-input-id "message-input"}]
     (merge defaults user-config)))

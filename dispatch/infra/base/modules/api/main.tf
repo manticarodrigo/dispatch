@@ -119,8 +119,8 @@ resource "aws_apigatewayv2_integration" "api" {
   api_id = aws_apigatewayv2_api.api.id
 
   integration_uri    = aws_lambda_function.api.invoke_arn
-  integration_type   = "HTTP_PROXY"
-  integration_method = "ANY"
+  integration_type   = "AWS_PROXY"
+  integration_method = "POST"
 }
 
 resource "aws_apigatewayv2_route" "api" {

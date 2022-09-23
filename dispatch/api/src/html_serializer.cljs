@@ -1,5 +1,4 @@
-(ns html-serializer
-  (:require [hiccup :refer [html]]))
+(ns html-serializer)
 
 (defn zero-pad
   [x len]
@@ -16,31 +15,21 @@
         date-month (get months (.getMonth date-obj))
         date-year (+ 1900 (.getYear date-obj))]
     (str
-      (.getHours date-obj)
-      ":"
-      (zero-pad (str (.getMinutes date-obj)) 2)
-      ", "
-      date-month
-      " "
-      (.getDate date-obj)
-      ", "
-      date-year)))
-
-(apply some (juxt nil? empty?) "")
-(apply some (juxt nil? empty?) "foo")
-(reduce #(or %1 %2) [false true])
-(reduce #(or %1 %2) [false false])
+     (.getHours date-obj)
+     ":"
+     (zero-pad (str (.getMinutes date-obj)) 2)
+     ", "
+     date-month
+     " "
+     (.getDate date-obj)
+     ", "
+     date-year)))
 
 (defn any
   [preds val]
   (let [pred-fn (apply juxt preds)
         pred-results (pred-fn val)]
     (reduce #(or %1 %2) pred-results)))
-
-(comment
-  (any [nil? empty?] "") ; true
-  (any [nil? empty?] nil) ; true
-  (any [nil? empty?] "foo")) ; false
 
 (defn serialize-comment
   [comment-body]
@@ -55,16 +44,3 @@
 (defn serialize-comment-list
   [comments]
   (map serialize-comment comments))
-
-(comment
-  (html [:p {:class "name"} "<div>hello world</div>"])
-  (html [:p {:class "name"} [:strong "nick"] "said..."])
-
-  (html (serialize-comment {:author "Nicholas" :message "hello world!"}))
-  (html (serialize-comment {:message "hello world!"}))
-  (html (serialize-comment {:message "<script>alert('you got pwned')</script>"}))
-
-  (html (serialize-comment-list [{:author "Nicholas" :message "hello world!"}
-                                 {:message "hello world!"}
-                                 {:message "yo"}
-                                 {:message "sup"}])))

@@ -12,13 +12,10 @@
 (def express-config
   (express/make-express-config
    {:htmx-config htmx-config
-    :static-files-root "src/dev"
-    :recaptcha-enabled false}))
+    :static-files-root "src/dev"}))
 
 (def express-app
   (express/create-app express-config))
 
-(def server (express/start-server express-app))
-
-(comment
-  (express/stop-server server))
+(express/start-server express-app)
+(dev.local-repo/seed)

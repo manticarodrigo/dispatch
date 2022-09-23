@@ -18,8 +18,7 @@
    :CommentId {:S (uuid/v4)}
    :Message {:S (:message comment-input)}
    :Time {:S (.toISOString (js/Date.))}
-   :Author {:S (:author comment-input)}
-   :RecaptchaScore {:S (str (:score comment-input))}})
+   :Author {:S (:author comment-input)}})
 
 (defn add-comment
   [{:keys [comment-table-name]} new-comment]
@@ -64,4 +63,3 @@
 (defmethod repo/get-comments :dynamo
   [config post-id]
   (list-comments config post-id))
-
