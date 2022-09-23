@@ -4,7 +4,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "4.27"
+      version = "4.30"
     }
     archive = {
       source  = "hashicorp/archive"
@@ -36,11 +36,18 @@ variable "aws_region" {}
 
 # modules
 
-module "api" {
-  source   = "./modules/api"
-  env      = var.env
+module "db" {
+  source      = "./modules/db"
+  env         = var.env
   domain_name = var.domain_name
-  app_name = var.app_name
+  app_name    = var.app_name
+}
+
+module "api" {
+  source      = "./modules/api"
+  env         = var.env
+  domain_name = var.domain_name
+  app_name    = var.app_name
 }
 
 module "ui" {
@@ -51,6 +58,14 @@ module "ui" {
 }
 
 # outputs
+
+output "db_writer_endpoint" {
+  value = module.db.aurora_postgresql_v2_cluster_endpoint
+}
+
+output "db_reader_endpoint" {
+  value = module.db.aurora_postgresql_v2_cluster_reader_endpoint
+}
 
 output "ui_bucket_name" {
   value = module.ui.bucket_name
