@@ -1,5 +1,0 @@
-{:paths ["src"]
- :deps
- {com.datomic/dev-local {:mvn/version "1.0.243"}}
- :aliases
- {:dev {:main-opts ["-m" "app.core"]}}}

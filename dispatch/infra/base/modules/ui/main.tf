@@ -1,6 +1,5 @@
 locals {
-  domain      = "ambito.app"
-  subdomain   = "${var.app_name}.${local.domain}"
+  subdomain   = "${var.app_name}.${var.domain_name}"
   bucket_name = "${var.app_name}-site-${var.env}"
   origin_name = "${var.app_name}-origin-${var.env}"
 }
@@ -103,7 +102,7 @@ resource "aws_cloudfront_distribution" "s3_dist" {
 # Route53
 
 data "aws_route53_zone" "main" {
-  name = local.domain
+  name = var.domain_name
 }
 
 resource "aws_route53_record" "subdomain-a" {

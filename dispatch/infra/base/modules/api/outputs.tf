@@ -1,5 +1,3 @@
 output "function_name" {
-  description = "Name of the Lambda function."
-
-  value = aws_lambda_function.dispatch_api.function_name
+  value = aws_lambda_function.api.function_name
 }

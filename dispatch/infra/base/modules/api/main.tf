@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "lambda_bucket" {
-  bucket = "dispatch-lambda-bucket"
+  bucket = "${var.app_name}-lambda-${var.env}"
 }
 
 resource "aws_s3_bucket_acl" "bucket_acl" {
@@ -23,23 +23,23 @@ resource "aws_s3_object" "lambda_object" {
   etag = filemd5(data.archive_file.lambda_zip.output_path)
 }
 
-resource "aws_lambda_function" "dispatch_api" {
-  function_name = "dispatch-api"
+resource "aws_lambda_function" "api" {
+  function_name = "${var.app_name}-api-${var.env}"
 
   s3_bucket = aws_s3_bucket.lambda_bucket.id
   s3_key    = aws_s3_object.lambda_object.key
 
-  runtime = "nodejs16.x"
+  runtime       = "nodejs16.x"
   architectures = ["arm64"]
-  handler = "app.handler"
+  handler       = "app.handler"
 
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
 
   role = aws_iam_role.lambda_exec.arn
 }
 
-resource "aws_cloudwatch_log_group" "dispatch_api" {
-  name = "/aws/lambda/${aws_lambda_function.dispatch_api.function_name}"
+resource "aws_cloudwatch_log_group" "api" {
+  name = "/aws/lambda/${aws_lambda_function.api.function_name}-${var.env}"
 
   retention_in_days = 30
 }
