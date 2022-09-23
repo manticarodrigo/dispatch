@@ -6,6 +6,10 @@ terraform {
       source  = "hashicorp/aws"
       version = "4.27"
     }
+    archive = {
+      source  = "hashicorp/archive"
+      version = "~> 2.2.0"
+    }
   }
 
   backend "s3" {
@@ -29,18 +33,9 @@ variable "aws_region" {}
 
 # modules
 
-# module "ecr" {
-#   source         = "./modules/ecr"
-#   env            = var.env
-#   app_name       = var.app_name
-#   aws_account_id = var.aws_account_id
-# }
-
-# module "eks" {
-#   source   = "./modules/eks"
-#   env      = var.env
-#   app_name = var.app_name
-# }
+module "api" {
+  source = "./modules/api"
+}
 
 module "website" {
   source   = "./modules/website"
@@ -48,11 +43,9 @@ module "website" {
   app_name = var.app_name
 }
 
-# outputs
-
-# output "eks_cluster_id" {
-#   value = module.eks.cluster_id
-# }
+output "api_function_name" {
+  value = module.api.function_name
+}
 
 output "website_bucket_name" {
   value = module.website.bucket_name

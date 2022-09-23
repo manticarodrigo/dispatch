@@ -1,0 +1,13 @@
+{
+  "name": "api",
+  "version": "0.1.0",
+  "main": "app.mjs",
+  "license": "UNLICENSED",
+  "scripts": {
+    "run": "node app.mjs",
+    "build": "zip -r app.zip ."
+  },
+  "dependencies": {
+    "nbb": "^0.7.135"
+  }
+}
