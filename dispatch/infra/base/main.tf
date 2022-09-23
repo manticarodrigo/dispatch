@@ -49,6 +49,10 @@ module "ui" {
   app_name    = var.app_name
 }
 
+output "api_base_url" {
+  value = module.api.base_url
+}
+
 output "api_function_name" {
   value = module.api.function_name
 }

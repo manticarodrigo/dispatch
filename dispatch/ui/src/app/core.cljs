@@ -17,6 +17,7 @@
     (dom/render [:f> route-view] root-el)))
 
 (defn init []
+  (js/console.log config/API_URL)
   (rf/dispatch-sync [::events/initialize-db])
   (dev-setup)
   (mount-root))
