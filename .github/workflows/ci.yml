@@ -14,7 +14,6 @@ jobs:
       TF_VAR_aws_region: us-east-1
     runs-on: ubuntu-20.04
     outputs:
-      api_base_url: ${{ steps.output.outputs.api_base_url }}
       ui_bucket_name: ${{ steps.output.outputs.ui_bucket_name }}
       ui_distribution_id: ${{ steps.output.outputs.ui_distribution_id }}
     steps:
@@ -55,7 +54,6 @@ jobs:
         id: output
         run: |
           cd dispatch/infra/base
-          echo ::set-output name=api_base_url::$(terraform output api_base_url | tr -d '"')
           echo ::set-output name=ui_bucket_name::$(terraform output ui_bucket_name | tr -d '"')
           echo ::set-output name=ui_distribution_id::$(terraform output ui_distribution_id | tr -d '"')
   deploy-ui:
@@ -91,7 +89,7 @@ jobs:
         with:
           node-version: "16"
       - name: Build project
-        run: cd dispatch/ui && yarn install && API_URL=${{ needs.infra-base.outputs.api_base_url }} yarn release
+        run: cd dispatch/ui && yarn install && yarn release
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:

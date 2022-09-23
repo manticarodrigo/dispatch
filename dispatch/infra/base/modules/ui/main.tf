@@ -1,5 +1,5 @@
 locals {
-  subdomain   = "${var.app_name}.${var.domain_name}"
+  domain_name   = "${var.app_name}.${var.domain_name}"
   bucket_name = "${var.app_name}-site-${var.env}"
   origin_name = "${var.app_name}-origin-${var.env}"
 }
@@ -49,11 +49,21 @@ resource "aws_s3_bucket_website_configuration" "site_config" {
 }
 
 # Cloudfront
+
+resource "aws_acm_certificate" "ui" {
+  domain_name       = local.domain_name
+  validation_method = "DNS"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
 resource "aws_cloudfront_distribution" "s3_dist" {
   enabled             = true
   is_ipv6_enabled     = true
   default_root_object = "index.html"
-  aliases             = [local.subdomain]
+  aliases             = [local.domain_name]
 
   origin {
     domain_name = aws_s3_bucket.site_bucket.bucket_domain_name
@@ -86,7 +96,7 @@ resource "aws_cloudfront_distribution" "s3_dist" {
   }
 
   viewer_certificate {
-    acm_certificate_arn      = "arn:aws:acm:us-east-1:420328682924:certificate/704ae56b-10b4-4b18-a389-6269ec8ea0d7"
+    acm_certificate_arn      = aws_acm_certificate.ui.arn
     ssl_support_method       = "sni-only"
     minimum_protocol_version = "TLSv1"
   }
@@ -107,7 +117,7 @@ data "aws_route53_zone" "main" {
 
 resource "aws_route53_record" "subdomain-a" {
   zone_id = data.aws_route53_zone.main.zone_id
-  name    = local.subdomain
+  name    = local.domain_name
   type    = "A"
 
   alias {

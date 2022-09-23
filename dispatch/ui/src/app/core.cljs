@@ -17,7 +17,9 @@
     (dom/render [:f> route-view] root-el)))
 
 (defn init []
-  (js/console.log config/API_URL)
+  (js/console.log config/API_DOMAIN)
+  (-> (js/fetch (str "https://" config/API_DOMAIN "/graph"))
+      .then #(js/console.log %))
   (rf/dispatch-sync [::events/initialize-db])
   (dev-setup)
   (mount-root))
