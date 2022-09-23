@@ -119,8 +119,15 @@ resource "aws_apigatewayv2_integration" "api" {
   api_id = aws_apigatewayv2_api.api.id
 
   integration_uri    = aws_lambda_function.api.invoke_arn
-  integration_type   = "AWS_PROXY"
-  integration_method = "POST"
+  integration_type   = "HTTP_PROXY"
+  integration_method = "ANY"
+}
+
+resource "aws_apigatewayv2_route" "api" {
+  api_id = aws_apigatewayv2_api.api.id
+
+  route_key = "ANY /{proxy+}"
+  target    = "integrations/${aws_apigatewayv2_integration.api.id}"
 }
 
 resource "aws_acm_certificate" "api" {
@@ -146,13 +153,6 @@ resource "aws_apigatewayv2_api_mapping" "api" {
   api_id      = aws_apigatewayv2_api.api.id
   stage       = aws_apigatewayv2_stage.api.id
   domain_name = aws_apigatewayv2_domain_name.api.id
-}
-
-resource "aws_apigatewayv2_route" "api" {
-  api_id = aws_apigatewayv2_api.api.id
-
-  route_key = "GET /graph"
-  target    = "integrations/${aws_apigatewayv2_integration.api.id}"
 }
 
 resource "aws_cloudwatch_log_group" "api-gw" {

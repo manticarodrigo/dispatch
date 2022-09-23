@@ -1,6 +1,6 @@
-import { loadFile, addClassPath } from "nbb";
+import { loadFile } from "nbb";
 
-addClassPath("."); // This is necessary when you require another .cljs file
+await loadFile("./deps.cljs");
 
 const { handler } = await loadFile("./src/app.cljs");
 
