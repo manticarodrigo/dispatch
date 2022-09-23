@@ -19,6 +19,7 @@
 (defn init []
   (js/console.log config/API_DOMAIN)
   (-> (js/fetch (str "https://" config/API_DOMAIN "/graph"))
+      (.then #(.json %))
       (.then #(js/console.log %)))
   (rf/dispatch-sync [::events/initialize-db])
   (dev-setup)
