@@ -34,10 +34,10 @@
 
 (def serverless-app (serverless express-app))
 
-(if dev?
-  (do
-    (express/start-server express-app)
-    (repo/save-comment {:repo :postgres} {:post-id "clojure-bandits" :message "Great post!" :time "12345" :author "Nick"})
-    (repo/save-comment {:repo :postgres} {:post-id "clojure-bandits" :message "This post was ight" :time "999" :author "Jeremy"})
-    (repo/save-comment {:repo :postgres} {:post-id "foo" :message "cool post!"}))
-  #js {:handler serverless-app})
+(when dev?
+  (express/start-server express-app)
+  (repo/save-comment {:repo :postgres} {:post-id "clojure-bandits" :message "Great post!" :time "12345" :author "Nick"})
+  (repo/save-comment {:repo :postgres} {:post-id "clojure-bandits" :message "This post was ight" :time "999" :author "Jeremy"})
+  (repo/save-comment {:repo :postgres} {:post-id "foo" :message "cool post!"}))
+
+#js {:handler serverless-app}
