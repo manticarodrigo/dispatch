@@ -1,4 +1,4 @@
-(ns dev.local-repo
+(ns repos.atom
   (:require [repo]))
 
 (def comments (atom []))
@@ -22,8 +22,3 @@
 (defmethod repo/get-comments :local
   [_ post-id]
   (list-comments post-id))
-
-(defn seed []
-  (add-comment {:post-id "clojure-bandits" :message "Great post!" :time "12345" :author "Nick"})
-  (add-comment {:post-id "clojure-bandits" :message "This post was ight" :time "999" :author "Jeremy"})
-  (add-comment {:post-id "foo" :message "cool post!"}))

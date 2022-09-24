@@ -46,6 +46,16 @@ resource "aws_lambda_function" "api" {
   source_code_hash = data.archive_file.api.output_base64sha256
 
   role = aws_iam_role.api.arn
+
+  environment {
+    variables = {
+      "PGHOST"     = var.db_host
+      "PGDATABASE" = var.db_name
+      "PGPORT"     = var.db_port
+      "PGPASSWORD" = var.db_pass
+      "PGUSER"     = var.db_user
+    }
+  }
 }
 
 resource "aws_cloudwatch_log_group" "api-lambda" {

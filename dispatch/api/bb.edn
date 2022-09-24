@@ -1,5 +1,5 @@
 {:tasks
  {dev {:doc "Run dev server"
-       :task (shell "npx nbb src/dev/local_server.cljs")}
+       :task (shell "npx nbb src/app.cljs")}
   nrepl {:doc "Run nREPL server"
          :task (shell "npx nbb nrepl-server :port 1337")}}}

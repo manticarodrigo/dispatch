@@ -38,8 +38,9 @@
   [{:keys [htmx-config]}]
   (fn [req res]
     (p/let [{:keys [post-id]} (extract-params [{:type :query :name "post-id" :required true}] req)
-            ;; list-comments-response (htmx/get-comments htmx-config post-id)
-            list-comments-response (resolvers.comments/get-comments htmx-config post-id)]
+            list-comments-response (htmx/get-comments htmx-config post-id)
+            ;; list-comments-response (resolvers.comments/get-comments htmx-config post-id)
+            ]
       (.send res list-comments-response))))
 
 (defn post-comment-handler

@@ -8,10 +8,10 @@
     "build": "zip -r app.zip ."
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.172.0",
     "axios": "^0.27.2",
     "express": "^4.18.1",
     "nbb": "^0.7.135",
+    "pg": "^8.8.0",
     "serverless-http": "^3.0.2",
     "uuid": "^9.0.0"
   }
