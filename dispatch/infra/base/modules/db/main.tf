@@ -14,8 +14,9 @@ resource "aws_rds_cluster" "db" {
 }
 
 resource "aws_rds_cluster_instance" "db" {
-  cluster_identifier = aws_rds_cluster.db.id
-  instance_class     = "db.serverless"
-  engine             = aws_rds_cluster.db.engine
-  engine_version     = aws_rds_cluster.db.engine_version
+  cluster_identifier  = aws_rds_cluster.db.id
+  instance_class      = "db.serverless"
+  engine              = aws_rds_cluster.db.engine
+  engine_version      = aws_rds_cluster.db.engine_version
+  publicly_accessible = true
 }
