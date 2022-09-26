@@ -48,11 +48,11 @@ module "api" {
   env         = var.env
   domain_name = var.domain_name
   app_name    = var.app_name
-  db_host     = module.db.aurora_postgresql_v2_cluster_endpoint
-  db_name     = module.db.aurora_postgresql_v2_cluster_database_name
-  db_port     = module.db.aurora_postgresql_v2_cluster_port
-  db_pass     = module.db.aurora_postgresql_v2_cluster_master_password
-  db_user     = module.db.aurora_postgresql_v2_cluster_master_username
+  db_host     = module.db.cluster_endpoint
+  db_name     = module.db.cluster_database_name
+  db_port     = module.db.cluster_port
+  db_pass     = module.db.cluster_master_password
+  db_user     = module.db.cluster_master_username
 }
 
 module "ui" {
@@ -63,10 +63,6 @@ module "ui" {
 }
 
 # outputs
-
-output "db_host" { value = module.db.aurora_postgresql_v2_cluster_endpoint }
-output "db_name" { value = module.db.aurora_postgresql_v2_cluster_database_name }
-output "db_port" { value = module.db.aurora_postgresql_v2_cluster_port }
 
 output "ui_bucket_name" { value = module.ui.bucket_name }
 output "ui_distribution_id" { value = module.ui.distribution_id }
