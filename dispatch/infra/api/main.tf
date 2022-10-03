@@ -18,7 +18,7 @@ resource "aws_s3_bucket_acl" "api" {
 data "archive_file" "api" {
   type = "zip"
 
-  source_dir  = "${path.module}/../../../../api"
+  source_dir  = "${path.module}/../../../api"
   output_path = "${path.module}/app.zip"
 }
 
