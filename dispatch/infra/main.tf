@@ -37,14 +37,14 @@ variable "app_name" {
 # modules
 
 module "vpc" {
-  source   = "./modules/vpc"
+  source   = "./vpc"
   env      = var.env
   region   = var.aws_region
   app_name = var.app_name
 }
 
 module "db" {
-  source      = "./modules/db"
+  source      = "./db"
   env         = var.env
   app_name    = var.app_name
   vpc_id      = module.vpc.vpc_id
@@ -53,7 +53,7 @@ module "db" {
 }
 
 module "api" {
-  source             = "./modules/api"
+  source             = "./api"
   env                = var.env
   domain_name        = var.domain_name
   app_name           = var.app_name
@@ -67,7 +67,7 @@ module "api" {
 }
 
 module "ui" {
-  source      = "./modules/ui"
+  source      = "./ui"
   env         = var.env
   domain_name = var.domain_name
   app_name    = var.app_name
