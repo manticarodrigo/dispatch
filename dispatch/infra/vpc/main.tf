@@ -12,5 +12,5 @@ module "vpc" {
   # private_subnets  = ["10.99.3.0/24", "10.99.4.0/24", "10.99.5.0/24"]
   database_subnets = ["10.99.7.0/24", "10.99.8.0/24", "10.99.9.0/24"]
 
-  enable_nat_gateway = false # Disabled NAT to be able to run this example quicker
+  enable_nat_gateway = false
 }
