@@ -5,6 +5,7 @@
    [express]
    [htmx]
    [repo]
+   [repos.atom]
    [repos.postgres]))
 
 ; parameters from the environment

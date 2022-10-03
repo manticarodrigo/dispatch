@@ -1,3 +1,5 @@
 variable "env" {}
-variable "domain_name" {}
 variable "app_name" {}
+variable "vpc_id" {}
+variable "subnets" {}
+variable "cidr_blocks" {}

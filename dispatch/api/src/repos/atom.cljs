@@ -11,7 +11,7 @@
      (conj current-comments new-comment)))
   new-comment)
 
-(defmethod repo/save-comment :local
+(defmethod repo/save-comment :atom
   [_ new-comment]
   (add-comment new-comment))
 
@@ -19,6 +19,6 @@
   [post-id]
   (reverse (filter #(= (:post-id %) post-id) @comments)))
 
-(defmethod repo/get-comments :local
+(defmethod repo/get-comments :atom
   [_ post-id]
   (list-comments post-id))

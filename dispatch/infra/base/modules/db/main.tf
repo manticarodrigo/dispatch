@@ -1,22 +1,36 @@
-resource "aws_rds_cluster" "db" {
-  cluster_identifier = "${var.app_name}-db-cluster-${var.env}"
-  engine             = "aurora-postgresql"
-  engine_mode        = "provisioned"
-  engine_version     = "13.6"
-  database_name      = "main"
-  master_username    = "test"
-  master_password    = "test1234"
-
-  serverlessv2_scaling_configuration {
-    max_capacity = 1.0
-    min_capacity = 0.5
-  }
+data "aws_rds_engine_version" "postgresql" {
+  engine  = "aurora-postgresql"
+  version = "13.6"
 }
 
-resource "aws_rds_cluster_instance" "db" {
-  cluster_identifier  = aws_rds_cluster.db.id
-  instance_class      = "db.serverless"
-  engine              = aws_rds_cluster.db.engine
-  engine_version      = aws_rds_cluster.db.engine_version
-  publicly_accessible = true
+module "db" {
+  source = "terraform-aws-modules/rds-aurora/aws"
+
+  name              = "${var.app_name}-db-${var.env}"
+  engine            = data.aws_rds_engine_version.postgresql.engine
+  engine_mode       = "provisioned"
+  engine_version    = data.aws_rds_engine_version.postgresql.version
+  storage_encrypted = true
+
+  vpc_id                = var.vpc_id
+  subnets               = var.subnets
+  allowed_cidr_blocks   = var.cidr_blocks
+  create_security_group = true
+
+  database_name   = "main"
+  master_username = "root"
+
+  apply_immediately   = true
+  skip_final_snapshot = true
+
+  serverlessv2_scaling_configuration = {
+    min_capacity = 1
+    max_capacity = 2
+  }
+
+  instance_class = "db.serverless"
+  instances = {
+    writer = {}
+    reader = {}
+  }
 }

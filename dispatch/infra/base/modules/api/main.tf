@@ -42,10 +42,16 @@ resource "aws_lambda_function" "api" {
   runtime       = "nodejs16.x"
   architectures = ["arm64"]
   handler       = "app.handler"
+  timeout       = 10
 
   source_code_hash = data.archive_file.api.output_base64sha256
 
   role = aws_iam_role.api.arn
+
+  vpc_config {
+    subnet_ids         = var.subnets
+    security_group_ids = var.security_group_ids
+  }
 
   environment {
     variables = {
@@ -83,7 +89,7 @@ resource "aws_iam_role" "api" {
 
 resource "aws_iam_role_policy_attachment" "api" {
   role       = aws_iam_role.api.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
 }
 
 # API Gateway
