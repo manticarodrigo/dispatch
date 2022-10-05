@@ -2,12 +2,13 @@ locals {
   cluster_identifier = "${var.app_name}-db-${var.env}"
 }
 resource "aws_rds_cluster" "cluster" {
-  cluster_identifier = local.cluster_identifier
-  engine             = "aurora-postgresql"
-  availability_zones = ["${var.region}a", "${var.region}b", "${var.region}c"]
-  database_name      = "main"
-  master_username    = "root"
-  master_password    = "temp1234"
+  cluster_identifier  = local.cluster_identifier
+  engine              = "postgres"
+  availability_zones  = ["${var.region}a", "${var.region}b", "${var.region}c"]
+  database_name       = "main"
+  master_username     = "root"
+  master_password     = "temp1234"
+  skip_final_snapshot = true
 }
 
 resource "aws_rds_cluster_instance" "cluster_instances" {
