@@ -4,7 +4,8 @@
             [promesa.core :as p]
             [goog.object :as gobj]
             [htmx]
-            [resolvers.comments]))
+            [resolvers.comments]
+            [handlers.migrations :refer (migrate-up migrate-down)]))
 
 (defn extract-param
   [param req]
@@ -62,16 +63,16 @@
 
 (defn make-express-config
   [user-config]
-  (let [defaults {:allowed-origin-url "http://localhost:8080"}]
+  (let [defaults {}]
     (merge defaults user-config)))
 
 (defn create-app
-  [{:keys [allowed-origin-url static-files-root] :as config}]
+  [{:keys [static-files-root] :as ctx}]
   (let [app (express)]
     (.use app (.urlencoded express #js {:extended true}))
     (.use app (fn [_ res next]
                 (doto res
-                  (.set "Access-Control-Allow-Origin" allowed-origin-url)
+                  (.set "Access-Control-Allow-Origin" "*")
                   (.set "Access-Control-Allow-Methods" "GET, POST")
                   (.set "Access-Control-Allow-Headers" "hx-trigger, hx-target, hx-request, hx-current-url"))
                 (next)))
@@ -79,10 +80,11 @@
     (when static-files-root
       (.use app (.static express static-files-root)))
 
-    (.get app "/comments" (get-comments-handler config))
-    (.post app "/comments" (post-comment-handler config))
-    (.get app "/comments-form" (get-comments-form-handler config))
-
+    (.get app "/migrate/up" (migrate-up ctx))
+    (.get app "/migrate/down" (migrate-down ctx))
+    (.get app "/comments" (get-comments-handler ctx))
+    (.post app "/comments" (post-comment-handler ctx))
+    (.get app "/comments-form" (get-comments-form-handler ctx))
     app))
 
 (defn start-server

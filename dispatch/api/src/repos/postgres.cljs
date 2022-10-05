@@ -16,19 +16,12 @@
 
 (defn- setup-client []
   (or @client-singleton
-      (p/let [client (.connect pool)
-              get-sql (slurp-sql "exists-table")
-              create-sql (slurp-sql "create-table")
-              table-exists-res (.query client get-sql
-                                       #js["comments"])
-              table-exists? (-> table-exists-res .-rows first .-exists)
-              _ (when-not table-exists?
-                  (.query client create-sql))]
+      (p/let [client (.connect pool)]
         (reset! client-singleton client)
         client)))
 
 (defmethod repo/save-comment :postgres
-  [config new-comment]
+  [_ new-comment]
   (p/let [client (setup-client)
           sql (slurp-sql "insert-values")
           {post-id :post-id message :message author :author} new-comment]
@@ -36,7 +29,7 @@
     new-comment))
 
 (defn- get-db-comments
-  [config post-id]
+  [_ post-id]
   (p/let [client (setup-client)
           sql (slurp-sql "select-rows")
           result (.query client sql #js[post-id])]
@@ -62,3 +55,8 @@
 (defmethod repo/get-comments :postgres
   [config post-id]
   (list-comments config post-id))
+
+(comment
+  (repo/save-comment {:repo :postgres} {:post-id "clojure-bandits" :message "Great post!" :time "12345" :author "Nick"})
+  (repo/save-comment {:repo :postgres} {:post-id "clojure-bandits" :message "This post was ight" :time "999" :author "Jeremy"})
+  (repo/save-comment {:repo :postgres} {:post-id "foo" :message "cool post!"}))

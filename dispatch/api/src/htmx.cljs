@@ -42,13 +42,12 @@
 
 (defn gen-comments-form
   [{:keys [comment-form-id
-           comment-list-div-id
-           post-comment-url]
+           comment-list-div-id]
     :as config}
    post-id]
   [:form
    {:id comment-form-id
-    :hx-post post-comment-url
+    :hx-post "/comments"
     :hx-swap "afterbegin"
     :hx-target (str "#" comment-list-div-id)
     :hx-trigger "submit"
@@ -66,7 +65,6 @@
   [user-config]
   (let [defaults {:comment-form-id "comment-form"
                   :comment-list-div-id "comments-list"
-                  :post-comment-url "http://localhost:3000/comments"
                   :author-input-id "author-input"
                   :message-input-id "message-input"}]
     (merge defaults user-config)))
