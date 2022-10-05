@@ -24,13 +24,13 @@ module "db" {
   skip_final_snapshot = true
 
   serverlessv2_scaling_configuration = {
-    min_capacity = 1
-    max_capacity = 2
+    min_capacity = 0.5
+    max_capacity = 1
   }
 
   instance_class = "db.serverless"
   instances = {
     writer = {}
-    reader = {}
+    # reader = {}
   }
 }
