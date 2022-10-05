@@ -1,5 +1,3 @@
 variable "env" {}
+variable "region" {}
 variable "app_name" {}
-variable "vpc_id" {}
-variable "subnets" {}
-variable "cidr_blocks" {}

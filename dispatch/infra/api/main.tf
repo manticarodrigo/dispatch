@@ -48,11 +48,6 @@ resource "aws_lambda_function" "api" {
 
   role = aws_iam_role.api.arn
 
-  vpc_config {
-    subnet_ids         = var.subnets
-    security_group_ids = var.security_group_ids
-  }
-
   environment {
     variables = {
       "APP_ENV"    = var.env
