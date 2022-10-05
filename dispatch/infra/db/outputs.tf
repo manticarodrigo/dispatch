@@ -23,4 +23,3 @@ output "cluster_master_username" {
 output "cluster_security_group_id" {
   value = module.db.security_group_id
 }
-

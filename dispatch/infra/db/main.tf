@@ -6,11 +6,9 @@ data "aws_rds_engine_version" "postgresql" {
 module "db" {
   source = "terraform-aws-modules/rds-aurora/aws"
 
-  name              = "${var.app_name}-db-${var.env}"
-  engine            = data.aws_rds_engine_version.postgresql.engine
-  engine_mode       = "provisioned"
-  engine_version    = data.aws_rds_engine_version.postgresql.version
-  storage_encrypted = true
+  name           = "${var.app_name}-db-${var.env}"
+  engine         = data.aws_rds_engine_version.postgresql.engine
+  engine_version = data.aws_rds_engine_version.postgresql.version
 
   vpc_id                = var.vpc_id
   subnets               = var.subnets
@@ -23,14 +21,12 @@ module "db" {
   apply_immediately   = true
   skip_final_snapshot = true
 
-  serverlessv2_scaling_configuration = {
-    min_capacity = 0.5
-    max_capacity = 1
-  }
+  enabled_cloudwatch_logs_exports = ["postgresql"]
 
-  instance_class = "db.serverless"
   instances = {
-    writer = {}
-    # reader = {}
+    1 = {
+      instance_class      = "db.t2.micro"
+      publicly_accessible = true
+    }
   }
 }
