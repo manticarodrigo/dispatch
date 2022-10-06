@@ -4,6 +4,37 @@ locals {
 }
 
 
+# Route53
+
+data "aws_route53_zone" "main" {
+  name = var.domain_name
+}
+
+resource "aws_route53_record" "api_cert_dns" {
+  allow_overwrite = true
+  name            = tolist(aws_acm_certificate.api_cert.domain_validation_options)[0].resource_record_name
+  records         = [tolist(aws_acm_certificate.api_cert.domain_validation_options)[0].resource_record_value]
+  type            = tolist(aws_acm_certificate.api_cert.domain_validation_options)[0].resource_record_type
+  zone_id         = data.aws_route53_zone.main.zone_id
+  ttl             = 60
+}
+
+# ACM
+
+resource "aws_acm_certificate" "api_cert" {
+  domain_name       = local.domain_name
+  validation_method = "DNS"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_acm_certificate_validation" "api_cert_validate" {
+  certificate_arn         = aws_acm_certificate.api_cert.arn
+  validation_record_fqdns = [aws_route53_record.api_cert_dns.fqdn]
+}
+
 # S3
 
 resource "aws_s3_bucket" "api" {
@@ -143,20 +174,11 @@ resource "aws_apigatewayv2_route" "api" {
   target    = "integrations/${aws_apigatewayv2_integration.api.id}"
 }
 
-resource "aws_acm_certificate" "api" {
-  domain_name       = local.domain_name
-  validation_method = "DNS"
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
 resource "aws_apigatewayv2_domain_name" "api" {
   domain_name = local.domain_name
 
   domain_name_configuration {
-    certificate_arn = aws_acm_certificate.api.arn
+    certificate_arn = aws_acm_certificate.api_cert.arn
     endpoint_type   = "REGIONAL"
     security_policy = "TLS_1_2"
   }
@@ -181,45 +203,4 @@ resource "aws_lambda_permission" "api" {
   principal     = "apigateway.amazonaws.com"
 
   source_arn = "${aws_apigatewayv2_api.api.execution_arn}/*/*"
-}
-
-# Route53
-
-data "aws_route53_zone" "main" {
-  name = var.domain_name
-}
-
-resource "aws_route53_record" "api" {
-  for_each = {
-    for dvo in aws_acm_certificate.api.domain_validation_options : dvo.domain_name => {
-      name   = dvo.resource_record_name
-      record = dvo.resource_record_value
-      type   = dvo.resource_record_type
-    }
-  }
-
-  allow_overwrite = true
-  name            = each.value.name
-  records         = [each.value.record]
-  ttl             = 60
-  type            = each.value.type
-  zone_id         = data.aws_route53_zone.main.zone_id
-}
-
-
-resource "aws_route53_record" "api-a" {
-  name    = aws_apigatewayv2_domain_name.api.domain_name
-  type    = "A"
-  zone_id = data.aws_route53_zone.main.zone_id
-
-  alias {
-    name                   = aws_apigatewayv2_domain_name.api.domain_name_configuration[0].target_domain_name
-    zone_id                = aws_apigatewayv2_domain_name.api.domain_name_configuration[0].hosted_zone_id
-    evaluate_target_health = false
-  }
-}
-
-resource "aws_acm_certificate_validation" "api" {
-  certificate_arn         = aws_acm_certificate.api.arn
-  validation_record_fqdns = [for record in aws_route53_record.api : record.fqdn]
 }
