@@ -1,9 +1,9 @@
 exports.up = (pgm) => {
-  pgm.createExtension("uuid-ossp", {
+  pgm.createExtension('uuid-ossp', {
     ifNotExists: true,
-  });
-};
+  })
+}
 
 exports.down = (pgm) => {
-  pgm.dropExtension("uuid-ossp");
-};
+  pgm.dropExtension('uuid-ossp')
+}
