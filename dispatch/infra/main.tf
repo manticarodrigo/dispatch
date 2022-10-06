@@ -48,11 +48,11 @@ module "api" {
   env         = var.env
   domain_name = var.domain_name
   app_name    = var.app_name
-  db_host     = module.db.cluster_endpoint
-  db_name     = module.db.cluster_database_name
-  db_port     = module.db.cluster_port
-  db_pass     = module.db.cluster_master_password
-  db_user     = module.db.cluster_master_username
+  db_host     = module.db.endpoint
+  db_name     = module.db.name
+  db_port     = module.db.port
+  db_pass     = module.db.password
+  db_user     = module.db.username
 }
 
 module "ui" {

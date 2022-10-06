@@ -1,21 +1,21 @@
-output "cluster_endpoint" {
-  value = aws_rds_cluster.cluster.endpoint
+output "endpoint" {
+  value = aws_db_instance.db_master.endpoint
 }
 
-output "cluster_database_name" {
-  value = aws_rds_cluster.cluster.database_name
+output "name" {
+  value = aws_db_instance.db_master.db_name
 }
 
-output "cluster_port" {
-  value = aws_rds_cluster.cluster.port
+output "port" {
+  value = aws_db_instance.db_master.port
 }
 
-output "cluster_master_password" {
-  value     = aws_rds_cluster.cluster.master_password
+output "password" {
+  value     = aws_db_instance.db_master.password
   sensitive = true
 }
 
-output "cluster_master_username" {
-  value     = aws_rds_cluster.cluster.master_username
+output "username" {
+  value     = aws_db_instance.db_master.username
   sensitive = true
 }
