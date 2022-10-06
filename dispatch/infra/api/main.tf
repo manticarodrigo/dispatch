@@ -19,6 +19,18 @@ resource "aws_route53_record" "api_cert_dns" {
   ttl             = 60
 }
 
+resource "aws_route53_record" "api_a" {
+  name    = aws_apigatewayv2_domain_name.api.domain_name
+  type    = "A"
+  zone_id = data.aws_route53_zone.main.zone_id
+
+  alias {
+    name                   = aws_apigatewayv2_domain_name.api.domain_name_configuration[0].target_domain_name
+    zone_id                = aws_apigatewayv2_domain_name.api.domain_name_configuration[0].hosted_zone_id
+    evaluate_target_health = false
+  }
+}
+
 # ACM
 
 resource "aws_acm_certificate" "api_cert" {

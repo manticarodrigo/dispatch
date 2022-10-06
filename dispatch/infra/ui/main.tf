@@ -20,6 +20,18 @@ resource "aws_route53_record" "ui_cert_dns" {
   ttl             = 60
 }
 
+resource "aws_route53_record" "ui_a" {
+  zone_id = data.aws_route53_zone.main.zone_id
+  name    = local.domain_name
+  type    = "A"
+
+  alias {
+    name                   = aws_cloudfront_distribution.s3_dist.domain_name
+    zone_id                = aws_cloudfront_distribution.s3_dist.hosted_zone_id
+    evaluate_target_health = false
+  }
+}
+
 # ACM
 
 resource "aws_acm_certificate" "ui_cert" {
