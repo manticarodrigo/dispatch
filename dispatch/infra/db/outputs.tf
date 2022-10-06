@@ -1,5 +1,5 @@
-output "endpoint" {
-  value = aws_db_instance.db_master.endpoint
+output "host" {
+  value = aws_db_instance.db_master.address
 }
 
 output "name" {

@@ -48,7 +48,7 @@ module "api" {
   env         = var.env
   domain_name = var.domain_name
   app_name    = var.app_name
-  db_host     = module.db.endpoint
+  db_host     = module.db.host
   db_name     = module.db.name
   db_port     = module.db.port
   db_pass     = module.db.password
