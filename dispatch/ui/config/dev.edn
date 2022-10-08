@@ -1,5 +1,5 @@
 {:closure-defines
- {app.config/API_DOMAIN "api.dispatch.ambito.app"
+ {app.config/API_URL "http://localhost:3000"
   app.config/REGION "US"
   app.config/LANGUAGE "en"
   app.config/GOOGLE_MAPS_API_KEY "AIzaSyAVgq9NMzbNqubtOPSoPHpyEYYtxGJdbhs"}}

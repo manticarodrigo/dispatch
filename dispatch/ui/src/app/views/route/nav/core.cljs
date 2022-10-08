@@ -11,7 +11,7 @@
   [:<>
    [container (class-names class "flex flex-col")
     [:<>
-     [:f> header "flex-none"]
-     [:f> controls "flex-none"]
-     [:f> summary "flex-none"]
-     [:f> overview "grow"]]]])
+     [header "flex-none"]
+     [controls "flex-none"]
+     [summary "flex-none"]
+     [overview "grow"]]]])

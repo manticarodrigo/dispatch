@@ -4,18 +4,20 @@
   "scripts": {
     "ancient": "clojure -Sdeps '{:deps {com.github.liquidz/antq {:mvn/version \"RELEASE\"}}}' -m antq.core",
     "report": "shadow-cljs run shadow.cljs.build-report app target/build-report.html",
-    "watch": "sh -c \"shadow-cljs watch app --config-merge '$(cat ./config/dev.edn | xargs)'\"",
-    "release": "sh -c \"shadow-cljs release app --config-merge '$(cat ./config/prod.edn | xargs)'\""
+    "watch": "shadow-cljs watch app --config-merge ./config/dev.edn",
+    "release": "shadow-cljs release app --config-merge ./config/prod.edn"
   },
   "dependencies": {
     "@capacitor/core": "^4.0.1",
     "@capacitor/geolocation": "^4.0.1",
     "@googlemaps/js-api-loader": "^1.14.3",
     "@headlessui/react": "^1.6.6",
+    "axios": "^1.1.2",
     "highlight.js": "11.5.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "react-feather": "^2.0.10"
+    "react-feather": "^2.0.10",
+    "react-router-dom": "^6.4.2"
   },
   "devDependencies": {
     "postcss": "^8.4.16",

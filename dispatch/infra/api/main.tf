@@ -94,7 +94,6 @@ resource "aws_lambda_function" "api" {
   environment {
     variables = {
       "APP_ENV"    = var.env
-      "BASE_URL"   = local.domain_name
       "PGHOST"     = var.db_host
       "PGDATABASE" = var.db_name
       "PGPORT"     = var.db_port

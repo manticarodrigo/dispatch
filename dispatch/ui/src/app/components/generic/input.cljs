@@ -7,7 +7,10 @@
 (def input-class (class-names button-class "w-full"))
 
 (defn input [{id :id
+              type :type
               label :label
+              value :value
+              required :required
               class :class
               on-change :on-change
               on-text :on-text}]
@@ -15,7 +18,9 @@
    [:label {:for id :class label-class}
     label]
    [:input {:id id
-            :type "text"
+            :type (or type "text")
+            :value value
+            :required required
             :class input-class
             :on-change (fn [e]
                          (when on-change (on-change e))
