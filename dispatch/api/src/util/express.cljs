@@ -1,5 +1,7 @@
 (ns util.express
-  (:require [goog.object :as gobj]))
+  (:require [goog.object :as gobj]
+            [cljs-bean.core :refer (->js)]
+            [util.sequelize :refer (parse-error)]))
 
 (defn extract-param
   [param req]
@@ -29,3 +31,11 @@
         param-kw-names (map (comp keyword :name) params)
         all-params (into {} (map vector param-kw-names values))]
     (into {} (filter (comp not-empty val) all-params))))
+
+(defn send [res status body]
+  (-> res (.status status) (.send (->js body))))
+
+(defn handle-error-factory [res]
+  (fn [e]
+    (let [[status body] (parse-error e)]
+      (send res status body))))

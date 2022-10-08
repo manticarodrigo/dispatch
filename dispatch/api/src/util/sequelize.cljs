@@ -1,5 +1,6 @@
 (ns util.sequelize
   (:require ["sequelize" :refer (Sequelize DataTypes)]
+            [cljs-bean.core :refer (->js)]
             [config]
             [util.anom :as anom]))
 
@@ -17,6 +18,10 @@
     "/"
     config/PGDATABASE)))
 
+(defn sync []
+  (-> (.query sequelize "CREATE EXTENSION IF NOT EXISTS postgis;")
+      (.then (.sync sequelize #js{:alter true}))))
+
 (defn gen-id []
   {:type (.-UUID DataTypes)
    :defaultValue (.-UUIDV4 DataTypes)
@@ -26,7 +31,6 @@
 (defn parse-error
   "returns http status code and anom map tuple"
   [e]
-  (js/console.log e)
   (let [name (.-name e)
         errors (.-errors e)
         mapped-errors (mapv
@@ -43,3 +47,10 @@
       [400 (anom/incorrect :validation-error mapped-errors)
        :else
        [500 (anom/fault :unknown-error)]])))
+
+(defn append
+  "takes model name, column name, value, and where clause"
+  [m c v w]
+  (.update m
+           (->js (assoc {} (keyword c) (.fn sequelize "array_append" (.col sequelize c) v)))
+           (->js {:where w})))
