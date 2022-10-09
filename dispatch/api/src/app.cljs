@@ -7,7 +7,7 @@
    [config]
    [deps]
    [model.user]
-   [util.sequelize :refer (sequelize-middleware-factory close-sequelize)]
+   [util.sequelize :refer (open-sequelize close-sequelize)]
    [handlers.auth :refer (register login)]))
 
 (def dev? (= config/STAGE "dev"))
@@ -22,8 +22,6 @@
                   (.set "Access-Control-Allow-Methods" "GET, POST")
                   (.set "Access-Control-Allow-Headers" "content-type"))
                 (next)))
-    (.use app (sequelize-middleware-factory (fn [sequelize]
-                                              (model.user/init sequelize))))
     (.post app "/register" register)
     (.post app "/login" login)
     app))
@@ -38,8 +36,14 @@
 (def express-app (create-app))
 (def serverless-app (serverless express-app))
 
-(when dev? (start-server express-app))
+(defn boostrap-models [sequelize]
+  (model.user/init sequelize))
+
+(when dev?
+  (open-sequelize boostrap-models)
+  (start-server express-app))
 
 #js {:handler (fn [event context]
-                (p/let [_ (serverless-app event context)
+                (p/let [_ (open-sequelize boostrap-models)
+                        _ (serverless-app event context)
                         _ (close-sequelize)]))}

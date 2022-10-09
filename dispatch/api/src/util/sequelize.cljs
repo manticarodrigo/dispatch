@@ -39,16 +39,14 @@
   (when (.hasOwnProperty (.. sequelize -connectionManager) "getConnection")
     (js-delete (.. sequelize -connectionManager) "getConnection")))
 
+(defn open-sequelize [init-models]
+  (p/let [loaded (some? @!sequelize)
+          sequelize (or @!sequelize (load-sequelize init-models))
+          _ (reset! !sequelize sequelize)
+          _ (when loaded (reinit-sequelize sequelize))]))
+
 (defn close-sequelize []
   (when @!sequelize (.close (.. @!sequelize -connectionManager))))
-
-(defn sequelize-middleware-factory [init-models]
-  (fn [_ res next]
-    (p/let [loaded (some? @!sequelize)
-            sequelize (or @!sequelize (load-sequelize init-models))
-            _ (reset! !sequelize sequelize)
-            _ (when loaded (reinit-sequelize sequelize))]
-      (next))))
 
 (defn gen-id []
   {:type (.-UUID DataTypes)
