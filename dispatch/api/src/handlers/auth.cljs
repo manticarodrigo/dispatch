@@ -14,8 +14,8 @@
                      {:type :body :name "lastName"}
                      {:type :body :name "email"}
                      {:type :body :name "password"}] req)
-           user (model.user/create payload)]
-     (send res 200 user))
+           session-id (model.user/create payload)]
+     (send res 200 {:sessionId session-id}))
    (p/catch (handle-error-factory res))))
 
 (defn login

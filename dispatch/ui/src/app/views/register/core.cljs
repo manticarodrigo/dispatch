@@ -4,6 +4,7 @@
    [reagent.core :as r]
    [cljs-bean.core :refer (->js)]
    [app.config :as config]
+   [app.utils.cookie :refer (create-session)]
    [app.components.generic.input :refer (input)]
    [app.components.generic.button :refer (button)]))
 
@@ -21,7 +22,7 @@
                 (fn [e]
                   (.preventDefault e)
                   (-> (.post axios (str config/API_URL "/register") (->js @s))
-                      (.then #(prn %))
+                      (.then #(create-session (-> % .-data .-sessionId)))
                       (.catch #(prn %))))}
          [input {:id "firstName"
                  :label "First Name"

@@ -29,8 +29,12 @@
 
 (defn create [payload]
   (p/let [{:keys [password]} payload
-          encrypted-password (when password (encrypt-string password))]
-    (.create User (->js (assoc payload :password encrypted-password)))))
+          encrypted-password (when password (encrypt-string password))
+          session-id (random-hex)
+          _ (.create User (->js (-> payload
+                                    (assoc :password encrypted-password)
+                                    (assoc :sessions [session-id]))))]
+    session-id))
 
 (defn create-session [payload]
   (p/let [{:keys [user-id user-password password]} payload

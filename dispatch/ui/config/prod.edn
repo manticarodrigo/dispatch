@@ -1,5 +1,6 @@
 {:closure-defines
- {app.config/API_URL "https://api.dispatch.ambito.app"
-  app.config/REGION "US"
+ {app.config/REGION "US"
   app.config/LANGUAGE "en"
+  app.config/API_URL "https://api.dispatch.ambito.app"
+  app.config/SECURE_COOKIE true
   app.config/GOOGLE_MAPS_API_KEY "AIzaSyAVgq9NMzbNqubtOPSoPHpyEYYtxGJdbhs"}}

@@ -5,6 +5,7 @@
    [reagent.dom :as rd]
    [re-frame.core :as rf]
    [app.events :as events]
+   [app.components.protected-route :refer (protected-route)]
    [app.views.register.core :refer (register-view)]
    [app.views.login.core :refer (login-view)]
    [app.views.route.core :refer (route-view)]))
@@ -17,7 +18,7 @@
    [:> Routes
     [:> Route {:path "/register" :element (r/as-element [register-view])}]
     [:> Route {:path "/login" :element (r/as-element [login-view])}]
-    [:> Route {:path "/route" :element (r/as-element [route-view])}]]])
+    [:> Route {:path "/route" :element (r/as-element [protected-route [route-view]])}]]])
 
 (defn ^:dev/after-load mount-root []
   (rf/clear-subscription-cache!)
