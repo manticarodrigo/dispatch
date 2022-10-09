@@ -3,12 +3,14 @@
    ["express$default" :as express]
    ["serverless-http$default" :as serverless]
    ["http" :as http]
+   [promesa.core :as p]
    [config]
    [deps]
-   [handlers.sync :refer (sync)]
+   [model.user]
+   [util.sequelize :refer (sequelize-middleware-factory close-sequelize)]
    [handlers.auth :refer (register login)]))
 
-(def dev? (= config/APP_ENV "dev"))
+(def dev? (= config/STAGE "dev"))
 
 (defn create-app
   []
@@ -20,7 +22,8 @@
                   (.set "Access-Control-Allow-Methods" "GET, POST")
                   (.set "Access-Control-Allow-Headers" "content-type"))
                 (next)))
-    (.get app "/sync" sync)
+    (.use app (sequelize-middleware-factory (fn [sequelize]
+                                              (model.user/init sequelize))))
     (.post app "/register" register)
     (.post app "/login" login)
     app))
@@ -37,4 +40,6 @@
 
 (when dev? (start-server express-app))
 
-#js {:handler serverless-app}
+#js {:handler (fn [event context]
+                (p/let [_ (serverless-app event context)
+                        _ (close-sequelize)]))}

@@ -7,4 +7,4 @@
   (-> crypto (.randomBytes 32) (.toString "hex")))
 
 (defn encrypt-string [string]
-  (.hash bcrypt string config/APP_SALT))
+  (.hash bcrypt string config/SALT))

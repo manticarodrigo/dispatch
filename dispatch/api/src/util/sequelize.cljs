@@ -1,26 +1,54 @@
 (ns util.sequelize
   (:require ["sequelize" :refer (Sequelize DataTypes)]
             [cljs-bean.core :refer (->js)]
+            [promesa.core :as p]
             [config]
             [util.anom :as anom]))
 
-(def sequelize
-  (Sequelize.
-   (str
-    "postgres://"
-    config/PGUSER
-    ":"
-    config/PGPASSWORD
-    "@"
-    config/PGHOST
-    ":"
-    config/PGPORT
-    "/"
-    config/PGDATABASE)))
+(def !sequelize (atom nil))
 
-(defn sync []
+
+(defn sync-sequelize [sequelize]
   (-> (.query sequelize "CREATE EXTENSION IF NOT EXISTS postgis;")
       (.then (.sync sequelize #js{:alter true}))))
+
+(defn load-sequelize [init-models]
+  (let [sequelize (Sequelize.
+                   (str
+                    "postgres://"
+                    config/PGUSER
+                    ":"
+                    config/PGPASSWORD
+                    "@"
+                    config/PGHOST
+                    ":"
+                    config/PGPORT
+                    "/"
+                    config/PGDATABASE)
+                   (->js {:pool {:max 2
+                                 :min 0
+                                 :idle 0
+                                 :acquire 3000
+                                 :evict 10000}}))]
+    (init-models sequelize)
+    (-> (sync-sequelize sequelize)
+        (.then (fn [] sequelize)))))
+
+(defn reinit-sequelize [sequelize]
+  (.initPools (.. sequelize -connectionManager))
+  (when (.hasOwnProperty (.. sequelize -connectionManager) "getConnection")
+    (js-delete (.. sequelize -connectionManager) "getConnection")))
+
+(defn close-sequelize []
+  (when @!sequelize (.close (.. @!sequelize -connectionManager))))
+
+(defn sequelize-middleware-factory [init-models]
+  (fn [_ res next]
+    (p/let [loaded (some? @!sequelize)
+            sequelize (or @!sequelize (load-sequelize init-models))
+            _ (reset! !sequelize sequelize)
+            _ (when loaded (reinit-sequelize sequelize))]
+      (next))))
 
 (defn gen-id []
   {:type (.-UUID DataTypes)
@@ -52,5 +80,5 @@
   "takes model name, column name, value, and where clause"
   [m c v w]
   (.update m
-           (->js (assoc {} (keyword c) (.fn sequelize "array_append" (.col sequelize c) v)))
+           (->js (assoc {} (keyword c) (.fn @!sequelize "array_append" (.col @!sequelize c) v)))
            (->js {:where w})))

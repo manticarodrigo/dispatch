@@ -4,9 +4,7 @@
   "main": "app.mjs",
   "license": "UNLICENSED",
   "scripts": {
-    "dev": ". .env && nodemon app.mjs -e mjs,cljs",
-    "build": "zip -r app.zip .",
-    "migrate": "node-pg-migrate"
+    "watch": "nodemon -e js,cljs"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
