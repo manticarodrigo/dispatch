@@ -9,8 +9,8 @@
 
 
 (defn sync-sequelize [sequelize]
-  (-> (.query sequelize "CREATE EXTENSION IF NOT EXISTS postgis;")
-      (.then (.sync sequelize #js{:alter true}))))
+  (p/let [_ (.query sequelize "CREATE EXTENSION IF NOT EXISTS postgis;")
+          _ (.sync sequelize #js{:alter true})]))
 
 (defn load-sequelize [init-models]
   (let [sequelize (Sequelize.
@@ -43,10 +43,11 @@
   (p/let [loaded (some? @!sequelize)
           sequelize (or @!sequelize (load-sequelize init-models))
           _ (reset! !sequelize sequelize)
-          _ (when loaded (reinit-sequelize sequelize))]))
+          _ (when loaded (reinit-sequelize sequelize))]
+    sequelize))
 
-(defn close-sequelize []
-  (when @!sequelize (.close (.. @!sequelize -connectionManager))))
+(defn close-sequelize [sequelize]
+  (.close (.. sequelize -connectionManager)))
 
 (defn gen-id []
   {:type (.-UUID DataTypes)
