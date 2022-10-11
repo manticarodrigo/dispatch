@@ -1,4 +1,3 @@
-
 locals {
   domain_name = "api.${var.app_name}.${var.domain_name}"
 }
@@ -91,11 +90,6 @@ resource "aws_lambda_function" "api" {
 
   role = aws_iam_role.api.arn
 
-  vpc_config {
-    subnet_ids         = var.subnet_ids
-    security_group_ids = [var.security_group_id]
-  }
-
   environment {
     variables = {
       "STAGE"      = var.env
@@ -115,7 +109,7 @@ resource "aws_cloudwatch_log_group" "api-lambda" {
 }
 
 resource "aws_iam_role" "api" {
-  name = "${var.app_name}-api"
+  name = "${var.app_name}-api-${var.env}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -134,11 +128,6 @@ resource "aws_iam_role" "api" {
 resource "aws_iam_role_policy_attachment" "api" {
   role       = aws_iam_role.api.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
-}
-
-resource "aws_iam_role_policy_attachment" "proxy" {
-  role       = aws_iam_role.api.name
-  policy_arn = "arn:aws:rds-db:${var.region}:${var.account_id}:dbuser:${var.proxy_id}"
 }
 
 # API Gateway

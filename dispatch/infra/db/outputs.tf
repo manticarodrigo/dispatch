@@ -1,13 +1,5 @@
-output "lambda_security_group_id" {
-  value = aws_security_group.lambda.id
-}
-
-output "proxy_id" {
-  value = aws_db_proxy.db_proxy.id
-}
-
 output "host" {
-  value = aws_db_proxy.db_proxy.endpoint
+  value = aws_db_instance.master.address
 }
 
 output "name" {
