@@ -1,3 +1,11 @@
+output "lambda_security_group_id" {
+  value = aws_security_group.lambda.id
+}
+
+output "proxy_id" {
+  value = aws_db_proxy.db_proxy.id
+}
+
 output "host" {
   value = aws_db_proxy.db_proxy.endpoint
 }
@@ -18,8 +26,4 @@ output "password" {
 output "username" {
   value     = aws_db_instance.master.username
   sensitive = true
-}
-
-output "lambda_security_group_id" {
-  value = aws_security_group.lambda.id
 }

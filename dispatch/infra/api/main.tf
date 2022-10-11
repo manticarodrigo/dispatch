@@ -136,6 +136,11 @@ resource "aws_iam_role_policy_attachment" "api" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
 }
 
+resource "aws_iam_role_policy_attachment" "proxy" {
+  role       = aws_iam_role.api.name
+  policy_arn = "arn:aws:rds-db:${var.region}:${var.account_id}:dbuser:${var.proxy_id}"
+}
+
 # API Gateway
 
 resource "aws_apigatewayv2_api" "api" {

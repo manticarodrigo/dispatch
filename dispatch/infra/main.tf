@@ -52,10 +52,13 @@ module "db" {
 module "api" {
   source            = "./api"
   env               = var.env
+  region            = var.aws_region
+  account_id        = var.aws_account_id
   domain_name       = var.domain_name
   app_name          = var.app_name
   subnet_ids        = module.vpc.default_subnet_ids
   security_group_id = module.db.lambda_security_group_id
+  proxy_id          = module.db.proxy_id
   db_host           = module.db.host
   db_name           = module.db.name
   db_port           = module.db.port
