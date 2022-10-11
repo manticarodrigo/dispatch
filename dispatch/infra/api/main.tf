@@ -91,9 +91,14 @@ resource "aws_lambda_function" "api" {
 
   role = aws_iam_role.api.arn
 
+  vpc_config {
+    subnet_ids         = var.subnet_ids
+    security_group_ids = [var.security_group_id]
+  }
+
   environment {
     variables = {
-      "STAGE"    = var.env
+      "STAGE"      = var.env
       "PGHOST"     = var.db_host
       "PGDATABASE" = var.db_name
       "PGPORT"     = var.db_port

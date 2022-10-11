@@ -36,23 +36,31 @@ variable "app_name" {
 
 # modules
 
+module "vpc" {
+  source = "./vpc"
+}
+
 module "db" {
-  source   = "./db"
-  env      = var.env
-  region   = var.aws_region
-  app_name = var.app_name
+  source     = "./db"
+  env        = var.env
+  region     = var.aws_region
+  app_name   = var.app_name
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.default_subnet_ids
 }
 
 module "api" {
-  source      = "./api"
-  env         = var.env
-  domain_name = var.domain_name
-  app_name    = var.app_name
-  db_host     = module.db.host
-  db_name     = module.db.name
-  db_port     = module.db.port
-  db_pass     = module.db.password
-  db_user     = module.db.username
+  source            = "./api"
+  env               = var.env
+  domain_name       = var.domain_name
+  app_name          = var.app_name
+  subnet_ids        = module.vpc.default_subnet_ids
+  security_group_id = module.db.lambda_security_group_id
+  db_host           = module.db.host
+  db_name           = module.db.name
+  db_port           = module.db.port
+  db_pass           = module.db.password
+  db_user           = module.db.username
 }
 
 module "ui" {
