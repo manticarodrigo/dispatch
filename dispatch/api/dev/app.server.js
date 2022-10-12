@@ -8,7 +8,7 @@ app.use(express.json())
 
 app.use('/*', async (req, res) => {
   const result = await lambdaLocal.execute({
-    lambdaPath: path.join(__dirname, 'app.local'),
+    lambdaPath: path.join(__dirname, './app.local'),
     lambdaHandler: 'handler',
     envfile: path.join(__dirname, '.env'),
     event: {

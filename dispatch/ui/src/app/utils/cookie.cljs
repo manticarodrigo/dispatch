@@ -1,6 +1,6 @@
 (ns app.utils.cookie
   (:require ["cookie" :refer (serialize parse)]
-            [goog.object :as g]
+            [goog.object :as gobj]
             [cljs-bean.core :refer (->js)]
             [app.config :as config]))
 
@@ -20,7 +20,7 @@
 
 (defn get-session []
   (let [cookie-str (.. js/document -cookie)]
-    (g/get (parse cookie-str) cookie-name)))
+    (gobj/get (parse cookie-str) cookie-name)))
 
 (defn remove-session []
   (let [opts {:domain (.-hostname js/window.location)

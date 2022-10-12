@@ -33,7 +33,7 @@
     (when (> (count legs) 0)
       [:section {:class (class-names padding)}
        [:h2 {:class (class-names "mb-4 flex font-medium text-l")}
-        (tr [:views.route.overview/title])]
+        (tr [:view.route.overview/title])]
        [:ol {:class (class-names class "overflow-y-auto")}
         (doall
          (for [[idx

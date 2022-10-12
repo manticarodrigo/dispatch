@@ -12,12 +12,20 @@
     :location/watch "Watch current location"
     :location/search "Set origin address"
     :location/search-empty "No results found"
+    :view {:login
+           {:title "Login"
+            :fields {:email "Email"
+                     :password "Password"
+                     :submit "Submit"}}
+           :route
+           {:distance "Total distance"
+            :duration "Estimated time"
+            :summary {:title "Summary"}
+            :overview {:title "Route"}}}
+    :error {:unknown "An unknown error occurred."
+            :invalid-password "The supplied password is incorrect."}}
 
-    :views {:route
-            {:distance "Total distance"
-             :duration "Estimated time"
-             :summary {:title "Summary"}
-             :overview {:title "Route"}}}}
+
    :es
    {:units/kilometers "kilometros"
     :units/minutes "minutos"
@@ -27,11 +35,18 @@
     :location/watch "Observar ubicación actual"
     :location/search "Ingresar ubicación de origen"
     :location/search-empty "No se han encontrado resultados"
-    :views {:route
-            {:distance "Distancia total"
-             :duration "Tiempo estimado"
-             :summary {:title "Resumen"}
-             :overview {:title "Ruta"}}}}})
+    :view {:login
+           {:title "Ingresar"
+            :fields {:email "Correo Electrónico"
+                     :password "Contraseña"
+                     :submit "Enviar"}}
+           :route
+           {:distance "Distancia total"
+            :duration "Tiempo estimado"
+            :summary {:title "Resumen"}
+            :overview {:title "Ruta"}}}
+    :error {:unknown "Un error desconocido ocurrió."
+            :invalid-password "La contraseña proporcionada es incorrecta."}}})
 
 (def ^:private opts {:dict dict})
 
