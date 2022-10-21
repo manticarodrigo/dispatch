@@ -1,22 +1,31 @@
 const path = require('path')
 const express = require('express')
+const cors = require('cors')
 const lambdaLocal = require('lambda-local')
+const url = require('url')
+
+// lambdaLocal.setLogger({ ...console, transports: true, log: () => null })
 
 const app = express()
 
-app.use(express.json())
+app.use(cors({ origin: '*' }), express.json())
 
-app.use('/*', async (req, res) => {
+app.use(async (req, res) => {
   const result = await lambdaLocal.execute({
+    // verboseLevel: 0,
     lambdaPath: path.join(__dirname, './app.local'),
     lambdaHandler: 'handler',
     envfile: path.join(__dirname, '.env'),
     event: {
-      httpMethod: req.method,
-      path: req.originalUrl,
+      version: '2.0',
+      requestContext: {
+        http: {
+          method: req.method,
+        },
+      },
       headers: req.headers,
-      body: req.body,
-      queryStringParameters: req.query,
+      body: JSON.stringify(req.body),
+      rawQueryString: url.parse(req.url).query,
     },
   })
 

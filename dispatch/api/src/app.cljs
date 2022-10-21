@@ -1,36 +1,52 @@
 (ns app
   (:require
-   ["express$default" :as express]
-   ["serverless-http$default" :as serverless]
+   ["@apollo/server" :refer (ApolloServer)]
+   ["@as-integrations/aws-lambda" :refer (startServerAndCreateLambdaHandler)]
+   [cljs-bean.core :refer (->js)]
    [promesa.core :as p]
    [config]
    [deps]
-   [model.user]
-   [util.sequelize :refer (open-sequelize close-sequelize)]
-   [handlers.auth :refer (register login)]))
+   [models.user]
+   [util.sequelize :refer (open-sequelize close-sequelize sync-sequelize)]
+   [resolvers.auth :refer (login)]))
 
-(defn create-app
-  []
-  (let [app (express)]
-    (.use app (.json express))
-    (.use app (fn [_ res next]
-                (doto res
-                  (.set "Access-Control-Allow-Origin" "*")
-                  (.set "Access-Control-Allow-Methods" "GET, POST")
-                  (.set "Access-Control-Allow-Headers" "content-type"))
-                (next)))
-    (.post app "/register" register)
-    (.post app "/login" login)
-    app))
+(def type-defs "#graphql
+  type Query {
+    hello: String
+  }
+  type Mutation {
+    login(email: String, password: String): String
+  }
+")
 
-(def express-app (create-app))
-(def serverless-app (serverless express-app))
+(def resolvers {:Query {:hello (fn [] "world")}
+                :Mutation {:login login}})
 
-(defn boostrap-models [sequelize]
-  (model.user/init sequelize))
+(defn init-models [sequelize]
+  (p/let [user (models.user/init sequelize)
+          _ (sync-sequelize sequelize)]
+    {:user user}))
+
+(def options
+  (->js {:context (fn []
+                    (p/let [sequelize (open-sequelize)
+                            models (init-models sequelize)]
+                      (->js {:sequelize sequelize :models (->js models)})))}))
+
+(def plugins
+  (->js
+   [{:requestDidStart
+     (fn []
+       (->js
+        {:willSendResponse
+         (fn [res]
+           (close-sequelize (some-> res .-contextValue .-sequelize)))}))}]))
 
 #js {:handler (fn [event context]
-                (p/let [sequelize (open-sequelize boostrap-models)
-                        res (serverless-app event context)
-                        _ (close-sequelize sequelize)]
-                  res))}
+                (p/let [handler (startServerAndCreateLambdaHandler
+                                 (ApolloServer. (->js
+                                                 {:typeDefs type-defs
+                                                  :resolvers resolvers
+                                                  :plugins plugins}))
+                                 options)]
+                  (handler event context)))}

@@ -6,5 +6,5 @@
 (def PGHOST js/process.env.PGHOST)
 (def PGDATABASE js/process.env.PGDATABASE)
 (def PGPORT js/process.env.PGPORT)
-(def PGPASSWORD js/process.env.PGPASSWORD)
 (def PGUSER js/process.env.PGUSER)
+(def PGPASSWORD js/process.env.PGPASSWORD)

@@ -7,18 +7,21 @@
     "watch": "nodemon dev/app.server.js -e js,cljs"
   },
   "dependencies": {
+    "@apollo/server": "^4.0.0",
+    "@as-integrations/aws-lambda": "^1.0.0",
     "bcryptjs": "^2.4.3",
-    "express": "^4.18.1",
+    "graphql": "^16.6.0",
     "nbb": "^0.7.135",
     "pg": "^8.8.0",
-    "sequelize": "^6.24.0",
-    "serverless-http": "^3.0.2"
+    "sequelize": "^6.24.0"
   },
   "devDependencies": {
+    "cors": "^2.8.5",
     "eslint": "^8.24.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
+    "express": "^4.18.2",
     "lambda-local": "^2.0.3",
     "nodemon": "^2.0.20",
     "prettier": "^2.7.1"

@@ -12,26 +12,21 @@
   (p/let [_ (.query sequelize "CREATE EXTENSION IF NOT EXISTS postgis;")
           _ (.sync sequelize #js{:alter true})]))
 
-(defn load-sequelize [init-models]
+(defn load-sequelize []
   (let [sequelize (Sequelize.
-                   (str
-                    "postgres://"
-                    config/PGUSER
-                    ":"
-                    config/PGPASSWORD
-                    "@"
-                    config/PGHOST
-                    ":"
-                    config/PGPORT
-                    "/"
-                    config/PGDATABASE)
-                   (->js {:pool {:max 2
+                   (->js {:host config/PGHOST
+                          :database config/PGDATABASE
+                          :port config/PGPORT
+                          :username config/PGUSER
+                          :password config/PGPASSWORD
+                          :dialect "postgres"
+                          :logging false
+                          :pool {:max 2
                                  :min 0
                                  :idle 0
                                  :acquire 3000
                                  :evict 10000}}))]
-    (init-models sequelize)
-    (-> (sync-sequelize sequelize)
+    (-> (.authenticate sequelize)
         (.then (fn [] sequelize)))))
 
 (defn reinit-sequelize [sequelize]
@@ -39,9 +34,9 @@
   (when (.hasOwnProperty (.. sequelize -connectionManager) "getConnection")
     (js-delete (.. sequelize -connectionManager) "getConnection")))
 
-(defn open-sequelize [init-models]
+(defn open-sequelize []
   (p/let [loaded (some? @!sequelize)
-          sequelize (or @!sequelize (load-sequelize init-models))
+          sequelize (or @!sequelize (load-sequelize))
           _ (reset! !sequelize sequelize)
           _ (when loaded (reinit-sequelize sequelize))]
     sequelize))

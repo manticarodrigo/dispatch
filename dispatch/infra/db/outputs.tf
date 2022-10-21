@@ -10,12 +10,12 @@ output "port" {
   value = aws_db_instance.master.port
 }
 
-output "password" {
-  value     = aws_db_instance.master.password
+output "username" {
+  value     = aws_db_instance.master.username
   sensitive = true
 }
 
-output "username" {
-  value     = aws_db_instance.master.username
+output "password" {
+  value     = aws_db_instance.master.password
   sensitive = true
 }

@@ -23,7 +23,8 @@
             :summary {:title "Summary"}
             :overview {:title "Route"}}}
     :error {:unknown "An unknown error occurred."
-            :invalid-password "The supplied password is incorrect."}}
+            :invalid-password "The supplied password is incorrect."
+            :account-not-found "The account you're looking for does not exist."}}
 
 
    :es
@@ -46,7 +47,8 @@
             :summary {:title "Resumen"}
             :overview {:title "Ruta"}}}
     :error {:unknown "Un error desconocido ocurrió."
-            :invalid-password "La contraseña proporcionada es incorrecta."}}})
+            :invalid-password "La contraseña proporcionada es incorrecta."
+            :account-not-found "La cuenta que busca no existe."}}})
 
 (def ^:private opts {:dict dict})
 

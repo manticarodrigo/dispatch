@@ -56,8 +56,8 @@ module "api" {
   db_host     = module.db.host
   db_name     = module.db.name
   db_port     = module.db.port
-  db_pass     = module.db.password
   db_user     = module.db.username
+  db_pass     = module.db.password
 }
 
 module "ui" {

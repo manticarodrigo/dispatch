@@ -8,12 +8,14 @@
     "release": "shadow-cljs release app --config-merge ./config/prod.edn"
   },
   "dependencies": {
+    "@apollo/client": "^3.7.0",
     "@capacitor/core": "^4.0.1",
     "@capacitor/geolocation": "^4.0.1",
     "@googlemaps/js-api-loader": "^1.14.3",
     "@headlessui/react": "^1.6.6",
     "axios": "^1.1.2",
     "cookie": "^0.5.0",
+    "graphql": "^16.6.0",
     "highlight.js": "11.5.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",

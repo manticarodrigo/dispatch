@@ -1,4 +1,9 @@
-(ns util.anom)
+(ns util.anom
+  (:require ["graphql" :refer (GraphQLError)]
+            [cljs-bean.core :refer (->js)]))
+
+(defn gql [anom]
+  (GraphQLError. "An anomaly was detected." (->js {:extensions {:code "ANOMALY_DETECTED" :anomaly anom}})))
 
 (defn factory [category]
   (fn

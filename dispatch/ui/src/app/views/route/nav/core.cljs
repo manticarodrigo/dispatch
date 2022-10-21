@@ -8,10 +8,8 @@
    [app.views.route.nav.overview :refer (overview)]))
 
 (defn nav [class]
-  [:<>
-   [container (class-names class "flex flex-col")
-    [:<>
-     [header "flex-none"]
-     [controls "flex-none"]
-     [summary "flex-none"]
-     [overview "grow"]]]])
+  [container (class-names class "flex flex-col")
+   [header "flex-none"]
+   [controls "flex-none"]
+   [summary "flex-none"]
+   [overview "grow"]])

@@ -96,8 +96,8 @@ resource "aws_lambda_function" "api" {
       "PGHOST"     = var.db_host
       "PGDATABASE" = var.db_name
       "PGPORT"     = var.db_port
-      "PGPASSWORD" = var.db_pass
       "PGUSER"     = var.db_user
+      "PGPASSWORD" = var.db_pass
     }
   }
 }
