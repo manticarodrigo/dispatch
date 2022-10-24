@@ -2,9 +2,6 @@
   (:require ["graphql" :refer (GraphQLError)]
             [cljs-bean.core :refer (->js)]))
 
-(defn gql [anom]
-  (GraphQLError. "An anomaly was detected." (->js {:extensions {:code "ANOMALY_DETECTED" :anomaly anom}})))
-
 (defn factory [category]
   (fn
     ([reason]
@@ -47,3 +44,26 @@
 (def busy
   "backoff and retry"
   (factory :busy))
+
+(defn gql [anom]
+  (GraphQLError. "An anomaly was detected." (->js {:extensions {:code "ANOMALY_DETECTED" :anom anom}})))
+
+(defn parse-anom [e]
+  (let [name (.-name e)
+        errors (.-errors e)
+        mapped-errors (mapv
+                       (fn [r]
+                         {:message (.-message r)
+                          :path (.-path r)
+                          :value (.-value r)
+                          :validatorKey (.-validatorKey r)})
+                       errors)]
+    (cond
+      (= name "SequelizeUniqueConstraintError")
+      (conflict :unique-constraint mapped-errors)
+      (= name "SequelizeValidationError")
+      (incorrect :validation mapped-errors)
+      :else (fault :unknown))))
+
+(defn handle-resolver-error [e]
+  (gql (parse-anom e)))

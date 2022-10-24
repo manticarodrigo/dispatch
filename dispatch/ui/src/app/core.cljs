@@ -1,7 +1,7 @@
 (ns app.core
   (:require
+   ["react-dom/client" :as rc]
    [reagent.core :as r]
-   [reagent.dom :as rd]
    [re-frame.core :as rf]
    [app.events :as events]
    [app.lib.apollo-client :refer (apollo-provider)]
@@ -21,12 +21,16 @@
      ["/login" [login-view]]
      ["/route" [route-auth-wrap [route-view]]]]]])
 
-(defn ^:dev/after-load mount-root []
+(defonce root (rc/createRoot
+               (.getElementById js/document "app")))
+
+(defn render-root []
+  (.render root (r/as-element [app])))
+
+(defn after-load []
   (rf/clear-subscription-cache!)
-  (let [root-el (.getElementById js/document "app")]
-    (rd/unmount-component-at-node root-el)
-    (rd/render [app] root-el)))
+  (render-root))
 
 (defn init []
   (rf/dispatch-sync [::events/initialize-db])
-  (mount-root))
+  (render-root))

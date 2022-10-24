@@ -43,7 +43,8 @@
    {:app {:init-fn app.core/init}}
 
    :devtools
-   {:preloads [day8.re-frame-10x.preload]
+   {:after-load app.core/after-load
+    :preloads [day8.re-frame-10x.preload]
     :http-root   "public/"
     :http-port   8000}
 

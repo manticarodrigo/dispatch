@@ -12,7 +12,14 @@
     :location/watch "Watch current location"
     :location/search "Set origin address"
     :location/search-empty "No results found"
-    :view {:login
+    :view {:register
+           {:title "Register"
+            :fields {:firstName "First name"
+                     :lastName "Last name"
+                     :email "Email"
+                     :password "Password"
+                     :submit "Submit"}}
+           :login
            {:title "Login"
             :fields {:email "Email"
                      :password "Password"
@@ -36,9 +43,16 @@
     :location/watch "Observar ubicación actual"
     :location/search "Ingresar ubicación de origen"
     :location/search-empty "No se han encontrado resultados"
-    :view {:login
+    :view {:register
+           {:title "Registrar"
+            :fields {:firstName "Nombre"
+                     :lastName "Apellido"
+                     :email "Correo electrónico"
+                     :password "Contraseña"
+                     :submit "Enviar"}}
+           :login
            {:title "Ingresar"
-            :fields {:email "Correo Electrónico"
+            :fields {:email "Correo electrónico"
                      :password "Contraseña"
                      :submit "Enviar"}}
            :route
