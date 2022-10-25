@@ -31,7 +31,7 @@
                   (fn [e]
                     (.preventDefault e)
                     (-> (register (->js {:variables @!state}))
-                        (.then #(create-session (-> % ->clj :data :login)))
+                        (.then #(create-session (-> % ->clj :data :register)))
                         (.catch #(reset! !anoms (parse-anoms %)))))}
            [input {:id "firstName"
                    :label (tr [:view.register.fields/firstName])

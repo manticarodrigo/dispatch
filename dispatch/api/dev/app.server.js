@@ -15,7 +15,7 @@ app.use(async (req, res) => {
     // verboseLevel: 0,
     lambdaPath: path.join(__dirname, './app.local'),
     lambdaHandler: 'handler',
-    envfile: path.join(__dirname, '.env'),
+    envfile: path.join(__dirname, '../.env'),
     event: {
       version: '2.0',
       requestContext: {

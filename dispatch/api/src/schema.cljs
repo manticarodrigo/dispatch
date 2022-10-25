@@ -23,6 +23,4 @@
                               :validate {:len [1]}}
                   :lastName {:type (.-TEXT DataTypes)
                              :allowNull false
-                             :validate {:len [1]}}
-                  :imageUrl (.-TEXT DataTypes)
-                  :location (.GEOGRAPHY DataTypes "POINT")})))
+                             :validate {:len [1]}}})))

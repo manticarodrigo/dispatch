@@ -7,8 +7,7 @@
 (def !sequelize (atom nil))
 
 (defn sync-sequelize [sequelize]
-  (p/let [_ (.query sequelize "CREATE EXTENSION IF NOT EXISTS postgis;")
-          _ (.sync sequelize #js{:alter true})]))
+  (.sync sequelize #js{:alter true}))
 
 (defn load-sequelize []
   (let [sequelize (Sequelize.
