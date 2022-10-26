@@ -1,15 +1,14 @@
 (ns lib.apollo
   (:require ["@apollo/server" :refer (ApolloServer)]
-            ["@as-integrations/aws-lambda" :refer (startServerAndCreateLambdaHandler)]
+            ["@apollo/server/express4" :refer (expressMiddleware)]
             [cljs-bean.core :refer (->clj ->js)]
             [promesa.core :as p]
             [config]
-            [deps]
             [schema]
             [models.user]
             [lib.sequelize :refer (open-sequelize close-sequelize sync-sequelize)]
             [util.anom :as anom]
-            [resolvers.auth :refer (register login)]))
+            [resolvers.user :refer (register login delete)]))
 
 
 (def type-defs "#graphql
@@ -19,12 +18,14 @@
   type Mutation {
     register(firstName: String, lastName: String, email: String, password: String): String
     login(email: String!, password: String!): String!
+    delete(id: String, email: String): String!
   }
 ")
 
 (def resolvers {:Query {:hello (fn [] "world")}
                 :Mutation {:register register
-                           :login login}})
+                           :login login
+                           :delete delete}})
 
 (defn init-models [sequelize]
   (p/let [user (schema/user sequelize)
@@ -53,15 +54,14 @@
       (->js clj-error)
       (->js (assoc-in clj-error [:extensions :anom] (anom/fault :unknown))))))
 
-(defn create-handler []
-  (startServerAndCreateLambdaHandler
-   (ApolloServer. (->js
-                   {:typeDefs type-defs
-                    :resolvers resolvers
-                    :plugins plugins
-                    :formatError format-error}))
-   options))
+(defn create-server []
+  (p/let [server (ApolloServer. (->js
+                                 {:typeDefs type-defs
+                                  :resolvers resolvers
+                                  :plugins plugins
+                                  :formatError format-error}))
+          _ (.start server)]
+    server))
 
-(defn handler [event context]
-  (p/let [handler (create-handler)]
-    (handler event context)))
+(defn create-middleware [server]
+  (expressMiddleware server options))

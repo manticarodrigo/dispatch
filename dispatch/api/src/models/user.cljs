@@ -26,6 +26,19 @@
           _ (append sequelize model "sessions" session-id {:id user-id})]
     session-id))
 
-(defn find-by-email [context email]
-  (let [model (.. context -models -user)]
+(defn find-by-id [context payload]
+  (let [{:keys [id]} payload
+        model (.. context -models -user)]
+    (.findOne model (->js {:where {:id id}}))))
+
+(defn find-by-email [context payload]
+  (let [{:keys [email]} payload
+        model (.. context -models -user)]
     (.findOne model (->js {:where {:email email}}))))
+
+(defn delete [context payload]
+  (p/let [;; user (find-by-id context payload)
+          user (find-by-email context payload)
+          id (.. user -id)
+          _ (.destroy user)]
+    id))
