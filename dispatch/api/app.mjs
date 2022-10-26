@@ -1,7 +1,7 @@
-import { loadFile } from "nbb";
+import { loadFile } from 'nbb'
 
-await loadFile("./deps.cljs");
+await loadFile('./deps.cljs')
 
-const { handler } = await loadFile("./src/app.cljs");
+const { handler } = await loadFile('./src/app.cljs')
 
-export { handler };
+export { handler }
