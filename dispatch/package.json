@@ -1,5 +1,5 @@
 {
-  "name": "ui",
+  "name": "dispatch",
   "license": "UNLICENSED",
   "scripts": {
     "ancient": "clojure -Sdeps '{:deps {com.github.liquidz/antq {:mvn/version \"RELEASE\"}}}' -m antq.core",

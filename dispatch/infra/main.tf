@@ -60,8 +60,8 @@ module "api" {
   db_pass     = module.db.password
 }
 
-module "ui" {
-  source      = "./ui"
+module "site" {
+  source      = "./site"
   env         = var.env
   domain_name = var.domain_name
   app_name    = var.app_name
@@ -69,5 +69,5 @@ module "ui" {
 
 # outputs
 
-output "ui_bucket_name" { value = module.ui.bucket_name }
-output "ui_distribution_id" { value = module.ui.distribution_id }
+output "site_bucket_name" { value = module.site.bucket_name }
+output "site_distribution_id" { value = module.site.distribution_id }

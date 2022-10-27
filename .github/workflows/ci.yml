@@ -14,8 +14,8 @@ jobs:
       TF_VAR_aws_region: us-east-1
     runs-on: ubuntu-20.04
     outputs:
-      ui_bucket_name: ${{ steps.output.outputs.ui_bucket_name }}
-      ui_distribution_id: ${{ steps.output.outputs.ui_distribution_id }}
+      site_bucket_name: ${{ steps.output.outputs.site_bucket_name }}
+      site_distribution_id: ${{ steps.output.outputs.site_distribution_id }}
     steps:
       - name: Check out code
         uses: actions/checkout@v3
@@ -62,10 +62,10 @@ jobs:
         id: output
         run: |
           cd dispatch/infra
-          echo ::set-output name=ui_bucket_name::$(terraform output ui_bucket_name | tr -d '"')
-          echo ::set-output name=ui_distribution_id::$(terraform output ui_distribution_id | tr -d '"')
-  deploy-ui:
-    name: build and upload ui
+          echo ::set-output name=site_bucket_name::$(terraform output site_bucket_name | tr -d '"')
+          echo ::set-output name=site_distribution_id::$(terraform output site_distribution_id | tr -d '"')
+  deploy-site:
+    name: build and upload site
     needs: [infra-base]
     runs-on: ubuntu-latest
     steps:
@@ -97,7 +97,7 @@ jobs:
         with:
           node-version: "16"
       - name: Build project
-        run: cd dispatch/ui && yarn install && yarn release
+        run: cd dispatch && yarn install && yarn release
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -105,11 +105,11 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - name: Deploy to S3 bucket
-        run: aws s3 sync dispatch/public/ s3://${{ needs.infra-base.outputs.ui_bucket_name }} --delete
+        run: aws s3 sync dispatch/public/ s3://${{ needs.infra-base.outputs.site_bucket_name }} --delete
       - name: Invalidate CloudFront
         uses: chetan/invalidate-cloudfront-action@v2.4
         env:
-          DISTRIBUTION: ${{ needs.infra-base.outputs.ui_distribution_id }}
+          DISTRIBUTION: ${{ needs.infra-base.outputs.site_distribution_id }}
           PATHS: "/index.html"
           AWS_REGION: "us-east-1"
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}

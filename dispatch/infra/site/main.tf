@@ -11,30 +11,30 @@ data "aws_route53_zone" "main" {
   name = var.domain_name
 }
 
-resource "aws_route53_record" "ui_cert_dns" {
+resource "aws_route53_record" "site_cert_dns" {
   allow_overwrite = true
-  name            = tolist(aws_acm_certificate.ui_cert.domain_validation_options)[0].resource_record_name
-  records         = [tolist(aws_acm_certificate.ui_cert.domain_validation_options)[0].resource_record_value]
-  type            = tolist(aws_acm_certificate.ui_cert.domain_validation_options)[0].resource_record_type
+  name            = tolist(aws_acm_certificate.site_cert.domain_validation_options)[0].resource_record_name
+  records         = [tolist(aws_acm_certificate.site_cert.domain_validation_options)[0].resource_record_value]
+  type            = tolist(aws_acm_certificate.site_cert.domain_validation_options)[0].resource_record_type
   zone_id         = data.aws_route53_zone.main.zone_id
   ttl             = 60
 }
 
-resource "aws_route53_record" "ui_a" {
+resource "aws_route53_record" "site_a" {
   zone_id = data.aws_route53_zone.main.zone_id
   name    = local.domain_name
   type    = "A"
 
   alias {
-    name                   = aws_cloudfront_distribution.s3_dist.domain_name
-    zone_id                = aws_cloudfront_distribution.s3_dist.hosted_zone_id
+    name                   = aws_cloudfront_distribution.site_s3_dist.domain_name
+    zone_id                = aws_cloudfront_distribution.site_s3_dist.hosted_zone_id
     evaluate_target_health = false
   }
 }
 
 # ACM
 
-resource "aws_acm_certificate" "ui_cert" {
+resource "aws_acm_certificate" "site_cert" {
   domain_name       = local.domain_name
   validation_method = "DNS"
 
@@ -43,9 +43,9 @@ resource "aws_acm_certificate" "ui_cert" {
   }
 }
 
-resource "aws_acm_certificate_validation" "ui_cert_validate" {
-  certificate_arn         = aws_acm_certificate.ui_cert.arn
-  validation_record_fqdns = [aws_route53_record.ui_cert_dns.fqdn]
+resource "aws_acm_certificate_validation" "site_cert_validate" {
+  certificate_arn         = aws_acm_certificate.site_cert.arn
+  validation_record_fqdns = [aws_route53_record.site_cert_dns.fqdn]
 }
 
 # S3
@@ -94,7 +94,7 @@ resource "aws_s3_bucket_website_configuration" "site_config" {
 
 # Cloudfront
 
-resource "aws_cloudfront_distribution" "s3_dist" {
+resource "aws_cloudfront_distribution" "site_s3_dist" {
   enabled             = true
   is_ipv6_enabled     = true
   default_root_object = "index.html"
@@ -131,7 +131,7 @@ resource "aws_cloudfront_distribution" "s3_dist" {
   }
 
   viewer_certificate {
-    acm_certificate_arn      = aws_acm_certificate.ui_cert.arn
+    acm_certificate_arn      = aws_acm_certificate.site_cert.arn
     ssl_support_method       = "sni-only"
     minimum_protocol_version = "TLSv1"
   }
