@@ -61,7 +61,7 @@ resource "null_resource" "build" {
 
 data "archive_file" "api" {
   type        = "zip"
-  source_dir  = "${path.module}/../../dispatch/out"
+  source_dir  = "${path.module}/../../dispatch/node_modules"
   output_path = "${path.module}/app.zip"
   depends_on  = [null_resource.build]
 }
@@ -73,7 +73,7 @@ resource "aws_lambda_function" "api" {
 
   runtime       = "nodejs16.x"
   architectures = ["arm64"]
-  handler       = "api.handler"
+  handler       = "shadow-cljs/out/api.handler"
   timeout       = 10
 
   filename         = "${path.module}/app.zip"

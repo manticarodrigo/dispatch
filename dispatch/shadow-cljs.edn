@@ -17,7 +17,7 @@
  {:api
   {:target :node-script
    :main api.handler/start-server
-   :output-to "out/api.js"}
+   :output-to "node_modules/shadow-cljs/out/api.js"}
 
   :app
   {:target     :browser
