@@ -1,7 +1,7 @@
-(ns api.tests
+(ns tests.core
   (:require [cljs.test :as t]
             [promesa.core :as p]
-            [api.tests.user :as user]))
+            [tests.user :as user]))
 
 (defmethod t/report [:cljs.test/default :begin-test-var] [m]
   (println "-" (-> m :var meta :name)))

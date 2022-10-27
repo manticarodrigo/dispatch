@@ -1,9 +1,9 @@
-(ns api.tests.user
+(ns tests.user
   (:require
    [shadow.resource :refer (inline)]
    [cljs.test :as t :refer-macros [deftest async is]]
    [promesa.core :as p]
-   [api.util.test :refer (send)]))
+   [tests.util.request :refer (send)]))
 
 (deftest register
   (async done

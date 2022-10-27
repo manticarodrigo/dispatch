@@ -5,6 +5,7 @@
    ["cors" :as cors]
    ["http" :as http]
    [promesa.core :as p]
+   [tests.core :refer (run-tests)]
    [api.config :as config]
    [api.lib.apollo :refer (create-server create-middleware)]))
 
@@ -27,12 +28,14 @@
 
 (defn start-server []
   (p/let [port 3000
-          ^js app (create-app)
+          app (create-app)
           ^js server (.createServer http app)]
     (.listen server port (fn []
-                           (js/console.log "Listening on port 3000!")))))
+                           (println "listening on 3000...")
+                           (run-tests)))))
 
-(when dev? (start-server))
+(when dev?
+  (start-server))
 
 (defn handler [event context]
   (p/let [app (create-app)

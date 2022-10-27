@@ -15,8 +15,7 @@
 
  :builds {:api {:target :node-library
                 :output-to "out/api.js"
-                :exports {:handler api.core/handler}
-                :compiler-options {:infer-externs :auto}}
+                :exports {:handler api.core/handler}}
 
           :app {:target     :browser
                 :output-dir "public/js"
