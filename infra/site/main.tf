@@ -54,6 +54,14 @@ resource "aws_s3_bucket" "site_bucket" {
   force_destroy = true
 }
 
+resource "null_resource" "site_sync" {
+  depends_on = [var.build_id]
+
+  provisioner "local-exec" {
+    command = "aws s3 sync ${path.module}/../../dispatch/public s3://${aws_s3_bucket.site_bucket.id}"
+  }
+}
+
 data "aws_iam_policy_document" "site_policy" {
   statement {
     actions = [

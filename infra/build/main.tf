@@ -20,10 +20,3 @@ data "archive_file" "api" {
   output_path = "${path.module}/api.zip"
   depends_on  = [null_resource.build]
 }
-
-data "archive_file" "site" {
-  type        = "zip"
-  source_dir  = "${path.module}/../../dispatch/public"
-  output_path = "${path.module}/site.zip"
-  depends_on  = [null_resource.build]
-}

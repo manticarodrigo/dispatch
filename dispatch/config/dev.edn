@@ -1,6 +1,6 @@
 {:closure-defines
- {app.config/REGION "US"
-  app.config/LANGUAGE "en"
-  app.config/API_URL "http://localhost:3000"
-  app.config/SECURE_COOKIE false
-  app.config/GOOGLE_MAPS_API_KEY "AIzaSyAVgq9NMzbNqubtOPSoPHpyEYYtxGJdbhs"}}
+ {ui.config/REGION "US"
+  ui.config/LANGUAGE "en"
+  ui.config/API_URL "http://localhost:3000"
+  ui.config/SECURE_COOKIE false
+  ui.config/GOOGLE_MAPS_API_KEY "AIzaSyAVgq9NMzbNqubtOPSoPHpyEYYtxGJdbhs"}}

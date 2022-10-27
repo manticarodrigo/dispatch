@@ -6,19 +6,37 @@ on:
       - master
 
 jobs:
-  infra-base:
-    name: apply base infra
+  deploy:
+    name: deploy infra
     env:
       TF_VAR_env: prod
       TF_VAR_aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
       TF_VAR_aws_region: us-east-1
     runs-on: ubuntu-20.04
-    outputs:
-      site_bucket_name: ${{ steps.output.outputs.site_bucket_name }}
-      site_distribution_id: ${{ steps.output.outputs.site_distribution_id }}
     steps:
       - name: Check out code
         uses: actions/checkout@v3
+      - name: Restore maven cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('dispatch/shadow-cljs.edn') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Restore npm cache
+        uses: actions/cache@v3
+        with:
+          path: dispatch/node_modules
+          key: ${{ runner.os }}-npm-${{ hashFiles('dispatch/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+      - name: Restore shadow-cljs compiler cache
+        uses: actions/cache@v3
+        with:
+          path: dispatch/.shadow-cljs
+          key: ${{ runner.os }}-shadow-cljs-${{ hashFiles('dispatch/shadow-cljs.edn') }}
+          restore-keys: |
+            ${{ runner.os }}-shadow-cljs-
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
@@ -49,60 +67,3 @@ jobs:
             -input=false \
             -no-color \
             proposed.plan
-      - name: Store output
-        if: steps.plan.outcome == 'success'
-        id: output
-        run: |
-          cd infra
-          echo ::set-output name=site_bucket_name::$(terraform output site_bucket_name | tr -d '"')
-          echo ::set-output name=site_distribution_id::$(terraform output site_distribution_id | tr -d '"')
-  deploy-site:
-    name: build and upload site
-    needs: [infra-base]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v3
-      - name: Restore maven cache
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('dispatch/shadow-cljs.edn') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - name: Restore npm cache
-        uses: actions/cache@v3
-        with:
-          path: dispatch/node_modules
-          key: ${{ runner.os }}-npm-${{ hashFiles('dispatch/package.json') }}
-          restore-keys: |
-            ${{ runner.os }}-npm-
-      - name: Restore shadow-cljs compiler cache
-        uses: actions/cache@v3
-        with:
-          path: dispatch/.shadow-cljs
-          key: ${{ runner.os }}-shadow-cljs-${{ hashFiles('dispatch/shadow-cljs.edn') }}
-          restore-keys: |
-            ${{ runner.os }}-shadow-cljs-
-      - name: Install node
-        uses: actions/setup-node@v3
-        with:
-          node-version: "16"
-      - name: Build project
-        run: cd dispatch && yarn install && yarn release
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-region: us-east-1
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      - name: Deploy to S3 bucket
-        run: aws s3 sync dispatch/public/ s3://${{ needs.infra-base.outputs.site_bucket_name }} --delete
-      - name: Invalidate CloudFront
-        uses: chetan/invalidate-cloudfront-action@v2.4
-        env:
-          DISTRIBUTION: ${{ needs.infra-base.outputs.site_distribution_id }}
-          PATHS: "/index.html"
-          AWS_REGION: "us-east-1"
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

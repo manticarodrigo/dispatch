@@ -17,7 +17,7 @@
                 :output-to "out/api.js"
                 :exports {:handler api.core/handler}}
 
-          :app {:target     :browser
+          :ui {:target     :browser
                 :output-dir "public/js"
                 :asset-path "/js"
                 :module-hash-names true
@@ -43,10 +43,10 @@
                   "public/index.html")]
 
                 :modules
-                {:app {:init-fn app.core/init}}
+                {:ui {:init-fn ui.core/init}}
 
                 :devtools
-                {:after-load app.core/after-load
+                {:after-load ui.core/after-load
                  :preloads [day8.re-frame-10x.preload]
                  :http-root   "public/"
                  :http-port   8000}
