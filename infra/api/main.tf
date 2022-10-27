@@ -46,26 +46,6 @@ resource "aws_acm_certificate_validation" "api_cert_validate" {
   validation_record_fqdns = [aws_route53_record.api_cert_dns.fqdn]
 }
 
-# Build
-
-resource "null_resource" "build" {
-  triggers = {
-    updated_at = timestamp()
-  }
-
-  provisioner "local-exec" {
-    command     = "yarn && yarn release"
-    working_dir = "${path.module}/../../dispatch"
-  }
-}
-
-data "archive_file" "api" {
-  type        = "zip"
-  source_dir  = "${path.module}/../../dispatch/node_modules"
-  output_path = "${path.module}/app.zip"
-  depends_on  = [null_resource.build]
-}
-
 # Lambda
 
 resource "aws_lambda_function" "api" {
@@ -73,11 +53,11 @@ resource "aws_lambda_function" "api" {
 
   runtime       = "nodejs16.x"
   architectures = ["arm64"]
-  handler       = "shadow-cljs/out/api.handler"
+  handler       = "api.handler"
   timeout       = 10
 
   filename         = "${path.module}/app.zip"
-  source_code_hash = data.archive_file.api.output_base64sha256
+  source_code_hash = var.source_hash
 
   role = aws_iam_role.api.arn
 

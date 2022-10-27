@@ -48,8 +48,13 @@ module "db" {
   vpc_id   = module.vpc.vpc_id
 }
 
+module "build" {
+  source = "./build"
+}
+
 module "api" {
   source      = "./api"
+  source_hash = module.build.api_output
   env         = var.env
   domain_name = var.domain_name
   app_name    = var.app_name
