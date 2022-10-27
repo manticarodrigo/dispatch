@@ -1,68 +1,20 @@
 (ns tests
-  (:require ["supertest$default" :as request]
-            [cljs.test :as t :refer-macros [deftest async is]]
-            [cljs-bean.core :refer (->js)]
-            [promesa.core :as p]))
-
-(defn send [body]
-  (-> (request "http://localhost:3000")
-      (.post "/")
-      (.send (->js body))))
-
-(def register-query "
-  mutation Register($firstName: String!, $lastName: String!, $email: String!, $password: String!) {
-    register(firstName: $firstName, lastName: $lastName, email: $email, password: $password)
-  }
-")
-
-(deftest register
-  (async done
-         (p/let [res (send {:query register-query
-                            :variables {:firstName "test"
-                                        :lastName "test"
-                                        :email "test@test.test"
-                                        :password "test"}})]
-           (is (some? (.. res -body -data -register)))
-           (done))))
-
-(def login-query "
-  mutation Login($email: String!, $password: String!) {
-    login(email: $email, password: $password)
-  }
-")
-
-(deftest login
-  (async done
-         (p/let [res (send {:query login-query
-                            :variables {:email "test@test.test"
-                                        :password "test"}})]
-           (is (some? (.. res -body -data -login)))
-           (done))))
-
-(def delete-query "
-  mutation Delete($email: String!) {
-    delete(email: $email)
-  }
-")
-
-(deftest delete
-  (async done
-         (p/let [res (send {:query delete-query
-                            :variables {:email "test@test.test"}})]
-           (is (some? (.. res -body -data -delete)))
-           (done))))
+  (:require [cljs.test :as t]
+            [promesa.core :as p]
+            [tests.user :as user]))
 
 (defmethod t/report [:cljs.test/default :begin-test-var] [m]
-  (println "===" (-> m :var meta :name))
-  (println))
+  (println "-" (-> m :var meta :name)))
 
 (defn test-ns-hook []
   (p/do
-    (register)
-    (login)
-    (delete)))
+    (user/register)
+    (user/login)
+    (user/delete)))
 
 (defn run-tests []
+  (println "starting tests...")
+  (println)
   (test-ns-hook))
 
 (comment

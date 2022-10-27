@@ -8,19 +8,12 @@
             [models.user]
             [lib.sequelize :refer (open-sequelize close-sequelize sync-sequelize)]
             [util.anom :as anom]
+            [util.resource :refer (slurp)]
             [resolvers.user :refer (register login delete)]))
 
 
-(def type-defs "#graphql
-  type Query {
-    hello: String
-  }
-  type Mutation {
-    register(firstName: String, lastName: String, email: String, password: String): String
-    login(email: String!, password: String!): String!
-    delete(id: String, email: String): String!
-  }
-")
+(defn get-type-defs []
+  (slurp "schema.graphql"))
 
 (def resolvers {:Query {:hello (fn [] "world")}
                 :Mutation {:register register
@@ -55,7 +48,8 @@
       (->js (assoc-in clj-error [:extensions :anom] (anom/fault :unknown))))))
 
 (defn create-server []
-  (p/let [server (ApolloServer. (->js
+  (p/let [type-defs (get-type-defs)
+          server (ApolloServer. (->js
                                  {:typeDefs type-defs
                                   :resolvers resolvers
                                   :plugins plugins

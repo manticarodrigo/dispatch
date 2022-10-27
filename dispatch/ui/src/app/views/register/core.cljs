@@ -1,6 +1,7 @@
 (ns app.views.register.core
   (:require
    ["@apollo/client" :refer (gql useMutation)]
+   [shadow.resource :refer (inline)]
    [reagent.core :as r]
    [cljs-bean.core :refer (->clj ->js)]
    [app.lib.apollo-client :refer (parse-anoms)]
@@ -10,13 +11,7 @@
    [app.components.generic.input :refer (input)]
    [app.components.generic.button :refer (button)]))
 
-(def REGISTER
-  (gql
-   "
-    mutation Register($firstName: String, $lastName: String, $email: String, $password: String) {
-      register(firstName: $firstName, lastName: $lastName, email: $email, password: $password)
-    }
-  "))
+(def REGISTER (gql (inline "resources/mutations/user/register.graphql")))
 
 (defn register-view []
   (let [!state (r/atom {})
