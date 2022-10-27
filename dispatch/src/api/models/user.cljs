@@ -1,12 +1,11 @@
-(ns models.user
+(ns api.models.user
   (:require
    [promesa.core :as p]
    [cljs-bean.core :refer (->js)]
-   [config]
-   [util.sequelize :refer (append)]
-   [util.crypto :refer (encrypt-string random-hex)]))
+   [api.util.sequelize :refer (append)]
+   [api.util.crypto :refer (encrypt-string random-hex)]))
 
-(defn create [context payload]
+(defn create [^js context payload]
   (p/let [{:keys [password]} payload
           model (.. context -models -user)
           encrypted-password (when password (encrypt-string password))
@@ -16,7 +15,7 @@
                                      (assoc :sessions [session-id]))))]
     session-id))
 
-(defn create-session [context payload]
+(defn create-session [^js context payload]
   (p/let [{:keys [user-id user-password password]} payload
           model (.. context -models -user)
           sequelize (.. context -sequelize)
@@ -26,19 +25,19 @@
           _ (append sequelize model "sessions" session-id {:id user-id})]
     session-id))
 
-(defn find-by-id [context payload]
+(defn find-by-id [^js context payload]
   (let [{:keys [id]} payload
-        model (.. context -models -user)]
+        ^js model (.. context -models -user)]
     (.findOne model (->js {:where {:id id}}))))
 
-(defn find-by-email [context payload]
+(defn find-by-email [^js context payload]
   (let [{:keys [email]} payload
-        model (.. context -models -user)]
+        ^js model (.. context -models -user)]
     (.findOne model (->js {:where {:email email}}))))
 
 (defn delete [context payload]
   (p/let [;; user (find-by-id context payload)
-          user (find-by-email context payload)
+          ^js user (find-by-email context payload)
           id (.. user -id)
           _ (.destroy user)]
     id))

@@ -1,10 +1,9 @@
-(ns resolvers.user
+(ns api.resolvers.user
   (:require
    [promesa.core :as p]
    [cljs-bean.core :refer (->clj)]
-   [config]
-   [util.anom :as anom]
-   [models.user]))
+   [api.util.anom :as anom]
+   [api.models.user :as models.user]))
 
 (defn register
   [_ args context _]

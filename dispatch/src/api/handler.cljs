@@ -1,13 +1,13 @@
-(ns app
+(ns api.handler
   (:require
-   ["express$default" :as express]
-   ["serverless-http$default" :as serverless]
-   ["cors$default" :as cors]
+   ["express" :as express]
+   ["serverless-http" :as serverless]
+   ["cors" :as cors]
    ["http" :as http]
    [promesa.core :as p]
-   [config]
-   [lib.apollo :refer (create-server create-middleware)]
-   [tests :refer (run-tests)]))
+   [api.config :as config]
+   [api.tests :refer (run-tests)]
+   [api.lib.apollo :refer (create-server create-middleware)]))
 
 (def dev? (= config/STAGE "dev"))
 
@@ -27,15 +27,13 @@
     app))
 
 (defn start-server []
-  (p/let [port 3000
-          app (create-app)
-          server (.createServer http app)]
-    (.listen server port (fn []
-                           (js/console.log "Listening on port 3000!")
-                           (run-tests)))))
-
-(when dev?
-  (start-server))
+  (when dev?
+    (p/let [port 3000
+            ^js app (create-app)
+            ^js server (.createServer http app)]
+      (.listen server port (fn []
+                             (js/console.log "Listening on port 3000!")
+                             (run-tests))))))
 
 #js {:handler
      (fn [event context]

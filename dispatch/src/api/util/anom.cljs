@@ -1,4 +1,4 @@
-(ns util.anom
+(ns api.util.anom
   (:require ["graphql" :refer (GraphQLError)]
             [cljs-bean.core :refer (->js)]))
 
@@ -48,11 +48,11 @@
 (defn gql [anom]
   (GraphQLError. "An anomaly was detected." (->js {:extensions {:code "ANOMALY_DETECTED" :anom anom}})))
 
-(defn parse-anom [e]
+(defn parse-anom [^js e]
   (let [name (.-name e)
         errors (.-errors e)
         mapped-errors (mapv
-                       (fn [r]
+                       (fn [^js r]
                          {:message (.-message r)
                           :path (.-path r)
                           :value (.-value r)

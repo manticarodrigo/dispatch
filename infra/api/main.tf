@@ -57,20 +57,29 @@ resource "aws_s3_bucket_acl" "api" {
   acl    = "private"
 }
 
-data "archive_file" "api" {
-  type = "zip"
+resource "null_resource" "build" {
+  triggers = {
+    updated_at = timestamp()
+  }
 
-  source_dir  = "${path.module}/../../dispatch"
+  provisioner "local-exec" {
+    command     = "yarn && yarn release"
+    working_dir = "${path.module}/../../dispatch"
+  }
+}
+
+data "archive_file" "api" {
+  type        = "zip"
+  source_dir  = "${path.module}/../../dispatch/out"
   output_path = "${path.module}/app.zip"
+  depends_on  = [null_resource.build]
 }
 
 resource "aws_s3_object" "api" {
   bucket = aws_s3_bucket.api.id
-
   key    = "app.zip"
   source = data.archive_file.api.output_path
-
-  etag = filemd5(data.archive_file.api.output_path)
+  etag   = filemd5(data.archive_file.api.output_path)
 }
 
 # Lambda
@@ -83,7 +92,7 @@ resource "aws_lambda_function" "api" {
 
   runtime       = "nodejs16.x"
   architectures = ["arm64"]
-  handler       = "api/app.handler"
+  handler       = "api.handler"
   timeout       = 10
 
   source_code_hash = data.archive_file.api.output_base64sha256

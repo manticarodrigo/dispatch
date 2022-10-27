@@ -1,7 +1,9 @@
 # ide
 /.calva/
+.nrepl-port
 
 # output
+/out/
 /public/index.html
 /public/js/
 /public/css/

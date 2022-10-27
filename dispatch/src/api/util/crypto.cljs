@@ -1,7 +1,7 @@
-(ns util.crypto
-  (:require ["crypto$default" :as crypto]
-            ["bcryptjs$default" :as bcrypt]
-            [config]))
+(ns api.util.crypto
+  (:require ["crypto" :as crypto]
+            ["bcryptjs" :as bcrypt]
+            [api.config :as config]))
 
 (defn random-hex []
   (-> crypto (.randomBytes 32) (.toString "hex")))

@@ -1,8 +1,7 @@
-(ns schema
+(ns api.schema
   (:require
    ["sequelize" :refer (DataTypes)]
-   [cljs-bean.core :refer (->js)]
-   [config]))
+   [cljs-bean.core :refer (->js)]))
 
 (defn user [sequelize]
   (.define sequelize "User"

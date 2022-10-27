@@ -1,8 +1,8 @@
-(ns lib.sequelize
+(ns api.lib.sequelize
   (:require ["sequelize" :refer (Sequelize)]
             [cljs-bean.core :refer (->js)]
             [promesa.core :as p]
-            [config]))
+            [api.config :as config]))
 
 (def !sequelize (atom nil))
 
@@ -11,11 +11,11 @@
 
 (defn load-sequelize []
   (let [sequelize (Sequelize.
-                   (->js {:host config/PGHOST
-                          :database config/PGDATABASE
-                          :port config/PGPORT
-                          :username config/PGUSER
-                          :password config/PGPASSWORD
+                   (->js {:host config/DB_HOST
+                          :database config/DB_NAME
+                          :port config/DB_PORT
+                          :username config/DB_USER
+                          :password config/DB_PASSWORD
                           :dialect "postgres"
                           :logging false
                           :pool {:max 2
@@ -26,7 +26,7 @@
     (-> (.authenticate sequelize)
         (.then (fn [] sequelize)))))
 
-(defn reinit-sequelize [sequelize]
+(defn reinit-sequelize [^js sequelize]
   (.initPools (.. sequelize -connectionManager))
   (when (.hasOwnProperty (.. sequelize -connectionManager) "getConnection")
     (js-delete (.. sequelize -connectionManager) "getConnection")))
@@ -38,5 +38,5 @@
           _ (when loaded (reinit-sequelize sequelize))]
     sequelize))
 
-(defn close-sequelize [sequelize]
+(defn close-sequelize [^js sequelize]
   (.close (.. sequelize -connectionManager)))

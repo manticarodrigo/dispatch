@@ -1,5 +1,5 @@
-(ns util.test
-  (:require ["supertest$default" :as request]
+(ns api.util.test
+  (:require ["supertest" :as request]
             [cljs-bean.core :refer (->js)]))
 
 

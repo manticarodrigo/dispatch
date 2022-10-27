@@ -1,19 +1,17 @@
-(ns lib.apollo
+(ns api.lib.apollo
   (:require ["@apollo/server" :refer (ApolloServer)]
             ["@apollo/server/express4" :refer (expressMiddleware)]
+            [shadow.resource :refer (inline)]
             [cljs-bean.core :refer (->clj ->js)]
             [promesa.core :as p]
-            [config]
-            [schema]
-            [models.user]
-            [lib.sequelize :refer (open-sequelize close-sequelize sync-sequelize)]
-            [util.anom :as anom]
-            [util.resource :refer (slurp)]
-            [resolvers.user :refer (register login delete)]))
+            [api.schema :as schema]
+            [api.lib.sequelize :refer (open-sequelize close-sequelize sync-sequelize)]
+            [api.util.anom :as anom]
+            [api.resolvers.user :refer (register login delete)]))
 
 
 (defn get-type-defs []
-  (slurp "schema.graphql"))
+  (inline "schema.graphql"))
 
 (def resolvers {:Query {:hello (fn [] "world")}
                 :Mutation {:register register
@@ -37,7 +35,7 @@
      (fn []
        (->js
         {:willSendResponse
-         (fn [res]
+         (fn [^js res]
            (close-sequelize (some-> res .-contextValue .-sequelize)))}))}]))
 
 (defn format-error [formatted-error _]
