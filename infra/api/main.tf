@@ -46,16 +46,7 @@ resource "aws_acm_certificate_validation" "api_cert_validate" {
   validation_record_fqdns = [aws_route53_record.api_cert_dns.fqdn]
 }
 
-# S3
-
-resource "aws_s3_bucket" "api" {
-  bucket = "${var.app_name}-lambda-${var.env}"
-}
-
-resource "aws_s3_bucket_acl" "api" {
-  bucket = aws_s3_bucket.api.id
-  acl    = "private"
-}
+# Build
 
 resource "null_resource" "build" {
   triggers = {
@@ -75,26 +66,17 @@ data "archive_file" "api" {
   depends_on  = [null_resource.build]
 }
 
-resource "aws_s3_object" "api" {
-  bucket = aws_s3_bucket.api.id
-  key    = "app.zip"
-  source = data.archive_file.api.output_path
-  etag   = filemd5(data.archive_file.api.output_path)
-}
-
 # Lambda
 
 resource "aws_lambda_function" "api" {
   function_name = "${var.app_name}-api-${var.env}"
-
-  s3_bucket = aws_s3_bucket.api.id
-  s3_key    = aws_s3_object.api.key
 
   runtime       = "nodejs16.x"
   architectures = ["arm64"]
   handler       = "api.handler"
   timeout       = 10
 
+  filename         = "${path.module}/app.zip"
   source_code_hash = data.archive_file.api.output_base64sha256
 
   role = aws_iam_role.api.arn
