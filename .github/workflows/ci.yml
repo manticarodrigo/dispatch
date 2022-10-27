@@ -75,21 +75,21 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('dispatch/ui/shadow-cljs.edn') }}
+          key: ${{ runner.os }}-maven-${{ hashFiles('dispatch/shadow-cljs.edn') }}
           restore-keys: |
             ${{ runner.os }}-maven-
       - name: Restore npm cache
         uses: actions/cache@v3
         with:
-          path: dispatch/ui/node_modules
-          key: ${{ runner.os }}-npm-${{ hashFiles('dispatch/ui/package.json') }}
+          path: dispatch/node_modules
+          key: ${{ runner.os }}-npm-${{ hashFiles('dispatch/package.json') }}
           restore-keys: |
             ${{ runner.os }}-npm-
       - name: Restore shadow-cljs compiler cache
         uses: actions/cache@v3
         with:
-          path: dispatch/ui/.shadow-cljs
-          key: ${{ runner.os }}-shadow-cljs-${{ hashFiles('dispatch/ui/shadow-cljs.edn') }}
+          path: dispatch/.shadow-cljs
+          key: ${{ runner.os }}-shadow-cljs-${{ hashFiles('dispatch/shadow-cljs.edn') }}
           restore-keys: |
             ${{ runner.os }}-shadow-cljs-
       - name: Install node
@@ -105,7 +105,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - name: Deploy to S3 bucket
-        run: aws s3 sync dispatch/ui/public/ s3://${{ needs.infra-base.outputs.ui_bucket_name }} --delete
+        run: aws s3 sync dispatch/public/ s3://${{ needs.infra-base.outputs.ui_bucket_name }} --delete
       - name: Invalidate CloudFront
         uses: chetan/invalidate-cloudfront-action@v2.4
         env:

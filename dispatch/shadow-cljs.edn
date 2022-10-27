@@ -1,4 +1,4 @@
-{:source-paths ["src"]
+{:source-paths ["src" "resources"]
 
  :nrepl {:port 8777}
 

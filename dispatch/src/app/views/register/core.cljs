@@ -11,7 +11,7 @@
    [app.components.generic.input :refer (input)]
    [app.components.generic.button :refer (button)]))
 
-(def REGISTER (gql (inline "resources/mutations/user/register.graphql")))
+(def REGISTER (gql (inline "mutations/user/register.graphql")))
 
 (defn register-view []
   (let [!state (r/atom {})

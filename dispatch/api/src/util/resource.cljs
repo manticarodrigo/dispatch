@@ -2,4 +2,4 @@
   (:require [nbb.core :as nbb]))
 
 (defn slurp [path]
-  (nbb/slurp (str "../ui/src/resources/" path)))
+  (nbb/slurp (str "../resources/" path)))
