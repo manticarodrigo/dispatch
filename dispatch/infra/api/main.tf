@@ -60,7 +60,7 @@ resource "aws_s3_bucket_acl" "api" {
 data "archive_file" "api" {
   type = "zip"
 
-  source_dir  = "${path.module}/../../api"
+  source_dir  = "${path.module}/../../"
   output_path = "${path.module}/app.zip"
 }
 
@@ -83,7 +83,7 @@ resource "aws_lambda_function" "api" {
 
   runtime       = "nodejs16.x"
   architectures = ["arm64"]
-  handler       = "app.handler"
+  handler       = "api/app.handler"
   timeout       = 10
 
   source_code_hash = data.archive_file.api.output_base64sha256
