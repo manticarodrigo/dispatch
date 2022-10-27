@@ -40,19 +40,19 @@ jobs:
           yarn install
       - name: Initialize terraform
         run: |
-          cd dispatch/infra
+          cd infra
           terraform init -input=false -backend-config="key=prod"
       - name: Plan terraform
         id: plan
         run: |
-          cd dispatch/infra
+          cd infra
           terraform plan -input=false -no-color -out=proposed.plan \
           && terraform show -no-color proposed.plan
       - name: Apply terraform
         if: steps.plan.outcome == 'success'
         id: apply
         run: |
-          cd dispatch/infra
+          cd infra
           terraform apply \
             -input=false \
             -no-color \
@@ -61,7 +61,7 @@ jobs:
         if: steps.plan.outcome == 'success'
         id: output
         run: |
-          cd dispatch/infra
+          cd infra
           echo ::set-output name=site_bucket_name::$(terraform output site_bucket_name | tr -d '"')
           echo ::set-output name=site_distribution_id::$(terraform output site_distribution_id | tr -d '"')
   deploy-site:
