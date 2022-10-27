@@ -4,14 +4,19 @@ resource "null_resource" "build" {
   }
 
   provisioner "local-exec" {
-    command     = "yarn && yarn release"
+    command     = <<-EOT
+                  yarn
+                  yarn release
+                  yarn install --production
+                  cp -r node_modules out/node_modules
+                  EOT
     working_dir = "${path.module}/../../dispatch"
   }
 }
 
 data "archive_file" "api" {
   type        = "zip"
-  source_dir  = "${path.module}/../../dispatch/node_modules"
+  source_dir  = "${path.module}/../../dispatch/out"
   output_path = "${path.module}/api.zip"
   depends_on  = [null_resource.build]
 }

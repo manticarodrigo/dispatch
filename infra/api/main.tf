@@ -56,7 +56,7 @@ resource "aws_lambda_function" "api" {
   handler       = "api.handler"
   timeout       = 10
 
-  filename         = "${path.module}/api.zip"
+  filename         = "${path.module}/../build/api.zip"
   source_code_hash = var.source_hash
 
   role = aws_iam_role.api.arn

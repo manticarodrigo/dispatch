@@ -13,61 +13,59 @@
   [com.teknql/shadow-cljs-tailwind-jit "1.0.0"]
   [cider/cider-nrepl "0.28.5"]]
 
- :builds
- {:api
-  {:target :node-script
-   :main api.handler/start-server
-   :output-to "node_modules/api.js"}
+ :builds {:api {:target :node-library
+                :output-to "out/api.js"
+                :exports {:handler api.core/handler}
+                :compiler-options {:infer-externs :auto}}
 
-  :app
-  {:target     :browser
-   :output-dir "public/js"
-   :asset-path "/js"
-   :module-hash-names true
+          :app {:target     :browser
+                :output-dir "public/js"
+                :asset-path "/js"
+                :module-hash-names true
 
-   :tailwind/output "public/css/main.css"
-   :tailwind/config {:theme
-                     {:font-family
-                      {:sans ["Inter"
-                              "ui-sans-serif"
-                              "system-ui"
-                              "-apple-system"
-                              "BlinkMacSystemFont"
-                              "Segoe UI"
-                              "Roboto"
-                              "Helvetica Neue"
-                              "Arial"
-                              "Noto Sans"
-                              "sans-serif"]}}}
+                :tailwind/output "public/css/main.css"
+                :tailwind/config {:theme
+                                  {:font-family
+                                   {:sans ["Inter"
+                                           "ui-sans-serif"
+                                           "system-ui"
+                                           "-apple-system"
+                                           "BlinkMacSystemFont"
+                                           "Segoe UI"
+                                           "Roboto"
+                                           "Helvetica Neue"
+                                           "Arial"
+                                           "Noto Sans"
+                                           "sans-serif"]}}}
 
-   :build-hooks
-   [(shadow.html/copy-file
-     "public/index.src.html"
-     "public/index.html")]
+                :build-hooks
+                [(shadow.html/copy-file
+                  "public/index.src.html"
+                  "public/index.html")]
 
-   :modules
-   {:app {:init-fn app.core/init}}
+                :modules
+                {:app {:init-fn app.core/init}}
 
-   :devtools
-   {:after-load app.core/after-load
-    :preloads [day8.re-frame-10x.preload]
-    :http-root   "public/"
-    :http-port   8000}
+                :devtools
+                {:after-load app.core/after-load
+                 :preloads [day8.re-frame-10x.preload]
+                 :http-root   "public/"
+                 :http-port   8000}
 
 
-   :dev
-   {:compiler-options
-    {:closure-defines
-     {re-frame.trace.trace-enabled? true
-      day8.re-frame.tracing.trace-enabled? true}}
-    :build-hooks
-    [(teknql.tailwind/start-watch!)]}
+                :dev
+                {:compiler-options
+                 {:closure-defines
+                  {re-frame.trace.trace-enabled? true
+                   day8.re-frame.tracing.trace-enabled? true}}
+                 :build-hooks
+                 [(teknql.tailwind/start-watch!)]}
 
-   :release
-   {:compiler-options
-    {:source-map true}
-    :build-options
-    {:ns-aliases
-     {day8.re-frame.tracing day8.re-frame.tracing-stubs}}
-    :build-hooks
-    [(teknql.tailwind/compile-release!)]}}}}
+                :release
+                {:compiler-options
+                 {:source-map true}
+                 :build-options
+                 {:ns-aliases
+                  {day8.re-frame.tracing day8.re-frame.tracing-stubs}}
+                 :build-hooks
+                 [(teknql.tailwind/compile-release!)]}}}}
