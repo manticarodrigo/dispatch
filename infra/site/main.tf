@@ -55,7 +55,9 @@ resource "aws_s3_bucket" "site_bucket" {
 }
 
 resource "null_resource" "site_sync" {
-  depends_on = [var.build_id]
+  triggers = {
+    build_id = var.build_id
+  }
 
   provisioner "local-exec" {
     command = "aws s3 sync ${path.module}/../../dispatch/public s3://${aws_s3_bucket.site_bucket.id}"

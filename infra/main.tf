@@ -72,8 +72,3 @@ module "site" {
   domain_name = var.domain_name
   app_name    = var.app_name
 }
-
-# outputs
-
-output "site_bucket_name" { value = module.site.bucket_name }
-output "site_distribution_id" { value = module.site.distribution_id }
