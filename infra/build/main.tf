@@ -10,7 +10,7 @@ resource "null_resource" "build" {
                   yarn install --production
                   cp -r node_modules out/node_modules
                   EOT
-    working_dir = "${path.module}/../../dispatch"
+    working_dir = "../dispatch"
   }
 }
 
