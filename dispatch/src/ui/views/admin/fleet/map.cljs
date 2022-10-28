@@ -11,7 +11,7 @@
         {!el :ref center-route :center} (use-route-context)]
     [:div
      {:ref #(reset! !el %)
-      :class (class-names class "w-screen h-full")}
+      :class (class-names class "w-full h-full")}
      (when bounds
        [button {:aria-label (tr [:location/center])
                 :label [:> Crosshair {:class "w-5 h-5"}]

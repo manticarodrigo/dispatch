@@ -6,6 +6,7 @@
    [ui.events :as events]
    [ui.lib.apollo :refer (apollo-provider)]
    [ui.lib.router :refer (router routes route-auth-wrap)]
+   [ui.components.nav :refer (nav)]
    [ui.views.register.core :refer (register-view)]
    [ui.views.login.core :refer (login-view)]
    [ui.views.admin.fleet.core :refer (route-view)]))
@@ -16,10 +17,11 @@
 (defn app []
   [apollo-provider
    [router
-    [routes
-     ["/register" [register-view]]
-     ["/login" [login-view]]
-     ["/admin/fleet" [route-auth-wrap [route-view]]]]]])
+    [nav
+     [routes
+      ["/register" [register-view]]
+      ["/login" [login-view]]
+      ["/admin/fleet" [route-auth-wrap [route-view]]]]]]])
 
 (defn ^:dev/after-load mount-root []
   (rf/clear-subscription-cache!)

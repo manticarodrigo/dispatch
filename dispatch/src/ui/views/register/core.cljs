@@ -20,7 +20,7 @@
     (fn []
       (let [[register] (useMutation REGISTER)
             navigate (use-navigate)]
-        [:div {:class "flex justify-center items-center w-full lg:h-full overflow-y-auto lg:overflow-hidden"}
+        [:div {:class "flex justify-center items-center w-full h-full overflow-y-auto"}
          [:div {:class "py-6 px-3"}
           [:h1 {:class "mb-6 text-2xl text-white"} (tr [:view.register/title])]
           [:form {:class "flex flex-col"
