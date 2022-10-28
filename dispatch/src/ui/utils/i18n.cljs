@@ -27,7 +27,8 @@
                      :password "Password"
                      :submit "Submit"}}
            :route
-           {:distance "Total distance"
+           {:title "Fleet"
+            :distance "Total distance"
             :duration "Estimated time"
             :summary {:title "Summary"}
             :overview {:title "Route"}}}
@@ -60,7 +61,8 @@
                      :password "Contraseña"
                      :submit "Enviar"}}
            :route
-           {:distance "Distancia total"
+           {:title "Flota"
+            :distance "Distancia total"
             :duration "Tiempo estimado"
             :summary {:title "Resumen"}
             :overview {:title "Ruta"}}}

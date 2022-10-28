@@ -42,7 +42,7 @@
                  duration :duration}]
                (map-indexed vector legs)]
            [:li {:key idx :class "relative"}
-            [:span {:class "absolute left-4 border-l border-white h-full"}]
+            [:span {:class "absolute left-4 border-l border-neutral-50 h-full"}]
             [route-leg idx address distance duration]]))]])))
 
 (defn- driver-fact [label value icon]

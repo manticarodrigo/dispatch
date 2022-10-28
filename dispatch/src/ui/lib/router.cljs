@@ -1,7 +1,10 @@
 (ns ui.lib.router
   (:require
-   ["react-router-dom" :refer (Routes Route Navigate useNavigate) :rename {BrowserRouter Router}]
+   ["react-router-dom"
+    :refer (Routes Route Navigate useNavigate NavLink)
+    :rename {BrowserRouter Router}]
    [reagent.core :as r]
+   [cljs-bean.core :refer (->clj)]
    [ui.utils.cookie :refer (get-session)]))
 
 (defn router [& children]
@@ -22,3 +25,9 @@
 
 (defn use-navigate []
   (useNavigate))
+
+(defn nav-link [{to :to class-fn :class} & children]
+  (into [:> NavLink {:to to
+                     :class (fn [props]
+                              (class-fn (->clj props)))}]
+        children))

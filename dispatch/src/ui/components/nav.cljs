@@ -1,44 +1,55 @@
 (ns ui.components.nav
   (:require
-   [reagent.core :as r]
-   [re-frame.core :refer (dispatch)]
    [react-feather
-    :refer (ChevronUp)
-    :rename {ChevronUp ChevronUpIcon}]
-   [ui.utils.i18n :refer (locales)]
+    :rename {Map MapIcon
+             Calendar CalendarIcon
+             Users UsersIcon
+             LogIn LogInIcon
+             LogOut LogOutIcon
+             Settings SettingsIcon}]
+   [ui.lib.router :refer (routes nav-link)]
+   [ui.utils.i18n :refer (tr)]
    [ui.utils.string :refer (class-names)]
-   [ui.utils.css :refer (padding-x)]
-   [ui.components.generic.radio-group :refer (radio-group)]))
+   [ui.utils.css :refer (padding-x)]))
 
-(def ^:private locale-options
-  [{:key "en" :label "EN" :value (:en-US locales)}
-   {:key "es" :label "ES" :value (:es-ES locales)}])
+(defn nav-item [to icon]
+  [:li {:class "px-2"}
+   [nav-link {:to to
+              :class (fn [{:keys [isActive]}]
+                       (class-names
+                        "block p-2"
+                        (if isActive
+                          "text-neutral-50 border-b border-neutral-300"
+                          "text-neutral-300")))}
+    [:> icon]]])
 
-(def ^:private !selected-locale-key (r/atom (-> locale-options first :key)))
+(defn title [text]
+  [:h1 {:class
+        (class-names
+         "font-semibold text-white text-sm sm:text-base lg:text-xl")}
+   text])
 
-(defn- change-locale [key]
-  (reset! !selected-locale-key key)
-  (dispatch [:locale/set (->>
-                          locale-options
-                          (filter #(= (:key %) key))
-                          (first)
-                          (:value))]))
-
-(defn nav [& children]
+(defn nav [main]
   [:<>
-   [:div {:class (class-names
-                  "relative z-20"
-                  "grid grid-cols-3 lg:grid-cols-2 items-center"
-                  "border-b border-neutral-600"
-                  "w-full h-[60px]"
-                  padding-x)}
-    [:h1 {:class (class-names "font-semibold text-white text-sm sm:text-base lg:text-xl")}
-     "Ambito " [:span {:class "font-light text-neutral-50"} "Dispatch"]]
-    [:button {:class "lg:hidden flex justify-center"} [:> ChevronUpIcon {:size 40}]]
+   [:header {:class (class-names
+                     "relative z-20"
+                     "grid grid-cols-3 items-center"
+                     "border-b border-neutral-600"
+                     "w-full h-[60px]"
+                     padding-x)}
+    [routes
+     ["/register" [title (tr [:view.register/title])]]
+     ["/login" [title (tr [:view.login/title])]]
+     ["/fleet" [title (tr [:view.route/title])]]
+     ["*" [title "Not found"]]]
+
+    [:nav [:ul {:class "flex justify-center"}
+           [nav-item "/login" LogInIcon]
+           [nav-item "/fleet" MapIcon]
+           [nav-item "/schedule" CalendarIcon]
+           [nav-item "/seats" UsersIcon]
+           [nav-item "/logout" LogOutIcon]]]
     [:div {:class "flex justify-end"}
-     [radio-group
-      {:sr-label "Select language"
-       :value @!selected-locale-key
-       :options locale-options
-       :on-change change-locale}]]]
-   (into [:div {:class "w-full h-[calc(100%_-_60px)]"} children])])
+     [:> SettingsIcon {:class "text-neutral-50"}]]]
+   [:main {:class "w-full h-[calc(100%_-_60px)]"}
+    main]])

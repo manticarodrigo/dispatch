@@ -14,6 +14,10 @@
 (def functional-compiler (r/create-compiler {:function-components true}))
 (r/set-default-compiler! functional-compiler)
 
+(defn not-found-view []
+  [:div {:class "flex justify-center items-center w-full h-full"}
+   [:p {:class "text-2xl text-neutral-50"} "Page not found."]])
+
 (defn app []
   [apollo-provider
    [router
@@ -21,7 +25,8 @@
      [routes
       ["/register" [register-view]]
       ["/login" [login-view]]
-      ["/admin/fleet" [route-auth-wrap [route-view]]]]]]])
+      ["/fleet" [route-auth-wrap [route-view]]]
+      ["*" [not-found-view]]]]]])
 
 (defn ^:dev/after-load mount-root []
   (rf/clear-subscription-cache!)
