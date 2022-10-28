@@ -1,4 +1,4 @@
-(ns ui.views.route.map
+(ns ui.views.admin.fleet.map
   (:require [react-feather :refer (Crosshair)]
             [ui.subs :refer (listen)]
             [ui.hooks.use-route :refer (use-route-context)]
@@ -11,7 +11,7 @@
         {!el :ref center-route :center} (use-route-context)]
     [:div
      {:ref #(reset! !el %)
-      :class (class-names class "w-screen h-[calc(100vh_-_60px)] lg:h-full")}
+      :class (class-names class "w-screen h-full")}
      (when bounds
        [button {:aria-label (tr [:location/center])
                 :label [:> Crosshair {:class "w-5 h-5"}]

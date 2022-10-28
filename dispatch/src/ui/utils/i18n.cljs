@@ -6,6 +6,8 @@
   {:en
    {:units/kilometers "kilometers"
     :units/minutes "minutes"
+    :units/km "km"
+    :units/min "min"
     :location/title "My location"
     :location/center "Center route"
     :location/get "Get current location"
@@ -37,6 +39,8 @@
    :es
    {:units/kilometers "kilometros"
     :units/minutes "minutos"
+    :units/km "km"
+    :units/min "min"
     :location/title "Mi ubicación"
     :location/center "Centrar la ruta"
     :location/get "Obtener ubicación actual"

@@ -1,14 +1,14 @@
 (ns ui.core
   (:require
-   ["react-dom/client" :as rc]
    [reagent.core :as r]
+   [reagent.dom :as rd]
    [re-frame.core :as rf]
    [ui.events :as events]
-   [ui.lib.apollo-client :refer (apollo-provider)]
-   [ui.lib.react-router :refer (router routes route-auth-wrap)]
+   [ui.lib.apollo :refer (apollo-provider)]
+   [ui.lib.router :refer (router routes route-auth-wrap)]
    [ui.views.register.core :refer (register-view)]
    [ui.views.login.core :refer (login-view)]
-   [ui.views.route.core :refer (route-view)]))
+   [ui.views.admin.fleet.core :refer (route-view)]))
 
 (def functional-compiler (r/create-compiler {:function-components true}))
 (r/set-default-compiler! functional-compiler)
@@ -19,18 +19,14 @@
     [routes
      ["/register" [register-view]]
      ["/login" [login-view]]
-     ["/route" [route-auth-wrap [route-view]]]]]])
+     ["/admin/fleet" [route-auth-wrap [route-view]]]]]])
 
-(defonce root (rc/createRoot
-               (.getElementById js/document "app")))
-
-(defn render-root []
-  (.render root (r/as-element [app])))
-
-(defn after-load []
+(defn ^:dev/after-load mount-root []
   (rf/clear-subscription-cache!)
-  (render-root))
+  (let [root-el (.getElementById js/document "app")]
+    (rd/unmount-component-at-node root-el)
+    (rd/render [app] root-el)))
 
 (defn init []
   (rf/dispatch-sync [::events/initialize-db])
-  (render-root))
+  (mount-root))

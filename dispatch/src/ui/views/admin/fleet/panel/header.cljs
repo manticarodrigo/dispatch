@@ -1,4 +1,4 @@
-(ns ui.views.route.nav.header
+(ns ui.views.admin.fleet.panel.header
   (:require
    [reagent.core :as r]
    [re-frame.core :refer (dispatch)]
@@ -7,9 +7,8 @@
     :rename {ChevronUp ChevronUpIcon}]
    [ui.utils.i18n :refer (locales)]
    [ui.utils.string :refer (class-names)]
-   [ui.components.generic.radio-group :refer (radio-group)]
-   [ui.views.route.utils :refer (padding-x)]
-   [ui.views.route.nav.summary :refer (!summary-open)]))
+   [ui.utils.css :refer (padding-x)]
+   [ui.components.generic.radio-group :refer (radio-group)]))
 
 (def ^:private locale-options
   [{:key "en" :label "EN" :value (:en-US locales)}
@@ -33,8 +32,7 @@
                  "grid grid-cols-3 lg:grid-cols-2 items-center")}
    [:h1 {:class (class-names "font-semibold text-sm sm:text-base lg:text-xl")}
     "Ambito " [:span {:class "font-light text-neutral-50"} "Dispatch"]]
-   [:button {:class "lg:hidden flex justify-center"
-             :on-click #(swap! !summary-open not)} [:> ChevronUpIcon {:size 40}]]
+   [:button {:class "lg:hidden flex justify-center"} [:> ChevronUpIcon {:size 40}]]
    [:div {:class "flex justify-end"}
     [radio-group
      {:sr-label "Select language"

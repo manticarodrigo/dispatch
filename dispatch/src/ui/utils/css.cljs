@@ -1,4 +1,4 @@
-(ns ui.views.route.utils
+(ns ui.utils.css
   (:require [ui.utils.i18n :refer (tr)]
             [ui.utils.string :refer (class-names)]))
 

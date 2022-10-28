@@ -1,4 +1,4 @@
-(ns ui.lib.apollo-client
+(ns ui.lib.apollo
   (:require ["@apollo/client" :refer (ApolloClient InMemoryCache ApolloProvider)]
             [cljs-bean.core :refer (->clj ->js)]
             [ui.config :as config]))

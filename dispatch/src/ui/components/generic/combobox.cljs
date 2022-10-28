@@ -46,12 +46,13 @@
               v (if option-to-value
                   (option-to-value option)
                   (:key option))]
-          [:> Option {:key v  :value v :class (fn [props]
-
-                                                (let [{active :active checked :checked} (js->clj props :keywordize-keys true)]
-                                                  (class-names
-                                                   "relative cursor-pointer select-none p-2"
-                                                   (when (or checked active)
-                                                     (class-names
-                                                      "text-neutral-50"
-                                                      (if checked "bg-neutral-600" "bg-neutral-700"))))))} l])))]]])
+          [:> Option {:key v
+                      :value v
+                      :class (fn [props]
+                               (let [{active :active checked :checked} (js->clj props :keywordize-keys true)]
+                                 (class-names
+                                  "relative cursor-pointer select-none p-2"
+                                  (when (or checked active)
+                                    (class-names
+                                     "text-neutral-50"
+                                     (if checked "bg-neutral-600" "bg-neutral-700"))))))} l])))]]])

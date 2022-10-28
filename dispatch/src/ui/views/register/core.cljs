@@ -4,7 +4,8 @@
    [shadow.resource :refer (inline)]
    [reagent.core :as r]
    [cljs-bean.core :refer (->clj ->js)]
-   [ui.lib.apollo-client :refer (parse-anoms)]
+   [ui.lib.apollo :refer (parse-anoms)]
+   [ui.lib.router :refer (use-navigate)]
    [ui.utils.cookie :refer (create-session)]
    [ui.utils.i18n :refer (tr)]
    [ui.utils.error :refer (tr-error)]
@@ -17,8 +18,9 @@
   (let [!state (r/atom {})
         !anoms (r/atom nil)]
     (fn []
-      (let [[register] (useMutation REGISTER)]
-        [:div {:class "flex justify-center items-center w-full lg:h-screen overflow-y-auto lg:overflow-hidden"}
+      (let [[register] (useMutation REGISTER)
+            navigate (use-navigate)]
+        [:div {:class "flex justify-center items-center w-full lg:h-full overflow-y-auto lg:overflow-hidden"}
          [:div {:class "py-6 px-3"}
           [:h1 {:class "mb-6 text-2xl text-white"} (tr [:view.register/title])]
           [:form {:class "flex flex-col"
@@ -26,7 +28,9 @@
                   (fn [e]
                     (.preventDefault e)
                     (-> (register (->js {:variables @!state}))
-                        (.then #(create-session (-> % ->clj :data :register)))
+                        (.then (fn [res]
+                                 (create-session (-> res ->clj :data :register))
+                                 (navigate "/admin/fleet")))
                         (.catch #(reset! !anoms (parse-anoms %)))))}
            [input {:id "firstName"
                    :label (tr [:view.register.fields/firstName])

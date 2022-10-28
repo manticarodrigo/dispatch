@@ -3,6 +3,5 @@
 
 (defn tr-error [e]
   (let [{:keys [reason errors]} e]
-    (prn e)
     (or (tr [(keyword (str "error/" reason))])
         (tr [:error/unknown]))))

@@ -1,6 +1,6 @@
-(ns ui.lib.react-router
+(ns ui.lib.router
   (:require
-   ["react-router-dom" :refer (Routes Route Navigate) :rename {BrowserRouter Router}]
+   ["react-router-dom" :refer (Routes Route Navigate useNavigate) :rename {BrowserRouter Router}]
    [reagent.core :as r]
    [ui.utils.cookie :refer (get-session)]))
 
@@ -19,3 +19,6 @@
   (if (get-session)
     route
     [:> Navigate {:to "/login" :replace true}]))
+
+(defn use-navigate []
+  (useNavigate))
