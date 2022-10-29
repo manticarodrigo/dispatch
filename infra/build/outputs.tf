@@ -1,7 +1,7 @@
 output "site_id" {
-  value = null_resource.build_site.id
+  value = local.site_sha1
 }
 
 output "api_id" {
-  value = null_resource.build_api.id
+  value = local.api_sha1
 }
