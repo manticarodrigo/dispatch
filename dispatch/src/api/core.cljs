@@ -31,7 +31,7 @@
           app (create-app)
           ^js server (.createServer http app)]
     (.listen server port (fn []
-                           (println "listening on 3000...")
+                           (println "listening on port 3000...")
                           ;;  (run-tests)
                            ))))
 
