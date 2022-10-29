@@ -4,8 +4,7 @@
             [shadow.resource :refer (inline)]
             [cljs-bean.core :refer (->clj ->js)]
             [promesa.core :as p]
-            [api.schema :as schema]
-            [api.lib.sequelize :refer (open-sequelize close-sequelize sync-sequelize)]
+            [api.lib.prisma :refer (open-prisma)]
             [api.util.anom :as anom]
             [api.resolvers.user :refer (register login delete)]))
 
@@ -18,25 +17,10 @@
                            :login login
                            :delete delete}})
 
-(defn init-models [sequelize]
-  (p/let [user (schema/user sequelize)
-          _ (sync-sequelize sequelize)]
-    {:user user}))
-
 (def options
   (->js {:context (fn []
-                    (p/let [sequelize (open-sequelize)
-                            models (init-models sequelize)]
-                      (->js {:sequelize sequelize :models (->js models)})))}))
-
-(def plugins
-  (->js
-   [{:requestDidStart
-     (fn []
-       (->js
-        {:willSendResponse
-         (fn [^js res]
-           (close-sequelize (some-> res .-contextValue .-sequelize)))}))}]))
+                    (p/let [prisma (open-prisma)]
+                      (->js {:prisma prisma})))}))
 
 (defn format-error [formatted-error _]
   (let [clj-error (->clj formatted-error)
@@ -50,7 +34,6 @@
           server (ApolloServer. (->js
                                  {:typeDefs type-defs
                                   :resolvers resolvers
-                                  :plugins plugins
                                   :formatError format-error}))
           _ (.start server)]
     server))

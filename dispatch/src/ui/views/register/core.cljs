@@ -62,6 +62,6 @@
                     [:span {:key (:reason anom)
                             :class "my-2 p-2 rounded border border-red-300 text-sm text-red-100 bg-red-800"}
                      (tr-error anom)]))]
-          [:div
+          [:div {:class "pt-2 text-center"}
            [:p "Already have an account? "
             [link {:to "/login" :class "underline"} "Login here."]]]]]))))

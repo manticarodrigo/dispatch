@@ -57,7 +57,7 @@ resource "aws_s3_bucket_acl" "api" {
   acl    = "private"
 }
 
-resource "null_resource" "s3_sync" {
+resource "null_resource" "api_sync" {
   triggers = {
     sha1 = var.sha1
   }
@@ -91,17 +91,13 @@ resource "aws_lambda_function" "api" {
 
   environment {
     variables = {
-      "STAGE"      = var.env
-      "PGHOST"     = var.db_host
-      "PGDATABASE" = var.db_name
-      "PGPORT"     = var.db_port
-      "PGUSER"     = var.db_user
-      "PGPASSWORD" = var.db_pass
+      "STAGE"        = var.env
+      "DATABASE_URL" = "postgresql://${var.db_user}:${var.db_pass}@${var.db_host}:${var.db_port}/${var.db_name}?schema=public"
     }
   }
 
   depends_on = [
-    null_resource.s3_sync
+    null_resource.api_sync
   ]
 }
 

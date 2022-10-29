@@ -15,10 +15,12 @@
 (defn login
   [_ args context _]
   (-> (p/let [{:keys [email password]} (->clj args)
-              user (when email (models.user/find-by-email context {:email email}))
-              session-id (models.user/create-session context {:user-id (some-> user .-id)
-                                                              :user-password (some-> user .-password)
-                                                              :password password})]
+              user (when email (models.user/find-unique context {:email email}))
+              session-id (when user (models.user/create-session
+                                     context
+                                     {:user-id (some-> user .-id)
+                                      :user-password (some-> user .-password)
+                                      :password password}))]
         (cond
           (not user) (anom/gql (anom/not-found :account-not-found))
           (not session-id) (anom/gql (anom/forbidden :invalid-password))

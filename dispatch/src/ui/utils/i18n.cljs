@@ -33,7 +33,8 @@
             :summary {:title "Summary"}
             :overview {:title "Route"}}}
     :error {:unknown "An unknown error occurred."
-            :invalid-password "The supplied password is incorrect."
+            :unique-constraint "The account already exists."
+            :invalid-password "The password is incorrect."
             :account-not-found "The account you're looking for does not exist."}}
 
 
@@ -67,7 +68,8 @@
             :summary {:title "Resumen"}
             :overview {:title "Ruta"}}}
     :error {:unknown "Un error desconocido ocurrió."
-            :invalid-password "La contraseña proporcionada es incorrecta."
+            :unique-constraint "La cuenta ya existe."
+            :invalid-password "La contraseña es incorrecta."
             :account-not-found "La cuenta que busca no existe."}}})
 
 (def ^:private opts {:dict dict})
