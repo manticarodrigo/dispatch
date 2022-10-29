@@ -16,7 +16,7 @@
 
 (defn not-found-view []
   [:div {:class "flex justify-center items-center w-full h-full"}
-   [:p {:class "text-2xl text-neutral-50"} "Page not found."]])
+   [:p {:class "text-2xl"} "Page not found."]])
 
 (defn app []
   [apollo-provider

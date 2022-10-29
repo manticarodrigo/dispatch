@@ -1,7 +1,7 @@
 (ns ui.lib.router
   (:require
    ["react-router-dom"
-    :refer (Routes Route Navigate useNavigate NavLink)
+    :refer (Routes Route Navigate useNavigate NavLink Link)
     :rename {BrowserRouter Router}]
    [reagent.core :as r]
    [cljs-bean.core :refer (->clj)]
@@ -30,4 +30,8 @@
   (into [:> NavLink {:to to
                      :class (fn [props]
                               (class-fn (->clj props)))}]
+        children))
+
+(defn link [{to :to class :class} & children]
+  (into [:> Link {:to to :class class}]
         children))

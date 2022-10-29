@@ -21,7 +21,7 @@
                               "shrink-0 flex justify-center items-center"
                               "rounded-full border border-neutral-300"
                               "w-8 h-8"
-                              "font-bold text-neutral-50 bg-neutral-900")}
+                              "font-bold bg-neutral-900")}
     (+ 1 idx)]
    [:p {:class "grow px-2 md:px-3 lg:px-4 text-sm leading-4"} address]
    [:div {:class "shrink-0 flex flex-col items-end text-sm leading-4"}
