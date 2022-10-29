@@ -57,7 +57,7 @@ resource "aws_lambda_function" "api" {
   timeout       = 10
 
   filename         = "../dispatch/out/api.zip"
-  source_code_hash = var.source_hash
+  source_code_hash = var.build_id
 
   role = aws_iam_role.api.arn
 

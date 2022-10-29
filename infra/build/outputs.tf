@@ -1,7 +1,7 @@
-output "site_build_id" {
+output "site_id" {
   value = null_resource.build_site.id
 }
 
-output "api_output" {
-  value = data.archive_file.api.output_base64sha256
+output "api_id" {
+  value = null_resource.build_api.id
 }
