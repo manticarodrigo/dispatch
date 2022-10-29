@@ -67,7 +67,7 @@ module "api" {
 
 module "site" {
   source      = "./site"
-  build_id    = module.build.id
+  build_id    = module.build.site_build_id
   env         = var.env
   domain_name = var.domain_name
   app_name    = var.app_name

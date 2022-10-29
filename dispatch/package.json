@@ -6,7 +6,8 @@
     "report": "shadow-cljs run shadow.cljs.build-report app target/build-report.html",
     "serve": ". .env && nodemon --watch out out/api.js -e js",
     "watch": "shadow-cljs watch api ui --config-merge ./config/dev.edn",
-    "release": "shadow-cljs release api ui --config-merge ./config/prod.edn"
+    "release:api": "shadow-cljs release api --config-merge ./config/prod.edn",
+    "release:ui": "shadow-cljs release ui --config-merge ./config/prod.edn"
   },
   "dependencies": {
     "@apollo/client": "^3.7.0",
