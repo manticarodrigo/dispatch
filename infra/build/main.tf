@@ -31,10 +31,3 @@ resource "null_resource" "build" {
     working_dir = "../dispatch"
   }
 }
-
-data "archive_file" "api" {
-  type        = "zip"
-  source_dir  = "../dispatch/out"
-  output_path = "../dispatch/out/api.zip"
-  depends_on  = [null_resource.build]
-}

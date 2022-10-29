@@ -55,6 +55,7 @@ module "build" {
 module "api" {
   source      = "./api"
   sha1        = module.build.sha1
+  build       = module.build.build
   env         = var.env
   domain_name = var.domain_name
   app_name    = var.app_name

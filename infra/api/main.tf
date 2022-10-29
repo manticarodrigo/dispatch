@@ -48,6 +48,13 @@ resource "aws_acm_certificate_validation" "api_cert_validate" {
 
 # Lambda
 
+data "archive_file" "api" {
+  type        = "zip"
+  source_dir  = "../dispatch/out"
+  output_path = "../dispatch/out/api.zip"
+  depends_on  = [var.build]
+}
+
 resource "aws_lambda_function" "api" {
   function_name = "${var.app_name}-api-${var.env}"
 
@@ -57,7 +64,7 @@ resource "aws_lambda_function" "api" {
   timeout       = 10
 
   filename         = "../dispatch/out/api.zip"
-  source_code_hash = var.sha1
+  source_code_hash = data.archive_file.api.output_base64sha256
 
   role = aws_iam_role.api.arn
 
