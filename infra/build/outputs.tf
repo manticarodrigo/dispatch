@@ -1,7 +1,8 @@
-output "site_id" {
-  value = local.site_sha1
+
+output "sha1" {
+  value = local.sha1
 }
 
-output "api_id" {
-  value = local.api_sha1
+output "build" {
+  value = null_resource.build
 }

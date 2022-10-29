@@ -1,4 +1,4 @@
-variable "build_id" {}
+variable "sha1" {}
 variable "env" {}
 variable "domain_name" {}
 variable "app_name" {}

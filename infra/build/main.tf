@@ -1,24 +1,24 @@
 locals {
-  common_dirs       = ["../dispatch/config", "../dispatch/resources"]
-  common_files      = ["../dispatch/package.json", "../dispatch/shadow-cljs.edn"]
-  common_dirs_sha1  = join("", [for d in local.common_dirs : join("", [for f in fileset(d, "**") : filesha1("${d}/${f}")])])
-  common_files_sha1 = join("", [for f in local.common_files : filesha1(f)])
-  common_sha1       = join("", [local.common_dirs_sha1, local.common_files_sha1])
-
-  api_dirs      = ["../dispatch/src/api"]
-  api_dirs_sha1 = join("", [for d in local.api_dirs : join("", [for f in fileset(d, "**") : filesha1("${d}/${f}")])])
-  api_sha1      = join("", [local.common_sha1, local.api_dirs_sha1])
-
-  site_dirs       = ["../dispatch/src/ui", "../dispatch/public/fonts", "../dispatch/public/images"]
-  site_files      = ["../dispatch/public/index.src.html"]
-  site_dirs_sha1  = join("", [for d in local.site_dirs : join("", [for f in fileset(d, "**") : filesha1("${d}/${f}")])])
-  site_files_sha1 = join("", [for f in local.site_files : filesha1(f)])
-  site_sha1       = join("", [local.common_sha1, local.site_dirs_sha1, local.site_files_sha1])
+  dirs = [
+    "../dispatch/src",
+    "../dispatch/config",
+    "../dispatch/resources",
+    "../dispatch/public/fonts",
+    "../dispatch/public/images"
+  ]
+  files = [
+    "../dispatch/package.json",
+    "../dispatch/shadow-cljs.edn",
+    "../dispatch/public/index.src.html"
+  ]
+  dirs_sha1  = join("", [for d in local.dirs : join("", [for f in fileset(d, "**") : filesha1("${d}/${f}")])])
+  files_sha1 = join("", [for f in local.files : filesha1(f)])
+  sha1       = sha1(join("", [local.dirs_sha1, local.files_sha1]))
 }
 
-resource "null_resource" "build_api" {
+resource "null_resource" "build" {
   triggers = {
-    api_sha1 = local.api_sha1
+    sha1 = local.sha1
   }
 
   provisioner "local-exec" {
@@ -26,21 +26,7 @@ resource "null_resource" "build_api" {
                   yarn install --production
                   cp -r node_modules out/node_modules
                   yarn
-                  yarn release:api
-                  EOT
-    working_dir = "../dispatch"
-  }
-}
-
-resource "null_resource" "build_site" {
-  triggers = {
-    site_sha1 = local.site_sha1
-  }
-
-  provisioner "local-exec" {
-    command     = <<-EOT
-                  yarn
-                  yarn release:ui
+                  yarn release
                   EOT
     working_dir = "../dispatch"
   }
@@ -50,5 +36,5 @@ data "archive_file" "api" {
   type        = "zip"
   source_dir  = "../dispatch/out"
   output_path = "../dispatch/out/api.zip"
-  depends_on  = [null_resource.build_api]
+  depends_on  = [null_resource.build]
 }

@@ -56,7 +56,7 @@ resource "aws_s3_bucket" "site_bucket" {
 
 resource "null_resource" "site_sync" {
   triggers = {
-    build_id = var.build_id
+    sha1 = var.sha1
   }
 
   provisioner "local-exec" {
@@ -66,6 +66,8 @@ resource "null_resource" "site_sync" {
                 EOT
     working_dir = "../"
   }
+
+  depends_on = [var.build]
 }
 
 data "aws_iam_policy_document" "site_policy" {
