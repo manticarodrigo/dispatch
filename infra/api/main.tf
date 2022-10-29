@@ -46,14 +46,35 @@ resource "aws_acm_certificate_validation" "api_cert_validate" {
   validation_record_fqdns = [aws_route53_record.api_cert_dns.fqdn]
 }
 
-# Lambda
+# S3
 
-data "archive_file" "api" {
-  type        = "zip"
-  source_dir  = "../dispatch/out"
-  output_path = "../dispatch/out/api.zip"
-  depends_on  = [var.build]
+resource "aws_s3_bucket" "api" {
+  bucket = "${var.app_name}api-${var.env}"
 }
+
+resource "aws_s3_bucket_acl" "api" {
+  bucket = aws_s3_bucket.api.id
+  acl    = "private"
+}
+
+resource "null_resource" "s3_sync" {
+  triggers = {
+    sha1 = var.sha1
+  }
+
+  provisioner "local-exec" {
+    command     = <<-EOT
+                 zip -r dispatch/out/api.zip dispatch/out 
+                 rm -rf dispatch/out/node_modules
+                 aws s3 sync dispatch/out s3://${aws_s3_bucket.api.id}
+                EOT
+    working_dir = "../"
+  }
+
+  depends_on = [var.build]
+}
+
+# Lambda
 
 resource "aws_lambda_function" "api" {
   function_name = "${var.app_name}-api-${var.env}"
@@ -63,8 +84,8 @@ resource "aws_lambda_function" "api" {
   handler       = "api.handler"
   timeout       = 10
 
-  filename         = "../dispatch/out/api.zip"
-  source_code_hash = data.archive_file.api.output_base64sha256
+  s3_bucket = aws_s3_bucket.api.id
+  s3_key    = "api.zip"
 
   role = aws_iam_role.api.arn
 
@@ -78,6 +99,10 @@ resource "aws_lambda_function" "api" {
       "PGPASSWORD" = var.db_pass
     }
   }
+
+  depends_on = [
+    null_resource.s3_sync
+  ]
 }
 
 resource "aws_cloudwatch_log_group" "api-lambda" {
