@@ -8,5 +8,5 @@
              (class-names
               class
               "z-10 relative flex-none"
-              "w-full lg:w-[450px] h-full")}
+              "w-full lg:w-[450px] h-full overflow-y-auto")}
    [overview]])

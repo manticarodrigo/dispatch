@@ -81,5 +81,5 @@
              :description [driver-detail]}])
 
 (defn overview []
-  [:div {:class (class-names padding "overflow-y-auto")}
+  [:div {:class (class-names padding)}
    [accordion {:items items :item-class "mb-2 w-full"}]])
