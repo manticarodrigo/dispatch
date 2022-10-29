@@ -49,12 +49,19 @@ resource "aws_acm_certificate_validation" "api_cert_validate" {
 # S3
 
 resource "aws_s3_bucket" "api" {
-  bucket = "${var.app_name}api-${var.env}"
+  bucket = "${var.app_name}-api-${var.env}"
 }
 
 resource "aws_s3_bucket_acl" "api" {
   bucket = aws_s3_bucket.api.id
   acl    = "private"
+}
+
+data "aws_s3_object" "api" {
+  bucket = aws_s3_bucket.api.id
+  key    = "api.zip"
+
+  depends_on = [null_resource.api_sync]
 }
 
 resource "null_resource" "api_sync" {
@@ -64,14 +71,29 @@ resource "null_resource" "api_sync" {
 
   provisioner "local-exec" {
     command     = <<-EOT
-                 zip -r dispatch/out/api.zip dispatch/out 
-                 rm -rf dispatch/out/node_modules
-                 aws s3 sync dispatch/out s3://${aws_s3_bucket.api.id}
+                 zip -r out/api.zip out/
+                 rm out/api.zip
+                 rm -rf out/node_modules/
+                 aws s3 sync out/ s3://${aws_s3_bucket.api.id}
                 EOT
-    working_dir = "../"
+    working_dir = "../dispatch"
   }
 
   depends_on = [var.build]
+}
+
+resource "null_resource" "api_lambda_sync" {
+  triggers = {
+    "sha1" = var.sha1
+  }
+
+  provisioner "local-exec" {
+    command = "aws lambda update-function-code --function-name ${aws_lambda_function.api.function_name} --s3-bucket ${aws_s3_bucket.api.id} --s3-key api.zip"
+  }
+
+  depends_on = [
+    null_resource.api_sync
+  ]
 }
 
 # Lambda
@@ -95,10 +117,6 @@ resource "aws_lambda_function" "api" {
       "DATABASE_URL" = "postgresql://${var.db_user}:${var.db_pass}@${var.db_host}:${var.db_port}/${var.db_name}?schema=public"
     }
   }
-
-  depends_on = [
-    null_resource.api_sync
-  ]
 }
 
 resource "aws_cloudwatch_log_group" "api-lambda" {
