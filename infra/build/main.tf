@@ -3,6 +3,7 @@ locals {
     "../dispatch/src",
     "../dispatch/config",
     "../dispatch/resources",
+    "../dispatch/prisma",
     "../dispatch/public/fonts",
     "../dispatch/public/images"
   ]
@@ -24,6 +25,7 @@ resource "null_resource" "build" {
   provisioner "local-exec" {
     command     = <<-EOT
                   yarn
+                  npx prisma generate
                   yarn release
                   EOT
     working_dir = "../dispatch"

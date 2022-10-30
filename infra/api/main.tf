@@ -64,7 +64,8 @@ resource "null_resource" "api_sync" {
 
   provisioner "local-exec" {
     command     = <<-EOT
-                  zip api.zip *
+                  mv client/* .
+                  zip -r api.zip *
                   aws s3 cp api.zip s3://${aws_s3_bucket.api.id}/api.zip
                 EOT
     working_dir = "../dispatch/dist"
