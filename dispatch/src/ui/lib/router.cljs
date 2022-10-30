@@ -5,7 +5,7 @@
     :rename {BrowserRouter Router}]
    [reagent.core :as r]
    [cljs-bean.core :refer (->clj)]
-   [ui.utils.cookie :refer (get-session)]))
+   [ui.utils.cookie :refer (get-session remove-session)]))
 
 (defn router [& children]
   [:> Router
@@ -22,6 +22,10 @@
   (if (get-session)
     route
     [:> Navigate {:to "/login" :replace true}]))
+
+(defn remove-auth-route []
+  (remove-session)
+  [:> Navigate {:to "/login" :replace true}])
 
 (defn use-navigate []
   (useNavigate))
