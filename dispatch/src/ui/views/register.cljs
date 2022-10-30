@@ -9,6 +9,7 @@
    [ui.utils.cookie :refer (create-session)]
    [ui.utils.i18n :refer (tr)]
    [ui.utils.error :refer (tr-error)]
+   [ui.utils.css :refer (padding)]
    [ui.components.inputs.generic.input :refer (input)]
    [ui.components.inputs.generic.button :refer (button)]))
 
@@ -20,8 +21,8 @@
     (fn []
       (let [[register] (useMutation REGISTER)
             navigate (use-navigate)]
-        [:div {:class "flex justify-center items-center w-full h-full overflow-y-auto"}
-         [:div {:class "py-6 px-3"}
+        [:div {:class "w-full h-full overflow-y-auto"}
+         [:div {:class padding}
           [:form {:class "flex flex-col"
                   :on-submit
                   (fn [e]

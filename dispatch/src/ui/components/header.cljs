@@ -4,13 +4,12 @@
     :rename {Map MapIcon
              Calendar CalendarIcon
              Users UsersIcon
-             LogIn LogInIcon
-             LogOut LogOutIcon
+             BookOpen BookOpenIcon
              Settings SettingsIcon}]
-   [ui.lib.router :refer (routes nav-link)]
+   [ui.lib.router :refer (routes nav-link link)]
    [ui.utils.i18n :refer (tr)]
    [ui.utils.string :refer (class-names)]
-   [ui.utils.css :refer (padding-x)]))
+   [ui.components.inputs.generic.menu :refer (menu)]))
 
 (defn nav-item [to icon]
   [:li {:class "px-2"}
@@ -23,9 +22,13 @@
                           "text-neutral-600 hover:text-neutral-300 focus:text-neutral-300")))}
     [:> icon]]])
 
+(defn menu-item [to label]
+  [link {:to to :class "block w-full h-full"} label])
+
 (defn title [text]
   [:h1 {:class
         (class-names
+         "sr-only lg:not-sr-only"
          "font-semibold text-white text-sm sm:text-base lg:text-xl")}
    text])
 
@@ -34,8 +37,8 @@
    [:header {:class (class-names
                      "grid grid-cols-3 items-center"
                      "border-b border-neutral-600"
-                     "w-full h-[60px]"
-                     padding-x)}
+                     "px-3"
+                     "w-full h-[60px]")}
     [:div {:class "flex"}
      [:svg {:xmlns "http://www.w3.org/2000/svg"
             :viewBox "0 0 1005.12 888.12"
@@ -51,12 +54,16 @@
       ["*" [title "Not found"]]]]
 
     [:nav [:ul {:class "flex justify-center"}
-           [nav-item "/login" LogInIcon]
            [nav-item "/fleet" MapIcon]
            [nav-item "/schedule" CalendarIcon]
-           [nav-item "/seats" UsersIcon]
-           [nav-item "/logout" LogOutIcon]]]
+           [nav-item "/history" BookOpenIcon]
+           [nav-item "/seats" UsersIcon]]]
     [:div {:class "flex justify-end"}
-     [:> SettingsIcon]]]
+     [menu {:label [:> SettingsIcon]
+            :items [{:label [menu-item "/register" "Register"]}
+                    {:label [menu-item "/login" "Login"]}
+                    {:label [menu-item "/logout" "Logout"]}]
+            :class-map {:button! "h-full"
+                        :item "min-w-[12rem]"}}]]]
    [:div {:class "w-full h-[calc(100%_-_60px)]"}
     main]])
