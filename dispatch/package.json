@@ -6,7 +6,7 @@
     "report": "shadow-cljs run shadow.cljs.build-report app target/build-report.html",
     "serve": ". .env && nodemon --watch out out/api.js -e js",
     "watch": "shadow-cljs watch api ui --config-merge ./config/dev.edn",
-    "release": "shadow-cljs release api ui --config-merge ./config/prod.edn"
+    "release": "shadow-cljs release api --config-merge ./config/prod.edn && ncc build out/api.js -o dist/ --minify"
   },
   "dependencies": {
     "@apollo/client": "^3.7.0",
@@ -30,6 +30,7 @@
     "serverless-http": "^3.1.0"
   },
   "devDependencies": {
+    "@vercel/ncc": "^0.34.0",
     "eslint": "^8.26.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^8.5.0",

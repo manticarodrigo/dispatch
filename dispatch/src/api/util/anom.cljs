@@ -64,5 +64,6 @@
     :else (fault :unknown)))
 
 (defn handle-resolver-error [e]
+  (js/console.log e)
   (if (= "GraphQLError" (.-name e)) e
       (gql (parse-anom e))))

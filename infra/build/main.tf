@@ -23,8 +23,6 @@ resource "null_resource" "build" {
 
   provisioner "local-exec" {
     command     = <<-EOT
-                  yarn install --production
-                  cp -r node_modules out/node_modules
                   yarn
                   yarn release
                   EOT

@@ -4,6 +4,7 @@
 
 # output
 /out/
+/dist/
 /public/index.html
 /public/js/
 /public/css/

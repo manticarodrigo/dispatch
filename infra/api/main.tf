@@ -57,13 +57,6 @@ resource "aws_s3_bucket_acl" "api" {
   acl    = "private"
 }
 
-data "aws_s3_object" "api" {
-  bucket = aws_s3_bucket.api.id
-  key    = "api.zip"
-
-  depends_on = [null_resource.api_sync]
-}
-
 resource "null_resource" "api_sync" {
   triggers = {
     sha1 = var.sha1
@@ -71,12 +64,10 @@ resource "null_resource" "api_sync" {
 
   provisioner "local-exec" {
     command     = <<-EOT
-                 zip -r out/api.zip out/
-                 rm out/api.zip
-                 rm -rf out/node_modules/
-                 aws s3 sync out/ s3://${aws_s3_bucket.api.id}
+                  zip api.zip *
+                  aws s3 cp api.zip s3://${aws_s3_bucket.api.id}/api.zip
                 EOT
-    working_dir = "../dispatch"
+    working_dir = "../dispatch/dist"
   }
 
   depends_on = [var.build]
@@ -103,7 +94,7 @@ resource "aws_lambda_function" "api" {
 
   runtime       = "nodejs16.x"
   architectures = ["arm64"]
-  handler       = "api.handler"
+  handler       = "index.handler"
   timeout       = 10
 
   s3_bucket = aws_s3_bucket.api.id
