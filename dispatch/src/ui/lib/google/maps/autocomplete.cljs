@@ -1,4 +1,4 @@
-(ns ui.utils.google.maps.autocomplete)
+(ns ui.lib.google.maps.autocomplete)
 
 (defonce ^:private !autocomplete-service (atom nil))
 

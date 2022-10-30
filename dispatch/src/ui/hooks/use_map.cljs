@@ -6,12 +6,12 @@
    [cljs.core.async :refer (go)]
    [cljs.core.async.interop :refer-macros (<p!)]
    [ui.subs :refer (listen)]
-   [ui.utils.google.maps.core :refer (init-api)]
-   [ui.utils.google.maps.autocomplete :refer (search-places)]
-   [ui.utils.google.maps.places :refer (find-place)]
-   [ui.utils.google.maps.polyline :refer (set-polyline)]
-   [ui.utils.google.maps.overlay :refer (update-overlay)]
-   [ui.utils.google.maps.directions :refer (calc-route set-markers)]))
+   [ui.lib.google.maps.core :refer (init-api)]
+   [ui.lib.google.maps.autocomplete :refer (search-places)]
+   [ui.lib.google.maps.places :refer (find-place)]
+   [ui.lib.google.maps.polyline :refer (set-polyline)]
+   [ui.lib.google.maps.overlay :refer (update-overlay)]
+   [ui.lib.google.maps.directions :refer (calc-route set-markers)]))
 
 (def ^:private !el (atom nil))
 (def ^:private !map (r/atom false))

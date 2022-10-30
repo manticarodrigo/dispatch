@@ -1,4 +1,4 @@
-(ns ui.utils.google.maps.serializer)
+(ns ui.lib.google.maps.serializer)
 
 (defn parse-lat-lng [^js lat-lng]
   (let [lat (.lat lat-lng)

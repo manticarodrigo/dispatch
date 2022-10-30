@@ -1,9 +1,9 @@
-(ns ui.components.generic.combobox
+(ns ui.components.inputs.generic.combobox
   (:require [react :refer (Fragment)]
             ["@headlessui/react" :refer (Combobox Transition)]
             [ui.utils.i18n :refer (tr)]
             [ui.utils.string :refer (class-names)]
-            [ui.components.generic.input :refer (label-class input-class)]))
+            [ui.components.inputs.generic.input :refer (label-class input-class)]))
 
 (def ^:private Label (.-Label Combobox))
 (def ^:private Input (.-Input Combobox))

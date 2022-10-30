@@ -1,4 +1,4 @@
-(ns ui.views.login.core
+(ns ui.views.login
   (:require
    ["@apollo/client" :refer (gql useMutation)]
    [reagent.core :as r]
@@ -8,8 +8,8 @@
    [ui.utils.cookie :refer (create-session)]
    [ui.utils.i18n :refer (tr)]
    [ui.utils.error :refer (tr-error)]
-   [ui.components.generic.input :refer (input)]
-   [ui.components.generic.button :refer (button)]))
+   [ui.components.inputs.generic.input :refer (input)]
+   [ui.components.inputs.generic.button :refer (button)]))
 
 (def LOGIN
   (gql
@@ -19,7 +19,7 @@
     }
   "))
 
-(defn login-view []
+(defn view []
   (let [!state (r/atom {})
         !anoms (r/atom nil)]
     (fn []

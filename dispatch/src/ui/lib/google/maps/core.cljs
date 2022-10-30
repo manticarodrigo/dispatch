@@ -1,4 +1,4 @@
-(ns ui.utils.google.maps.core
+(ns ui.lib.google.maps.core
   (:require
    ["@googlemaps/js-api-loader" :refer (Loader)]
    [clojure.core :refer (atom)]
@@ -6,11 +6,11 @@
    [cljs.core.async.interop :refer-macros (<p!)]
    [ui.config :as config]
    [ui.subs :refer (listen)]
-   [ui.utils.google.maps.styles :refer (styles)]
-   [ui.utils.google.maps.autocomplete :refer (init-autocomplete)]
-   [ui.utils.google.maps.places :refer (init-places)]
-   [ui.utils.google.maps.overlay :refer (init-overlay)]
-   [ui.utils.google.maps.directions :refer (init-directions)]))
+   [ui.lib.google.maps.styles :refer (styles)]
+   [ui.lib.google.maps.autocomplete :refer (init-autocomplete)]
+   [ui.lib.google.maps.places :refer (init-places)]
+   [ui.lib.google.maps.overlay :refer (init-overlay)]
+   [ui.lib.google.maps.directions :refer (init-directions)]))
 
 (defonce ^:private !loader (atom nil))
 (defonce ^:private !map (atom nil))

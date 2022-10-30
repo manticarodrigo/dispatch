@@ -18,7 +18,7 @@
                 :path path
                 :element (r/as-element hiccup)}])])
 
-(defn route-auth-wrap [route]
+(defn auth-route [route]
   (if (get-session)
     route
     [:> Navigate {:to "/login" :replace true}]))

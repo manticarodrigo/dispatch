@@ -1,4 +1,4 @@
-(ns ui.utils.google.maps.polyline)
+(ns ui.lib.google.maps.polyline)
 
 (defonce ^:private !polyline (atom nil))
 

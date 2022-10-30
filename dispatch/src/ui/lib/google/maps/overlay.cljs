@@ -1,4 +1,4 @@
-(ns ui.utils.google.maps.overlay)
+(ns ui.lib.google.maps.overlay)
 
 (defonce ^:private !location-overlay (atom nil))
 

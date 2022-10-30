@@ -1,4 +1,4 @@
-(ns ui.views.register.core
+(ns ui.views.register
   (:require
    ["@apollo/client" :refer (gql useMutation)]
    [shadow.resource :refer (inline)]
@@ -9,12 +9,12 @@
    [ui.utils.cookie :refer (create-session)]
    [ui.utils.i18n :refer (tr)]
    [ui.utils.error :refer (tr-error)]
-   [ui.components.generic.input :refer (input)]
-   [ui.components.generic.button :refer (button)]))
+   [ui.components.inputs.generic.input :refer (input)]
+   [ui.components.inputs.generic.button :refer (button)]))
 
 (def REGISTER (gql (inline "mutations/user/register.graphql")))
 
-(defn register-view []
+(defn view []
   (let [!state (r/atom {})
         !anoms (r/atom nil)]
     (fn []

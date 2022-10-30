@@ -1,4 +1,4 @@
-(ns ui.components.nav
+(ns ui.components.header
   (:require
    [react-feather
     :rename {Map MapIcon
@@ -29,10 +29,9 @@
          "font-semibold text-white text-sm sm:text-base lg:text-xl")}
    text])
 
-(defn nav [main]
+(defn header [main]
   [:<>
    [:header {:class (class-names
-                     "relative z-20"
                      "grid grid-cols-3 items-center"
                      "border-b border-neutral-600"
                      "w-full h-[60px]"
@@ -59,5 +58,5 @@
            [nav-item "/logout" LogOutIcon]]]
     [:div {:class "flex justify-end"}
      [:> SettingsIcon]]]
-   [:main {:class "w-full h-[calc(100%_-_60px)]"}
+   [:div {:class "w-full h-[calc(100%_-_60px)]"}
     main]])

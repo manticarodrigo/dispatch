@@ -1,9 +1,9 @@
-(ns ui.components.locale-radio-group
+(ns ui.components.inputs.locale-radio-group
   (:require
    [re-frame.core :refer (dispatch)]
    [ui.subs :refer (listen)]
    [ui.utils.i18n :refer (locales)]
-   [ui.components.generic.radio-group :refer (radio-group)]))
+   [ui.components.inputs.generic.radio-group :refer (radio-group)]))
 
 (def ^:private locale-options
   [{:key "en" :label "EN" :value (:en-US locales)}

@@ -1,6 +1,6 @@
-(ns ui.utils.google.maps.directions
-  (:require [ui.utils.google.maps.serializer :refer (parse-route)]
-            [ui.utils.google.maps.marker :refer (clear-markers! create-marker!)]))
+(ns ui.lib.google.maps.directions
+  (:require [ui.lib.google.maps.serializer :refer (parse-route)]
+            [ui.lib.google.maps.marker :refer (clear-markers! create-marker!)]))
 
 (defonce ^:private !service (atom nil))
 

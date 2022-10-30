@@ -1,12 +1,12 @@
-(ns ui.views.admin.fleet.panel.controls
+(ns ui.components.controls
   (:require
    [ui.subs :refer (listen)]
    [ui.hooks.use-route :refer (use-route-context)]
    [ui.utils.i18n :refer (tr)]
    [ui.utils.string :refer (class-names)]
    [ui.utils.css :refer (padding)]
-   [ui.components.generic.button :refer (button)]
-   [ui.components.generic.combobox :refer (combobox)]))
+   [ui.components.inputs.generic.button :refer (button)]
+   [ui.components.inputs.generic.combobox :refer (combobox)]))
 
 (defn controls [class]
   (let [origin (listen [:origin])

@@ -1,4 +1,4 @@
-(ns ui.components.generic.button
+(ns ui.components.inputs.generic.button
   (:require [ui.utils.string :refer (class-names)]))
 
 (def base-button-class (class-names

@@ -1,8 +1,8 @@
-(ns ui.components.generic.radio-group
+(ns ui.components.inputs.generic.radio-group
   (:require [clojure.string :as s]
             ["@headlessui/react" :refer (RadioGroup)]
             [ui.utils.string :refer (class-names)]
-            [ui.components.generic.button :refer (button-class)]))
+            [ui.components.inputs.generic.button :refer (button-class)]))
 
 (def ^:private Label (.-Label RadioGroup))
 (def ^:private Option (.-Option RadioGroup))

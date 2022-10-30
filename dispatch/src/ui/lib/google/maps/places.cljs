@@ -1,5 +1,5 @@
-(ns ui.utils.google.maps.places
-  (:require [ui.utils.google.maps.serializer :refer (parse-place)]))
+(ns ui.lib.google.maps.places
+  (:require [ui.lib.google.maps.serializer :refer (parse-place)]))
 
 (defonce ^:private !places-service (atom nil))
 

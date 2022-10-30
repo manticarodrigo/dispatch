@@ -1,4 +1,4 @@
-(ns ui.views.admin.fleet.panel.overview
+(ns ui.views.fleet
   (:require
    [react-feather :rename {GitPullRequest DistanceIcon
                            Clock DurationIcon}]
@@ -6,8 +6,7 @@
    [ui.utils.i18n :refer (tr)]
    [ui.utils.string :refer (class-names)]
    [ui.utils.css :refer (distance-str duration-str padding)]
-   [ui.components.generic.accordion :refer (accordion)]))
-
+   [ui.components.inputs.generic.accordion :refer (accordion)]))
 
 (defn- route-leg-fact [label value]
   [:div {:class "flex justify-center items-center mb-1 text-neutral-300"}
@@ -80,6 +79,6 @@
             {:name [driver-name "Maria Van Vluten"]
              :description [driver-detail]}])
 
-(defn overview []
+(defn view []
   [:div {:class (class-names padding)}
    [accordion {:items items :item-class "mb-2 w-full"}]])

@@ -1,4 +1,4 @@
-(ns ui.utils.google.maps.marker)
+(ns ui.lib.google.maps.marker)
 
 (defonce ^:private !markers (atom []))
 

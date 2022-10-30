@@ -1,6 +1,6 @@
-(ns ui.components.generic.input
+(ns ui.components.inputs.generic.input
   (:require [ui.utils.string :refer (class-names)]
-            [ui.components.generic.button :refer (button-class)]))
+            [ui.components.inputs.generic.button :refer (button-class)]))
 
 (def label-class (class-names "block mb-2 text-sm text-neutral-50"))
 

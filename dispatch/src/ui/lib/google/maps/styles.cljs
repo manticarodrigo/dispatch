@@ -1,4 +1,4 @@
-(ns ui.utils.google.maps.styles)
+(ns ui.lib.google.maps.styles)
 
 (def transit-off
   {:elementType "all"
