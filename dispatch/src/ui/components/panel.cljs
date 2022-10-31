@@ -7,14 +7,15 @@
   (let [!show (r/atom false)]
     (fn []
       (prn @!show)
-      [:> (.-section motion)
-       {:animate {:translateY (if @!show 0 "calc(100% - 40px)")}
+      [:> (.-article motion)
+       {:initial false
+        :animate {:top (if @!show 0 "calc(100% - 40px)")}
         :transition {:type "spring",
                      :damping 20,
                      :stiffness 100}
         :drag "y"
         :dragConstraints {:top 0 :bottom 0}
-        :dragElastic 0.2
+        :dragElastic 0.5
         :onDragEnd (fn [_ info]
                      (if @!show
                        (when (< 0 (.. info -offset -y))
@@ -24,7 +25,7 @@
         :class (class-names
                 class
                 "z-10 absolute lg:hidden"
-                "w-full h-[calc(100%_-_60px)] bg-neutral-900")}
+                "w-full h-full bg-neutral-900")}
        [:button {:on-click (fn []
                              (swap! !show not))
                  :class "flex justify-center items-center p-4 w-full"}
@@ -33,7 +34,7 @@
         children]])))
 
 (defn panel-desktop [class children]
-  [:section {:class
+  [:article {:class
              (class-names
               class
               "flex-none hidden lg:block"
