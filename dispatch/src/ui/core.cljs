@@ -1,7 +1,8 @@
 (ns ui.core
   (:require
+   ["react-dom/client" :refer (createRoot)]
+   [goog.dom :as gdom]
    [reagent.core :as r]
-   [reagent.dom :as rd]
    [re-frame.core :as rf]
    [ui.events :as events]
    [ui.lib.apollo :refer (apollo-provider)]
@@ -12,12 +13,17 @@
 
 (defn app [] [apollo-provider [routes]])
 
-(defn ^:dev/after-load mount-root []
+(defonce !root (atom nil))
+
+(defn mount []
   (rf/clear-subscription-cache!)
-  (let [root-el (.getElementById js/document "app")]
-    (rd/unmount-component-at-node root-el)
-    (rd/render [app] root-el)))
+  (reset! !root (createRoot (gdom/getElement "app")))
+  (.render @!root (r/as-element [app])))
 
 (defn init []
   (rf/dispatch-sync [::events/initialize-db])
-  (mount-root))
+  (mount))
+
+(defn refresh []
+  (.unmount @!root)
+  (mount))

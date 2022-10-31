@@ -14,5 +14,5 @@
      (when bounds
        [button {:aria-label (tr [:location/center])
                 :label [:> Crosshair {:class "w-5 h-5"}]
-                :class "absolute bottom-4 right-2"
+                :class "absolute top-4 right-2"
                 :on-click center-route}])]))

@@ -9,6 +9,7 @@
    [ui.lib.router :refer (routes nav-link link)]
    [ui.utils.i18n :refer (tr)]
    [ui.utils.string :refer (class-names)]
+   [ui.utils.css :refer (padding-x)]
    [ui.components.inputs.generic.menu :refer (menu)]))
 
 (defn nav-item [to icon]
@@ -35,9 +36,9 @@
 (defn header [main]
   [:<>
    [:header {:class (class-names
-                     "grid grid-cols-3 items-center"
+                     "z-1 fixed top-0 grid grid-cols-3 items-center"
                      "border-b border-neutral-600"
-                     "px-3"
+                     padding-x
                      "w-full h-[60px]")}
     [:div {:class "flex"}
      [:svg {:xmlns "http://www.w3.org/2000/svg"
@@ -56,8 +57,8 @@
     [:nav [:ul {:class "flex justify-center"}
            [nav-item "/fleet" MapIcon]
            [nav-item "/schedule" CalendarIcon]
-           [nav-item "/history" BookOpenIcon]
-           [nav-item "/seats" UsersIcon]]]
+           [nav-item "/seats" UsersIcon]
+           [nav-item "/history" BookOpenIcon]]]
     [:div {:class "flex justify-end"}
      [menu {:label [:> SettingsIcon]
             :items [{:label [menu-item "/register" "Register"]}
@@ -65,5 +66,5 @@
                     {:label [menu-item "/logout" "Logout"]}]
             :class-map {:button! "h-full"
                         :item "min-w-[12rem]"}}]]]
-   [:div {:class "w-full h-[calc(100%_-_60px)]"}
+   [:div {:class "w-full h-full pt-[60px]"}
     main]])
