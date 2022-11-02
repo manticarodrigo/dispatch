@@ -23,8 +23,8 @@ resource "null_resource" "build" {
   }
 
   provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
     command     = <<-EOT
-                  #!/bin/bash
                   set -e
                   yarn
                   npx prisma generate
