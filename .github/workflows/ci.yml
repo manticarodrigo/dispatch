@@ -37,6 +37,8 @@ jobs:
           key: ${{ runner.os }}-shadow-cljs-${{ hashFiles('dispatch/shadow-cljs.edn') }}
           restore-keys: |
             ${{ runner.os }}-shadow-cljs-
+      - name: Start docker
+        run: cd dispatch && docker-compose up -d
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
