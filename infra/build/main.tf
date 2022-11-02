@@ -27,6 +27,8 @@ resource "null_resource" "build" {
                   set -e
                   yarn
                   npx prisma generate
+                  ls
+                  echo $(ls)
                   yarn test
                   yarn release
                   EOT
