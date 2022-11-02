@@ -27,6 +27,7 @@ resource "null_resource" "build" {
                   set -e
                   yarn
                   npx prisma generate
+                  yarn test
                   yarn release
                   EOT
     working_dir = "../dispatch"
