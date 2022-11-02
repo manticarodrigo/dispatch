@@ -1,53 +1,52 @@
 (ns tests.user
   (:require
    [shadow.resource :refer (inline)]
-   [cljs.test :as t :refer-macros [deftest async is]]
+   [cljs.test :as t :refer-macros [deftest async testing is]]
    [promesa.core :as p]
    [tests.util.request :refer (send)]))
 
 (deftest register
   (async done
-         (p/let [query (inline "mutations/user/register.graphql")
-                 payload  {:query query
-                           :variables {:firstName "test"
-                                       :lastName "test"
-                                       :email "test@test.test"
-                                       :password "test"}}
-                 ^js res (send payload)
-                 ^js res2 (send payload)
-                 ^js error (first (.. res2 -body -errors))
-                 ^js anom (.. error -extensions -anom)]
-           (is (some? (.. res -body -data -register)))
-           (is (= "conflict" (. anom -category)))
-           (is (= "unique-constraint" (. anom -reason)))
-           (is (= "email" (first (.. anom -meta -target))))
-           (done))))
+         (let [query (inline "mutations/user/register.graphql")
+               payload  {:query query
+                         :variables {:firstName "test"
+                                     :lastName "test"
+                                     :email "test@test.test"
+                                     :password "test"}}]
+           (p/do
+             (p/let [res (send payload)]
+               (testing "returns data"
+                 (is (some-> res :data :register))))
+             (p/let [res (send payload)
+                     error (-> res :errors first)
+                     anom (-> error :extensions :anom)]
+               (testing "returns unique email anom"
+                 (is (= "conflict" (-> anom :category)))
+                 (is (= "unique-constraint" (-> anom :reason)))
+                 (is (= "email" (-> anom :meta :target first)))))
+             (done)))))
 
 (deftest login
   (async done
-         (p/let [query (inline "mutations/user/login.graphql")
-                 ^js res (send
-                          {:query query
-                           :variables {:email "test@test.test"
-                                       :password "test"}})
-                 ^js res2 (send
-                           {:query query
-                            :variables {:email "test@test.test"
-                                        :password "incorrect"}})
-                 ^js error (first (.. res2 -body -errors))
-                 ^js anom (.. error -extensions -anom)
-                 ^js res3 (send
-                           {:query query
-                            :variables {:email "not@found.test"
-                                        :password "test"}})
-                 ^js error2 (first (.. res3 -body -errors))
-                 ^js anom2 (.. error2 -extensions -anom)]
-           (is (some? (.. res -body -data -login)))
-           (is (= "forbidden" (. anom -category)))
-           (is (= "invalid-password" (. anom -reason)))
-           (is (= "not-found" (. anom2 -category)))
-           (is (= "account-not-found" (. anom2 -reason)))
-           (done))))
+         (let [query (inline "mutations/user/login.graphql")
+               payload {:query query
+                        :variables {:email "test@test.test"
+                                    :password "test"}}]
+           (p/do
+             (p/let [res (send payload)]
+               (testing "returns data"
+                 (is (some-> res :data :login))))
+             (p/let [res (send (assoc-in payload [:variables :email] "not@found.test"))
+                     anom (-> res :errors first :extensions :anom)]
+               (testing "returns invalid email anom"
+                 (is (= "not-found" (-> anom :category)))
+                 (is (= "account-not-found" (-> anom :reason)))))
+             (p/let [res (send (assoc-in payload [:variables :password] "incorrect"))
+                     anom (-> res :errors first :extensions :anom)]
+               (testing "returns invalid password anom"
+                 (is (= "forbidden" (-> anom :category)))
+                 (is (= "invalid-password" (-> anom :reason)))))
+             (done)))))
 
 (deftest delete
   (async done
@@ -55,5 +54,6 @@
                  ^js res (send
                           {:query query
                            :variables {:email "test@test.test"}})]
-           (is (some? (.. res -body -data -delete)))
+           (testing "returns data"
+             (is (some? (-> res :data :delete))))
            (done))))

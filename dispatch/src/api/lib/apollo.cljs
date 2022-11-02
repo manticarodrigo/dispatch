@@ -30,11 +30,14 @@
       (->js (assoc-in clj-error [:extensions :anom] (anom/fault :unknown))))))
 
 (defn create-server []
-  (p/let [type-defs (get-type-defs)
-          server (ApolloServer. (->js
-                                 {:typeDefs type-defs
-                                  :resolvers resolvers
-                                  :formatError format-error}))
+  (p/let [type-defs (get-type-defs)]
+    (ApolloServer. (->js
+                    {:typeDefs type-defs
+                     :resolvers resolvers
+                     :formatError format-error}))))
+
+(defn start-server []
+  (p/let [server (create-server)
           _ (.start server)]
     server))
 

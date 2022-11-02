@@ -4,7 +4,11 @@
             [tests.user :as user]))
 
 (defmethod t/report [:cljs.test/default :begin-test-var] [m]
-  (println "-" (-> m :var meta :name)))
+  (println "  " (-> m :var meta :name)))
+
+(defmethod t/report [:cljs.test/default :pass] [_]
+  (println "    " (t/testing-contexts-str) "(PASS)"))
+
 
 (defn test-ns-hook []
   (p/do
@@ -16,6 +20,3 @@
   (println "starting tests...")
   (println)
   (test-ns-hook))
-
-(comment
-  (run-tests))

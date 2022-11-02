@@ -24,8 +24,10 @@ resource "null_resource" "build" {
 
   provisioner "local-exec" {
     command     = <<-EOT
+                  set -e
                   yarn
                   npx prisma generate
+                  yarn test
                   yarn release
                   EOT
     working_dir = "../dispatch"

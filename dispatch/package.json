@@ -4,9 +4,10 @@
   "scripts": {
     "ancient": "clojure -Sdeps '{:deps {com.github.liquidz/antq {:mvn/version \"RELEASE\"}}}' -m antq.core",
     "report": "shadow-cljs run shadow.cljs.build-report app target/build-report.html",
-    "serve": ". .env && nodemon --watch out out/api.js -e js",
     "watch": "shadow-cljs watch api ui --config-merge ./config/dev.edn",
-    "release": "shadow-cljs release api ui --config-merge ./config/prod.edn && ncc build out/api.js -o dist/ --minify"
+    "serve": ". .env && nodemon --watch out out/api.js -e js",
+    "test": ". .env && shadow-cljs compile test && node out/test.js",
+    "release": ". .env && shadow-cljs release api ui --config-merge ./config/prod.edn && ncc build out/api.js -o dist/ --minify"
   },
   "dependencies": {
     "@apollo/client": "^3.7.0",
@@ -41,7 +42,6 @@
     "prettier": "^2.7.1",
     "prisma": "^4.5.0",
     "shadow-cljs": "2.19.9",
-    "supertest": "^6.3.1",
     "tailwindcss": "^3.1.8"
   }
 }
