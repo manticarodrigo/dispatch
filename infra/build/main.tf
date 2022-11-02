@@ -26,6 +26,7 @@ resource "null_resource" "build" {
     interpreter = ["/bin/bash", "-c"]
     command     = <<-EOT
                   set -e
+                  source local.env
                   yarn
                   npx prisma generate
                   yarn test
