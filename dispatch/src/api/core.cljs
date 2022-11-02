@@ -6,14 +6,14 @@
    ["http" :as http]
    [promesa.core :as p]
    [api.config :as config]
-   [api.lib.apollo :refer (start-server create-middleware)]))
+   [api.lib.apollo :as apollo]))
 
 (def dev? (= config/STAGE "dev"))
 
 (defn create-app
   []
-  (p/let [server (start-server)
-          middleware (create-middleware server)
+  (p/let [server (apollo/start-server)
+          middleware (apollo/create-middleware server)
           app (express)]
     (.use app (cors #js{:origin "*"}) (.json express))
     (.use app (fn [_ res next]
