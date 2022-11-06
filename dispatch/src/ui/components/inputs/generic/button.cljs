@@ -2,7 +2,7 @@
   (:require [ui.utils.string :refer (class-names)]))
 
 (def base-button-class (class-names
-                        "p-2.5"
+                        "p-2.5 lg:py-2.5 lg:px-4"
                         "outline-0 rounded border border-neutral-500"
                         "text-base text-neutral-100"
                         "bg-neutral-900"))

@@ -4,6 +4,7 @@
             [ui.views.register :as register]
             [ui.views.login :as login]
             [ui.views.fleet :as fleet]
+            [ui.views.seats :as seats]
             [ui.views.not-found :as not-found]))
 
 (defn routes []
@@ -14,4 +15,5 @@
      ["/login" [login/view]]
      ["/logout" [router/remove-auth-route]]
      ["/fleet" [router/auth-route [fleet/view]]]
+     ["/seats" [router/auth-route [seats/view]]]
      ["*" [not-found/view]]]]])

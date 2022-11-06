@@ -4,6 +4,7 @@
   "scripts": {
     "ancient": "clojure -Sdeps '{:deps {com.github.liquidz/antq {:mvn/version \"RELEASE\"}}}' -m antq.core",
     "report": "shadow-cljs run shadow.cljs.build-report ui target/build-report.html",
+    "db-push": "prisma db push",
     "watch": "shadow-cljs watch api ui --config-merge ./config/dev.edn",
     "serve": "nodemon --watch out out/api.js -e js",
     "test": "shadow-cljs compile test && node out/test.js",

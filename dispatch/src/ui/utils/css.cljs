@@ -1,10 +1,5 @@
 (ns ui.utils.css
-  (:require [ui.utils.i18n :refer (tr)]
-            [ui.utils.string :refer (class-names)]))
-
-
-(defonce distance-str #(tr [:view.route/distance]))
-(defonce duration-str #(tr [:view.route/duration]))
+  (:require [ui.utils.string :refer (class-names)]))
 
 (defonce padding-x "px-3 sm:px-4 md:px-6 lg:px-8")
 (defonce padding-y "py-3 sm:py-4 md:py-6")

@@ -5,8 +5,11 @@
    [ui.subs :refer (listen)]
    [ui.utils.i18n :refer (tr)]
    [ui.utils.string :refer (class-names)]
-   [ui.utils.css :refer (distance-str duration-str padding)]
+   [ui.utils.css :refer (padding)]
    [ui.components.inputs.generic.accordion :refer (accordion)]))
+
+(defonce distance-str #(tr [:view.fleet/distance]))
+(defonce duration-str #(tr [:view.fleet/duration]))
 
 (defn- route-leg-fact [label value]
   [:div {:class "flex justify-center items-center mb-1 text-neutral-300"}
@@ -56,7 +59,7 @@
         kms (listen [:route/kilometers])
         mins (listen [:route/minutes])]
     (when (some? origin)
-      [:div {:class (class-names "px-2 flex justify-between w-full")}
+      [:div {:class (class-names "flex justify-between w-full")}
        [:div {:class "font-medium text-xl text-left"}
         title
         [:div {:class "font-light text-xs text-left text-neutral-400"}

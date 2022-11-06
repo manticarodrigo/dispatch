@@ -14,24 +14,23 @@
     :location/watch "Watch current location"
     :location/search "Set origin address"
     :location/search-empty "No results found"
-    :view {:register
-           {:title "Register"
-            :fields {:firstName "First name"
-                     :lastName "Last name"
-                     :email "Email"
-                     :password "Password"
-                     :submit "Submit"}}
-           :login
-           {:title "Login"
-            :fields {:email "Email"
-                     :password "Password"
-                     :submit "Submit"}}
-           :route
-           {:title "Fleet"
-            :distance "Total distance"
-            :duration "Estimated time"
-            :summary {:title "Summary"}
-            :overview {:title "Route"}}}
+    :view {:register {:title "Register"
+                      :fields {:username "Username"
+                               :firstName "First name"
+                               :lastName "Last name"
+                               :email "Email"
+                               :password "Password"
+                               :submit "Submit"}}
+           :login {:title "Login"
+                   :fields {:email "Email"
+                            :password "Password"
+                            :submit "Submit"}}
+           :fleet {:title "Fleet"
+                   :distance "Total distance"
+                   :duration "Estimated time"
+                   :summary {:title "Summary"}
+                   :overview {:title "Route"}}
+           :seats {:title "Seats"}}
     :error {:unknown "An unknown error occurred."
             :unique-constraint "The account already exists."
             :invalid-password "The password is incorrect."
@@ -49,24 +48,23 @@
     :location/watch "Observar ubicación actual"
     :location/search "Ingresar ubicación de origen"
     :location/search-empty "No se han encontrado resultados"
-    :view {:register
-           {:title "Registrar"
-            :fields {:firstName "Nombre"
-                     :lastName "Apellido"
-                     :email "Correo electrónico"
-                     :password "Contraseña"
-                     :submit "Enviar"}}
-           :login
-           {:title "Ingresar"
-            :fields {:email "Correo electrónico"
-                     :password "Contraseña"
-                     :submit "Enviar"}}
-           :route
-           {:title "Flota"
-            :distance "Distancia total"
-            :duration "Tiempo estimado"
-            :summary {:title "Resumen"}
-            :overview {:title "Ruta"}}}
+    :view {:register {:title "Registrar"
+                      :fields {:username "Usuario"
+                               :firstName "Nombre"
+                               :lastName "Apellido"
+                               :email "Correo electrónico"
+                               :password "Contraseña"
+                               :submit "Enviar"}}
+           :login {:title "Ingresar"
+                   :fields {:email "Correo electrónico"
+                            :password "Contraseña"
+                            :submit "Enviar"}}
+           :fleet {:title "Flota"
+                   :distance "Distancia total"
+                   :duration "Tiempo estimado"
+                   :summary {:title "Resumen"}
+                   :overview {:title "Ruta"}}
+           :seats {:title "Sillas"}}
     :error {:unknown "Un error desconocido ocurrió."
             :unique-constraint "La cuenta ya existe."
             :invalid-password "La contraseña es incorrecta."

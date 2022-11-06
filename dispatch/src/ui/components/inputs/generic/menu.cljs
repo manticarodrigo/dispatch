@@ -8,8 +8,8 @@
 (def ^:private Items (.-Items Menu))
 (def ^:private Item (.-Item Menu))
 
-(defn menu-item [idx item item-class]
-  [:> Item {:key (or (:key item) idx)}
+(defn menu-item [item item-class]
+  [:> Item
    (fn [props]
      (r/as-element
       [:li {:class (class-names item-class "p-1.5 w-full cursor-pointer")}
@@ -33,8 +33,11 @@
                                  "shadow-lg overflow-hidden")}
       (doall
        (for [[idx item] (map-indexed vector items)]
-         (if (vector? item)
-           [:div {:class "w-full"}
-            (for [[idx2 item2] (map-indexed vector item)]
-              [menu-item idx2 item2 item-class])]
-           [menu-item idx item item-class])))]]))
+         ^{:key idx}
+         [:<>
+          (if (vector? item)
+            [:div {:class "w-full"}
+             (for [[sub-idx sub-item] (map-indexed vector item)]
+               ^{:key (str idx "-" sub-idx)}
+               [menu-item sub-item item-class])]
+            [menu-item item item-class])]))]]))
