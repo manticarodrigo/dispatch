@@ -1,6 +1,6 @@
 (ns ui.views.fleet
   (:require
-   [react-feather :rename {PlusCircle PlusIcon
+   [react-feather :rename {Check CheckIcon
                            GitPullRequest DistanceIcon
                            Clock DurationIcon}]
    [reagent.core :as r]
@@ -26,17 +26,26 @@
 
 
 (defn- route-leg [idx address distance duration]
-  [:div {:class (class-names  "py-2 flex")}
-   [:div {:class (class-names "relative"
-                              "shrink-0 flex justify-center items-center"
-                              "rounded-full border border-neutral-300"
-                              "w-8 h-8"
-                              "font-bold bg-neutral-900")}
-    (+ 1 idx)]
-   [:p {:class "grow px-2 md:px-3 lg:px-4 text-sm leading-4"} address]
-   [:div {:class "shrink-0 flex flex-col items-end text-sm leading-4"}
-    [route-leg-fact (distance-str) (str (js/Math.round (/ distance 1000)) " " (tr [:units/km]))]
-    [route-leg-fact (duration-str) (str (js/Math.round (/ duration 60)) " " (tr [:units/min]))]]])
+  (let [delivered? (< idx 2)]
+    [:div {:class (class-names  "py-2 flex")}
+     [:div {:class (class-names "relative"
+                                "shrink-0 flex justify-center items-center"
+                                "rounded-full border border-neutral-300"
+                                "w-6 h-6"
+                                "font-bold bg-neutral-900")}
+
+      (when delivered? [:> CheckIcon {:class "w-4 h-4"}])]
+     [:div {:class "flex w-full"}
+      [:div {:class "px-2 lg:px-6 w-full"}
+       [:p {:class "text-sm"} (str "Waypoint " (+ 1 idx))]
+       [:p {:class "mt-2 text-xs text-neutral-300"} address]]
+      (if delivered?
+        [:div {:class "shrink-0 flex flex-col justify-end items-end text-xs text-neutral-300"}
+         [:span "Delivered at"]
+         [:span "9:45pm"]]
+        [:div {:class "shrink-0 flex flex-col justify-end items-end text-xs"}
+         [route-leg-fact (distance-str) (str (js/Math.round (/ distance 1000)) (tr [:units/km]))]
+         [route-leg-fact (duration-str) (str (js/Math.round (/ duration 60)) (tr [:units/min]))]])]]))
 
 (defn driver-detail []
   (let [legs (listen [:route/legs])]
@@ -52,7 +61,7 @@
                  duration :duration}]
                (map-indexed vector legs)]
            [:li {:key idx :class "relative"}
-            [:span {:class "absolute left-4 border-l border-neutral-50 h-full"}]
+            [:span {:class "absolute left-3 border-l border-neutral-50 h-full"}]
             [route-leg idx address distance duration]]))]])))
 
 (defn- driver-fact [label value icon]
@@ -70,25 +79,31 @@
       [:div {:class (class-names "flex justify-between w-full")}
        [:div {:class "font-medium text-xl text-left"}
         title
-        [:div {:class "font-light text-xs text-left text-neutral-400"}
-         "Departed at: 10:15pm"]]
-
+        [:div
+         [:div {:class "flex items-center font-light text-xs text-left text-neutral-400"}
+          [:div {:class "mr-1 rounded-full w-2 h-2 bg-green-500"}]
+          "Last seen at 10:15pm"]]]
        [:div {:class "flex flex-col"}
         [driver-fact (distance-str) [:span kms [:span {:class "text-sm text-neutral-300"} (tr [:units/km])]] DistanceIcon]
         [driver-fact (duration-str) [:span mins [:span {:class "text-sm text-neutral-300"} (tr [:units/min])]] DurationIcon]]])))
 
-(def items [{:name [driver-name "Edwin Vega"]
-             :description [driver-detail]}
-            {:name [driver-name "Billy Armstrong"]
-             :description [driver-detail]}
-            {:name [driver-name "Felipe Carapaz"]
-             :description [driver-detail]}
-            {:name [driver-name "Diego Wiggins"]
-             :description [driver-detail]}
-            {:name [driver-name "Alfredo Contador"]
-             :description [driver-detail]}
-            {:name [driver-name "Maria Van Vluten"]
-             :description [driver-detail]}])
+(defn inactive-item [name]
+  [:div {:class (class-names "flex justify-between w-full")}
+   [:div {:class "font-medium text-xl text-left"}
+    name
+    [:div
+     [:div {:class "flex items-center font-light text-xs text-left text-neutral-400"}
+      [:div {:class "mr-1 rounded-full w-2 h-2 bg-amber-500"}]
+      "Last seen at 3:15pm"]]]
+   [button {:label "Schedule route"}]])
+
+(def items [{:name "Edwin Vega"}
+            {:name "Billy Armstrong"}
+            {:name "Felipe Carapaz"}])
+
+(def inactive-items [{:name "Diego Wiggins"}
+                     {:name "Alfredo Contador"}
+                     {:name "Maria Van Vluten"}])
 
 (defn view []
   (let [!create-route? (r/atom false)
@@ -103,5 +118,11 @@
        [button {:label "Add seat"
                 :class "mb-4 w-full"
                 :on-click #(reset! !selected-seat {})}]
-       [accordion {:items items :item-class "mb-2 w-full"}]])))
+       [accordion {:items (map (fn [item]
+                                 {:name [driver-name (:name item)]
+                                  :description [driver-detail]}) items)
+                   :item-class "mb-2 w-full"}]
+       (for [item inactive-items]
+         [:div {:class (class-names base-button-class "my-2")}
+          [inactive-item (:name item)]])])))
 
