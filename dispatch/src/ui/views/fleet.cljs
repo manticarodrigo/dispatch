@@ -1,7 +1,15 @@
 (ns ui.views.fleet
   (:require
-   [react-feather :rename {GitPullRequest DistanceIcon
+   [react-feather :rename {PlusCircle PlusIcon
+                           GitPullRequest DistanceIcon
                            Clock DurationIcon}]
+   [reagent.core :as r]
+   [ui.utils.string :refer (class-names)]
+   [ui.utils.css :refer (padding)]
+   [ui.components.inputs.generic.button :refer (button base-button-class)]
+   [ui.components.inputs.generic.modal :refer (modal)]
+   [ui.components.forms.user :refer (user-form)]
+   [ui.components.forms.route :refer (route-form)]
    [ui.subs :refer (listen)]
    [ui.utils.i18n :refer (tr)]
    [ui.utils.string :refer (class-names)]
@@ -83,5 +91,17 @@
              :description [driver-detail]}])
 
 (defn view []
-  [:div {:class (class-names padding)}
-   [accordion {:items items :item-class "mb-2 w-full"}]])
+  (let [!create-route? (r/atom false)
+        !selected-seat (r/atom nil)]
+    (fn []
+      [:div {:class (class-names padding)}
+       [modal {:show (some? @!selected-seat)
+               :title (if (empty? @!selected-seat) "Add seat" "Manage seat")
+               :on-close #(reset! !selected-seat nil)}
+        [user-form {:initial-state @!selected-seat}]]
+
+       [button {:label "Add seat"
+                :class "mb-4 w-full"
+                :on-click #(reset! !selected-seat {})}]
+       [accordion {:items items :item-class "mb-2 w-full"}]])))
+

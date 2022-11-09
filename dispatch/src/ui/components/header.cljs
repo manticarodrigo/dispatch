@@ -3,7 +3,7 @@
    [react-feather
     :rename {Map MapIcon
              Calendar CalendarIcon
-             Users UsersIcon
+             MapPin PinIcon
              BookOpen BookOpenIcon
              Settings SettingsIcon}]
    [ui.lib.router :refer (routes nav-link link)]
@@ -53,13 +53,14 @@
      ["/register" [title (tr [:view.register/title])]]
      ["/login" [title (tr [:view.login/title])]]
      ["/fleet" [title (tr [:view.fleet/title])]]
-     ["/seats" [title (tr [:view.seats/title])]]
+     ["/waypoint" [title (tr [:view.waypoint/title])]]
+     ["/schedule" [title (tr [:view.schedule/title])]]
      ["*" [title "Not found"]]]]
 
    [:nav [:ul {:class "flex justify-center"}
           [nav-item "/fleet" MapIcon]
-          [nav-item "/seats" UsersIcon]
           [nav-item "/schedule" CalendarIcon]
+          [nav-item "/waypoint" PinIcon]
           [nav-item "/history" BookOpenIcon]]]
 
    [:div {:class "flex justify-end"}

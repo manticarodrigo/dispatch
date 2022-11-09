@@ -1,14 +1,24 @@
 (ns ui.lib.router
   (:require
    ["react-router-dom"
-    :refer (Routes Route Navigate useNavigate NavLink Link)
-    :rename {BrowserRouter Router}]
+    :refer (BrowserRouter
+            MemoryRouter
+            Routes
+            Route
+            Navigate
+            NavLink
+            Link
+            useNavigate)]
    [reagent.core :as r]
    [cljs-bean.core :refer (->clj)]
    [ui.utils.cookie :refer (get-session remove-session)]))
 
-(defn router [& children]
-  [:> Router
+(defn browser-router [& children]
+  [:> BrowserRouter
+   (into [:<>] children)])
+
+(defn memory-router [props & children]
+  [:> MemoryRouter props
    (into [:<>] children)])
 
 (defn routes [& routes]

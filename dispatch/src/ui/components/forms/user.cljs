@@ -6,7 +6,6 @@
             [ui.components.inputs.generic.button :refer (button)]))
 
 (defn user-form [{initial-state :initial-state on-submit :on-submit}]
-  (prn initial-state)
   (let [!state (r/atom (or initial-state {}))
         !anoms (r/atom {})]
     (fn []

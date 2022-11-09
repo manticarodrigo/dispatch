@@ -12,6 +12,7 @@
 
 (defn combobox [{aria-label :aria-label
                  label :label
+                 placeholder :placeholder
                  class :class
                  value :value
                  options :options
@@ -24,7 +25,9 @@
                 :value value
                 :on-change on-change}
    [:> Label {:class (if aria-label "sr-only" label-class)} (or aria-label label)]
-   [:> Input {:class input-class :on-change #(on-text (-> % .-target .-value))}]
+   [:> Input {:placeholder placeholder
+              :class input-class
+              :on-change #(on-text (-> % .-target .-value))}]
    [:> Transition
     {:as Fragment
      :leave "transition ease-in duration-100"

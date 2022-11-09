@@ -30,7 +30,8 @@
                    :duration "Estimated time"
                    :summary {:title "Summary"}
                    :overview {:title "Route"}}
-           :seats {:title "Seats"}}
+           :schedule {:title "Schedule"}
+           :waypoint {:title "Waypoint"}}
     :error {:unknown "An unknown error occurred."
             :unique-constraint "The account already exists."
             :invalid-password "The password is incorrect."
@@ -64,7 +65,8 @@
                    :duration "Tiempo estimado"
                    :summary {:title "Resumen"}
                    :overview {:title "Ruta"}}
-           :seats {:title "Sillas"}}
+           :schedule {:title "Programar"}
+           :waypoint {:title "Punto"}}
     :error {:unknown "Un error desconocido ocurrió."
             :unique-constraint "La cuenta ya existe."
             :invalid-password "La contraseña es incorrecta."

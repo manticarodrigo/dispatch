@@ -9,6 +9,6 @@
   [:> ApolloProvider {:client client}
    (into [:<>] children)])
 
-(defn parse-anoms [e]
+(defn parse-anoms [^js e]
   (let [anoms (mapv #(-> % :extensions :anom) (some-> e .-graphQLErrors ->clj))]
     anoms))

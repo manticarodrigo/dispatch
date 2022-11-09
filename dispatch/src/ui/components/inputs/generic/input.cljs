@@ -9,6 +9,7 @@
 (defn input [{id :id
               type :type
               label :label
+              placeholder :placeholder
               value :value
               required :required
               class :class
@@ -19,6 +20,7 @@
     label]
    [:input {:id id
             :type (or type "text")
+            :placeholder placeholder
             :value value
             :required required
             :class input-class
