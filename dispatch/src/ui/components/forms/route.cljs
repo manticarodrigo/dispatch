@@ -11,13 +11,19 @@
             [ui.components.inputs.generic.input :refer (input)]
             [ui.components.inputs.generic.button :refer (button base-button-class)]))
 
+(defn get-datetime-local [date]
+  (.setMinutes date (- (.getMinutes date) (.getTimezoneOffset date)))
+  (.slice (.toISOString date) 0 16))
 
 (defn route-form [{initial-state :initial-state on-submit :on-submit}]
-  (let [!state (r/atom (or initial-state {:waypoints [{:name "Subway" :location "Galerias"}
+  (let [!state (r/atom (or initial-state {:start (get-datetime-local (js/Date.))
+                                          :waypoints [{:name "Subway" :location "Galerias"}
                                                       {:name "Pizza Hut" :location "Galerias"}
                                                       {:name "La Colonia" :location "Galerias"}]}))
         !anoms (r/atom {})]
+
     (fn []
+      (prn @!state)
       [:<>
        [:form {:class "flex flex-col"
                :on-submit on-submit}
@@ -37,6 +43,7 @@
                 :on-text #(swap! !state assoc :origin %)}]
         [input {:id "start"
                 :label "Departure time"
+                :placeholder "Select date and time"
                 :type "datetime-local"
                 :value (:start @!state)
                 :required true

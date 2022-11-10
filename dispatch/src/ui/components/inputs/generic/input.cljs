@@ -4,7 +4,7 @@
 
 (def label-class (class-names "block mb-2 text-sm text-neutral-50"))
 
-(def input-class (class-names button-class "w-full"))
+(def input-class (class-names button-class "appearance-none w-full text-left"))
 
 (defn input [{id :id
               type :type
