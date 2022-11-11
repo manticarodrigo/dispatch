@@ -57,34 +57,46 @@
                      (.then #(testing "ui form submits and presents unique email message" (is (some? %))))
                      (.then done))))))))
 
-(deftest login
+(deftest login-success
   (async done
-         (let [query (inline "mutations/user/login.graphql")
-               payload {:query query
-                        :variables {:email "test@test.test"
-                                    :password "test"}}]
-           (p/do
-             (p/let [res (send payload)]
-               (testing "returns data"
-                 (is (some-> res :data :login))))
-             (p/let [res (send (assoc-in payload [:variables :email] "not@found.test"))
-                     anom (-> res :errors first :extensions :anom)]
-               (testing "returns invalid email anom"
-                 (is (= "not-found" (-> anom :category)))
-                 (is (= "account-not-found" (-> anom :reason)))))
-             (p/let [res (send (assoc-in payload [:variables :password] "incorrect"))
-                     anom (-> res :errors first :extensions :anom)]
-               (testing "returns invalid password anom"
-                 (is (= "forbidden" (-> anom :category)))
-                 (is (= "invalid-password" (-> anom :reason)))))
-             (done)))))
+         (p/let [query (inline "mutations/user/login.graphql")
+                 variables {:email "test@test.test" :password "test"}
+                 request {:query query :variables variables}
+                 result (send request)]
+           (testing "api returns data"
+             (is (some-> result :data :login)))
+           (done))))
+
+(deftest login-invalid-email
+  (async done
+         (p/let [query (inline "mutations/user/login.graphql")
+                 variables {:email "not@found.test" :password "test"}
+                 request {:query query :variables variables}
+                 result (send request)
+                 anom (-> result :errors first :extensions :anom)]
+           (testing "api returns invalid email anom"
+             (is (and
+                  (= "not-found" (-> anom :category))
+                  (= "account-not-found" (-> anom :reason)))))
+           (done))))
+
+(deftest login-invalid-password
+  (async done
+         (p/let [query (inline "mutations/user/login.graphql")
+                 variables {:email "test@test.test" :password "incorrect"}
+                 request {:query query :variables variables}
+                 result (send request)
+                 anom (-> result :errors first :extensions :anom)]
+           (testing "api returns invalid password anom"
+             (is (and
+                  (= "forbidden" (-> anom :category))
+                  (= "invalid-password" (-> anom :reason)))))
+           (done))))
 
 (deftest delete
   (async done
          (p/let [query (inline "mutations/user/delete.graphql")
-                 ^js res (send
-                          {:query query
-                           :variables {:email "test@test.test"}})]
-           (testing "returns data"
-             (is (some? (-> res :data :delete))))
+                 ^js result (send {:query query :variables {:email "test@test.test"}})]
+           (testing "api returns data"
+             (is (some? (-> result :data :delete))))
            (done))))
