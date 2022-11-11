@@ -96,6 +96,7 @@ resource "null_resource" "api_db_sync" {
 
   provisioner "local-exec" {
     command = "export DATABASE_URL=${local.db_url} && npx prisma db push --accept-data-loss"
+    working_dir = "../dispatch"
   }
 
   depends_on = [
