@@ -16,11 +16,13 @@
                    base-button-class
                    hover-button-class))
 
-(defn button [{aria-label :aria-label
+(defn button [{type :type
+               aria-label :aria-label
                label :label
                class :class
                on-click :on-click}]
-  [:button {:aria-label aria-label
+  [:button {:type type
+            :aria-label aria-label
             :class (class-names
                     class
                     button-class)

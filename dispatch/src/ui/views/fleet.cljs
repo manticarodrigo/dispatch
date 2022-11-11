@@ -1,19 +1,14 @@
 (ns ui.views.fleet
   (:require
    [react-feather :rename {Check CheckIcon
+                           Package PackageIcon
                            GitPullRequest DistanceIcon
                            Clock DurationIcon}]
-   [reagent.core :as r]
-   [ui.utils.string :refer (class-names)]
-   [ui.utils.css :refer (padding)]
-   [ui.components.inputs.generic.button :refer (button base-button-class)]
-   [ui.components.inputs.generic.modal :refer (modal)]
-   [ui.components.forms.user :refer (user-form)]
-   [ui.components.forms.route :refer (route-form)]
    [ui.subs :refer (listen)]
    [ui.utils.i18n :refer (tr)]
    [ui.utils.string :refer (class-names)]
    [ui.utils.css :refer (padding)]
+   [ui.components.inputs.generic.button :refer (button base-button-class)]
    [ui.components.inputs.generic.accordion :refer (accordion)]))
 
 (defonce distance-str #(tr [:view.fleet/distance]))
@@ -35,17 +30,19 @@
                                 "font-bold bg-neutral-900")}
 
       (when delivered? [:> CheckIcon {:class "w-4 h-4"}])]
-     [:div {:class "flex w-full"}
-      [:div {:class "px-2 lg:px-6 w-full"}
-       [:p {:class "text-sm"} (str "Waypoint " (+ 1 idx))]
-       [:p {:class "mt-2 text-xs text-neutral-300"} address]]
-      (if delivered?
-        [:div {:class "shrink-0 flex flex-col justify-end items-end text-xs text-neutral-300"}
-         [:span "Delivered at"]
-         [:span "9:45pm"]]
-        [:div {:class "shrink-0 flex flex-col justify-end items-end text-xs"}
-         [route-leg-fact (distance-str) (str (js/Math.round (/ distance 1000)) (tr [:units/km]))]
-         [route-leg-fact (duration-str) (str (js/Math.round (/ duration 60)) (tr [:units/min]))]])]]))
+     [:div {:class "pl-2 lg:pl-6 flex w-full"}
+      [:div {:class "w-full"}
+       [:p {:class "text-base font-medium"} (str "Waypoint " (+ 1 idx))]
+       [:p {:class "text-xs text-neutral-300"} address]]
+      [:div {:class "shrink-0 flex flex-col items-end pl-4 lg:pl-6 text-xs text-neutral-300"}
+       (if delivered?
+         [:div {:class "flex"}
+          [:> PackageIcon {:class "mr-1 w-4 h-4"}]
+          "09:45pm"]
+         [:<>
+          [:div {:class "flex"}
+           [:> DurationIcon {:class "mr-1 w-4 h-4"}]
+           "10:15pm"]])]]]))
 
 (defn driver-detail []
   (let [legs (listen [:route/legs])]
@@ -99,30 +96,22 @@
 
 (def items [{:name "Edwin Vega"}
             {:name "Billy Armstrong"}
-            {:name "Felipe Carapaz"}])
+            {:name "Felipe Carapaz"}
+            {:name "Walter Van Aert"}])
 
 (def inactive-items [{:name "Diego Wiggins"}
                      {:name "Alfredo Contador"}
                      {:name "Maria Van Vluten"}])
 
 (defn view []
-  (let [!create-route? (r/atom false)
-        !selected-seat (r/atom nil)]
-    (fn []
-      [:div {:class (class-names padding)}
-       [modal {:show (some? @!selected-seat)
-               :title (if (empty? @!selected-seat) "Add seat" "Manage seat")
-               :on-close #(reset! !selected-seat nil)}
-        [user-form {:initial-state @!selected-seat}]]
-
-       [button {:label "Add seat"
-                :class "mb-4 w-full"
-                :on-click #(reset! !selected-seat {})}]
-       [accordion {:items (map (fn [item]
-                                 {:name [driver-name (:name item)]
-                                  :description [driver-detail]}) items)
-                   :item-class "mb-2 w-full"}]
-       (for [item inactive-items]
-         [:div {:class (class-names base-button-class "my-2")}
-          [inactive-item (:name item)]])])))
+  (fn []
+    [:div {:class (class-names padding)}
+     [accordion {:items (map (fn [item]
+                               {:name [driver-name (:name item)]
+                                :description [driver-detail]}) items)
+                 :item-class "mb-2 w-full"}]
+     (for [item inactive-items]
+       ^{:key (:name item)} ;; add real keys!
+       [:div {:class (class-names base-button-class "my-2")}
+        [inactive-item (:name item)]])]))
 

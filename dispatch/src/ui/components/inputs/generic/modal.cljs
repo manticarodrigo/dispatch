@@ -36,4 +36,4 @@
        [:> (. Dialog -Panel)
         {:class "w-full max-w-md transform overflow-hidden rounded-2xl bg-neutral-900 p-6 text-left align-middle shadow-xl transition-all"}
         [:> (. Dialog -Title) {:as "h3" :class "mb-4 text-lg font-medium leading-6"} title]
-        children]]]]]])
+        (into [:<>] children)]]]]]])

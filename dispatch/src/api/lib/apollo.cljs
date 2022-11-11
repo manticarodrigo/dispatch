@@ -8,7 +8,6 @@
             [api.util.anom :as anom]
             [api.resolvers.user :refer (register login delete)]))
 
-
 (defn get-type-defs []
   (inline "schema.graphql"))
 

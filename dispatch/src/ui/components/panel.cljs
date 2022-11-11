@@ -1,7 +1,8 @@
 (ns ui.components.panel
   (:require ["framer-motion" :refer [motion]]
             [reagent.core :as r]
-            [ui.utils.string :refer (class-names)]))
+            [ui.utils.string :refer (class-names)]
+            [ui.hooks.use-media-query :refer (use-media-query lg)]))
 
 (defn panel-mobile [class children]
   (let [!show (r/atom false)]
@@ -42,6 +43,8 @@
    children])
 
 (defn panel [class & children]
-  [:<>
-   [panel-mobile class (into [:<>] children)]
-   [panel-desktop class (into [:<>] children)]])
+  (let [lg? (use-media-query lg)]
+    [:<>
+     (if lg?
+       [panel-desktop class (into [:<>] children)]
+       [panel-mobile class (into [:<>] children)])]))
