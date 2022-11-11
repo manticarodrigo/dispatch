@@ -2,38 +2,33 @@
   (:require
    [promesa.core :as p]
    [api.util.prisma :as prisma]
-   [api.util.crypto :refer (encrypt-string random-hex)]))
+   [api.util.crypto :refer (encrypt-string)]))
 
-(defn create [^js context payload]
-  (p/let [{:keys [password]} payload
-          model (.. context -prisma -user)
-          encrypted-password (when password (encrypt-string password))
-          session-id (random-hex)
-          _ (prisma/create model (merge
-                                  (prisma/select-params
-                                   payload
-                                   [:firstName :lastName :email])
-                                  {:password encrypted-password
-                                   :sessions [session-id]}))]
-    session-id))
+(defn create [^js context {:keys [email password]}]
+  (p/let [encrypted-password (when password (encrypt-string password))
+          ^js user (prisma/create!
+                    (.. context -prisma -user)
+                    {:data {:email email
+                            :password encrypted-password
+                            :sessions {:create [{}]}}
+                     :include {:sessions true}})]
+    (some-> user .-sessions last .-id)))
 
-(defn create-session [^js context payload]
-  (p/let [{:keys [user-id user-password password]} payload
-          model (.. context -prisma -user)
-          encrypted-password (when password (encrypt-string password))
+(defn create-session [^js context {:keys [user-id user-password password]}]
+  (p/let [encrypted-password (when password (encrypt-string password))
           password-matches? (= user-password encrypted-password)
-          session-id (when password-matches? (random-hex))
-          _ (when session-id
-              (prisma/push model {:id user-id} "sessions" session-id))]
-    session-id))
+          ^js user (when password-matches?
+                     (prisma/update! (.. context -prisma -user)
+                                     {:where {:id user-id}
+                                      :data {:sessions {:create [{}]}}
+                                      :include {:sessions true}}))]
+    (some-> user .-sessions last .-id)))
 
 (defn find-unique [^js context payload]
-  (let [model (.. context -prisma -user)
-        where (prisma/select-params payload [:id :email])]
-    (prisma/find-unique-where model where)))
+  (prisma/find-unique (.. context -prisma -user)
+                      {:where (prisma/filter-params payload)}))
 
 (defn delete [^js context payload]
-  (let [model (.. context -prisma -user)
-        where (prisma/select-params payload [:id :email])]
-    (-> (prisma/delete-where model where)
-        (.then #(.. % -id)))))
+  (p/let [^js user (prisma/delete! (.. context -prisma -user)
+                                   {:where (prisma/filter-params payload)})]
+    (. user -id)))

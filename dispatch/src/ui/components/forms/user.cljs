@@ -17,18 +17,6 @@
                :required true
                :class "pb-4"
                :on-text #(swap! !state assoc :username %)}]
-       [input {:id "firstName"
-               :label (tr [:view.register.fields/firstName])
-               :value (:firstName @!state)
-               :required true
-               :class "pb-4"
-               :on-text #(swap! !state assoc :firstName %)}]
-       [input {:id "lastName"
-               :label (tr [:view.register.fields/lastName])
-               :value (:lastName @!state)
-               :required true
-               :class "pb-4"
-               :on-text #(swap! !state assoc :lastName %)}]
        [input {:id "email"
                :type "email"
                :label (tr [:view.register.fields/email])

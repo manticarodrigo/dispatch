@@ -5,20 +5,17 @@
 (defn known-prisma-error? [e]
   (instance? (.. Prisma -PrismaClientKnownRequestError) e))
 
-(defn select-params [p k]
-  (into {} (filter
-            (comp some? val)
-            (select-keys p k))))
+(defn filter-params [params]
+  (into {} (filter (comp some? val) params)))
 
-(defn create [^js model data]
-  (.create model (->js {:data data})))
+(defn create! [^js model params]
+  (.create model (->js params)))
 
-(defn push [^js model where column value]
-  (.update model (->js {:where where
-                        :data (assoc-in {} [column :push] value)})))
+(defn update! [^js model params]
+  (.update model (->js params)))
 
-(defn find-unique-where [^js model where]
-  (.findUnique model (->js {:where where})))
+(defn find-unique [^js model params]
+  (.findUnique model (->js params)))
 
-(defn delete-where [^js model where]
-  (.delete model (->js {:where where})))
+(defn delete! [^js model params]
+  (.delete model (->js params)))

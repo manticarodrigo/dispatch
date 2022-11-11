@@ -16,8 +16,6 @@
     :location/search-empty "No results found"
     :view {:register {:title "Register"
                       :fields {:username "Username"
-                               :firstName "First name"
-                               :lastName "Last name"
                                :email "Email"
                                :password "Password"
                                :submit "Submit"}}
@@ -51,8 +49,6 @@
     :location/search-empty "No se han encontrado resultados"
     :view {:register {:title "Registrar"
                       :fields {:username "Usuario"
-                               :firstName "Nombre"
-                               :lastName "Apellido"
                                :email "Correo electrónico"
                                :password "Contraseña"
                                :submit "Enviar"}}

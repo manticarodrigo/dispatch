@@ -25,9 +25,7 @@
   (async done
          (let [query (inline "mutations/user/register.graphql")
                payload  {:query query
-                         :variables {:firstName "test"
-                                     :lastName "test"
-                                     :email "test@test.test"
+                         :variables {:email "test@test.test"
                                      :password "test"}}]
            (p/do
              (p/let [res (send payload)]

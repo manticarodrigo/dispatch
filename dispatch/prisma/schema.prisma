@@ -9,14 +9,17 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  sessions  String[]
-  email     String   @unique
+  id        String    @id @default(uuid())
+  email     String    @unique
   password  String
-  firstName String
-  lastName  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  sessions  Session[]
+}
 
-  @@map("Users")
+model Session {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  createdAt DateTime @default(now())
 }
