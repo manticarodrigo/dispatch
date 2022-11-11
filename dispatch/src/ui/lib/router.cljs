@@ -2,7 +2,6 @@
   (:require
    ["react-router-dom"
     :refer (BrowserRouter
-            MemoryRouter
             Routes
             Route
             Navigate
@@ -15,10 +14,6 @@
 
 (defn browser-router [& children]
   [:> BrowserRouter
-   (into [:<>] children)])
-
-(defn memory-router [props & children]
-  [:> MemoryRouter props
    (into [:<>] children)])
 
 (defn routes [& routes]

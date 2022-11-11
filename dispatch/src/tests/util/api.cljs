@@ -1,4 +1,4 @@
-(ns tests.util.request
+(ns tests.util.api
   (:require [promesa.core :as p]
             [cljs-bean.core :refer (bean ->js)]
             [api.lib.apollo :refer (create-server options)]))

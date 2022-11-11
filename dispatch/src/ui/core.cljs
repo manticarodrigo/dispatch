@@ -5,7 +5,7 @@
    [reagent.core :as r]
    [re-frame.core :as rf]
    [ui.events :as events]
-   [ui.lib.router :refer [browser-router memory-router]]
+   [ui.lib.router :refer [browser-router]]
    [ui.lib.apollo :refer (apollo-provider)]
    [ui.components.main :refer (main)]
    [ui.components.routes :refer (routes)]))
@@ -15,12 +15,6 @@
 
 (defn app []
   [browser-router
-   [apollo-provider
-    [main
-     [routes]]]])
-
-(defn test-app [props]
-  [memory-router props
    [apollo-provider
     [main
      [routes]]]])

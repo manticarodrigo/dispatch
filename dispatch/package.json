@@ -33,11 +33,15 @@
     "serverless-http": "^3.1.0"
   },
   "devDependencies": {
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^14.4.3",
     "@vercel/ncc": "^0.34.0",
     "eslint": "^8.26.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
+    "global-jsdom": "^8.6.0",
+    "jsdom": "^20.0.2",
     "nodemon": "^2.0.20",
     "postcss": "^8.4.16",
     "prettier": "^2.7.1",
