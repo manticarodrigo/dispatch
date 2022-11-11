@@ -1,5 +1,6 @@
 locals {
   domain_name = "api.${var.app_name}.${var.domain_name}"
+  db_url      = "postgresql://${var.db_user}:${var.db_pass}@${var.db_host}:${var.db_port}/${var.db_name}?schema=public"
 }
 
 
@@ -88,6 +89,20 @@ resource "null_resource" "api_lambda_sync" {
   ]
 }
 
+resource "null_resource" "api_db_sync" {
+  triggers = {
+    "sha1" = var.sha1
+  }
+
+  provisioner "local-exec" {
+    command = "export DATABASE_URL=${local.db_url} && npx prisma db push --accept-data-loss"
+  }
+
+  depends_on = [
+    null_resource.api_lambda_sync
+  ]
+}
+
 # Lambda
 
 resource "aws_lambda_function" "api" {
@@ -106,7 +121,7 @@ resource "aws_lambda_function" "api" {
   environment {
     variables = {
       "STAGE"        = var.env
-      "DATABASE_URL" = "postgresql://${var.db_user}:${var.db_pass}@${var.db_host}:${var.db_port}/${var.db_name}?schema=public"
+      "DATABASE_URL" = local.db_url
     }
   }
 }

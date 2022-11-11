@@ -10,53 +10,52 @@
   {:before ui/before
    :after ui/after})
 
-(deftest not-found
+(deftest register-success
   (async done
-         (with-mounted-component
-           [test-app {:route "/not-found"
-                      :mocks []}]
-           (fn [^js component]
-             (p/let [el (.getByText component "Page not found.")]
-               (testing "is not found message in paragraph tag"
-                 (is (= "P" (. el -tagName))))
-               (done))))))
+         (p/let [query (inline "mutations/user/register.graphql")
+                 variables {:email "test@test.test" :password "test"}
+                 request  {:query query :variables variables}
+                 result (send request)]
 
-(deftest register
+           (testing "api returns data"
+             (is (some-> result :data :register)))
+
+           (with-mounted-component
+             [test-app {:route "/register" :mocks [{:request request :result result}]}]
+             (fn [^js component]
+               (p/do
+                 (change (.getByLabelText component "Email") (:email variables))
+                 (change (.getByLabelText component "Password") (:password variables))
+                 (submit (-> component (.-container) (.querySelector "form")))
+                 (-> (.findByText component "Fleet")
+                     (.then #(testing "ui form submits and redirects" (is (some? %))))
+                     (.then done))))))))
+
+(deftest register-conflict
   (async done
-         (let [query (inline "mutations/user/register.graphql")
-               payload  {:query query
-                         :variables {:email "test@test.test"
-                                     :password "test"}}]
-           (p/do
-             (p/let [res (send payload)]
-               (testing "returns data"
-                 (is (some-> res :data :register)))
-               (with-mounted-component
-                 [test-app {:route "/register"
-                            :mocks [{:request payload :result res}]}]
-                 (fn [^js component]
-                   (p/let [form (-> component (.-container) (.querySelector "form"))
-                           first-name-input (.getByLabelText component "First name")
-                           last-name-input (.getByLabelText component "Last name")
-                           email-input (.getByLabelText component "Email")
-                           password-input (.getByLabelText component "Password")]
-                     (p/do
-                       (change first-name-input "test")
-                       (change last-name-input "test")
-                       (change email-input "test@test.test")
-                       (change password-input "test")
-                       (submit form)
-                       (-> (.findByText component "Fleet")
-                           (.then #(testing "form submits and redirects"
-                                     (is (some? %))))))))))
-             (p/let [res (send payload)
-                     error (-> res :errors first)
-                     anom (-> error :extensions :anom)]
-               (testing "returns unique email anom"
-                 (is (= "conflict" (-> anom :category)))
-                 (is (= "unique-constraint" (-> anom :reason)))
-                 (is (= "email" (-> anom :meta :target first)))))
-             (done)))))
+         (p/let [query (inline "mutations/user/register.graphql")
+                 variables {:email "test@test.test" :password "test"}
+                 request  {:query query :variables variables}
+                 result (send request)
+                 error (-> result :errors first)
+                 anom (-> error :extensions :anom)]
+
+           (testing "api returns unique email anom"
+             (is (and
+                  (= "conflict" (-> anom :category))
+                  (= "unique-constraint" (-> anom :reason))
+                  (= "email" (-> anom :meta :target first)))))
+
+           (with-mounted-component
+             [test-app {:route "/register" :mocks [{:request request :result result}]}]
+             (fn [^js component]
+               (p/do
+                 (change (.getByLabelText component "Email") (:email variables))
+                 (change (.getByLabelText component "Password") (:password variables))
+                 (submit (-> component (.-container) (.querySelector "form")))
+                 (-> (.findByText component "The account already exists.")
+                     (.then #(testing "ui form submits and presents unique email message" (is (some? %))))
+                     (.then done))))))))
 
 (deftest login
   (async done
