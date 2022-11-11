@@ -2,14 +2,16 @@
   (:require
    [react-feather :rename {Check CheckIcon
                            Package PackageIcon
-                           GitPullRequest DistanceIcon
+                           User UserIcon
+                           ChevronRight ChevronRightIcon
                            Clock DurationIcon}]
+   [clojure.string :as s]
    [ui.subs :refer (listen)]
+   [ui.lib.router :refer (link)]
    [ui.utils.i18n :refer (tr)]
    [ui.utils.string :refer (class-names)]
    [ui.utils.css :refer (padding)]
-   [ui.components.inputs.generic.button :refer (button base-button-class)]
-   [ui.components.inputs.generic.accordion :refer (accordion)]))
+   [ui.components.inputs.generic.button :refer (button button-class base-button-class)]))
 
 (defonce distance-str #(tr [:view.fleet/distance]))
 (defonce duration-str #(tr [:view.fleet/duration]))
@@ -61,17 +63,8 @@
             [:span {:class "absolute left-3 border-l border-neutral-50 h-full"}]
             [route-leg idx address distance duration]]))]])))
 
-(defn- driver-fact [label value icon]
-  [:span {:class ""}
-   [:span {:class "flex items-center text-sm leading-6"}
-    [:span {:class "text-neutral-300"} [:> icon {:size 15 :class "mr-1"}]]
-    value]
-   [:span {:class "sr-only"} label]])
-
 (defn driver-name [title]
-  (let [origin (listen [:origin])
-        kms (listen [:route/kilometers])
-        mins (listen [:route/minutes])]
+  (let [origin (listen [:origin])]
     (when (some? origin)
       [:div {:class (class-names "flex justify-between w-full")}
        [:div {:class "font-medium text-xl text-left"}
@@ -79,20 +72,22 @@
         [:div
          [:div {:class "flex items-center font-light text-xs text-left text-neutral-400"}
           [:div {:class "mr-1 rounded-full w-2 h-2 bg-green-500"}]
-          "Last seen at 10:15pm"]]]
-       [:div {:class "flex flex-col"}
-        [driver-fact (distance-str) [:span kms [:span {:class "text-sm text-neutral-300"} (tr [:units/km])]] DistanceIcon]
-        [driver-fact (duration-str) [:span mins [:span {:class "text-sm text-neutral-300"} (tr [:units/min])]] DurationIcon]]])))
+          "Last seen at 10:15pm"]]]])))
 
-(defn inactive-item [name]
+(defn item [name time status]
   [:div {:class (class-names "flex justify-between w-full")}
-   [:div {:class "font-medium text-xl text-left"}
-    name
-    [:div
-     [:div {:class "flex items-center font-light text-xs text-left text-neutral-400"}
-      [:div {:class "mr-1 rounded-full w-2 h-2 bg-amber-500"}]
-      "Last seen at 3:15pm"]]]
-   [button {:label "Schedule route"}]])
+   [:div {:class "flex items-center"}
+    [:div {:class "mr-2"} [:> UserIcon {:class "w-4 h-4"}]]
+    [:div {:class "font-medium text-lg text-left"} name]]
+   [:div {:class "flex items-center"}
+    [:div {:class "flex flex-col items-end"}
+     [:div {:class "flex items-center text-xs text-neutral-400"} "Last seen"]
+     [:div {:class "flex items-center text-xs text-left text-neutral-200"}
+      [:div {:class (class-names
+                     "mr-1 rounded-full w-2 h-2"
+                     (if (= status "active") "bg-green-500" "bg-amber-500"))}]
+      time]]
+    [:div {:class "ml-2"} [:> ChevronRightIcon]]]])
 
 (def items [{:name "Edwin Vega"}
             {:name "Billy Armstrong"}
@@ -103,15 +98,23 @@
                      {:name "Alfredo Contador"}
                      {:name "Maria Van Vluten"}])
 
+(defn seat-url [name]
+  (str "/seat/" (->> (s/split name #"\s")
+                     (s/join "-"))))
+
 (defn view []
   (fn []
-    [:div {:class (class-names padding)}
-     [accordion {:items (map (fn [item]
-                               {:name [driver-name (:name item)]
-                                :description [driver-detail]}) items)
-                 :item-class "mb-2 w-full"}]
-     (for [item inactive-items]
-       ^{:key (:name item)} ;; add real keys!
-       [:div {:class (class-names base-button-class "my-2")}
-        [inactive-item (:name item)]])]))
+    [:ul {:class (class-names padding)}
+     (for [{:keys [name]} items]
+       ^{:key name} ;; add real keys!
+       [:li
+        [link {:to (seat-url name)
+               :class (class-names "mb-2 block" button-class)}
+         [item name "12:15pm" "active"]]])
+     (for [{:keys [name]} inactive-items]
+       ^{:key name} ;; add real keys!
+       [:li
+        [link {:to (seat-url name)
+               :class (class-names "mb-2 block" button-class)}
+         [item name "01/20/2022" "inactive"]]])]))
 

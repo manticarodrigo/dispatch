@@ -7,10 +7,9 @@
 (defn panel-mobile [class children]
   (let [!show (r/atom false)]
     (fn []
-      (prn @!show)
       [:> (.-article motion)
        {:initial false
-        :animate {:top (if @!show 0 "calc(100% - 40px)")}
+        :animate {:top (if @!show 0 "calc(100% - 100px)")}
         :transition {:type "spring",
                      :damping 20,
                      :stiffness 100}

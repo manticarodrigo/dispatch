@@ -1,10 +1,8 @@
 (ns ui.components.forms.route
   (:require [react-feather
-             :rename {AlignJustify DragIcon
-                      ChevronUp ChevronUpIcon
+             :rename {ChevronUp ChevronUpIcon
                       ChevronDown ChevronDownIcon}]
             [reagent.core :as r]
-            [ui.utils.i18n :refer (tr)]
             [ui.utils.error :refer (tr-error)]
             [ui.utils.string :refer (class-names)]
             [ui.components.inputs.generic.combobox :refer (combobox)]
@@ -23,7 +21,6 @@
         !anoms (r/atom {})]
 
     (fn []
-      (prn @!state)
       [:<>
        [:form {:class "flex flex-col"
                :on-submit on-submit}
@@ -63,7 +60,6 @@
          [:ol
           (doall (for [[idx point] (map-indexed vector (-> @!state :waypoints))]
                    [:li {:class (class-names "flex items-center mb-2 rounded p-2 bg-neutral-900" base-button-class)}
-                ;;     [:> DragIcon {:class "flex-shrink-0"}]
                     [:div {:class "px-2 w-full"}
                      [:div {:class "text-base"} (:name point)]
                      [:div {:class "text-sm text-neutral-300"} (:location point)]]
