@@ -1,11 +1,9 @@
 (ns ui.views.seat
   (:require
-   [react-feather :rename {ChevronLeft ChevronLeftIcon
-                           Check CheckIcon
+   [react-feather :rename {Check CheckIcon
                            Package PackageIcon
                            Clock DurationIcon}]
    [ui.subs :refer (listen)]
-   [ui.utils.i18n :refer (tr)]
    [ui.utils.string :refer (class-names)]
    [ui.utils.css :refer (padding)]))
 
@@ -37,9 +35,7 @@
   (let [legs (listen [:route/legs])]
     [:div {:class (class-names padding)}
      (when (> (count legs) 0)
-       [:section {:class (class-names "p-2.5")}
-        [:h2 {:class (class-names "sr-only")}
-         (tr [:view.route.overview/title])]
+       [:<>
         [:ol {:class (class-names "overflow-y-auto")}
          (doall
           (for [[idx {address :address}] (map-indexed vector legs)]
