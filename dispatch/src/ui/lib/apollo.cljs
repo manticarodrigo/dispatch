@@ -1,9 +1,21 @@
 (ns ui.lib.apollo
-  (:require ["@apollo/client" :refer (ApolloClient InMemoryCache ApolloProvider)] 
+  (:require ["@apollo/client" :refer (ApolloClient InMemoryCache ApolloProvider createHttpLink)]
+            ["@apollo/client/link/context" :refer (setContext)]
             [cljs-bean.core :refer (->clj ->js)]
-            [ui.config :as config]))
+            [ui.config :as config]
+            [ui.utils.session :refer (get-session-request)]))
 
-(defonce client (ApolloClient. (->js {:uri config/API_URL :cache (InMemoryCache.)})))
+(defonce http-link
+  (createHttpLink
+   (->js {:uri config/API_URL})))
+
+(defonce auth-link
+  (setContext #(get-session-request)))
+
+(defonce client
+  (ApolloClient.
+   (->js {:link (.concat auth-link http-link)
+          :cache (InMemoryCache.)})))
 
 (defn apollo-provider [& children]
   [:> ApolloProvider {:client client}

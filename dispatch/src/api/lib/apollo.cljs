@@ -5,6 +5,7 @@
             [cljs-bean.core :refer (->clj ->js)]
             [promesa.core :as p]
             [api.lib.prisma :refer (open-prisma)]
+            [api.util.prisma :refer (find-unique)]
             [api.util.anom :as anom]
             [api.resolvers.user :as user]
             [api.resolvers.seat :as seat]))
@@ -18,9 +19,14 @@
                            :createSeat seat/create-seat}})
 
 (def options
-  (->js {:context (fn []
-                    (p/let [prisma (open-prisma)]
-                      (->js {:prisma prisma})))}))
+  (->js {:context (fn [^js ctx]
+                    (p/let [^js prisma (open-prisma)
+                            session-id (some-> ctx .-req .-headers .-authorization)
+                            ^js session (find-unique (. prisma -session)
+                                                     {:where {:id session-id}
+                                                      :include {:user true}})
+                            ^js user (some-> session .-user)]
+                      (->js {:prisma prisma :user user})))}))
 
 (defn format-error [formatted-error _]
   (let [clj-error (->clj formatted-error)

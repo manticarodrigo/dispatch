@@ -6,7 +6,7 @@
    [cljs-bean.core :refer (->clj ->js)]
    [ui.lib.apollo :refer (parse-anoms)]
    [ui.lib.router :refer (use-navigate link)]
-   [ui.utils.cookie :refer (create-session)]
+   [ui.utils.session :refer (create-session)]
    [ui.utils.i18n :refer (tr)]
    [ui.utils.error :refer (tr-error)]
    [ui.utils.css :refer (padding)]

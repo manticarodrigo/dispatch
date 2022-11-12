@@ -142,3 +142,13 @@
            (testing "api returns data"
              (is (some-> result :data :findUser :id)))
            (done))))
+
+(deftest create-seat
+  (async done
+         (p/let [query (inline "mutations/seat/create.graphql")
+                 variables {:name "Foo Bar"}
+                 request  {:query query :variables variables}
+                 result (send request)]
+           (testing "api returns data"
+             (is (some-> result :data :createSeat)))
+           (done))))

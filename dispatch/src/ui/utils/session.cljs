@@ -1,4 +1,4 @@
-(ns ui.utils.cookie
+(ns ui.utils.session
   (:require ["cookie" :refer (serialize parse)]
             [goog.object :as gobj]
             [cljs-bean.core :refer (->js)]
@@ -28,3 +28,7 @@
               :path "/"}
         cookie-str (serialize cookie-name "" (->js opts))]
     (set-cookie! cookie-str)))
+
+(defn get-session-request []
+  (->js {:headers
+         {:authorization (or (get-session) "")}}))

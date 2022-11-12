@@ -10,7 +10,7 @@
             useNavigate)]
    [reagent.core :as r]
    [cljs-bean.core :refer (->clj)]
-   [ui.utils.cookie :refer (get-session remove-session)]))
+   [ui.utils.session :refer (get-session remove-session)]))
 
 (defn browser-router [& children]
   [:> BrowserRouter

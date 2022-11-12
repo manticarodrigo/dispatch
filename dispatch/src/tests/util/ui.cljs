@@ -1,5 +1,6 @@
 (ns tests.util.ui
   (:require ["global-jsdom/register"]
+            ["cross-fetch/polyfill"]
             ["@testing-library/react" :as rtl]
             ["react-router-dom" :refer (MemoryRouter)]
             ["@apollo/client" :refer (gql)]

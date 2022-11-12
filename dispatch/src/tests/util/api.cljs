@@ -2,7 +2,8 @@
   (:require [goog.object :as gobj]
             [promesa.core :as p]
             [cljs-bean.core :refer (->clj ->js)]
-            [api.lib.apollo :refer (create-server options)]))
+            [api.lib.apollo :refer (create-server options)]
+            [ui.utils.session :refer (get-session-request)]))
 
 (defonce !server (atom nil))
 
@@ -26,7 +27,7 @@
 
 (defn send [body]
   (p/let [^js server (init-server)
-          context (.context options)
+          context (.context options (->js {:req (get-session-request)}))
           ^js res (.executeOperation server (->js body) (->js {:contextValue context}))
           {:keys [data errors]} (->clj (.. res -body -singleResult))]
     {:data (obj->clj data)
