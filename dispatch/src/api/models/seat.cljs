@@ -7,6 +7,5 @@
   (p/let [^js seat (prisma/create!
                     (.. context -prisma -seat)
                     {:data {:name name
-                            :user user-id}
-                     :include {:sessions true}})]
+                            :user user-id}})]
     (some-> seat .-id)))

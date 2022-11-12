@@ -5,7 +5,7 @@
    [api.util.anom :as anom]
    [api.models.seat :as models.seat]))
 
-(defn create
+(defn create-seat
   [_ args context _]
   (-> (p/let [payload (->clj args)
               seat-id (models.seat/create context payload)]

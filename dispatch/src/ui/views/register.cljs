@@ -13,13 +13,13 @@
    [ui.components.inputs.generic.input :refer (input)]
    [ui.components.inputs.generic.button :refer (button)]))
 
-(def REGISTER (gql (inline "mutations/user/register.graphql")))
+(def CREATE_USER (gql (inline "mutations/user/create.graphql")))
 
 (defn view []
   (let [!state (r/atom {})
         !anoms (r/atom nil)]
     (fn []
-      (let [[register] (useMutation REGISTER)
+      (let [[register] (useMutation CREATE_USER)
             navigate (use-navigate)]
         [:div {:class "w-full h-full overflow-y-auto"}
          [:div {:class padding}
@@ -29,7 +29,7 @@
                     (.preventDefault e)
                     (-> (register (->js {:variables @!state}))
                         (.then (fn [res]
-                                 (create-session (-> res ->clj :data :register))
+                                 (create-session (-> res ->clj :data :createUser))
                                  (navigate "/fleet")))
                         (.catch #(reset! !anoms (parse-anoms %)))))}
            [input {:id "email"

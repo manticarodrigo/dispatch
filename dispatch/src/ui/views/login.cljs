@@ -1,6 +1,7 @@
 (ns ui.views.login
   (:require
    ["@apollo/client" :refer (gql useMutation)]
+   [shadow.resource :refer (inline)]
    [reagent.core :as r]
    [cljs-bean.core :refer (->clj ->js)]
    [ui.lib.apollo :refer (parse-anoms)]
@@ -12,19 +13,13 @@
    [ui.components.inputs.generic.input :refer (input)]
    [ui.components.inputs.generic.button :refer (button)]))
 
-(def LOGIN
-  (gql
-   "
-    mutation Login($email: String!, $password: String!) {
-      login(email: $email, password: $password)
-    }
-  "))
+(def LOGIN_USER (gql (inline "mutations/user/login.graphql")))
 
 (defn view []
   (let [!state (r/atom {})
         !anoms (r/atom nil)]
     (fn []
-      (let [[login] (useMutation LOGIN)
+      (let [[login] (useMutation LOGIN_USER)
             navigate (use-navigate)]
         [:div {:class "w-full h-full overflow-y-auto"}
          [:div {:class padding}
@@ -34,7 +29,7 @@
                     (.preventDefault e)
                     (-> (login (->js {:variables @!state}))
                         (.then (fn [res]
-                                 (create-session (-> res ->clj :data :login))
+                                 (create-session (-> res ->clj :data :loginUser))
                                  (navigate "/fleet")))
                         (.catch #(reset! !anoms (parse-anoms %)))))}
            [input {:id "email"

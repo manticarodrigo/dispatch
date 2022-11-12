@@ -3,8 +3,9 @@ type Query {
 }
 
 type Mutation {
-  register(email: String!, password: String!): String!
-  login(email: String!, password: String!): String!
+  createUser(email: String!, password: String!): String!
+  loginUser(email: String!, password: String!): String!
+  createSeat(name: String!): String!
 }
 
 type User {

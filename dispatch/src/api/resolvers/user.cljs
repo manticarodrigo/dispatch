@@ -5,14 +5,14 @@
    [api.util.anom :as anom]
    [api.models.user :as models.user]))
 
-(defn register
+(defn create-user
   [_ args context _]
   (-> (p/let [payload (->clj args)
               session-id (models.user/create context payload)]
         session-id)
       (p/catch anom/handle-resolver-error)))
 
-(defn login
+(defn login-user
   [_ args context _]
   (-> (p/let [{:keys [email password]} (->clj args)
               user (when email (models.user/find-unique context {:email email}))

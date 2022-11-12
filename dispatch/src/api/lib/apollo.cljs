@@ -6,14 +6,16 @@
             [promesa.core :as p]
             [api.lib.prisma :refer (open-prisma)]
             [api.util.anom :as anom]
-            [api.resolvers.user :refer (register login find-user)]))
+            [api.resolvers.user :as user]
+            [api.resolvers.seat :as seat]))
 
 (defn get-type-defs []
   (inline "schema.graphql"))
 
-(def resolvers {:Query {:findUser find-user}
-                :Mutation {:register register
-                           :login login}})
+(def resolvers {:Query {:findUser user/find-user}
+                :Mutation {:createUser user/create-user
+                           :loginUser user/login-user
+                           :createSeat seat/create-seat}})
 
 (def options
   (->js {:context (fn []
