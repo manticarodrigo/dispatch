@@ -23,7 +23,7 @@
              class-map :class-map}]
   (let [{button-class! :button!
          item-class :item} class-map]
-    [:> Menu {:as "div" :class (class-names "z-20 relative inline-block")}
+    [:> Menu {:as "div" :class (class-names "z-20 relative inline-flex")}
      [:> Button {:class (or button-class! button-class)} label]
      [:> Items {:as "ul" :class (class-names
                                  "absolute right-0 origin-top-right"

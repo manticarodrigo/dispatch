@@ -1,9 +1,13 @@
 type Query {
-  hello: String
+  findUser(id: String, email: String): User
 }
 
 type Mutation {
-  register(email: String, password: String): String
+  register(email: String!, password: String!): String!
   login(email: String!, password: String!): String!
-  delete(id: String, email: String): String!
+}
+
+type User {
+  id: String!
+  email: String!
 }

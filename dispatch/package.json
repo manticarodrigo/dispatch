@@ -7,7 +7,7 @@
     "db-push": "prisma db push",
     "watch": "shadow-cljs watch api ui --config-merge ./config/dev.edn",
     "serve": "nodemon --watch out out/api.js -e js",
-    "test": "shadow-cljs compile test && node out/test.js",
+    "test": "prisma migrate reset --force && prisma db push && shadow-cljs compile test && node out/test.js",
     "release": "shadow-cljs release api ui --config-merge ./config/prod.edn && ncc build out/api.js -o dist/ --minify"
   },
   "dependencies": {

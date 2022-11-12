@@ -27,8 +27,8 @@
           :else session-id))
       (p/catch anom/handle-resolver-error)))
 
-(defn delete
+(defn find-user
   [_ args context _]
-  (-> (models.user/delete context {:id (.. args -id)
-                                   :email (.. args -email)})
-      (p/catch (fn [e] (js/console.log e)))))
+  (-> (models.user/find-unique context {:id (.. args -id)
+                                        :email (.. args -email)})
+      (p/catch anom/handle-resolver-error)))

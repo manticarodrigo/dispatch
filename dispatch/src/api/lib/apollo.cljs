@@ -6,15 +6,14 @@
             [promesa.core :as p]
             [api.lib.prisma :refer (open-prisma)]
             [api.util.anom :as anom]
-            [api.resolvers.user :refer (register login delete)]))
+            [api.resolvers.user :refer (register login find-user)]))
 
 (defn get-type-defs []
   (inline "schema.graphql"))
 
-(def resolvers {:Query {:hello (fn [] "world")}
+(def resolvers {:Query {:findUser find-user}
                 :Mutation {:register register
-                           :login login
-                           :delete delete}})
+                           :login login}})
 
 (def options
   (->js {:context (fn []

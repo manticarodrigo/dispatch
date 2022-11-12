@@ -27,8 +27,3 @@
 (defn find-unique [^js context payload]
   (prisma/find-unique (.. context -prisma -user)
                       {:where (prisma/filter-params payload)}))
-
-(defn delete [^js context payload]
-  (p/let [^js user (prisma/delete! (.. context -prisma -user)
-                                   {:where (prisma/filter-params payload)})]
-    (. user -id)))

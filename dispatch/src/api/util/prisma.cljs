@@ -16,6 +16,3 @@
 
 (defn find-unique [^js model params]
   (.findUnique model (->js params)))
-
-(defn delete! [^js model params]
-  (.delete model (->js params)))
