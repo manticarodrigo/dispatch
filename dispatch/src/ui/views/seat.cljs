@@ -19,7 +19,7 @@
       (when delivered? [:> CheckIcon {:class "w-4 h-4"}])]
      [:div {:class "pl-2 lg:pl-6 flex w-full"}
       [:div {:class "w-full"}
-       [:p {:class "text-base font-medium"} (str "Waypoint " (+ 1 idx))]
+       [:p {:class "text-base font-medium"} (str "Address " (+ 1 idx))]
        [:p {:class "text-xs text-neutral-300"} address]]
       [:div {:class "shrink-0 flex flex-col items-end pl-4 lg:pl-6 text-xs text-neutral-300"}
        (if delivered?

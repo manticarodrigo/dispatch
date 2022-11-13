@@ -1,0 +1,3 @@
+mutation CreateAddress($name: String!, $lat: Float!, $lng: Float!) {
+  createAddress(name: $name, lat: $lat, lng: $lng)
+}

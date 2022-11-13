@@ -20,7 +20,7 @@
 
 (defn route-form [{initial-state :initial-state on-submit :on-submit}]
   (let [!state (r/atom (or initial-state {:start (get-datetime-local (js/Date.))
-                                          :waypoints [{:name "Subway" :location "Galerias"}
+                                          :addresses [{:name "Subway" :location "Galerias"}
                                                       {:name "Pizza Hut" :location "Galerias"}
                                                       {:name "La Colonia" :location "Galerias"}]}))
         !anoms (r/atom {})]
@@ -51,17 +51,17 @@
                   :required true
                   :class "pb-4"
                   :on-text #(swap! !state assoc :start %)}]
-          [:label {:class "mb-2 text-sm"} "Manage waypoints"]
+          [:label {:class "mb-2 text-sm"} "Manage stops"]
           [:div
-           [combobox {:aria-label "Add waypoint"
-                      :placeholder "Search for waypoints"
+           [combobox {:aria-label "Add address"
+                      :placeholder "Search for addresses"
                       :class "mb-4"
-                      :options (some-> data :user :waypoints)
+                      :options (some-> data :user :addresses)
                       :option-to-label #(:name %)
                       :option-to-value #(:id %)
                       :on-change (fn [])}]
            [:ol
-            (doall (for [[idx point] (map-indexed vector (-> @!state :waypoints))]
+            (doall (for [[idx point] (map-indexed vector (-> @!state :addresses))]
                      ^{:key idx}
                      [:li {:class (class-names "flex items-center mb-2 rounded p-2 bg-neutral-900" base-button-class)}
                       [:div {:class "w-full"}

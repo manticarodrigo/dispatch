@@ -1,4 +1,4 @@
-(ns api.models.waypoint
+(ns api.models.address
   (:require
    [promesa.core :as p]
    [api.util.prisma :as prisma]))
@@ -6,7 +6,7 @@
 (defn create [^js context {:keys [name lat lng]}]
   (p/let [user-id (.. context -user -id)
           ^js seat (prisma/create!
-                    (.. context -prisma -waypoint)
+                    (.. context -prisma -address)
                     {:data {:name name
                             :lat lat
                             :lng lng
@@ -15,5 +15,5 @@
 
 (defn find-all [^js context]
   (prisma/find-many
-   (.. context -prisma -waypoint)
+   (.. context -prisma -address)
    {:where {:user {:id (.. context -user -id)}}}))

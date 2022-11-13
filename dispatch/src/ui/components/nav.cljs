@@ -23,5 +23,5 @@
   [:nav [:ul {:class "flex justify-center"}
          [nav-item "/fleet" MapIcon]
          [nav-item "/schedule" CalendarIcon]
-         [nav-item "/waypoint" PinIcon]
+         [nav-item "/address" PinIcon]
          [nav-item "/history" BookOpenIcon]]])

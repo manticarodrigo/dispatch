@@ -4,7 +4,7 @@
             [ui.views.login :as login]
             [ui.views.fleet :as fleet]
             [ui.views.seat :as seat]
-            [ui.views.waypoint :as waypoint]
+            [ui.views.address :as address]
             [ui.views.schedule :as schedule]
             [ui.views.not-found :as not-found]))
 
@@ -15,6 +15,6 @@
    ["/logout" [router/remove-auth-route]]
    ["/fleet" [router/auth-route [fleet/view]]]
    ["/seat/:id" [router/auth-route [seat/view]]]
-   ["/waypoint" [router/auth-route [waypoint/view]]]
+   ["/address" [router/auth-route [address/view]]]
    ["/schedule" [router/auth-route [schedule/view]]]
    ["*" [not-found/view]]])

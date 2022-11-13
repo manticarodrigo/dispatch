@@ -37,7 +37,7 @@
       ["/register" [icons/dispatch]]
       ["/login" [icons/dispatch]]
       ["/fleet" [icons/dispatch]]
-      ["/waypoint" [icons/dispatch]]
+      ["/address" [icons/dispatch]]
       ["/schedule" [icons/dispatch]]
       ["*" [link {:to "/fleet"} [:> ArrowLeftIcon]]]]
 
@@ -45,7 +45,7 @@
       ["/register" [title (tr [:view.register/title])]]
       ["/login" [title (tr [:view.login/title])]]
       ["/fleet" [title (tr [:view.fleet/title])]]
-      ["/waypoint" [title (tr [:view.waypoint/title])]]
+      ["/address" [title (tr [:view.address/title])]]
       ["/schedule" [title (tr [:view.schedule/title])]]
       ["*" [title "Not found"]]]
 

@@ -165,28 +165,28 @@
                                  (-> result :data :seats)))
                      done))))))
 
-(deftest create-waypoints
+(deftest create-addresses
   (async done
          (p/->
           (p/all (map (fn [_]
-                        (p/let [query (inline "mutations/waypoint/create.graphql")
+                        (p/let [query (inline "mutations/address/create.graphql")
                                 variables {:name (.. faker -company name)
                                            :lat (js/parseFloat (.. faker -address latitude))
                                            :lng (js/parseFloat (.. faker -address longitude))}
                                 request  {:query query :variables variables}
                                 result (send request)]
                           (testing "api returns data"
-                            (is (-> result :data :createWaypoint)))))
+                            (is (-> result :data :createAddress)))))
                       (range 3)))
           done)))
 
-(deftest find-waypoints
+(deftest find-addresses
   (async done
-         (p/let [query (inline "queries/waypoint/fetch-all.graphql")
+         (p/let [query (inline "queries/address/fetch-all.graphql")
                  request  {:query query}
                  result (send request)]
            (testing "api returns data"
-             (is (-> result :data :waypoints first :id))
+             (is (-> result :data :addresses first :id))
              (done)))))
 
 (deftest logged-in-user

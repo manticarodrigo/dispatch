@@ -16,7 +16,7 @@ model User {
   updatedAt DateTime   @updatedAt
   sessions  Session[]
   seats     Seat[]
-  waypoints Waypoint[]
+  addresses Address[]
 }
 
 model Session {
@@ -46,7 +46,7 @@ model Location {
   createdAt DateTime @default(now())
 }
 
-model Waypoint {
+model Address {
   id        String   @id @default(uuid())
   name      String
   lat       Float
@@ -72,8 +72,8 @@ model Stop {
   arrival    DateTime
   route      Route    @relation(fields: [routeId], references: [id])
   routeId    String
-  waypoint   Waypoint @relation(fields: [waypointId], references: [id])
-  waypointId String
+  address   Address @relation(fields: [addressId], references: [id])
+  addressId String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }

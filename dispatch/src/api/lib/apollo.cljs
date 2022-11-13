@@ -9,7 +9,7 @@
             [api.util.anom :as anom]
             [api.resolvers.user :as user]
             [api.resolvers.seat :as seat]
-            [api.resolvers.waypoint :as waypoint]))
+            [api.resolvers.address :as address]))
 
 (defn get-type-defs []
   (inline "schema.graphql"))
@@ -17,19 +17,19 @@
 (def resolvers {:Mutation {:createUser user/create-user
                            :loginUser user/login-user
                            :createSeat seat/create-seat
-                           :createWaypoint waypoint/create-waypoint}
+                           :createAddress address/create-address}
                 :Query {:user user/logged-in-user
                         :seats seat/find-seats
-                        :waypoints waypoint/find-waypoints}
+                        :addresses address/find-addresses}
                 :User {:id #(.-id %)
                        :seats seat/find-seats
-                       :waypoints waypoint/find-waypoints}
+                       :addresses address/find-addresses}
                 :Seat {:id #(.-id %)
                        :name #(.-name %)}
-                :Waypoint {:id #(.-id %)
-                           :name #(.-name %)
-                           :lat #(-> % ->clj :lat)
-                           :lng #(-> % ->clj :lng)}})
+                :Address {:id #(.-id %)
+                          :name #(.-name %)
+                          :lat #(-> % ->clj :lat)
+                          :lng #(-> % ->clj :lng)}})
 
 (def options
   (->js {:context (fn [^js ctx]

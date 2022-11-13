@@ -29,7 +29,7 @@
                    :summary {:title "Summary"}
                    :overview {:title "Route"}}
            :schedule {:title "Schedule"}
-           :waypoint {:title "Waypoint"}}
+           :address {:title "Address"}}
     :error {:unknown "An unknown error occurred."
             :unique-constraint "The account already exists."
             :invalid-password "The password is incorrect."
@@ -62,7 +62,7 @@
                    :summary {:title "Resumen"}
                    :overview {:title "Ruta"}}
            :schedule {:title "Programar"}
-           :waypoint {:title "Punto"}}
+           :address {:title "Dirección"}}
     :error {:unknown "Un error desconocido ocurrió."
             :unique-constraint "La cuenta ya existe."
             :invalid-password "La contraseña es incorrecta."
