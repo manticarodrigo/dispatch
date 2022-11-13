@@ -42,6 +42,9 @@
       [:> Input {:placeholder placeholder
                  :class input-class
                  :style {:padding-right "3rem"}
+                 :display-value (fn [v]
+                                  (option-to-label
+                                   (first (filter #(= v (option-to-value %)) options))))
                  :on-change on-query}]
       [:div {:class "cursor-text absolute top-[50%] translate-y-[-50%] right-0 pr-2 lg:pr-4"}
        [:> ChevronDownIcon]]]
