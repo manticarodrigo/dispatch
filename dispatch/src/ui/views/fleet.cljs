@@ -39,12 +39,12 @@
   (str "/seat/" (->> (s/split name #"\s")
                      (s/join "-"))))
 
-(def GET_SEATS (gql (inline "queries/seat/find.graphql")))
+(def FETCH_SEATS (gql (inline "queries/seat/fetch-all.graphql")))
 
 (defn view []
-  (let [query (useQuery GET_SEATS)
+  (let [query (useQuery FETCH_SEATS)
         {:keys [data loading]} (->clj query)
-        seats (some-> data :findSeats)]
+        seats (some-> data :seats)]
     [:<>
      [:ul {:class (class-names padding)}
       (for [{:keys [id name]} seats]

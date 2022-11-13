@@ -27,8 +27,7 @@
           :else session-id))
       (p/catch anom/handle-resolver-error)))
 
-(defn find-user
-  [_ args context _]
-  (-> (models.user/find-unique context {:id (.. args -id)
-                                        :email (.. args -email)})
+(defn logged-in-user
+  [_ _ context _]
+  (-> (models.user/logged-in-user context)
       (p/catch anom/handle-resolver-error)))

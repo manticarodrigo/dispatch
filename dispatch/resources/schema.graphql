@@ -1,7 +1,7 @@
 type Query {
-  findUser(id: String, email: String): User
-  findSeats: [Seat]
-  findWaypoints: [Waypoint]
+  user: User
+  seats: [Seat]
+  waypoints: [Waypoint]
 }
 
 type Mutation {
@@ -14,6 +14,8 @@ type Mutation {
 type User {
   id: String!
   email: String!
+  seats: [Seat]
+  waypoints: [Waypoint]
 }
 
 type Seat {

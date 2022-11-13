@@ -1,6 +1,0 @@
-query FindSeats {
-  findSeats {
-    id
-    name
-  }
-}

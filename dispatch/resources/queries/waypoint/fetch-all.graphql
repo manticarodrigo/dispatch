@@ -1,0 +1,8 @@
+query Waypoints {
+  waypoints {
+    id
+    name
+    lat
+    lng
+  }
+}

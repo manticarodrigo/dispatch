@@ -16,7 +16,7 @@
   (.setMinutes date (- (.getMinutes date) (.getTimezoneOffset date)))
   (.slice (.toISOString date) 0 16))
 
-(def GET_WAYPOINTS (gql (inline "queries/waypoint/find.graphql")))
+(def FETCH_USER (gql (inline "queries/user/fetch.graphql")))
 
 (defn route-form [{initial-state :initial-state on-submit :on-submit}]
   (let [!state (r/atom (or initial-state {:start (get-datetime-local (js/Date.))
@@ -26,18 +26,16 @@
         !anoms (r/atom {})]
 
     (fn []
-      (let [query (useQuery GET_WAYPOINTS)
+      (let [query (useQuery FETCH_USER)
             {:keys [data]} (->clj query)]
         [:<>
          [:form {:class "flex flex-col"
                  :on-submit on-submit}
           [combobox {:label "Assigned seat"
                      :class "pb-4"
-                     :options [{:label "Foo" :value "foo"}
-                               {:label "Bar" :value "bar"}]
-                     :option-to-label #(:label %)
-                     :option-to-value #(:value %)
-                     :on-text (fn [])
+                     :options (some-> data :user :seats)
+                     :option-to-label #(:name %)
+                     :option-to-value #(:id %)
                      :on-change (fn [])}]
           [input {:id "origin"
                   :label "Origin address"
@@ -58,7 +56,7 @@
            [combobox {:aria-label "Add waypoint"
                       :placeholder "Search for waypoints"
                       :class "mb-4"
-                      :options (some-> data :findWaypoints)
+                      :options (some-> data :user :waypoints)
                       :option-to-label #(:name %)
                       :option-to-value #(:id %)
                       :on-change (fn [])}]

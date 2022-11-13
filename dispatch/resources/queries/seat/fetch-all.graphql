@@ -1,0 +1,6 @@
+query Seats {
+  seats {
+    id
+    name
+  }
+}

@@ -1,0 +1,16 @@
+query User {
+  user {
+    id
+    email
+    seats {
+      id
+      name
+    }
+    waypoints {
+      id
+      name
+      lat
+      lng
+    }
+  }
+}

@@ -134,16 +134,6 @@
                      (.then #(testing "ui presents invalid password anom" (is (some? %))))
                      (.then done))))))))
 
-(deftest find-user
-  (async done
-         (p/let [query (inline "queries/user/find.graphql")
-                 variables {:email "test@test.test"}
-                 request  {:query query :variables variables}
-                 result (send request)]
-           (testing "api returns data"
-             (is (-> result :data :findUser :id)))
-           (done))))
-
 (deftest create-seats
   (async done
          (p/->
@@ -159,12 +149,12 @@
 
 (deftest find-seats
   (async done
-         (p/let [query (inline "queries/seat/find.graphql")
+         (p/let [query (inline "queries/seat/fetch-all.graphql")
                  request  {:query query}
                  result (send request)]
 
            (testing "api returns data"
-             (is (-> result :data :findSeats first :id)))
+             (is (-> result :data :seats first :id)))
 
            (with-mounted-component
              [test-app {:route "/fleet" :mocks [{:request request :result result}]}]
@@ -172,7 +162,7 @@
                (p/-> (p/all (map (fn [{:keys [name]}]
                                    (-> (.findByText component name)
                                        (.then #(testing "ui presents seat name" (is (some? %))))))
-                                 (-> result :data :findSeats)))
+                                 (-> result :data :seats)))
                      done))))))
 
 (deftest create-waypoints
@@ -192,8 +182,18 @@
 
 (deftest find-waypoints
   (async done
-         (p/let [query (inline "queries/waypoint/find.graphql")
+         (p/let [query (inline "queries/waypoint/fetch-all.graphql")
                  request  {:query query}
                  result (send request)]
            (testing "api returns data"
-             (is (-> result :data :findWaypoints first :id))))))
+             (is (-> result :data :waypoints first :id))
+             (done)))))
+
+(deftest logged-in-user
+  (async done
+         (p/let [query (inline "queries/user/fetch.graphql")
+                 request  {:query query}
+                 result (send request)]
+           (testing "api returns data"
+             (is (-> result :data :user :id)))
+           (done))))

@@ -14,14 +14,22 @@
 (defn get-type-defs []
   (inline "schema.graphql"))
 
-(def resolvers {:Query {:findUser user/find-user
-                        :findSeats seat/find-seats
-                        :findWaypoints waypoint/find-waypoints}
-
-                :Mutation {:createUser user/create-user
+(def resolvers {:Mutation {:createUser user/create-user
                            :loginUser user/login-user
                            :createSeat seat/create-seat
-                           :createWaypoint waypoint/create-waypoint}})
+                           :createWaypoint waypoint/create-waypoint}
+                :Query {:user user/logged-in-user
+                        :seats seat/find-seats
+                        :waypoints waypoint/find-waypoints}
+                :User {:id #(.-id %)
+                       :seats seat/find-seats
+                       :waypoints waypoint/find-waypoints}
+                :Seat {:id #(.-id %)
+                       :name #(.-name %)}
+                :Waypoint {:id #(.-id %)
+                           :name #(.-name %)
+                           :lat #(-> % ->clj :lat)
+                           :lng #(-> % ->clj :lng)}})
 
 (def options
   (->js {:context (fn [^js ctx]
