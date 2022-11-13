@@ -8,16 +8,20 @@
             [api.util.prisma :refer (find-unique)]
             [api.util.anom :as anom]
             [api.resolvers.user :as user]
-            [api.resolvers.seat :as seat]))
+            [api.resolvers.seat :as seat]
+            [api.resolvers.waypoint :as waypoint]))
 
 (defn get-type-defs []
   (inline "schema.graphql"))
 
 (def resolvers {:Query {:findUser user/find-user
-                        :findSeats seat/find-seats}
+                        :findSeats seat/find-seats
+                        :findWaypoints waypoint/find-waypoints}
+
                 :Mutation {:createUser user/create-user
                            :loginUser user/login-user
-                           :createSeat seat/create-seat}})
+                           :createSeat seat/create-seat
+                           :createWaypoint waypoint/create-waypoint}})
 
 (def options
   (->js {:context (fn [^js ctx]

@@ -174,3 +174,26 @@
                                        (.then #(testing "ui presents seat name" (is (some? %))))))
                                  (-> result :data :findSeats)))
                      done))))))
+
+(deftest create-waypoints
+  (async done
+         (p/->
+          (p/all (map (fn [_]
+                        (p/let [query (inline "mutations/waypoint/create.graphql")
+                                variables {:name (.. faker -company name)
+                                           :lat (js/parseFloat (.. faker -address latitude))
+                                           :lng (js/parseFloat (.. faker -address longitude))}
+                                request  {:query query :variables variables}
+                                result (send request)]
+                          (testing "api returns data"
+                            (is (-> result :data :createWaypoint)))))
+                      (range 3)))
+          done)))
+
+(deftest find-waypoints
+  (async done
+         (p/let [query (inline "queries/waypoint/find.graphql")
+                 request  {:query query}
+                 result (send request)]
+           (testing "api returns data"
+             (is (-> result :data :findWaypoints first :id))))))

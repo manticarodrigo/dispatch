@@ -1,12 +1,14 @@
 type Query {
   findUser(id: String, email: String): User
   findSeats: [Seat]
+  findWaypoints: [Waypoint]
 }
 
 type Mutation {
   createUser(email: String!, password: String!): String!
   loginUser(email: String!, password: String!): String!
   createSeat(name: String!): String!
+  createWaypoint(name: String!, lat: Float!, lng: Float!): String!
 }
 
 type User {
@@ -17,4 +19,11 @@ type User {
 type Seat {
   id: String!
   name: String!
+}
+
+type Waypoint {
+  id: String!
+  name: String!
+  lat: String!
+  lng: String!
 }

@@ -1,0 +1,8 @@
+query FindWaypoints {
+  findWaypoints {
+    id
+    name
+    lat
+    lng
+  }
+}

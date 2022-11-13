@@ -1,0 +1,3 @@
+mutation CreateWaypoint($name: String!, $lat: Float!, $lng: Float!) {
+  createWaypoint(name: $name, lat: $lat, lng: $lng)
+}
