@@ -1,6 +1,7 @@
 (ns ui.lib.router
   (:require
-   ["react-router-dom"
+   ["@apollo/client" :refer (useApolloClient)]
+   [react-router-dom
     :refer (BrowserRouter
             Routes
             Route
@@ -29,8 +30,10 @@
     [:> Navigate {:to "/login" :replace true}]))
 
 (defn remove-auth-route []
-  (remove-session)
-  [:> Navigate {:to "/login" :replace true}])
+  (let [^js client (useApolloClient)]
+    (remove-session)
+    (.resetStore client)
+    [:> Navigate {:to "/login" :replace true}]))
 
 (defn use-navigate []
   (useNavigate))

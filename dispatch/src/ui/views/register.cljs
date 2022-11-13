@@ -19,7 +19,7 @@
   (let [!state (r/atom {})
         !anoms (r/atom nil)]
     (fn []
-      (let [[register] (useMutation CREATE_USER)
+      (let [[register ^js result] (useMutation CREATE_USER)
             navigate (use-navigate)]
         [:div {:class "w-full h-full overflow-y-auto"}
          [:div {:class padding}
@@ -30,6 +30,7 @@
                     (-> (register (->js {:variables @!state}))
                         (.then (fn [res]
                                  (create-session (-> res ->clj :data :createUser))
+                                 (.. result -client resetStore)
                                  (navigate "/fleet")))
                         (.catch #(reset! !anoms (parse-anoms %)))))}
            [input {:id "email"
