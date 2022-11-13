@@ -1,8 +1,11 @@
 (ns ui.components.forms.route
-  (:require [react-feather
-             :rename {ChevronUp ChevronUpIcon
-                      ChevronDown ChevronDownIcon}]
+  (:require ["@apollo/client" :refer (gql useQuery)]
+            [react-feather
+             :rename {ArrowUp ChevronUpIcon
+                      ArrowDown ChevronDownIcon}]
+            [shadow.resource :refer (inline)]
             [reagent.core :as r]
+            [cljs-bean.core :refer (->clj)]
             [ui.utils.error :refer (tr-error)]
             [ui.utils.string :refer (class-names)]
             [ui.components.inputs.generic.combobox :refer (combobox)]
@@ -13,6 +16,8 @@
   (.setMinutes date (- (.getMinutes date) (.getTimezoneOffset date)))
   (.slice (.toISOString date) 0 16))
 
+(def GET_WAYPOINTS (gql (inline "queries/waypoint/find.graphql")))
+
 (defn route-form [{initial-state :initial-state on-submit :on-submit}]
   (let [!state (r/atom (or initial-state {:start (get-datetime-local (js/Date.))
                                           :waypoints [{:name "Subway" :location "Galerias"}
@@ -21,54 +26,55 @@
         !anoms (r/atom {})]
 
     (fn []
-      [:<>
-       [:form {:class "flex flex-col"
-               :on-submit on-submit}
-        [combobox {:label "Assigned seat"
-                   :class "pb-4"
-                   :options [{:label "Foo" :value "foo"}
-                             {:label "Bar" :value "bar"}]
-                   :option-to-label #(:label %)
-                   :option-to-value #(:value %)
-                   :on-text (fn [])
-                   :on-change (fn [])}]
-        [input {:id "origin"
-                :label "Origin address"
-                :value (:username @!state)
-                :required true
-                :class "pb-4"
-                :on-text #(swap! !state assoc :origin %)}]
-        [input {:id "start"
-                :label "Departure time"
-                :placeholder "Select date and time"
-                :type "datetime-local"
-                :value (:start @!state)
-                :required true
-                :class "pb-4"
-                :on-text #(swap! !state assoc :start %)}]
-        [:label {:class "mb-2 text-sm"} "Manage waypoints"]
-        [:div
-         [combobox {:aria-label "Add waypoint"
-                    :placeholder "Search for waypoints"
-                    :class "mb-4"
-                    :options [{:label "Foo" :value "foo"}
-                              {:label "Bar" :value "bar"}]
-                    :option-to-label #(:label %)
-                    :option-to-value #(:value %)
-                    :on-text (fn [])
-                    :on-change (fn [])}]
-         [:ol
-          (doall (for [[idx point] (map-indexed vector (-> @!state :waypoints))]
-                   [:li {:class (class-names "flex items-center mb-2 rounded p-2 bg-neutral-900" base-button-class)}
-                    [:div {:class "px-2 w-full"}
-                     [:div {:class "text-base"} (:name point)]
-                     [:div {:class "text-sm text-neutral-300"} (:location point)]]
-                    [:div {:class "flex-shrink-0"}
-                     [:button {:class "p-1"} [:> ChevronUpIcon]]
-                     [:button {:class "p-1"} [:> ChevronDownIcon]]]]))]]
+      (let [query (useQuery GET_WAYPOINTS)
+            {:keys [data]} (->clj query)]
+        [:<>
+         [:form {:class "flex flex-col"
+                 :on-submit on-submit}
+          [combobox {:label "Assigned seat"
+                     :class "pb-4"
+                     :options [{:label "Foo" :value "foo"}
+                               {:label "Bar" :value "bar"}]
+                     :option-to-label #(:label %)
+                     :option-to-value #(:value %)
+                     :on-text (fn [])
+                     :on-change (fn [])}]
+          [input {:id "origin"
+                  :label "Origin address"
+                  :value (:username @!state)
+                  :required true
+                  :class "pb-4"
+                  :on-text #(swap! !state assoc :origin %)}]
+          [input {:id "start"
+                  :label "Departure time"
+                  :placeholder "Select date and time"
+                  :type "datetime-local"
+                  :value (:start @!state)
+                  :required true
+                  :class "pb-4"
+                  :on-text #(swap! !state assoc :start %)}]
+          [:label {:class "mb-2 text-sm"} "Manage waypoints"]
+          [:div
+           [combobox {:aria-label "Add waypoint"
+                      :placeholder "Search for waypoints"
+                      :class "mb-4"
+                      :options (some-> data :findWaypoints)
+                      :option-to-label #(:name %)
+                      :option-to-value #(:id %)
+                      :on-change (fn [])}]
+           [:ol
+            (doall (for [[idx point] (map-indexed vector (-> @!state :waypoints))]
+                     ^{:key idx}
+                     [:li {:class (class-names "flex items-center mb-2 rounded p-2 bg-neutral-900" base-button-class)}
+                      [:div {:class "w-full"}
+                       [:div {:class "text-base"} (:name point)]
+                       [:div {:class "text-sm text-neutral-300"} (:location point)]]
+                      [:div {:class "flex-shrink-0"}
+                       [:button {:type "button" :class "pl-2"} [:> ChevronUpIcon]]
+                       [:button {:type "button" :class "pl-2"} [:> ChevronDownIcon]]]]))]]
 
-        [button {:label "Submit" :class "my-4"}]
-        (doall (for [anom @!anoms]
-                 [:span {:key (:reason anom)
-                         :class "my-2 p-2 rounded border border-red-300 text-sm text-red-100 bg-red-800"}
-                  (tr-error anom)]))]])))
+          [button {:label "Submit" :class "my-4"}]
+          (doall (for [anom @!anoms]
+                   [:span {:key (:reason anom)
+                           :class "my-2 p-2 rounded border border-red-300 text-sm text-red-100 bg-red-800"}
+                    (tr-error anom)]))]]))))
