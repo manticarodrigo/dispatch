@@ -26,7 +26,7 @@
     [:> Menu {:as "div" :class (class-names "z-20 relative inline-flex")}
      [:> Button {:class (or button-class! button-class)} label]
      [:> Items {:as "ul" :class (class-names
-                                 "absolute right-0 origin-top-right"
+                                 "absolute right-0 top-[100%] origin-top-right"
                                  "mt-2 rounded-md border border-neutral-500"
                                  "divide-y divide-neutral-700"
                                  "text-neutral-100 bg-neutral-900"

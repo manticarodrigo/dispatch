@@ -1,5 +1,6 @@
 (ns tests.core
   (:require
+   ["@faker-js/faker" :refer (faker)]
    [shadow.resource :refer (inline)]
    [cljs.test :as t :refer-macros [deftest async testing is use-fixtures]]
    [promesa.core :as p]
@@ -25,7 +26,7 @@
                  result (send request)]
 
            (testing "api returns data"
-             (is (some-> result :data :createUser)))
+             (is (-> result :data :createUser)))
 
            (with-mounted-component
              [test-app {:route "/register" :mocks [{:request request :result result}]}]
@@ -72,7 +73,7 @@
                  result (send request)]
 
            (testing "api returns data"
-             (is (some-> result :data :loginUser)))
+             (is (-> result :data :loginUser)))
 
            (with-mounted-component
              [test-app {:route "/login" :mocks [{:request request :result result}]}]
@@ -140,24 +141,36 @@
                  request  {:query query :variables variables}
                  result (send request)]
            (testing "api returns data"
-             (is (some-> result :data :findUser :id)))
+             (is (-> result :data :findUser :id)))
            (done))))
 
-(deftest create-seat
+(deftest create-seats
   (async done
-         (p/let [query (inline "mutations/seat/create.graphql")
-                 variables {:name "Foo Bar"}
-                 request  {:query query :variables variables}
-                 result (send request)]
-           (testing "api returns data"
-             (is (some-> result :data :createSeat)))
-           (done))))
+         (p/->
+          (p/all (map (fn [_]
+                        (p/let [query (inline "mutations/seat/create.graphql")
+                                variables {:name (.. faker -name fullName)}
+                                request  {:query query :variables variables}
+                                result (send request)]
+                          (testing "api returns data"
+                            (is (-> result :data :createSeat)))))
+                      (range 3)))
+          done)))
 
 (deftest find-seats
   (async done
          (p/let [query (inline "queries/seat/find.graphql")
                  request  {:query query}
                  result (send request)]
+
            (testing "api returns data"
-             (is (some-> result :data :findSeats first :id)))
-           (done))))
+             (is (-> result :data :findSeats first :id)))
+
+           (with-mounted-component
+             [test-app {:route "/fleet" :mocks [{:request request :result result}]}]
+             (fn [^js component]
+               (p/-> (p/all (map (fn [{:keys [name]}]
+                                   (-> (.findByText component name)
+                                       (.then #(testing "ui presents seat name" (is (some? %))))))
+                                 (-> result :data :findSeats)))
+                     done))))))

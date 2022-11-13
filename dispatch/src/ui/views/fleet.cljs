@@ -1,8 +1,11 @@
 (ns ui.views.fleet
   (:require
+   ["@apollo/client" :refer (gql useQuery)]
    [react-feather :rename {User UserIcon
                            ChevronRight ChevronRightIcon}]
    [clojure.string :as s]
+   [shadow.resource :refer (inline)]
+   [cljs-bean.core :refer (->clj)]
    [ui.lib.router :refer (link)]
    [ui.utils.string :refer (class-names)]
    [ui.utils.css :refer (padding)]
@@ -36,19 +39,19 @@
   (str "/seat/" (->> (s/split name #"\s")
                      (s/join "-"))))
 
-(defn view []
-  (fn []
-    [:ul {:class (class-names padding)}
-     (for [{:keys [name]} items]
-       ^{:key name} ;; add real keys!
-       [:li
-        [link {:to (seat-url name)
-               :class (class-names "mb-2 block" button-class)}
-         [item name "12:15pm" "active"]]])
-     (for [{:keys [name]} inactive-items]
-       ^{:key name} ;; add real keys!
-       [:li
-        [link {:to (seat-url name)
-               :class (class-names "mb-2 block" button-class)}
-         [item name "01/20/2022" "inactive"]]])]))
+(def GET_SEATS (gql (inline "queries/seat/find.graphql")))
 
+(defn view []
+  (let [query (useQuery GET_SEATS)
+        {:keys [data loading]} (->clj query)
+        seats (some-> data :findSeats)]
+    [:<>
+     [:ul {:class (class-names padding)}
+      (for [{:keys [id name]} seats]
+        ^{:key id}
+        [:li
+         [link {:to (seat-url id)
+                :class (class-names "mb-2 block" button-class)}
+          [item name "12:15pm" "active"]]])
+      (when (and (not loading) (empty? seats)) [:p {:class "text-center"} "No seats found."])
+      (when loading [:p {:class "text-center"} "Loading seats..."])]]))
