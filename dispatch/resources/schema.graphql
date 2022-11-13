@@ -1,5 +1,6 @@
 type Query {
   findUser(id: String, email: String): User
+  findSeats: [Seat]
 }
 
 type Mutation {
@@ -11,4 +12,9 @@ type Mutation {
 type User {
   id: String!
   email: String!
+}
+
+type Seat {
+  id: String!
+  name: String!
 }

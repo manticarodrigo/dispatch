@@ -10,3 +10,8 @@
                     {:data {:name name
                             :user {:connect {:id user-id}}}})]
     (some-> seat .-id)))
+
+(defn find-all [^js context]
+  (prisma/find-many
+   (.. context -prisma -seat)
+   {:where {:user {:id (.. context -user -id)}}}))

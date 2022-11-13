@@ -1,6 +1,5 @@
 (ns api.lib.prisma
-  (:require ["@prisma/client" :refer (PrismaClient)]
-            [cljs-bean.core :refer (->js)]))
+  (:require ["@prisma/client" :refer (PrismaClient)]))
 
 (def !prisma (atom nil))
 

@@ -8,7 +8,7 @@
    [ui.utils.error :refer (tr-error)]))
 
 (defmethod t/report [:cljs.test/default :begin-test-var] [m]
-  (println " ◯" (-> m :var meta :name)))
+  (println "\n ◯" (-> m :var meta :name)))
 
 (defmethod t/report [:cljs.test/default :pass] [m]
   (println "   *" (t/testing-contexts-str) "(PASS)"))
@@ -35,7 +35,7 @@
                  (change (.getByLabelText component "Password") (:password variables))
                  (submit (-> component (.-container) (.querySelector "form")))
                  (-> (.findByText component "Fleet")
-                     (.then #(testing "submits and redirects" (is (some? %))))
+                     (.then #(testing "ui submits and redirects" (is (some? %))))
                      (.then done))))))))
 
 (deftest register-conflict
@@ -61,7 +61,7 @@
                  (change (.getByLabelText component "Password") (:password variables))
                  (submit (-> component (.-container) (.querySelector "form")))
                  (-> (.findByText component (tr-error anom))
-                     (.then #(testing "presents unique email anom" (is (some? %))))
+                     (.then #(testing "ui presents unique email anom" (is (some? %))))
                      (.then done))))))))
 
 (deftest login-success
@@ -82,7 +82,7 @@
                  (change (.getByLabelText component "Password") (:password variables))
                  (submit (-> component (.-container) (.querySelector "form")))
                  (-> (.findByText component "Fleet")
-                     (.then #(testing "submits and redirects" (is (some? %))))
+                     (.then #(testing "ui submits and redirects" (is (some? %))))
                      (.then done))))))))
 
 (deftest login-invalid-email
@@ -106,7 +106,7 @@
                  (change (.getByLabelText component "Password") (:password variables))
                  (submit (-> component (.-container) (.querySelector "form")))
                  (-> (.findByText component (tr-error anom))
-                     (.then #(testing "presents account not found anom" (is (some? %))))
+                     (.then #(testing "ui presents account not found anom" (is (some? %))))
                      (.then done))))))))
 
 (deftest login-invalid-password
@@ -130,7 +130,7 @@
                  (change (.getByLabelText component "Password") (:password variables))
                  (submit (-> component (.-container) (.querySelector "form")))
                  (-> (.findByText component (tr-error anom))
-                     (.then #(testing "presents invalid password anom" (is (some? %))))
+                     (.then #(testing "ui presents invalid password anom" (is (some? %))))
                      (.then done))))))))
 
 (deftest find-user
@@ -151,4 +151,13 @@
                  result (send request)]
            (testing "api returns data"
              (is (some-> result :data :createSeat)))
+           (done))))
+
+(deftest find-seats
+  (async done
+         (p/let [query (inline "queries/seat/find.graphql")
+                 request  {:query query}
+                 result (send request)]
+           (testing "api returns data"
+             (is (some-> result :data :findSeats first :id)))
            (done))))

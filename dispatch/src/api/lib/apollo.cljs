@@ -13,7 +13,8 @@
 (defn get-type-defs []
   (inline "schema.graphql"))
 
-(def resolvers {:Query {:findUser user/find-user}
+(def resolvers {:Query {:findUser user/find-user
+                        :findSeats seat/find-seats}
                 :Mutation {:createUser user/create-user
                            :loginUser user/login-user
                            :createSeat seat/create-seat}})

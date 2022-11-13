@@ -16,3 +16,6 @@
 
 (defn find-unique [^js model params]
   (.findUnique model (->js params)))
+
+(defn find-many [^js model params]
+  (.findMany model (->js params)))

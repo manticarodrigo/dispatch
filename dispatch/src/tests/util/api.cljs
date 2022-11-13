@@ -18,9 +18,9 @@
    (goog.isObject obj)
     (-> (fn [result key]
           (let [v (goog.object/get obj key)]
-            (if (= "function" (goog/typeOf v))
-              result
-              (assoc result (keyword key) (obj->clj v)))))
+            (cond (= "function" (goog/typeOf v)) result
+                  (.isArray js/Array v) (assoc result (keyword key) (mapv #(obj->clj %) v))
+                  :else (assoc result (keyword key) (obj->clj v)))))
         (reduce {} (.getKeys ^js goog/object obj)))
     obj))
 

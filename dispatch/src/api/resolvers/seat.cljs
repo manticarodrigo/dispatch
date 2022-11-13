@@ -11,3 +11,8 @@
               seat-id (models.seat/create context payload)]
         seat-id)
       (p/catch anom/handle-resolver-error)))
+
+(defn find-seats
+  [_ _ context _]
+  (-> (models.seat/find-all context)
+      (p/catch anom/handle-resolver-error)))
