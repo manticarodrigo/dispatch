@@ -28,7 +28,7 @@
                    :duration "Estimated time"
                    :summary {:title "Summary"}
                    :overview {:title "Route"}}
-           :schedule {:title "Schedule"}
+           :route {:title "Route"}
            :address {:title "Address"}}
     :error {:unknown "An unknown error occurred."
             :unique-constraint "The account already exists."
@@ -61,7 +61,7 @@
                    :duration "Tiempo estimado"
                    :summary {:title "Resumen"}
                    :overview {:title "Ruta"}}
-           :schedule {:title "Programar"}
+           :route {:title "Ruta"}
            :address {:title "Dirección"}}
     :error {:unknown "Un error desconocido ocurrió."
             :unique-constraint "La cuenta ya existe."

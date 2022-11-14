@@ -5,7 +5,7 @@
             [ui.views.fleet :as fleet]
             [ui.views.seat :as seat]
             [ui.views.address :as address]
-            [ui.views.schedule :as schedule]
+            [ui.views.route :as route]
             [ui.views.not-found :as not-found]))
 
 (defn routes []
@@ -16,5 +16,5 @@
    ["/fleet" [router/auth-route [fleet/view]]]
    ["/seat/:id" [router/auth-route [seat/view]]]
    ["/address" [router/auth-route [address/view]]]
-   ["/schedule" [router/auth-route [schedule/view]]]
+   ["/route" [router/auth-route [route/view]]]
    ["*" [not-found/view]]])

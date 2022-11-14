@@ -38,7 +38,7 @@
       ["/login" [icons/dispatch]]
       ["/fleet" [icons/dispatch]]
       ["/address" [icons/dispatch]]
-      ["/schedule" [icons/dispatch]]
+      ["/route" [icons/dispatch]]
       ["*" [link {:to "/fleet"} [:> ArrowLeftIcon]]]]
 
      [routes
@@ -46,7 +46,7 @@
       ["/login" [title (tr [:view.login/title])]]
       ["/fleet" [title (tr [:view.fleet/title])]]
       ["/address" [title (tr [:view.address/title])]]
-      ["/schedule" [title (tr [:view.schedule/title])]]
+      ["/route" [title (tr [:view.route/title])]]
       ["*" [title "Not found"]]]
 
      [nav]

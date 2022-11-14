@@ -22,6 +22,6 @@
 (defn nav []
   [:nav [:ul {:class "flex justify-center"}
          [nav-item "/fleet" MapIcon]
-         [nav-item "/schedule" CalendarIcon]
+         [nav-item "/route" CalendarIcon]
          [nav-item "/address" PinIcon]
          [nav-item "/history" BookOpenIcon]]])
