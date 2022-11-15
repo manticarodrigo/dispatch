@@ -1,12 +1,15 @@
 (ns ui.views.route
-  (:require ["@apollo/client" :refer (gql useQuery)]
+  (:require ["@apollo/client" :refer (gql useQuery useMutation)]
             [react-feather
              :rename {ChevronUp ChevronUpIcon
                       ChevronDown ChevronDownIcon
                       X XIcon}]
             [shadow.resource :refer (inline)]
             [reagent.core :as r]
-            [cljs-bean.core :refer (->clj)]
+            [cljs-bean.core :refer (->clj ->js)]
+            [common.utils.date :refer (to-datetime-local from-datetime-local)]
+            [ui.lib.apollo :refer (parse-anoms)]
+            [ui.lib.router :refer (use-navigate)]
             [ui.utils.string :refer (class-names)]
             [ui.utils.css :refer (padding)]
             [ui.utils.error :refer (tr-error)]
@@ -15,52 +18,54 @@
             [ui.components.inputs.generic.input :refer (input)]
             [ui.components.inputs.generic.button :refer (button base-button-class)]))
 
-(defn get-datetime-local [date]
-  (.setMinutes date (- (.getMinutes date) (.getTimezoneOffset date)))
-  (.slice (.toISOString date) 0 16))
+
 
 (def FETCH_USER (gql (inline "queries/user/fetch.graphql")))
+(def CREATE_ROUTE (gql (inline "mutations/route/create.graphql")))
 
 (defn view []
   (let [!anoms (r/atom {})
-        !state (r/atom {:seat-id nil
-                        :start-at (get-datetime-local (js/Date.))
-                        :stop-ids []})]
+        !state (r/atom {:seatId nil
+                        :startAt (from-datetime-local (js/Date.))
+                        :addressIds []})]
     (fn []
       (let [query (useQuery FETCH_USER)
-            {:keys [data]} (->clj query)
+            [create] (useMutation CREATE_ROUTE)
+            navigate (use-navigate)
+            {:keys [data loading]} (->clj query)
             seats (some-> data :user :seats)
             addresses (some-> data :user :addresses)
-            stops (mapv (fn [id]
-                          (some #(when (= id (:id %)) %) addresses))
-                        (-> @!state :stop-ids))]
+            selected-addresses (mapv (fn [id]
+                                       (some #(when (= id (:id %)) %) addresses))
+                                     (-> @!state :addressIds))]
         [:div {:class (class-names padding)}
+         (if loading
+           [:p {:class "sr-only"} "Loading..."]
+           [:p {:class "sr-only"} "Loaded..."])
          [:form {:class "flex flex-col"
                  :on-submit
                  (fn [e]
                    (.preventDefault e)
-                  ;;  (-> (login (->js {:variables @!state}))
-                  ;;      (.then (fn [res]
-                  ;;               (create-session (-> res ->clj :data :loginUser))
-                  ;;               (.. result -client resetStore)
-                  ;;               (navigate "/fleet")))
-                  ;;      (.catch #(reset! !anoms (parse-anoms %))))
-                   )}
+                   (-> (create (->js {:variables @!state}))
+                       (.then #(navigate "/fleet"))
+                       (.catch #(reset! !anoms (parse-anoms %)))))}
           [combobox {:label "Assigned seat"
                      :class "pb-4"
-                     :value (:seat-id @!state)
+                     :value (:seatId @!state)
                      :options seats
                      :option-to-label #(:name %)
                      :option-to-value #(:id %)
-                     :on-change #(swap! !state assoc :seat-id %)}]
+                     :on-change #(swap! !state assoc :seatId %)}]
           [input {:id "start"
                   :label "Departure time"
                   :placeholder "Select date and time"
                   :type "datetime-local"
-                  :value (:start-at @!state)
+                  :value (to-datetime-local
+                          (js/Date. (:startAt @!state)))
                   :required true
                   :class "pb-4"
-                  :on-text #(swap! !state assoc :start-at %)}]
+                  :on-text #(swap! !state assoc :startAt
+                                   (from-datetime-local (js/Date. %)))}]
           [:label {:class "mb-2 text-sm"} "Manage stops"]
           [:div
            [combobox {:aria-label "Add address"
@@ -69,11 +74,11 @@
                       :options addresses
                       :option-to-label #(:name %)
                       :option-to-value #(:id %)
-                      :on-change #(swap! !state update :stop-ids conj %)}]
+                      :on-change #(swap! !state update :addressIds conj %)}]
            [:ol
-            (doall (for [[idx {:keys [id name lat lng]}] (map-indexed vector stops)]
+            (doall (for [[idx {:keys [id name lat lng]}] (map-indexed vector selected-addresses)]
                      (let [first? (= idx 0)
-                           last? (= (+ idx 1) (count stops))
+                           last? (= (+ idx 1) (count selected-addresses))
                            disabled-class "cursor-not-allowed text-neutral-500"]
                        ^{:key (str idx "-" id)}
                        [:li {:class (class-names
@@ -90,18 +95,18 @@
                            {:type "button"
                             :disabled first?
                             :class (when first? disabled-class)
-                            :on-click #(swap! !state update :stop-ids vec-move idx (- idx 1))}
+                            :on-click #(swap! !state update :addressIds vec-move idx (- idx 1))}
                            [:> ChevronUpIcon]]
                           [:button
                            {:type "button"
                             :disabled last?
                             :class (when last? disabled-class)
-                            :on-click #(swap! !state update :stop-ids vec-move idx (+ idx 1))}
+                            :on-click #(swap! !state update :addressIds vec-move idx (+ idx 1))}
                            [:> ChevronDownIcon]]]
                          [:button
                           {:type "button"
                            :class "ml-2"
-                           :on-click #(swap! !state update :stop-ids vec-remove idx)}
+                           :on-click #(swap! !state update :addressIds vec-remove idx)}
                           [:> XIcon]]]])))]]
 
           [button {:label "Submit" :class "my-4"}]

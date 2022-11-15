@@ -2,6 +2,7 @@
   (:require ["global-jsdom/register"]
             ["cross-fetch/polyfill"]
             ["@testing-library/react" :as rtl]
+            ["@testing-library/user-event$default" :as user-event]
             ["react-router-dom" :refer (MemoryRouter)]
             ["@apollo/client" :refer (gql)]
             ["@apollo/client/testing" :refer (MockedProvider)]
@@ -23,10 +24,11 @@
 
 (defn with-mounted-component [comp f]
   (let [^js mounted-component (rtl/render (r/as-element comp))
+        user (.setup user-event)
         cleanup (fn []
                   (.unmount mounted-component)
                   (r/flush))]
-    (-> (p/do (f mounted-component))
+    (-> (p/do (f mounted-component user))
         (.then cleanup)
         (.catch cleanup))))
 
@@ -41,6 +43,20 @@
 (defn change [el value]
   (.change rtl/fireEvent el (->js {:target {:value value}}))
   (r/flush))
+
+(defn select [^js user el value]
+  (p/do
+    (.selectOptions user el value)
+    (r/flush)))
+
+(defn get-combobox [^js component label]
+  (.getByLabelText component label #js{:selector "input"}))
+
+(defn select-combobox [user ^js component label value]
+  (p/do
+    (click (get-combobox component label))
+    (select user (.getByRole component "listbox")
+            value)))
 
 (defn memory-router [inital-route & children]
   [:> MemoryRouter {:initial-entries [inital-route]}

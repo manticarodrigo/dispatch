@@ -6,8 +6,10 @@
    [tests.util.api :refer (send)]
    [tests.util.ui :as ui :refer (with-mounted-component test-app change submit)]
    [ui.utils.error :refer (tr-error)]
+   [tests.user :as user]
    [tests.seat :as seat]
-   [tests.address :as address]))
+   [tests.address :as address]
+   [tests.route :as route]))
 
 (defmethod t/report [:cljs.test/default :begin-test-var] [m]
   (println "\n ◯" (-> m :var meta :name)))
@@ -181,17 +183,19 @@
 
 (deftest create-route
   (async done
-         (p/let [seats-res (seat/find-seats)
-                 addresses-res (address/find-addresses)
-                 query (inline "mutations/route/create.graphql")
-                 variables {:seatId (-> seats-res :result :data :seats first :id)
-                            :startAt (-> (js/Date.) .toISOString)
-                            :addressIds (map :id (-> addresses-res :result :data :addresses))}
-                 request  {:query query :variables variables}
-                 result (send request)]
+         (p/let [user-res (user/logged-in-user)
+                 {:keys [result] :as route-res} (route/create-route user-res)]
+
            (testing "api returns data"
              (is (-> result :data :createRoute)))
-           (done))))
+
+           (route/with-submit-route
+             {:mocks [(select-keys user-res [:request :result])
+                      (select-keys route-res [:request :result])]}
+             (fn [^js component]
+               (-> (.findByText component "Fleet")
+                   (.then #(testing "ui submits and redirects" (is (some? %))))
+                   (.then done)))))))
 
 (deftest find-routes
   (async done
@@ -204,9 +208,7 @@
 
 (deftest logged-in-user
   (async done
-         (p/let [query (inline "queries/user/fetch.graphql")
-                 request  {:query query}
-                 result (send request)]
+         (p/let [{:keys [result]} (user/logged-in-user)]
            (testing "api returns data"
              (is (-> result :data :user :id)))
            (done))))
