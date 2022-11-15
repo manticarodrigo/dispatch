@@ -30,10 +30,11 @@
       (fn [^js component user]
         (p/do
           (.findByText component "Loaded...")
-          (select-combobox user component "Assigned seat" (-> seats first :name)) 
+          (select-combobox user component "Assigned seat" (-> seats first :name))
 
-          (change (.getByLabelText component "Departure time") (to-datetime-local
-                                                                (js/Date. (-> route-res :request :variables :startAt))))
+          (change
+           (.getByLabelText component "Departure time")
+           (to-datetime-local (js/Date. (-> route-res :request :variables :startAt))))
 
           #_{:clj-kondo/ignore [:unresolved-symbol]}
           (p/doseq [address addresses]

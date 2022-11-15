@@ -1,10 +1,8 @@
 (ns tests.seat
-  (:require
-   ["@faker-js/faker" :refer (faker)]
-   [shadow.resource :refer (inline)]
-
-   [promesa.core :as p]
-   [tests.util.api :refer (send)]))
+  (:require ["@faker-js/faker" :refer (faker)]
+            [shadow.resource :refer (inline)]
+            [promesa.core :as p]
+            [tests.util.api :refer (send)]))
 
 (defn create-seat []
   (p/let [query (inline "mutations/seat/create.graphql")
