@@ -17,7 +17,7 @@
      :request request
      :result result}))
 
-(defn find-addresses []
+(defn fetch-addresses []
   (p/let [query (inline "queries/address/fetch-all.graphql")
           request  {:query query}
           result (send request)]

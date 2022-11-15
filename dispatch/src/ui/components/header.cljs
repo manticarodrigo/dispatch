@@ -12,7 +12,7 @@
    [ui.components.icons :as icons]
    [ui.components.inputs.generic.menu :refer (menu)]
    [ui.components.inputs.generic.modal :refer (modal)]
-   [ui.components.forms.user :refer (user-form)]
+   [ui.components.forms.seat :refer (seat-form)]
    [ui.components.nav :refer (nav)]))
 
 (defn menu-item [to label]
@@ -62,4 +62,4 @@
      [modal {:show (= "seat" (:modal query))
              :title "Add seat"
              :on-close #(set-search-params (->js (dissoc query :modal)))}
-      [user-form]]]))
+      [seat-form {:on-close #(set-search-params (->js (dissoc query :modal)))}]]]))

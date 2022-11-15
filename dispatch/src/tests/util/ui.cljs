@@ -17,7 +17,12 @@
         (fn []
           (->js {:matches false
                  :addListener (fn [])
-                 :removeListener (fn [])}))))
+                 :removeListener (fn [])})))
+  (set! js/IntersectionObserver
+        (fn []
+          (->js {:observe (fn [])
+                 :unobserve (fn [])
+                 :disconnect (fn [])}))))
 
 (defn after []
   (rtl/cleanup))

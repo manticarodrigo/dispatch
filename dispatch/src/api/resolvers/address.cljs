@@ -12,7 +12,7 @@
         seat-id)
       (p/catch anom/handle-resolver-error)))
 
-(defn find-addresses
+(defn fetch-addresses
   [_ _ context _]
   (-> (models.address/find-all context)
       (p/catch anom/handle-resolver-error)))

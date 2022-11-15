@@ -21,12 +21,12 @@
                            :createAddress address/create-address
                            :createRoute route/create-route}
                 :Query {:user user/logged-in-user
-                        :seats seat/find-seats
-                        :addresses address/find-addresses
-                        :routes route/find-routes}
+                        :seats seat/fetch-seats
+                        :addresses address/fetch-addresses
+                        :routes route/fetch-routes}
                 :User {:id #(.-id %)
-                       :seats seat/find-seats
-                       :addresses address/find-addresses}
+                       :seats seat/fetch-seats
+                       :addresses address/fetch-addresses}
                 :Seat {:id #(-> ^js % .-id)
                        :name #(-> ^js % .-name)}
                 :Address {:id #(-> ^js % .-id)

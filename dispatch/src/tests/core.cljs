@@ -114,18 +114,26 @@
 
 (deftest create-seats
   (async done
-         (p/->
-          (p/all
-           (map (fn [_]
-                  (p/let [{:keys [result]} (seat/create-seat)]
-                    (testing "api returns data"
-                      (is (-> result :data :createSeat)))))
-                (range 3)))
-          done)))
+         (->
+          (p/all (map (fn [_] (seat/create-seat)) (range 3)))
+          (.then (fn [mocks]
+                   (testing "api returns data"
+                     (is (every? #(-> % :result :data :createSeat) mocks)))
 
-(deftest find-seats
+                   (p/let [fetch-res (seat/fetch-seats)
+                           create-res (last mocks)]
+                     (seat/with-submit-seat
+                       {:mocks [(select-keys fetch-res [:request :result])
+                                (select-keys create-res [:request :result])
+                                (select-keys fetch-res [:request :result])]}
+                       (fn [^js component]
+                         (-> (.findByText component (-> create-res :request :variables :name))
+                             (.then #(testing "ui presents seat name" (is (some? %))))
+                             (.then done))))))))))
+
+(deftest fetch-seats
   (async done
-         (p/let [{:keys [request result]} (seat/find-seats)]
+         (p/let [{:keys [request result]} (seat/fetch-seats)]
 
            (testing "api returns data"
              (is (-> result :data :seats first :id)))
@@ -133,25 +141,28 @@
            (with-mounted-component
              [test-app {:route "/fleet" :mocks [{:request request :result result}]}]
              (fn [^js component]
-               (p/-> (p/all (map (fn [{:keys [name]}]
-                                   (-> (.findByText component name)
-                                       (.then #(testing "ui presents seat name" (is (some? %))))))
-                                 (-> result :data :seats)))
-                     done))))))
+               (p/->
+                (p/all
+                 (map (fn [{:keys [name]}]
+                        (-> (.findByText component name)
+                            (.then #(testing "ui presents seat name" (is (some? %))))))
+                      (-> result :data :seats)))
+                done))))))
 
 (deftest create-addresses
   (async done
          (p/->
-          (p/all (map (fn [_]
-                        (p/let [{:keys [result]} (address/create-address)]
-                          (testing "api returns data"
-                            (is (-> result :data :createAddress)))))
-                      (range 3)))
+          (p/all
+           (map (fn [_]
+                  (p/let [{:keys [result]} (address/create-address)]
+                    (testing "api returns data"
+                      (is (-> result :data :createAddress)))))
+                (range 3)))
           done)))
 
-(deftest find-addresses
+(deftest fetch-addresses
   (async done
-         (p/let [{:keys [result]} (address/find-addresses)]
+         (p/let [{:keys [result]} (address/fetch-addresses)]
            (testing "api returns data"
              (is (-> result :data :addresses first :id))
              (done)))))
@@ -172,7 +183,7 @@
                    (.then #(testing "ui submits and redirects" (is (some? %))))
                    (.then done)))))))
 
-(deftest find-routes
+(deftest fetch-routes
   (async done
          (p/let [query (inline "queries/route/fetch-all.graphql")
                  request  {:query query}
