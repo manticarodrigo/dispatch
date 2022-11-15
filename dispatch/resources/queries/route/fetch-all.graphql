@@ -1,0 +1,19 @@
+query Routes {
+  routes {
+    id
+    seat {
+      id
+      name
+    }
+    startAt
+    stops {
+      id
+      address {
+        id
+        name
+        lat
+        lng
+      }
+    }
+  }
+}

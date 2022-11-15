@@ -9,7 +9,8 @@
             [api.util.anom :as anom]
             [api.resolvers.user :as user]
             [api.resolvers.seat :as seat]
-            [api.resolvers.address :as address]))
+            [api.resolvers.address :as address]
+            [api.resolvers.route :as route]))
 
 (defn get-type-defs []
   (inline "schema.graphql"))
@@ -17,19 +18,27 @@
 (def resolvers {:Mutation {:createUser user/create-user
                            :loginUser user/login-user
                            :createSeat seat/create-seat
-                           :createAddress address/create-address}
+                           :createAddress address/create-address
+                           :createRoute route/create-route}
                 :Query {:user user/logged-in-user
                         :seats seat/find-seats
-                        :addresses address/find-addresses}
+                        :addresses address/find-addresses
+                        :routes route/find-routes}
                 :User {:id #(.-id %)
                        :seats seat/find-seats
                        :addresses address/find-addresses}
-                :Seat {:id #(.-id %)
-                       :name #(.-name %)}
-                :Address {:id #(.-id %)
-                          :name #(.-name %)
-                          :lat #(-> % ->clj :lat)
-                          :lng #(-> % ->clj :lng)}})
+                :Seat {:id #(-> ^js % .-id)
+                       :name #(-> ^js % .-name)}
+                :Address {:id #(-> ^js % .-id)
+                          :name #(-> ^js % .-name)
+                          :lat #(-> ^js % .-lng)
+                          :lng #(-> ^js % .-lat)}
+                :Stop {:id #(-> ^js % .-id)
+                       :address #(-> ^js % .-address)}
+                :Route {:id #(-> ^js % .-id)
+                        :seat #(-> ^js % .-seat)
+                        :startAt #(-> ^js % .-startAt)
+                        :stops #(-> ^js % .-stops)}})
 
 (def options
   (->js {:context (fn [^js ctx]

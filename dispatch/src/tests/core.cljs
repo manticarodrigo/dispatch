@@ -1,12 +1,13 @@
 (ns tests.core
   (:require
-   ["@faker-js/faker" :refer (faker)]
    [shadow.resource :refer (inline)]
    [cljs.test :as t :refer-macros [deftest async testing is use-fixtures]]
    [promesa.core :as p]
    [tests.util.api :refer (send)]
    [tests.util.ui :as ui :refer (with-mounted-component test-app change submit)]
-   [ui.utils.error :refer (tr-error)]))
+   [ui.utils.error :refer (tr-error)]
+   [tests.seat :as seat]
+   [tests.address :as address]))
 
 (defmethod t/report [:cljs.test/default :begin-test-var] [m]
   (println "\n ◯" (-> m :var meta :name)))
@@ -137,21 +138,17 @@
 (deftest create-seats
   (async done
          (p/->
-          (p/all (map (fn [_]
-                        (p/let [query (inline "mutations/seat/create.graphql")
-                                variables {:name (.. faker -name fullName)}
-                                request  {:query query :variables variables}
-                                result (send request)]
-                          (testing "api returns data"
-                            (is (-> result :data :createSeat)))))
-                      (range 3)))
+          (p/all
+           (map (fn [_]
+                  (p/let [{:keys [result]} (seat/create-seat)]
+                    (testing "api returns data"
+                      (is (-> result :data :createSeat)))))
+                (range 3)))
           done)))
 
 (deftest find-seats
   (async done
-         (p/let [query (inline "queries/seat/fetch-all.graphql")
-                 request  {:query query}
-                 result (send request)]
+         (p/let [{:keys [request result]} (seat/find-seats)]
 
            (testing "api returns data"
              (is (-> result :data :seats first :id)))
@@ -169,12 +166,7 @@
   (async done
          (p/->
           (p/all (map (fn [_]
-                        (p/let [query (inline "mutations/address/create.graphql")
-                                variables {:name (.. faker -company name)
-                                           :lat (js/parseFloat (.. faker -address latitude))
-                                           :lng (js/parseFloat (.. faker -address longitude))}
-                                request  {:query query :variables variables}
-                                result (send request)]
+                        (p/let [{:keys [result]} (address/create-address)]
                           (testing "api returns data"
                             (is (-> result :data :createAddress)))))
                       (range 3)))
@@ -182,11 +174,32 @@
 
 (deftest find-addresses
   (async done
-         (p/let [query (inline "queries/address/fetch-all.graphql")
+         (p/let [{:keys [result]} (address/find-addresses)]
+           (testing "api returns data"
+             (is (-> result :data :addresses first :id))
+             (done)))))
+
+(deftest create-route
+  (async done
+         (p/let [seats-res (seat/find-seats)
+                 addresses-res (address/find-addresses)
+                 query (inline "mutations/route/create.graphql")
+                 variables {:seatId (-> seats-res :result :data :seats first :id)
+                            :startAt (-> (js/Date.) .toISOString)
+                            :addressIds (map :id (-> addresses-res :result :data :addresses))}
+                 request  {:query query :variables variables}
+                 result (send request)]
+           (testing "api returns data"
+             (is (-> result :data :createRoute)))
+           (done))))
+
+(deftest find-routes
+  (async done
+         (p/let [query (inline "queries/route/fetch-all.graphql")
                  request  {:query query}
                  result (send request)]
            (testing "api returns data"
-             (is (-> result :data :addresses first :id))
+             (is (-> result :data :routes first :id))
              (done)))))
 
 (deftest logged-in-user

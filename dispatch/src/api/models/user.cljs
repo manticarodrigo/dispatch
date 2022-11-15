@@ -24,10 +24,10 @@
                                       :include {:sessions true}}))]
     (some-> user .-sessions last .-id)))
 
-(defn find-unique [^js context payload]
-  (prisma/find-unique (.. context -prisma -user)
-                      {:where (prisma/filter-params payload)}))
-
 (defn logged-in-user [^js context]
   (prisma/find-unique (.. context -prisma -user)
                       {:where {:id (.. context -user -id)}}))
+
+(defn find-unique [^js context payload]
+  (prisma/find-unique (.. context -prisma -user)
+                      {:where (prisma/filter-params payload)}))

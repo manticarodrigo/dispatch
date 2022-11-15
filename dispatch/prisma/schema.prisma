@@ -17,6 +17,7 @@ model User {
   sessions  Session[]
   seats     Seat[]
   addresses Address[]
+  routes    Route[]
 }
 
 model Session {
@@ -60,6 +61,8 @@ model Address {
 
 model Route {
   id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
   seat      Seat     @relation(fields: [seatId], references: [id])
   seatId    String
   stops     Stop[]
@@ -74,7 +77,7 @@ model Stop {
   routeId   String
   address   Address  @relation(fields: [addressId], references: [id])
   addressId String
-  arrivedAt DateTime
+  arrivedAt DateTime?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

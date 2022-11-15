@@ -1,0 +1,3 @@
+mutation CreateRoute($seatId: ID!, $startAt: String!, $addressIds: [ID]!) {
+  createRoute(seatId: $seatId, startAt: $startAt, addressIds: $addressIds)
+}
