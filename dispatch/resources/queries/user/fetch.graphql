@@ -9,6 +9,7 @@ query User {
     addresses {
       id
       name
+      description
       lat
       lng
     }

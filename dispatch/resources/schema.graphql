@@ -9,7 +9,12 @@ type Mutation {
   createUser(email: String!, password: String!): String!
   loginUser(email: String!, password: String!): String!
   createSeat(name: String!): String!
-  createAddress(name: String!, lat: Float!, lng: Float!): String!
+  createAddress(
+    name: String!
+    description: String!
+    lat: Float!
+    lng: Float!
+  ): String!
   createRoute(seatId: ID!, startAt: String!, addressIds: [ID]!): String!
 }
 
@@ -28,6 +33,7 @@ type Seat {
 type Address {
   id: ID!
   name: String!
+  description: String!
   lat: String!
   lng: String!
 }

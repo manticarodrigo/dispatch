@@ -2,6 +2,7 @@ query Addresses {
   addresses {
     id
     name
+    description
     lat
     lng
   }

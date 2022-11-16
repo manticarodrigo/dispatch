@@ -3,6 +3,9 @@
 
 (defonce ^:private !places-service (atom nil))
 
+(defn create-places-service [gmap]
+  (js/google.maps.places.PlacesService. gmap))
+
 (defn find-place [place-id]
   (js/Promise.
    (fn [resolve reject]
@@ -17,5 +20,4 @@
             (reject status))))))))
 
 (defn init-places [gmap]
-  (js/google.maps.places.PlacesService. gmap))
-
+  (reset! !places-service (create-places-service gmap)))

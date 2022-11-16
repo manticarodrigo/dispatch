@@ -31,6 +31,7 @@
                        :name #(-> ^js % .-name)}
                 :Address {:id #(-> ^js % .-id)
                           :name #(-> ^js % .-name)
+                          :description #(-> ^js % .-description)
                           :lat #(-> ^js % .-lng)
                           :lng #(-> ^js % .-lat)}
                 :Stop {:id #(-> ^js % .-id)

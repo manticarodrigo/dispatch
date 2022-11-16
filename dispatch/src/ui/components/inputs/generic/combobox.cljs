@@ -22,7 +22,8 @@
                  option-to-label :option-to-label
                  option-to-value :option-to-value
                  on-text :on-text
-                 on-change :on-change}]
+                 on-change :on-change
+                 on-select :on-select}]
   (let [[query set-query] (useState "")
         filtered-options (filter #(-> %
                                       option-to-label
@@ -36,7 +37,12 @@
     [:> Combobox {:as "div"
                   :class (class-names class "relative")
                   :value value
-                  :on-change on-change}
+                  :on-change (fn [option]
+                               (when on-change (on-change option))
+                               (when (and option-to-value on-select)
+                                 (on-select (some
+                                             #(when (= option (option-to-value %)) %)
+                                             options))))}
      [:> Label {:class (if aria-label "sr-only" label-class)} (or aria-label label)]
      [:> Button {:as "div" :class "relative"}
       [:> Input {:placeholder placeholder

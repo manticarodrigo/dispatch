@@ -1,8 +1,8 @@
 (ns ui.views.address
   (:require [ui.utils.string :refer (class-names)]
             [ui.utils.css :refer (padding)]
-            [ui.components.forms.location :refer (location-form)]))
+            [ui.components.forms.address :refer (address-form)]))
 
 (defn view []
   [:div {:class (class-names padding)}
-   [location-form]])
+   [address-form]])

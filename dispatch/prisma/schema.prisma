@@ -48,15 +48,16 @@ model Location {
 }
 
 model Address {
-  id        String   @id @default(uuid())
-  name      String
-  lat       Float
-  lng       Float
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String
-  stop      Stop[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  lat         Float
+  lng         Float
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  stop        Stop[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Route {
@@ -72,12 +73,12 @@ model Route {
 }
 
 model Stop {
-  id        String   @id @default(uuid())
-  route     Route    @relation(fields: [routeId], references: [id])
+  id        String    @id @default(uuid())
+  route     Route     @relation(fields: [routeId], references: [id])
   routeId   String
-  address   Address  @relation(fields: [addressId], references: [id])
+  address   Address   @relation(fields: [addressId], references: [id])
   addressId String
   arrivedAt DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
