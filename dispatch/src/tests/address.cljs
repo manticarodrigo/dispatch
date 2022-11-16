@@ -8,6 +8,7 @@
 (defn create-address []
   (p/let [query (inline "mutations/address/create.graphql")
           variables {:name (.. faker -company name)
+                     :description (.. faker -address (streetAddress true))
                      :lat (js/parseFloat (.. faker -address latitude))
                      :lng (js/parseFloat (.. faker -address longitude))}
           request  {:query query :variables variables}
