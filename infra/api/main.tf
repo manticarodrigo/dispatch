@@ -95,7 +95,11 @@ resource "null_resource" "api_db_sync" {
   }
 
   provisioner "local-exec" {
-    command = "export DATABASE_URL=${local.db_url} && npx prisma db push --accept-data-loss"
+    command     = <<-EOT
+                  export DATABASE_URL=${local.db_url}
+                  npx prisma db push --accept-data-loss
+                  yarn test
+                EOT
     working_dir = "../dispatch"
   }
 
