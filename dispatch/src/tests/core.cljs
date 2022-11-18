@@ -120,14 +120,14 @@
                    (testing "api returns data"
                      (is (every? #(-> % :result :data :createSeat) mocks)))
 
-                   (p/let [fetch-res (seat/fetch-seats)
-                           create-res (last mocks)]
+                   (p/let [fetch-mock (seat/fetch-seats)
+                           create-mock (last mocks)]
                      (seat/with-submit-seat
-                       {:mocks [(select-keys fetch-res [:request :result])
-                                (select-keys create-res [:request :result])
-                                (select-keys fetch-res [:request :result])]}
+                       {:mocks [(select-keys fetch-mock [:request :result])
+                                (select-keys create-mock [:request :result])
+                                (select-keys fetch-mock [:request :result])]}
                        (fn [^js component]
-                         (-> (.findByText component (-> create-res :request :variables :name))
+                         (-> (.findByText component (-> create-mock :request :variables :name))
                              (.then #(testing "ui presents seat name" (is (some? %))))
                              (.then done))))))))))
 
@@ -151,14 +151,18 @@
 
 (deftest create-addresses
   (async done
-         (p/->
-          (p/all
-           (map (fn [_]
-                  (p/let [{:keys [result]} (address/create-address)]
-                    (testing "api returns data"
-                      (is (-> result :data :createAddress)))))
-                (range 3)))
-          done)))
+         (-> (p/all (map (fn [_] (address/create-address)) (range 3)))
+             (.then (fn [mocks]
+                      (testing "api returns data"
+                        (is (every? #(-> % :result :data :createAddress) mocks)))
+
+                      (p/let [create-mock (last mocks)]
+                        (address/with-submit-address
+                          {:mocks [create-mock]}
+                          (fn [^js component]
+                            (-> (.findByText component "Route")
+                                (.then #(testing "ui submits and redirects" (is (some? %))))
+                                (.then done))))))))))
 
 (deftest fetch-addresses
   (async done
@@ -169,15 +173,15 @@
 
 (deftest create-route
   (async done
-         (p/let [user-res (user/logged-in-user)
-                 {:keys [result] :as route-res} (route/create-route user-res)]
+         (p/let [user-mock (user/logged-in-user)
+                 {:keys [result] :as route-mock} (route/create-route user-mock)]
 
            (testing "api returns data"
              (is (-> result :data :createRoute)))
 
            (route/with-submit-route
-             {:mocks [(select-keys user-res [:request :result])
-                      (select-keys route-res [:request :result])]}
+             {:mocks [(select-keys user-mock [:request :result])
+                      (select-keys route-mock [:request :result])]}
              (fn [^js component]
                (-> (.findByText component "Fleet")
                    (.then #(testing "ui submits and redirects" (is (some? %))))

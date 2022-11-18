@@ -25,6 +25,10 @@
                       (->js {:refetchQueries [{:query FETCH_ADDRESSES}]}))
             navigate (use-navigate)]
         [:<>
+         (when (and (-> @!state :lat)
+                    (-> @!state :lng))
+           [:p {:class "sr-only"} "found coordinates"])
+
          [:form {:class "flex flex-col"
                  :on-submit (fn [e]
                               (.preventDefault e)
@@ -55,7 +59,10 @@
                                       (.then #(filterv :place_id %))
                                       (.then #(reset! !options %)))))
                      :on-select (fn [option]
-                                  (swap! !state merge (select-keys option [:place_id :description]))
+                                  (reset! !state
+                                          (merge {:name (-> @!state :name)}
+                                                 (select-keys option [:place_id :description])))
+
                                   (-> (find-place (:place_id option))
                                       (.then #(merge % option))
                                       (.then #(swap! !state merge (select-keys % [:place_id :description :lat :lng])))))}]

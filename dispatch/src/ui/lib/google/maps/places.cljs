@@ -15,7 +15,7 @@
         (clj->js {:placeId place-id,
                   :fields ["geometry"]})
         (fn [place status]
-          (if (= status js/google.maps.places.PlacesServiceStatus.OK)
+          (if (= status "OK")
             (resolve (parse-place place))
             (reject status))))))))
 

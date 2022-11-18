@@ -13,7 +13,7 @@
         service
         #js{:input text}
         (fn [results status]
-          (when (or (= status js/google.maps.places.PlacesServiceStatus.OK)
+          (when (or (= status "OK")
                     (count results))
             (resolve (js->clj results :keywordize-keys true)))))))))
 
