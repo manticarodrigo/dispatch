@@ -11,8 +11,7 @@
   (p/let [query (inline "queries/user/fetch.graphql")
           request  {:query query}
           result (send request)]
-    {:query query
-     :request request
+    {:request request
      :result result}))
 
 (defn register-user [variables]

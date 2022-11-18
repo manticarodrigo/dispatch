@@ -17,3 +17,8 @@
   (let [full-iso (-> date .toISOString)
         [part-iso] (s/split full-iso ".")]
     (str part-iso "." "000Z")))
+
+(defn add-days [date num]
+  (let [updated-date (js/Date. (.valueOf date))]
+    (.setDate updated-date (+ (.getDate date) num))
+    updated-date))

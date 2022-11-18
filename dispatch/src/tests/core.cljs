@@ -3,9 +3,10 @@
    [shadow.resource :refer (inline)]
    [cljs.test :as t :refer-macros [deftest async testing is use-fixtures]]
    [promesa.core :as p]
+   [common.utils.date :refer (from-datetime-local add-days)]
+   [ui.utils.error :refer (tr-error)]
    [tests.util.api :refer (send)]
    [tests.util.ui :as ui :refer (with-mounted-component test-app)]
-   [ui.utils.error :refer (tr-error)]
    [tests.user :as user]
    [tests.seat :as seat]
    [tests.address :as address]
@@ -173,15 +174,30 @@
 
 (deftest create-route
   (async done
-         (p/let [user-mock (user/logged-in-user)
-                 {:keys [result] :as route-mock} (route/create-route user-mock)]
+         (p/let [fetch-mock (user/logged-in-user)
+                 seats (-> fetch-mock :result :data :user :seats)
+                 create-mocks (p/all
+                               (flatten
+                                (map
+                                 (fn [idx]
+                                   (map
+                                    (fn [seat]
+                                      (route/create-route
+                                       {:seatId (:id seat)
+                                        :startAt (from-datetime-local (add-days (js/Date.) idx))
+                                        :addressIds (mapv :id (-> fetch-mock
+                                                                  :result
+                                                                  :data
+                                                                  :user
+                                                                  :addresses))}))
+                                    seats))
+                                 (range 3))))]
 
            (testing "api returns data"
-             (is (-> result :data :createRoute)))
+             (is (every? #(-> % :result :data :createRoute) create-mocks)))
 
            (route/with-submit-route
-             {:mocks [(select-keys user-mock [:request :result])
-                      (select-keys route-mock [:request :result])]}
+             {:mocks [fetch-mock (first create-mocks)]}
              (fn [^js component]
                (-> (.findByText component "Fleet")
                    (.then #(testing "ui submits and redirects" (is (some? %))))
