@@ -36,15 +36,14 @@
 
 (defn handler [event context]
   (js/console.log "event" event)
-  (js/console.log "context" context)
-  (if (some-> event .-requestContext .-http .-method (= "OPTIONS"))
-    (do
-      (js/console.log "GOT OPTIONS")
-      #js{:statusCode 204
-          :headers
-          {:Access-Control-Allow-Headers "Content-Type"
-           :Access-Control-Allow-Origin "*"
-           :Access-Control-Allow-Methods "OPTIONS,POST,GET"}})
+  (js/console.log "method" (some-> event .-httpMethod))
+  (js/console.log "options" (some-> event .-httpMethod (= "OPTIONS")))
+  (if (some-> event .-httpMethod (= "OPTIONS"))
+    #js{:statusCode 204
+        :headers
+        {:Access-Control-Allow-Headers "Content-Type"
+         :Access-Control-Allow-Origin "*"
+         :Access-Control-Allow-Methods "OPTIONS,POST,GET"}}
     (p/let [app (create-app)
             handler (serverless app)
             result (handler event context)]
