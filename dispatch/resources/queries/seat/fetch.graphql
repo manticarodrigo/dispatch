@@ -1,0 +1,20 @@
+query Seat($id: ID!) {
+  seat(id: $id) {
+    id
+    name
+    routes {
+      id
+      startAt
+      stops {
+        id
+        address {
+          id
+          name
+          description
+          lat
+          lng
+        }
+      }
+    }
+  }
+}

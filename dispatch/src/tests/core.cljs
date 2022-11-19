@@ -212,6 +212,15 @@
              (is (-> result :data :routes first :id))
              (done)))))
 
+(deftest fetch-seat
+  (async done
+         (p/let [seats-mock (seat/fetch-seats)
+                 id (-> seats-mock :result :data :seats first :id)
+                 {:keys [result]} (seat/fetch-seat {:id id})]
+           (testing "api returns data"
+             (is (-> result :data :seat :routes first :id))
+             (done)))))
+
 (deftest logged-in-user
   (async done
          (p/let [{:keys [result]} (user/logged-in-user)]

@@ -33,7 +33,7 @@ model Seat {
   user      User       @relation(fields: [userId], references: [id])
   userId    String
   location  Location[]
-  route     Route[]
+  routes    Route[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 }

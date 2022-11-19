@@ -10,19 +10,22 @@
           variables {:name (.. faker -name fullName)}
           request  {:query query :variables variables}
           result (send request)]
-    {:query query
-     :variables variables
-     :request request
+    {:request request
      :result result}))
 
 (defn fetch-seats []
   (p/let [query (inline "queries/seat/fetch-all.graphql")
           request  {:query query}
           result (send request)]
-    {:query query
-     :request request
+    {:request request
      :result result}))
 
+(defn fetch-seat [variables]
+  (p/let [query (inline "queries/seat/fetch.graphql")
+          request  {:query query :variables variables}
+          result (send request)]
+    {:request request
+     :result result}))
 
 (defn with-submit-seat [ctx f]
   (let [{:keys [mocks]} ctx

@@ -1,6 +1,7 @@
 type Query {
   user: User
   seats: [Seat]
+  seat(id: ID!): Seat
   addresses: [Address]
   routes: [Route]
 }
@@ -28,6 +29,7 @@ type User {
 type Seat {
   id: ID!
   name: String!
+  routes: [Route]
 }
 
 type Address {

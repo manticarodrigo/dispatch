@@ -16,3 +16,8 @@
   [_ _ context _]
   (-> (models.seat/find-all context)
       (p/catch anom/handle-resolver-error)))
+
+(defn fetch-seat
+  [_ args context _]
+  (-> (models.seat/find-unique context (->clj args))
+      (p/catch anom/handle-resolver-error)))

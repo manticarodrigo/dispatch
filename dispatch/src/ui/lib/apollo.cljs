@@ -1,5 +1,11 @@
 (ns ui.lib.apollo
-  (:require ["@apollo/client" :refer (ApolloClient InMemoryCache ApolloProvider createHttpLink)]
+  (:require ["@apollo/client"
+             :as apollo
+             :refer (ApolloClient
+                     InMemoryCache
+                     ApolloProvider
+                     createHttpLink
+                     useQuery)]
             ["@apollo/client/link/context" :refer (setContext)]
             [cljs-bean.core :refer (->clj ->js)]
             [ui.config :as config]
@@ -24,3 +30,9 @@
 (defn parse-anoms [^js e]
   (let [anoms (mapv #(-> % :extensions :anom) (some-> e .-graphQLErrors ->clj))]
     anoms))
+
+(def gql apollo/gql)
+
+(defn use-query [query options]
+  (let [q (useQuery query (->js options))]
+    (->clj q)))

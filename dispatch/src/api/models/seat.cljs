@@ -15,3 +15,9 @@
   (prisma/find-many
    (.. context -prisma -seat)
    {:where {:user {:id (.. context -user -id)}}}))
+
+(defn find-unique [^js context {:keys [id]}]
+  (prisma/find-unique
+   (.. context -prisma -seat)
+   {:where {:id id}
+    :include {:routes {:include {:stops {:include {:address true}}}}}}))

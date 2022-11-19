@@ -8,7 +8,8 @@
             Navigate
             NavLink
             Link
-            useNavigate)]
+            useNavigate
+            useParams)]
    [reagent.core :as r]
    [cljs-bean.core :refer (->clj)]
    [ui.utils.session :refer (get-session remove-session)]))
@@ -37,6 +38,10 @@
 
 (defn use-navigate []
   (useNavigate))
+
+(defn use-params []
+  (let [params (useParams)]
+    (->clj params)))
 
 (defn nav-link [{to :to class-fn :class} & children]
   (into [:> NavLink {:to to
