@@ -2,7 +2,6 @@
   (:require
    ["express" :as express]
    ["serverless-http" :as serverless]
-   ["cors" :as cors]
    ["http" :as http]
    [promesa.core :as p]
    [api.config :as config]
@@ -15,16 +14,13 @@
   (p/let [server (apollo/start-server)
           middleware (apollo/create-middleware server)
           app (express)]
-    (js/console.log "REACHED CORS")
-    (.use app (cors #js{:origin "*"}))
     (.use app (.json express))
     (.use app (fn [_ res next]
                 (doto res
                   (.set "Access-Control-Allow-Origin" "*")
-                  (.set "Access-Control-Allow-Methods" "OPTIONS,POST,GET")
+                  (.set "Access-Control-Allow-Methods" "POST,GET")
                   (.set "Access-Control-Allow-Headers" "content-type,authorization"))
                 (next)))
-    (js/console.log "PASSED CORS")
     (.use app middleware)
     app))
 
@@ -39,7 +35,13 @@
   (start-server))
 
 (defn handler [event context]
-  (p/let [app (create-app)
-          handler (serverless app)
-          result (handler event context)]
-    result))
+  (if (-> event .-httpMethod (= "OPTIONS"))
+    #js{:statusCode 204
+        :headers
+        {:Access-Control-Allow-Headers "Content-Type"
+         :Access-Control-Allow-Origin "*"
+         :Access-Control-Allow-Methods "OPTIONS,POST,GET"}}
+    (p/let [app (create-app)
+            handler (serverless app)
+            result (handler event context)]
+      result)))
