@@ -4,6 +4,7 @@
    ["serverless-http" :as serverless]
    ["http" :as http]
    [promesa.core :as p]
+   [cljs-bean.core :refer (->clj)]
    [api.config :as config]
    [api.lib.apollo :as apollo]))
 
@@ -36,11 +37,8 @@
 
 (defn handler [event context]
   (js/console.log "event" (goog/typeOf event) event)
-  (js/console.log "method" (some-> event .-httpMethod))
-  (js/console.log "context" (some-> event .-requestContext))
-  (js/console.log "options" (some-> event .-requestContext .-httpMethod))
-  (js/console.log "options" (some-> event .-requestContext .-http))
-  (if (some-> event .-httpMethod (= "OPTIONS"))
+  (js/console.log "method" (some-> event ->clj :httpMethod))
+  (if (some-> event ->clj :httpMethod (= "OPTIONS"))
     #js{:statusCode 204
         :headers
         {:Access-Control-Allow-Headers "Content-Type"
