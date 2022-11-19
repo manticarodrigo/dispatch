@@ -2,6 +2,7 @@
   (:require
    ["express" :as express]
    ["serverless-http" :as serverless]
+   ["cors" :as cors]
    ["http" :as http]
    [promesa.core :as p]
    [api.config :as config]
@@ -14,8 +15,9 @@
   (p/let [server (apollo/start-server)
           middleware (apollo/create-middleware server)
           app (express)]
-    (.use app (.json express))
     (js/console.log "REACHED CORS")
+    (.use app (cors #js{:origin "*"}))
+    (.use app (.json express))
     (.use app (fn [_ res next]
                 (doto res
                   (.set "Access-Control-Allow-Origin" "*")
