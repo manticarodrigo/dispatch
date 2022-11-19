@@ -19,8 +19,8 @@
     (.use app (fn [_ res next]
                 (doto res
                   (.set "Access-Control-Allow-Origin" "*")
-                  (.set "Access-Control-Allow-Methods" "POST,GET")
-                  (.set "Access-Control-Allow-Headers" "content-type,authorization"))
+                  (.set "Access-Control-Allow-Methods" "OPTIONS,POST,GET")
+                  (.set "Access-Control-Allow-Headers" "Content-Type,Authorization"))
                 (next)))
     (.use app middleware)
     app))
@@ -44,9 +44,9 @@
       (js/console.log "RETURN PREFLIGHT")
       #js{:statusCode 204
           :headers
-          #js{:Access-Control-Allow-Headers "Content-Type"
-              :Access-Control-Allow-Origin "*"
-              :Access-Control-Allow-Methods "OPTIONS,POST,GET"}})
+          #js{"Access-Control-Allow-Origin" "*"
+              "Access-Control-Allow-Methods" "OPTIONS,POST,GET"
+              "Access-Control-Allow-Headers" "Content-Type,Authorization"}})
     (p/let [app (create-app)
             handler (serverless app)
             result (handler event context)]
