@@ -47,9 +47,10 @@
   (->js {:context (fn [^js ctx]
                     (p/let [^js prisma (open-prisma)
                             session-id (some-> ctx .-req .-headers .-authorization)
-                            ^js session (find-unique (. prisma -session)
-                                                     {:where {:id session-id}
-                                                      :include {:user true}})
+                            ^js session (when session-id
+                                          (find-unique (. prisma -session)
+                                                       {:where {:id session-id}
+                                                        :include {:user true}}))
                             ^js user (some-> session .-user)]
                       (->js {:prisma prisma :user user})))}))
 
