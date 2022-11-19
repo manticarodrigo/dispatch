@@ -36,11 +36,13 @@
 
 (defn handler [event context]
   (if (-> event .-httpMethod (= "OPTIONS"))
-    #js{:statusCode 204
-        :headers
-        {:Access-Control-Allow-Headers "Content-Type"
-         :Access-Control-Allow-Origin "*"
-         :Access-Control-Allow-Methods "OPTIONS,POST,GET"}}
+    (do
+      (js/console.log "GOT OPTIONS" event context)
+      #js{:statusCode 204
+          :headers
+          {:Access-Control-Allow-Headers "Content-Type"
+           :Access-Control-Allow-Origin "*"
+           :Access-Control-Allow-Methods "OPTIONS,POST,GET"}})
     (p/let [app (create-app)
             handler (serverless app)
             result (handler event context)]
