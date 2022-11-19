@@ -15,13 +15,15 @@
   (p/let [server (apollo/start-server)
           middleware (apollo/create-middleware server)
           app (express)]
+    (js/console.log "REACHED CORS")
     (.use app (cors #js{:origin "*"}) (.json express))
-    (.use app (fn [_ res next]
-                (doto res
-                  (.set "Access-Control-Allow-Origin" "*")
-                  (.set "Access-Control-Allow-Methods" "GET, POST")
-                  (.set "Access-Control-Allow-Headers" "content-type"))
-                (next)))
+    (js/console.log "PASSED CORS")
+    ;; (.use app (fn [_ res next]
+    ;;             (doto res
+    ;;               (.set "Access-Control-Allow-Origin" "*")
+    ;;               (.set "Access-Control-Allow-Methods" "GET, POST")
+    ;;               (.set "Access-Control-Allow-Headers" "authorization,content-type"))
+    ;;             (next)))
     (.use app middleware)
     app))
 
