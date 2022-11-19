@@ -35,9 +35,11 @@
   (start-server))
 
 (defn handler [event context]
-  (if (-> event .-httpMethod (= "OPTIONS"))
+  (js/console.log "event" event)
+  (js/console.log "context" context)
+  (if (some-> event .-requestContext .-http .-method (= "OPTIONS"))
     (do
-      (js/console.log "GOT OPTIONS" event context)
+      (js/console.log "GOT OPTIONS")
       #js{:statusCode 204
           :headers
           {:Access-Control-Allow-Headers "Content-Type"
