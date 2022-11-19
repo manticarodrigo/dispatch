@@ -40,7 +40,7 @@
   (js/console.log "method" (some-> event ->clj :httpMethod))
   (js/console.log "options" (some-> event ->clj :httpMethod (= "OPTIONS")))
   (if (some-> event ->clj :httpMethod (= "OPTIONS"))
-    (do
+    (p/do
       (js/console.log "RETURN PREFLIGHT")
       #js{:statusCode 204
           :headers

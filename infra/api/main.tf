@@ -164,13 +164,6 @@ resource "aws_iam_role_policy_attachment" "api" {
 resource "aws_apigatewayv2_api" "api" {
   name          = "${var.app_name}-api-${var.env}"
   protocol_type = "HTTP"
-
-  cors_configuration {
-    allow_origins = ["*"]
-    allow_methods = ["OPTIONS", "POST", "GET"]
-    allow_headers = ["content-type"]
-    max_age       = 300
-  }
 }
 
 resource "aws_apigatewayv2_stage" "api" {
