@@ -38,12 +38,15 @@
 (defn handler [event context]
   (js/console.log "event" (goog/typeOf event) event)
   (js/console.log "method" (some-> event ->clj :httpMethod))
+  (js/console.log "options" (some-> event ->clj :httpMethod (= "OPTIONS")))
   (if (some-> event ->clj :httpMethod (= "OPTIONS"))
-    #js{:statusCode 204
-        :headers
-        {:Access-Control-Allow-Headers "Content-Type"
-         :Access-Control-Allow-Origin "*"
-         :Access-Control-Allow-Methods "OPTIONS,POST,GET"}}
+    (do
+      (js/console.log "RETURN PREFLIGHT")
+      #js{:statusCode 204
+          :headers
+          {:Access-Control-Allow-Headers "Content-Type"
+           :Access-Control-Allow-Origin "*"
+           :Access-Control-Allow-Methods "OPTIONS,POST,GET"}})
     (p/let [app (create-app)
             handler (serverless app)
             result (handler event context)]
