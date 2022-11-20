@@ -4,10 +4,12 @@
   "scripts": {
     "ancient": "clojure -Sdeps '{:deps {com.github.liquidz/antq {:mvn/version \"RELEASE\"}}}' -m antq.core",
     "report": "shadow-cljs run shadow.cljs.build-report ui target/build-report.html",
-    "db-push": "prisma db push",
+    "db-generate": "prisma generate",
+    "db-push": "prisma db push --accept-data-loss",
+    "db-reset": "prisma migrate reset --force",
     "watch": "shadow-cljs watch api ui --config-merge ./config/dev.edn",
     "serve": "nodemon --watch out out/api.js -e js",
-    "test": "prisma migrate reset --force && prisma db push && shadow-cljs compile test && node out/test.js",
+    "test": "yarn db-reset && yarn db-push && shadow-cljs release test && node out/test.js",
     "release": "shadow-cljs release api ui --config-merge ./config/prod.edn && ncc build out/api.js -o dist/ --minify"
   },
   "dependencies": {
@@ -21,7 +23,6 @@
     "axios": "^1.1.2",
     "bcryptjs": "^2.4.3",
     "cookie": "^0.5.0",
-    "cors": "^2.8.5",
     "date-fns": "^2.29.3",
     "express": "^4.18.2",
     "framer-motion": "^7.6.2",

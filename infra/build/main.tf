@@ -28,8 +28,7 @@ resource "null_resource" "build" {
                   set -e
                   source local.env
                   yarn
-                  npx prisma generate
-                  npx prisma db push
+                  yarn db-generate
                   yarn test
                   yarn release
                   EOT

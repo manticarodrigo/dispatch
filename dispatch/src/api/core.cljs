@@ -4,12 +4,15 @@
    ["serverless-http" :as serverless]
    ["http" :as http]
    [promesa.core :as p]
-   [cljs-bean.core :refer (->clj)]
+   [cljs-bean.core :refer (->clj ->js)]
    [api.config :as config]
    [api.lib.apollo :as apollo]))
 
 (def dev? (= config/STAGE "dev"))
 
+(def headers {"Access-Control-Allow-Origin" "*"
+              "Access-Control-Allow-Methods" "OPTIONS,POST,GET"
+              "Access-Control-Allow-Headers" "Content-Type,Authorization"})
 (defn create-app
   []
   (p/let [server (apollo/start-server)
@@ -17,10 +20,7 @@
           app (express)]
     (.use app (.json express))
     (.use app (fn [_ res next]
-                (doto res
-                  (.set "Access-Control-Allow-Origin" "*")
-                  (.set "Access-Control-Allow-Methods" "OPTIONS,POST,GET")
-                  (.set "Access-Control-Allow-Headers" "Content-Type,Authorization"))
+                (.set res (->js headers))
                 (next)))
     (.use app middleware)
     app))
@@ -36,17 +36,10 @@
   (start-server))
 
 (defn handler [event context]
-  (js/console.log "event" (goog/typeOf event) event)
-  (js/console.log "method" (some-> event ->clj :httpMethod))
-  (js/console.log "options" (some-> event ->clj :httpMethod (= "OPTIONS")))
   (if (some-> event ->clj :httpMethod (= "OPTIONS"))
     (p/do
-      (js/console.log "RETURN PREFLIGHT")
-      #js{:statusCode 204
-          :headers
-          #js{"Access-Control-Allow-Origin" "*"
-              "Access-Control-Allow-Methods" "OPTIONS,POST,GET"
-              "Access-Control-Allow-Headers" "Content-Type,Authorization"}})
+      (->js {:statusCode 204
+             :headers headers}))
     (p/let [app (create-app)
             handler (serverless app)
             result (handler event context)]

@@ -15,7 +15,7 @@
 (defn login-user
   [_ args context _]
   (-> (p/let [{:keys [email password]} (->clj args)
-              user (when email (models.user/find-unique context {:email email}))
+              ^js user (when email (models.user/find-unique context {:email email}))
               session-id (when user (models.user/create-session
                                      context
                                      {:user-id (some-> user .-id)
