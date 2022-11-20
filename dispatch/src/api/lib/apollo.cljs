@@ -53,7 +53,7 @@
 (def options
   (->js {:context (fn [^js ctx]
                     (p/let [^js prisma (open-prisma)
-                            session-id (some-> ctx ->clj :req :headers :authorization)
+                            session-id (some-> ctx .-req .-headers ->clj :authorization)
                             ^js session (when session-id
                                           (find-unique (. prisma -session)
                                                        {:where {:id session-id}
