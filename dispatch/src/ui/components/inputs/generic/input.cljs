@@ -8,6 +8,7 @@
 
 (defn input [{id :id
               type :type
+              aria-label :aria-label
               label :label
               placeholder :placeholder
               value :value
@@ -16,8 +17,8 @@
               on-change :on-change
               on-text :on-text}]
   [:div {:class class}
-   [:label {:for id :class label-class}
-    label]
+   [:label {:for id :class (if aria-label "sr-only" label-class)}
+    (or aria-label label)]
    [:input {:id id
             :type (or type "text")
             :placeholder placeholder

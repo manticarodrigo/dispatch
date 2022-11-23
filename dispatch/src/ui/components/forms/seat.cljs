@@ -12,7 +12,7 @@
 (def FETCH_SEATS (gql (inline "queries/seat/fetch-all.graphql")))
 (def CREATE_SEAT (gql (inline "mutations/seat/create.graphql")))
 
-(defn seat-form [{on-close :on-close}]
+(defn seat-form []
   (let [!state (r/atom {})
         !anoms (r/atom {})]
     (fn []
@@ -25,7 +25,6 @@
                              (.preventDefault e)
                              (-> (create (->js {:variables @!state}))
                                  (.then (fn []
-                                          (on-close)
                                           (navigate "/fleet")))
                                  (.catch #(reset! !anoms (parse-anoms %)))))}
          [input {:id "name"

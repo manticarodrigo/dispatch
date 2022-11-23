@@ -121,12 +121,10 @@
                    (testing "api returns data"
                      (is (every? #(-> % :result :data :createSeat) mocks)))
 
-                   (p/let [fetch-mock (seat/fetch-seats)
-                           create-mock (last mocks)]
+                   (p/let [create-mock (last mocks)
+                           fetch-mock (seat/fetch-seats)]
                      (seat/with-submit-seat
-                       {:mocks [(select-keys fetch-mock [:request :result])
-                                (select-keys create-mock [:request :result])
-                                (select-keys fetch-mock [:request :result])]}
+                       {:mocks [create-mock fetch-mock]}
                        (fn [^js component]
                          (-> (.findByText component (-> create-mock :request :variables :name))
                              (.then #(testing "ui presents seat name" (is (some? %))))

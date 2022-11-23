@@ -4,15 +4,11 @@
     :rename {ArrowLeft ArrowLeftIcon
              Settings SettingsIcon}]
    [ui.lib.router :refer (routes link)]
-   [react-router-dom :refer (useSearchParams)]
-   [cljs-bean.core :refer (->clj ->js)]
    [ui.utils.i18n :refer (tr)]
    [ui.utils.string :refer (class-names)]
    [ui.utils.css :refer (padding-x)]
    [ui.components.icons :as icons]
    [ui.components.inputs.generic.menu :refer (menu)]
-   [ui.components.inputs.generic.modal :refer (modal)]
-   [ui.components.forms.seat :refer (seat-form)]
    [ui.components.nav :refer (nav)]))
 
 (defn menu-item [to label]
@@ -26,40 +22,33 @@
    text])
 
 (defn header []
-  (let [[search-params set-search-params] (useSearchParams)
-        query (-> (.fromEntries js/Object search-params) ->clj)]
-    [:header {:class (class-names
-                      "flex-shrink-0"
-                      "flex justify-between items-center"
-                      padding-x
-                      "w-full h-[60px]")}
-     [routes
-      ["/register" [icons/dispatch]]
-      ["/login" [icons/dispatch]]
-      ["/fleet" [icons/dispatch]]
-      ["/address" [icons/dispatch]]
-      ["/route" [icons/dispatch]]
-      ["*" [link {:to "/fleet"} [:> ArrowLeftIcon]]]]
+  [:header {:class (class-names
+                    "flex-shrink-0"
+                    "flex justify-between items-center"
+                    "border-b border-neutral-700"
+                    padding-x
+                    "w-full h-[60px]")}
+   [routes
+    ["/register" [icons/dispatch]]
+    ["/login" [icons/dispatch]]
+    ["/fleet" [icons/dispatch]]
+    ["/address" [icons/dispatch]]
+    ["/route" [icons/dispatch]]
+    ["*" [link {:to "/fleet"} [:> ArrowLeftIcon]]]]
 
-     [routes
-      ["/register" [title (tr [:view.register/title])]]
-      ["/login" [title (tr [:view.login/title])]]
-      ["/fleet" [title (tr [:view.fleet/title])]]
-      ["/address" [title (tr [:view.address/title])]]
-      ["/route" [title (tr [:view.route/title])]]
-      ["*" [title "Not found"]]]
+   [routes
+    ["/register" [title (tr [:view.register/title])]]
+    ["/login" [title (tr [:view.login/title])]]
+    ["/fleet" [title (tr [:view.fleet/title])]]
+    ["/address" [title (tr [:view.address/title])]]
+    ["/route" [title (tr [:view.route/title])]]
+    ["*" [title "Not found"]]]
 
-     [nav]
+   [nav]
 
-     [menu {:label [:> SettingsIcon]
-            :items [[{:label [menu-item "?modal=seat" "Add seat"]}
-                     {:label [menu-item "/register" "Register"]}
-                     {:label [menu-item "/login" "Login"]}]
-                    {:label [menu-item "/logout" "Sign out..."]}]
-            :class-map {:button! "h-full"
-                        :item "min-w-[12rem]"}}]
-
-     [modal {:show (= "seat" (:modal query))
-             :title "Add seat"
-             :on-close #(set-search-params (->js (dissoc query :modal)))}
-      [seat-form {:on-close #(set-search-params (->js (dissoc query :modal)))}]]]))
+   [menu {:label [:> SettingsIcon]
+          :items [[{:label [menu-item "/register" "Register"]}
+                   {:label [menu-item "/login" "Login"]}]
+                  {:label [menu-item "/logout" "Sign out..."]}]
+          :class-map {:button! "h-full"
+                      :item "min-w-[12rem]"}}]])

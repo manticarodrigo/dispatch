@@ -23,7 +23,9 @@
                  option-to-value :option-to-value
                  on-text :on-text
                  on-change :on-change
-                 on-select :on-select}]
+                 on-select :on-select
+                 :or {option-to-value #(:value %)
+                      option-to-label #(:label %)}}]
   (let [[query set-query] (useState "")
         filtered-options (filter #(-> %
                                       option-to-label

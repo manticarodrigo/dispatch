@@ -7,7 +7,7 @@
 (defn panel-mobile [class children]
   (let [!show (r/atom false)]
     (fn []
-      [:> (.-article motion)
+      [:> (.-div motion)
        {:initial false
         :animate {:top (if @!show 0 "calc(100% - 100px)")}
         :transition {:type "spring",
@@ -30,15 +30,15 @@
                              (swap! !show not))
                  :class "flex justify-center items-center p-4 w-full"}
         [:span {:class "w-16 h-1 m-0.5 rounded-full bg-neutral-50"}]]
-       [:div {:class "w-full h-[calc(100%_-_2.5rem)] overflow-y-auto"}
+       [:div {:class "w-full h-[calc(100%_-_2.5rem)]"}
         children]])))
 
 (defn panel-desktop [class children]
-  [:article {:class
-             (class-names
-              class
-              "flex-none hidden lg:block"
-              "w-[450px] h-full overflow-y-auto")}
+  [:div {:class
+         (class-names
+          class
+          "flex-none hidden lg:block"
+          "w-[450px] h-full")}
    children])
 
 (defn panel [class & children]

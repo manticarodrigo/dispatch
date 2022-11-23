@@ -29,15 +29,14 @@
 
 (defn with-submit-seat [ctx f]
   (let [{:keys [mocks]} ctx
-        [fetch-res create-res] mocks
-        {:keys [request]} create-res
+        [create-mock] mocks
+        {:keys [request]} create-mock
         {:keys [variables]} request]
 
     (with-mounted-component
-      [test-app {:route "/fleet?modal=seat" :mocks mocks}]
+      [test-app {:route "/seat/create" :mocks mocks}]
       (fn [^js component]
         (p/do
-          (.findByText component (-> fetch-res :result :data :seats first :name))
           (change (.getByLabelText component "Name") (:name variables))
-          (submit (-> component (.getByRole "dialog") (.querySelector "form")))
+          (submit (-> component (.-container) (.querySelector "form")))
           (f component))))))
