@@ -17,6 +17,6 @@
 (defn find-all [^js context]
   (prisma/find-many
    (.. context -prisma -route)
-   {:where {:user {:id (.. context -user -id)}}
+   {:where {:user {:id (.. context -user -id)}} 
     :include {:seat true
               :stops {:include {:address true}}}}))

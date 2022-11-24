@@ -116,7 +116,7 @@
 (deftest create-seats
   (async done
          (->
-          (p/all (map (fn [_] (seat/create-seat)) (range 3)))
+          (p/all (map (fn [_] (seat/create-seat)) (range 5)))
           (.then (fn [mocks]
                    (testing "api returns data"
                      (is (every? #(-> % :result :data :createSeat) mocks)))
@@ -150,7 +150,7 @@
 
 (deftest create-addresses
   (async done
-         (-> (p/all (map (fn [_] (address/create-address)) (range 3)))
+         (-> (p/all (map (fn [_] (address/create-address)) (range 5)))
              (.then (fn [mocks]
                       (testing "api returns data"
                         (is (every? #(-> % :result :data :createAddress) mocks)))
@@ -189,7 +189,7 @@
                                                                   :user
                                                                   :addresses))}))
                                     seats))
-                                 (range 3))))]
+                                 (range 5))))]
 
            (testing "api returns data"
              (is (every? #(-> % :result :data :createRoute) create-mocks)))

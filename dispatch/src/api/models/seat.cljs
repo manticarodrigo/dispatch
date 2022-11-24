@@ -20,4 +20,5 @@
   (prisma/find-unique
    (.. context -prisma -seat)
    {:where {:id id}
-    :include {:routes {:include {:stops {:include {:address true}}}}}}))
+    :include {:routes {:orderBy {:startAt "asc"}
+                       :include {:stops {:include {:address true}}}}}}))
