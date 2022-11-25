@@ -1,0 +1,8 @@
+mutation CreateLocation(
+  $seatId: ID!
+  $lat: Float!
+  $lng: Float!
+  $createdAt: String
+) {
+  createLocation(seatId: $seatId, lat: $lat, lng: $lng, createdAt: $createdAt)
+}

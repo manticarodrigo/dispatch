@@ -28,23 +28,26 @@ model Session {
 }
 
 model Seat {
-  id        String     @id @default(uuid())
-  name      String
-  user      User       @relation(fields: [userId], references: [id])
-  userId    String
-  location  Location[]
-  routes    Route[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id         String     @id @default(uuid())
+  name       String
+  user       User       @relation(fields: [userId], references: [id])
+  userId     String
+  location   Location?  @relation("SeatLocation", fields: [locationId], references: [id])
+  locationId String?    @unique
+  locations  Location[] @relation("SeatLocations")
+  routes     Route[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
 }
 
 model Location {
-  id        String   @id @default(uuid())
-  lat       Float
-  lng       Float
-  seat      Seat     @relation(fields: [seatId], references: [id])
-  seatId    String
-  createdAt DateTime @default(now())
+  id         String   @id @default(uuid())
+  lat        Float
+  lng        Float
+  currentFor Seat?    @relation("SeatLocation")
+  seat       Seat     @relation("SeatLocations", fields: [seatId], references: [id])
+  seatId     String
+  createdAt  DateTime @default(now())
 }
 
 model Address {

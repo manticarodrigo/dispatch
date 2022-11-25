@@ -4,6 +4,7 @@
    [react-feather :rename {User UserIcon
                            ChevronRight ChevronRightIcon
                            Plus PlusIcon}]
+   [date-fns :as d]
    [reagent.core :as r]
    [clojure.string :as s]
    [shadow.resource :refer (inline)]
@@ -14,20 +15,27 @@
    [ui.components.inputs.generic.input :refer (input)]
    [ui.components.inputs.generic.button :refer (button-class)]))
 
-(defn item [name time status]
-  [:div {:class (class-names "flex justify-between w-full")}
-   [:div {:class "flex items-center"}
-    [:div {:class "mr-2"} [:> UserIcon {:class "w-4 h-4"}]]
-    [:div {:class "font-medium text-lg text-left"} name]]
-   [:div {:class "flex items-center"}
-    [:div {:class "flex flex-col items-end"}
-     [:div {:class "flex items-center text-xs text-neutral-400"} "Last seen"]
-     [:div {:class "flex items-center text-xs text-left text-neutral-200"}
-      [:div {:class (class-names
-                     "mr-1 rounded-full w-2 h-2"
-                     (if (= status "active") "bg-green-500" "bg-amber-500"))}]
-      time]]
-    [:div {:class "ml-2"} [:> ChevronRightIcon]]]])
+(defn item [{:keys [name location]}]
+  (let [{:keys [createdAt]} location
+        date (when createdAt (-> (js/parseInt createdAt) js/Date.))
+        active? (when date (-> date (d/isAfter (d/subHours (js/Date.) 26))))]
+    [:div {:class (class-names "flex justify-between w-full")}
+     [:div {:class "flex items-center"}
+      [:div {:class "mr-2"} [:> UserIcon {:class "w-4 h-4"}]]]
+     [:div {:class "w-full"}
+      [:div {:class "font-medium text-base"} name]
+      [:div {:class "font-light text-xs text-neutral-400"}
+       "Last seen " (if date (-> date (d/formatRelative (js/Date.))) "never")]]
+     [:div {:class "flex items-center"}
+      [:div {:class "flex flex-col items-end"}
+       [:div {:class "flex items-center text-xs text-neutral-400"}
+        [:div {:class (class-names
+                       "mr-1 rounded-full w-2 h-2"
+                       (if active? "bg-green-500" "bg-amber-500"))}]
+        "Status"]
+       [:div {:class "flex items-center text-xs text-left text-neutral-200"}
+        (if active? "Active" "Inactive")]]
+      [:div {:class "ml-2"} [:> ChevronRightIcon]]]]))
 
 (def FETCH_SEATS (gql (inline "queries/seat/fetch-all.graphql")))
 
@@ -58,11 +66,11 @@
            [:> PlusIcon]]]
 
          [:ul
-          (for [{:keys [id name]} filtered-seats]
+          (for [{:keys [id] :as seat} filtered-seats]
             ^{:key id}
             [:li
              [link {:to (str "/seat/" id)
                     :class (class-names "mb-2 block" button-class)}
-              [item name "12:15pm" "active"]]])
+              [item seat]]])
           (when (and (not loading) (empty? seats)) [:p {:class "text-center"} "No seats found."])
           (when loading [:p {:class "text-center"} "Loading seats..."])]]))))

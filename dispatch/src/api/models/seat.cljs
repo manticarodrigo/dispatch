@@ -12,13 +12,18 @@
     (some-> seat .-id)))
 
 (defn find-all [^js context]
-  (prisma/find-many
-   (.. context -prisma -seat)
-   {:where {:user {:id (.. context -user -id)}}}))
+  (-> (prisma/find-many
+       (.. context -prisma -seat)
+       {:where {:user {:id (.. context -user -id)}}
+        :orderBy {:location {:createdAt "desc"}}
+        :include {:location true}})
+      (.then (fn [res]
+               (sort-by #(some-> % .-location .-createdAt) > res)))))
 
 (defn find-unique [^js context {:keys [id]}]
   (prisma/find-unique
    (.. context -prisma -seat)
    {:where {:id id}
-    :include {:routes {:orderBy {:startAt "asc"}
+    :include {:location true
+              :routes {:orderBy {:startAt "asc"}
                        :include {:stops {:include {:address true}}}}}}))

@@ -1,16 +1,18 @@
 (ns tests.core
   (:require
+   [date-fns :as d]
    [shadow.resource :refer (inline)]
    [cljs.test :as t :refer-macros [deftest async testing is use-fixtures]]
    [promesa.core :as p]
-   [common.utils.date :refer (from-datetime-local add-days)]
+   [common.utils.date :refer (from-datetime-local)]
    [ui.utils.error :refer (tr-error)]
    [tests.util.api :refer (send)]
    [tests.util.ui :as ui :refer (with-mounted-component test-app)]
    [tests.user :as user]
    [tests.seat :as seat]
    [tests.address :as address]
-   [tests.route :as route]))
+   [tests.route :as route]
+   [tests.location :as location]))
 
 (defmethod t/report [:cljs.test/default :begin-test-var] [m]
   (println "\n ◯" (-> m :var meta :name)))
@@ -182,7 +184,7 @@
                                     (fn [seat]
                                       (route/create-route
                                        {:seatId (:id seat)
-                                        :startAt (from-datetime-local (add-days (js/Date.) idx))
+                                        :startAt (from-datetime-local (d/addDays (js/Date.) idx))
                                         :addressIds (mapv :id (-> fetch-mock
                                                                   :result
                                                                   :data
@@ -208,6 +210,21 @@
                  result (send request)]
            (testing "api returns data"
              (is (-> result :data :routes first :id))
+             (done)))))
+
+(deftest create-location
+  (async done
+         (p/let [seats-mock (seat/fetch-seats)
+                 seat-ids (->> seats-mock :result :data :seats (map :id) (drop 1))
+                 create-mocks (p/all (map-indexed
+                                      (fn [idx seat-id]
+                                        (let [created-at (-> (js/Date.)
+                                                             (d/subHours (* idx 10))
+                                                             from-datetime-local)]
+                                          (location/create-location seat-id created-at)))
+                                      seat-ids))]
+           (testing "api returns data"
+             (is (every? #(-> % :result :data :createLocation) create-mocks))
              (done)))))
 
 (deftest fetch-seat

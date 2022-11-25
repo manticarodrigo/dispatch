@@ -17,6 +17,12 @@ type Mutation {
     lng: Float!
   ): String!
   createRoute(seatId: ID!, startAt: String!, addressIds: [ID]!): String!
+  createLocation(
+    seatId: ID!
+    lat: Float!
+    lng: Float!
+    createdAt: String
+  ): String!
 }
 
 type User {
@@ -30,14 +36,22 @@ type Seat {
   id: ID!
   name: String!
   routes: [Route]
+  location: Location
+}
+
+type Location {
+  id: ID!
+  lat: Float!
+  lng: Float!
+  createdAt: String!
 }
 
 type Address {
   id: ID!
   name: String!
   description: String!
-  lat: String!
-  lng: String!
+  lat: Float!
+  lng: Float!
 }
 
 type Stop {

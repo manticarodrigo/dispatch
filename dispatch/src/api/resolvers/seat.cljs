@@ -1,9 +1,8 @@
 (ns api.resolvers.seat
-  (:require
-   [promesa.core :as p]
-   [cljs-bean.core :refer (->clj)]
-   [api.util.anom :as anom]
-   [api.models.seat :as models.seat]))
+  (:require [promesa.core :as p]
+            [cljs-bean.core :refer (->clj)]
+            [api.util.anom :as anom]
+            [api.models.seat :as models.seat]))
 
 (defn create-seat
   [_ args context _]

@@ -16,5 +16,11 @@ query Seat($id: ID!) {
         }
       }
     }
+    location {
+      id
+      lat
+      lng
+      createdAt
+    }
   }
 }
