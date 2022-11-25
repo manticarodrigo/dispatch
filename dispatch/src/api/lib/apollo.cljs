@@ -68,13 +68,19 @@
                                           (find-unique (. prisma -session)
                                                        {:where {:id session-id}
                                                         :include {:user true}}))
-                            ^js user (some-> session .-user)]
+                            ^js user (some-> session .-user)
+                            public-operation? (some
+                                               #(= % (-> ctx .-req .-body .-operationName))
+                                               ["CreateUser" "LoginUser"])]
+                      (when (and (not public-operation?)
+                                 (not user))
+                        (anom/gql (anom/forbidden :invalid-session)))
                       (->js {:prisma prisma :user user})))}))
 
 (defn format-error [formatted-error e]
   (let [clj-error (->clj formatted-error)
         anom (-> clj-error :extensions :anom)]
-    (js/console.log e)
+    (js/console.log "error" e)
     (if anom
       (->js clj-error)
       (->js (assoc-in clj-error [:extensions :anom] (anom/fault :unknown))))))

@@ -47,9 +47,14 @@
   (factory :busy))
 
 (defn gql [anom]
-  (GraphQLError.
-   "An anomaly was detected."
-   (->js {:extensions {:code "ANOMALY_DETECTED" :anom anom}})))
+  (let [{:keys [category]} anom
+        forbidden? (= category :forbidden)
+        extensions {:code "ANOMALY_DETECTED" :anom anom}]
+    (GraphQLError.
+     "An anomaly was detected."
+     (->js {:extensions (if forbidden?
+                          (assoc extensions :http {:status 401})
+                          extensions)}))))
 
 (defn parse-prisma-anom [^js e]
   (let [code (.-code e)

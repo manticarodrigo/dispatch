@@ -1,10 +1,12 @@
 (ns ui.db
-  (:require [ui.config :as config]))
+  (:require [ui.config :as config]
+            [ui.utils.session :refer (get-session)]))
 
 (def default-db {})
 
 (def seed-db
-  {:locale {:region config/REGION
+  {:session (get-session)
+   :locale {:region config/REGION
             :language config/LANGUAGE}
    :origin {:lat 12.072344778464416, :lng -86.24555969727164}
    :location nil

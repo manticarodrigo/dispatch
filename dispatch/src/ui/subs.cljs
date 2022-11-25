@@ -5,6 +5,7 @@
   @(rf/subscribe query-vector))
 
 
+(rf/reg-sub :session #(:session %))
 (rf/reg-sub :locale #(:locale %))
 (rf/reg-sub :locale/language #(-> % :locale :language))
 (rf/reg-sub :locale/region #(-> % :locale :region))

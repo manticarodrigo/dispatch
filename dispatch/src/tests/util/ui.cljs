@@ -9,6 +9,7 @@
             [cljs-bean.core :refer (->js)]
             [promesa.core :as p]
             [reagent.core :as r]
+            [ui.events]
             [ui.components.main :refer (main)]
             [ui.components.routes :refer (routes)]))
 

@@ -7,20 +7,27 @@
                      createHttpLink
                      useQuery)]
             ["@apollo/client/link/context" :refer (setContext)]
+            ["@apollo/client/link/error" :refer (onError)]
             [cljs-bean.core :refer (->clj ->js)]
             [ui.config :as config]
-            [ui.utils.session :refer (get-session-request)]))
+            [ui.utils.session :refer (get-session-request remove-session)]))
 
 (defonce http-link
   (createHttpLink
    (->js {:uri config/API_URL})))
 
 (defonce auth-link
-  (setContext #(get-session-request)))
+  (setContext #(->js (get-session-request))))
+
+(defonce error-link
+  (onError
+   (fn [^js res]
+     (when (= (.. res -networkError -statusCode) 401)
+       (remove-session)))))
 
 (defonce client
   (ApolloClient.
-   (->js {:link (.concat auth-link http-link)
+   (->js {:link (apollo/from #js[auth-link error-link http-link])
           :cache (InMemoryCache.)})))
 
 (defn apollo-provider [& children]

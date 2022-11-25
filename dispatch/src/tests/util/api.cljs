@@ -1,5 +1,6 @@
 (ns tests.util.api
-  (:require [goog.object :as gobj]
+  (:require ["@apollo/client" :refer (gql)]
+            [goog.object :as gobj]
             [promesa.core :as p]
             [cljs-bean.core :refer (->clj ->js)]
             [api.lib.apollo :refer (create-server options)]
@@ -24,10 +25,15 @@
         (reduce {} (.getKeys ^js goog/object obj)))
     obj))
 
+(defn get-body-request [body]
+  {:body
+   {:operationName (some-> body :query gql ->clj :definitions first :name :value)}})
 
 (defn send [body]
   (p/let [^js server (init-server)
-          context (.context options (->js {:req (get-session-request)}))
+          context (.context options (->js {:req (merge
+                                                 (get-session-request)
+                                                 (get-body-request body))}))
           ^js res (.executeOperation server (->js body) (->js {:contextValue context}))
           {:keys [data errors]} (->clj (.. res -body -singleResult))]
     {:data (obj->clj data)

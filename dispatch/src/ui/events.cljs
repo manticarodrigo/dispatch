@@ -13,6 +13,11 @@
  (fn [] db/seed-db))
 
 (rf/reg-event-db
+ :session/set
+ [trim-v]
+ (assoc-key :session))
+
+(rf/reg-event-db
  :locale/set
  [trim-v]
  (assoc-key :locale))

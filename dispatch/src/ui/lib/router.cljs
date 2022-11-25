@@ -12,7 +12,8 @@
             useParams)]
    [reagent.core :as r]
    [cljs-bean.core :refer (->clj)]
-   [ui.utils.session :refer (get-session remove-session)]))
+   [ui.subs :refer (listen)]
+   [ui.utils.session :refer (remove-session)]))
 
 (defn browser-router [& children]
   [:> BrowserRouter
@@ -26,9 +27,10 @@
                 :element (r/as-element hiccup)}])])
 
 (defn auth-route [route]
-  (if (get-session)
-    route
-    [:> Navigate {:to "/login" :replace true}]))
+  (let [session-id (listen [:session])]
+    (if session-id
+      route
+      [:> Navigate {:to "/login" :replace true}])))
 
 (defn remove-auth-route []
   (let [^js client (useApolloClient)]
