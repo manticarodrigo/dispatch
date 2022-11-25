@@ -25,7 +25,7 @@
                              (.preventDefault e)
                              (-> (create (->js {:variables @!state}))
                                  (.then (fn []
-                                          (navigate "/fleet")))
+                                          (navigate "/seats")))
                                  (.catch #(reset! !anoms (parse-anoms %)))))}
          [input {:id "name"
                  :label "Name"

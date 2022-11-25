@@ -139,7 +139,7 @@
              (is (-> result :data :seats first :id)))
 
            (with-mounted-component
-             [test-app {:route "/fleet" :mocks [{:request request :result result}]}]
+             [test-app {:route "/" :mocks [{:request request :result result}]}]
              (fn [^js component]
                (p/->
                 (p/all

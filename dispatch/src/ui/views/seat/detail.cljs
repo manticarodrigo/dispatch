@@ -1,4 +1,4 @@
-(ns ui.views.seat
+(ns ui.views.seat.detail
   (:require [react-feather :rename {Check CheckIcon
                                     Package PackageIcon
                                     Clock DurationIcon}]
@@ -23,8 +23,8 @@
       (when arrivedAt [:> CheckIcon {:class "w-4 h-4"}])]
      [:div {:class "pl-2 lg:pl-6 flex w-full"}
       [:div {:class "w-full"}
-       [:div {:class "text-base font-medium"} name]
-       [:div {:class "text-xs text-neutral-300"} description]]
+       [:div {:class "text-sm"} name]
+       [:div {:class "font-light text-xs text-neutral-300"} description]]
       [:div {:class "shrink-0 flex flex-col items-end pl-4 lg:pl-6 text-xs text-neutral-300"}
        (if arrivedAt
          [:div {:class "flex"}

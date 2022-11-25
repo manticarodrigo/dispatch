@@ -2,7 +2,6 @@
   (:require
    [react-feather
     :rename {Users UsersIcon
-             GitPullRequest RoutesIcon
              MapPin PinIcon
              BookOpen BookOpenIcon}]
    [ui.lib.router :refer (nav-link)]
@@ -21,7 +20,6 @@
 
 (defn nav []
   [:nav [:ul {:class "flex justify-center"}
-         [nav-item "/fleet" UsersIcon]
-         [nav-item "/route" RoutesIcon]
+         [nav-item "/seats" UsersIcon]
          [nav-item "/address" PinIcon]
-         [nav-item "/history" BookOpenIcon]]])
+         [nav-item "/route" BookOpenIcon]]])

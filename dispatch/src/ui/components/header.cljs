@@ -31,15 +31,15 @@
    [routes
     ["/register" [icons/dispatch]]
     ["/login" [icons/dispatch]]
-    ["/fleet" [icons/dispatch]]
+    ["/seats" [icons/dispatch]]
     ["/address" [icons/dispatch]]
     ["/route" [icons/dispatch]]
-    ["*" [link {:to "/fleet"} [:> ArrowLeftIcon]]]]
+    ["*" [link {:to "/seats"} [:> ArrowLeftIcon]]]]
 
    [routes
     ["/register" [title (tr [:view.register/title])]]
     ["/login" [title (tr [:view.login/title])]]
-    ["/fleet" [title (tr [:view.fleet/title])]]
+    ["/seats" [title (tr [:view.fleet/title])]]
     ["/address" [title (tr [:view.address/title])]]
     ["/route" [title (tr [:view.route/title])]]
     ["*" [title "Not found"]]]

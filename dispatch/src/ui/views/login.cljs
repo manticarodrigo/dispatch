@@ -31,7 +31,7 @@
                         (.then (fn [res]
                                  (create-session (-> res ->clj :data :loginUser))
                                  (.. result -client resetStore)
-                                 (navigate "/fleet")))
+                                 (navigate "/seats")))
                         (.catch #(reset! !anoms (parse-anoms %)))))}
            [input {:id "email"
                    :type "email"

@@ -1,4 +1,4 @@
-(ns ui.views.fleet
+(ns ui.views.seat.list
   (:require
    ["@apollo/client" :refer (gql useQuery)]
    [react-feather :rename {User UserIcon
@@ -60,7 +60,7 @@
                   :class "w-full mr-2"
                   :on-text #(reset! !search %)}]
           [link
-           {:to "/seat/create"
+           {:to "/seats/create"
             :class button-class}
            [:span {:class "sr-only"} "Add seat"]
            [:> PlusIcon]]]
@@ -69,7 +69,7 @@
           (for [{:keys [id] :as seat} filtered-seats]
             ^{:key id}
             [:li
-             [link {:to (str "/seat/" id)
+             [link {:to (str "/seats/" id)
                     :class (class-names "mb-2 block" button-class)}
               [item seat]]])
           (when (and (not loading) (empty? seats)) [:p {:class "text-center"} "No seats found."])

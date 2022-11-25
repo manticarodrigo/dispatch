@@ -47,7 +47,7 @@
                  (fn [e]
                    (.preventDefault e)
                    (-> (create (->js {:variables @!state}))
-                       (.then #(navigate "/fleet"))
+                       (.then #(navigate "/seats"))
                        (.catch #(reset! !anoms (parse-anoms %)))))}
           [combobox {:label "Assigned seat"
                      :class "pb-4"
