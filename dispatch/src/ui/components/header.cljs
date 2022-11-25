@@ -25,7 +25,7 @@
   [:header {:class (class-names
                     "flex-shrink-0"
                     "flex justify-between items-center"
-                    "border-b border-neutral-700"
+                    "border-b border-neutral-800"
                     padding-x
                     "w-full h-[60px]")}
    [routes

@@ -2,12 +2,14 @@
   (:require [reagent.core :as r]
             ["@headlessui/react" :refer (Disclosure)]
             [ui.utils.string :refer (class-names)]
-            [ui.components.inputs.generic.button :refer (button-class base-button-class)]))
+            [ui.components.inputs.generic.button :refer (button-class base-button-class box-peer-interact-class)]))
 
 (def ^:private Button (.-Button Disclosure))
 (def ^:private Panel (.-Panel Disclosure))
 
 (defn accordion [{items :items
+                  item-to-term :item-to-term
+                  item-to-description :item-to-description
                   item-class :item-class}]
   [:<>
    (doall
@@ -22,14 +24,10 @@
                                "peer w-full"
                                button-class
                                (when (. props -open)
-                                 "border-b-0 rounded-b-none"))}
-            [:div {:class "flex justify-between"}
-             (:name item)
-             [:span {:class "flex items-center flex-shrink-0"}]]]
+                                 "border-b-0 rounded-b-none shadow-none"))}
+            (item-to-term item)]
            [:> Panel {:class (class-names
                               base-button-class
-                              "peer-hover:border-neutral-50 peer-focus:border-neutral-50"
-                              "peer-hover:text-neutral-50 peer-focus:text-neutral-50 peer-active:text-neutral-50"
-                              "peer-hover:bg-neutral-700 peer-focus:bg-neutral-800 peer-active:bg-neutral-800"
+                              box-peer-interact-class
                               (when (. props -open)
-                                "border-t-0 rounded-t-none"))} (:description item)]]))]))])
+                                "border-t-0 rounded-t-none"))} (item-to-description item)]]))]))])

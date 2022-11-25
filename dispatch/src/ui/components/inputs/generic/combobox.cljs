@@ -63,7 +63,7 @@
        :leave-to "opacity-0"}
       [:> Options {:static true
                    :class (class-names
-                           "z-1"
+                           "z-10"
                            "ring-1 ring-neutral-50 ring-opacity-5 focus:outline-none"
                            "absolute rounded mt-2 py-1 max-h-60 w-full"
                            "text-sm text-neutral-200"

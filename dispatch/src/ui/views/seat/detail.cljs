@@ -1,7 +1,9 @@
 (ns ui.views.seat.detail
-  (:require [react-feather :rename {Check CheckIcon
+  (:require [react-feather :rename {GitPullRequest RouteIcon
+                                    Check CheckIcon
+                                    Minus MinusIcon
                                     Package PackageIcon
-                                    Clock DurationIcon}]
+                                    ChevronDown ChevronDownIcon}]
             [date-fns :as d]
             [shadow.resource :refer (inline)]
             [cljs-bean.core :refer (->clj)]
@@ -9,51 +11,58 @@
             [ui.lib.router :refer (use-params)]
             [ui.utils.string :refer (class-names)]
             [ui.utils.css :refer (padding)]
-            [ui.components.inputs.generic.button :refer (box-class box-padding-class)]))
+            [ui.components.inputs.generic.accordion :refer (accordion)]))
 
-(defn- route-leg [{:keys [address arrivedAt]}]
-  (let [{:keys [name description]} address]
-    [:div {:class (class-names  "py-2 flex")}
-     [:div {:class (class-names "relative"
-                                "shrink-0 flex justify-center items-center"
-                                "rounded-full border border-neutral-300"
-                                "w-6 h-6"
-                                "font-bold bg-neutral-900")}
-
-      (when arrivedAt [:> CheckIcon {:class "w-4 h-4"}])]
-     [:div {:class "pl-2 lg:pl-6 flex w-full"}
-      [:div {:class "w-full"}
-       [:div {:class "text-sm"} name]
-       [:div {:class "font-light text-xs text-neutral-300"} description]]
-      [:div {:class "shrink-0 flex flex-col items-end pl-4 lg:pl-6 text-xs text-neutral-300"}
-       (if arrivedAt
-         [:div {:class "flex"}
-          [:> PackageIcon {:class "mr-1 w-4 h-4"}]
-          (-> arrivedAt (js/parseInt) (js/Date.) (d/format "hh:mmaaa"))]
-         [:<>
-          [:div {:class "flex"}
-           [:> DurationIcon {:class "mr-1 w-4 h-4"}]
-           "10:15pm"]])]]]))
-
-(defn route-card [{:keys [startAt stops]}]
+(defn item-term [{:keys [startAt]}]
   (let [start-date (-> (js/parseInt startAt) js/Date.)
         started? (-> start-date (d/isBefore (js/Date.)))]
-    [:div {:class (class-names "mb-4" box-class)}
-     [:div {:class (class-names
-                    box-padding-class
-                    "mb-2 rounded-t border-b border-neutral-500 bg-neutral-800")}
+    [:div {:class "flex justify-between w-full text-left"}
+     [:div {:class "flex items-center"}
+      [:div {:class "mr-2"} [:> RouteIcon {:class "w-4 h-4"}]]]
+     [:div {:class "w-full"}
       [:div {:class "font-medium text-sm"}
        (if started? "Started" "Starts in")
        " "
        (-> start-date d/formatDistanceToNowStrict)
        (when started? " ago")]
-      [:div {:class "font-light text-xs"}
+      [:div {:class "font-light text-xs text-neutral-400"}
        (-> start-date (d/format "yyyy/MM/dd hh:mmaaa"))]]
-     [:ol {:class (class-names box-padding-class "overflow-y-auto")}
-      (for [{:keys [id] :as stop} stops]
-        [:li {:key id :class "relative"}
-         [:span {:class "absolute left-3 border-l border-neutral-50 h-full"}]
-         [route-leg stop]])]]))
+     [:div {:class "flex items-center"}
+      [:div {:class "flex flex-col items-end"}
+       [:div {:class "flex items-center text-xs text-neutral-400"}
+        [:div {:class (class-names
+                       "mr-1 rounded-full w-2 h-2"
+                       (if started? "bg-green-500" "bg-amber-500"))}]
+        "Status"]
+       [:div {:class "flex items-center text-xs text-left text-neutral-200"}
+        (if started? "Active" "Inactive")]]
+      [:div {:class "ml-2"} [:> ChevronDownIcon]]]]))
+
+(defn item-description [{:keys [stops]}]
+  [:ol
+   (for [{:keys [id address arrivedAt]} stops]
+     (let [{:keys [name description]} address]
+       ^{:key id}
+       [:li {:class (class-names  "py-2 flex")}
+        (if arrivedAt
+          [:> CheckIcon {:class (class-names "shrink-0 flex justify-center items-center"
+                                             "mt-1"
+                                             "w-3 h-3"
+                                             "text-green-500")}]
+          [:> MinusIcon {:class (class-names "relative"
+                                             "shrink-0 flex justify-center items-center"
+                                             "mt-1"
+                                             "w-3 h-3"
+                                             "text-neutral-500")}])
+        [:div {:class "pl-2 lg:pl-4 flex w-full"}
+         [:div {:class "w-full"}
+          [:div {:class "text-sm"} name]
+          [:div {:class "font-light text-xs text-neutral-300"} description]]
+         [:div {:class "shrink-0 flex flex-col items-end pl-4 lg:pl-6 text-xs text-neutral-300"}
+          (when arrivedAt
+            [:div {:class "flex"}
+             [:> PackageIcon {:class "mr-1 w-4 h-4"}]
+             (-> arrivedAt (js/parseInt) (js/Date.) (d/format "hh:mmaaa"))])]]]))])
 
 (def FETCH_SEAT (gql (inline "queries/seat/fetch.graphql")))
 
@@ -72,9 +81,9 @@
          (-> location :createdAt (js/parseInt) (d/formatRelative (js/Date.)))
          "never")]]
      [:div {:class "mb-4"}
-      [:button {:class "mr-2 border-b border-neutral-50 text-sm"} "Upcoming"]
-      [:button {:class "mr-2 border-b border-neutral-500 text-sm"} "Completed"]]
-     [:ol
-      (for [route routes]
-        ^{:key (:id route)}
-        [:li [route-card route]])]]))
+      [:button {:class "mr-2 pb-1 border-b border-neutral-200 text-sm"} "Upcoming"]
+      [:button {:class "mr-2 pb-1 border-b border-neutral-700 text-sm"} "Completed"]]
+     [accordion {:items routes
+                 :item-class "mb-2"
+                 :item-to-term item-term
+                 :item-to-description item-description}]]))

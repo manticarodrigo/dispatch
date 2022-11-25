@@ -23,7 +23,7 @@
      [:div {:class "flex items-center"}
       [:div {:class "mr-2"} [:> UserIcon {:class "w-4 h-4"}]]]
      [:div {:class "w-full"}
-      [:div {:class "font-medium text-base"} name]
+      [:div {:class "font-medium text-sm"} name]
       [:div {:class "font-light text-xs text-neutral-400"}
        "Last seen " (if date (-> date (d/formatRelative (js/Date.))) "never")]]
      [:div {:class "flex items-center"}

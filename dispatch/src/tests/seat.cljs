@@ -34,7 +34,7 @@
         {:keys [variables]} request]
 
     (with-mounted-component
-      [test-app {:route "/seat/create" :mocks mocks}]
+      [test-app {:route "/seats/create" :mocks mocks}]
       (fn [^js component]
         (p/do
           (change (.getByLabelText component "Name") (:name variables))
