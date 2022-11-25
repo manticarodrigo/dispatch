@@ -1,18 +1,17 @@
 (ns tests.core
   (:require
    [date-fns :as d]
-   [shadow.resource :refer (inline)]
    [cljs.test :as t :refer-macros [deftest async testing is use-fixtures]]
    [promesa.core :as p]
    [common.utils.date :refer (from-datetime-local)]
    [ui.utils.error :refer (tr-error)]
-   [tests.util.api :refer (send)]
    [tests.util.ui :as ui :refer (with-mounted-component test-app)]
    [tests.user :as user]
    [tests.seat :as seat]
    [tests.address :as address]
    [tests.route :as route]
-   [tests.location :as location]))
+   [tests.location :as location]
+   [tests.stop :as stop]))
 
 (defmethod t/report [:cljs.test/default :begin-test-var] [m]
   (println "\n ◯" (-> m :var meta :name)))
@@ -205,9 +204,7 @@
 
 (deftest fetch-routes
   (async done
-         (p/let [query (inline "queries/route/fetch-all.graphql")
-                 request  {:query query}
-                 result (send request)]
+         (p/let [{:keys [result]} (route/fetch-routes)]
            (testing "api returns data"
              (is (-> result :data :routes first :id))
              (done)))))
@@ -225,6 +222,17 @@
                                       seat-ids))]
            (testing "api returns data"
              (is (every? #(-> % :result :data :createLocation) create-mocks))
+             (done)))))
+
+(deftest create-arrived-at
+  (async done
+         (p/let [route-mocks (route/fetch-routes)
+                 create-mocks (p/all (map
+                                      (fn [{:keys [stops]}]
+                                        (stop/create-arrived-at (-> stops first :id)))
+                                      (-> route-mocks :result :data :routes)))]
+           (testing "api returns data"
+             (is (every? #(-> % :result :data :createArrivedAt :arrivedAt) create-mocks))
              (done)))))
 
 (deftest fetch-seat

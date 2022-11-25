@@ -11,7 +11,8 @@
             [api.resolvers.seat :as seat]
             [api.resolvers.address :as address]
             [api.resolvers.route :as route]
-            [api.resolvers.location :as location]))
+            [api.resolvers.location :as location]
+            [api.resolvers.stop :as stop]))
 
 (defn get-type-defs []
   (inline "schema.graphql"))
@@ -22,7 +23,8 @@
                  :createSeat seat/create-seat
                  :createAddress address/create-address
                  :createRoute route/create-route
-                 :createLocation location/create-location}
+                 :createLocation location/create-location
+                 :createArrivedAt stop/create-arrived-at}
                 :Query
                 {:user user/logged-in-user
                  :seats seat/fetch-seats
@@ -50,7 +52,8 @@
                  :lng #(-> ^js % .-lat)}
                 :Stop
                 {:id #(-> ^js % .-id)
-                 :address #(-> ^js % .-address)}
+                 :address #(-> ^js % .-address)
+                 :arrivedAt #(-> ^js % .-arrivedAt)}
                 :Route
                 {:id #(-> ^js % .-id)
                  :seat #(-> ^js % .-seat)

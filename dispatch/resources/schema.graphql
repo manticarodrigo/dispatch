@@ -23,6 +23,7 @@ type Mutation {
     lng: Float!
     createdAt: String
   ): String!
+  createArrivedAt(stopId: ID!): Stop
 }
 
 type User {
@@ -57,6 +58,7 @@ type Address {
 type Stop {
   id: ID!
   address: Address!
+  arrivedAt: String
 }
 
 type Route {

@@ -9,6 +9,13 @@
                                     select-combobox
                                     submit)]))
 
+(defn fetch-routes []
+  (p/let [query (inline "queries/route/fetch-all.graphql")
+          request  {:query query}
+          result (send request)]
+    {:request request
+     :result result}))
+
 (defn create-route [variables]
   (p/let [query (inline "mutations/route/create.graphql")
           request  {:query query :variables variables}
