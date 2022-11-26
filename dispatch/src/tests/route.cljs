@@ -30,7 +30,7 @@
         {:keys [seatId startAt]} (-> create-mock :request :variables)
         seat (some #(when (= (:id %) seatId) %) seats)]
     (with-mounted-component
-      [test-app {:route "/route" :mocks mocks}]
+      [test-app {:route "/routes/create" :mocks mocks}]
       (fn [^js component user]
         (p/do
           (.findByText component "Loaded...")

@@ -1,9 +1,9 @@
 (ns ui.components.nav
   (:require
    [react-feather
-    :rename {Users UsersIcon
-             MapPin PinIcon
-             BookOpen BookOpenIcon}]
+    :rename {Map MapIcon
+             Users UsersIcon
+             MapPin PinIcon}]
    [ui.lib.router :refer (nav-link)]
    [ui.utils.string :refer (class-names)]))
 
@@ -20,6 +20,6 @@
 
 (defn nav []
   [:nav [:ul {:class "flex justify-center"}
+         [nav-item "/routes" MapIcon]
          [nav-item "/seats" UsersIcon]
-         [nav-item "/address" PinIcon]
-         [nav-item "/route" BookOpenIcon]]])
+         [nav-item "/addresses" PinIcon]]])

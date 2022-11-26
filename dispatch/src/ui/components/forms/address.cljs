@@ -33,7 +33,7 @@
                  :on-submit (fn [e]
                               (.preventDefault e)
                               (-> (create (->js {:variables (dissoc @!state :place_id)}))
-                                  (.then (fn [] (navigate "/route")))
+                                  (.then (fn [] (navigate "/routes")))
                                   (.catch #(reset! !anoms (parse-anoms %)))))}
           [input {:id "name"
                   :label "Name"

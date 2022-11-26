@@ -1,4 +1,4 @@
-(ns ui.views.route
+(ns ui.views.route.create
   (:require ["@apollo/client" :refer (gql useQuery useMutation)]
             [react-feather
              :rename {ChevronUp ChevronUpIcon

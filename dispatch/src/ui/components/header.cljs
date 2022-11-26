@@ -21,6 +21,9 @@
          "font-semibold text-white text-sm sm:text-base lg:text-xl")}
    text])
 
+(defn link-back [to]
+  [link {:to to} [:> ArrowLeftIcon]])
+
 (defn header []
   [:header {:class (class-names
                     "flex-shrink-0"
@@ -29,19 +32,24 @@
                     padding-x
                     "w-full h-[60px]")}
    [routes
+    ["/" [icons/dispatch]]
     ["/register" [icons/dispatch]]
     ["/login" [icons/dispatch]]
+    ["/routes" [icons/dispatch]]
+    ["/routes/*" [link-back "/routes"]]
     ["/seats" [icons/dispatch]]
-    ["/address" [icons/dispatch]]
-    ["/route" [icons/dispatch]]
-    ["*" [link {:to "/seats"} [:> ArrowLeftIcon]]]]
+    ["/seats/*" [link-back "/seats"]]
+    ["/addresses" [icons/dispatch]]
+    ["/addresses/*" [link-back "/addresses"]]
+    ["*" [link-back "/"]]]
 
    [routes
+    ["/" [title "Home"]]
     ["/register" [title (tr [:view.register/title])]]
     ["/login" [title (tr [:view.login/title])]]
     ["/seats" [title (tr [:view.fleet/title])]]
-    ["/address" [title (tr [:view.address/title])]]
-    ["/route" [title (tr [:view.route/title])]]
+    ["/addresses" [title (tr [:view.address/title])]]
+    ["/routes" [title (tr [:view.route/title])]]
     ["*" [title "Not found"]]]
 
    [nav]

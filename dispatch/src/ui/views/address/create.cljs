@@ -1,4 +1,4 @@
-(ns ui.views.address
+(ns ui.views.address.create
   (:require [ui.utils.string :refer (class-names)]
             [ui.utils.css :refer (padding)]
             [ui.components.forms.address :refer (address-form)]))

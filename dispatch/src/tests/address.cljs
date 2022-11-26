@@ -38,7 +38,7 @@
         {:keys [name description lat lng]} (-> mocks first :request :variables)]
 
     (with-mounted-component
-      [test-app {:route "/address" :mocks mocks}]
+      [test-app {:route "/addresses/create" :mocks mocks}]
       (fn [^js component user]
         (p/do
           (change (.getByLabelText component "Name") name)
