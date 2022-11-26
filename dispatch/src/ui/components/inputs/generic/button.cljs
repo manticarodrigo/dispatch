@@ -9,14 +9,12 @@
 (def box-padding-class "p-2.5 lg:py-2.5 lg:px-4")
 
 (def box-interact-class (class-names
-                         "hover:border-neutral-500 focus:border-neutral-500"
-                         "hover:text-neutral-50 focus:text-neutral-50 active:text-neutral-50"
-                         "hover:bg-neutral-700 focus:bg-neutral-800 active:bg-neutral-800"))
+                         "hover:border-neutral-500 focus:border-neutral-600"
+                         "hover:bg-neutral-800 focus:bg-neutral-800 active:bg-neutral-800"))
 
 (def box-peer-interact-class (class-names
-                              "peer-hover:border-neutral-500 peer-focus:border-neutral-500"
-                              "peer-hover:text-neutral-50 peer-focus:text-neutral-50 peer-active:text-neutral-50"
-                              "peer-hover:bg-neutral-700 peer-focus:bg-neutral-800 peer-active:bg-neutral-800"))
+                              "peer-hover:border-neutral-500 peer-focus:border-neutral-600"
+                              "peer-hover:bg-neutral-800 peer-focus:bg-neutral-800 peer-active:bg-neutral-800"))
 
 (def base-button-class (class-names
                         "outline-0 focus:outline-none"
