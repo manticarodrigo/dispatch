@@ -3,7 +3,6 @@
 
 (def box-class (class-names
                 "rounded border border-neutral-800"
-                "text-base text-neutral-100"
                 "bg-neutral-900 shadow"))
 
 (def box-padding-class "p-2.5 lg:py-2.5 lg:px-4")
@@ -17,9 +16,10 @@
                               "peer-hover:bg-neutral-800 peer-focus:bg-neutral-800 peer-active:bg-neutral-800"))
 
 (def base-button-class (class-names
-                        "outline-0 focus:outline-none"
                         box-class
-                        box-padding-class))
+                        box-padding-class
+                        "outline-0 focus:outline-none"
+                        "text-base text-neutral-100"))
 
 (def button-class (class-names
                    base-button-class

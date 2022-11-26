@@ -1,37 +1,44 @@
 (ns ui.components.inputs.generic.menu
-  (:require [reagent.core :as r]
-            ["@headlessui/react" :refer (Menu)]
+  (:require [headlessui-reagent.core :as ui]
+            [ui.lib.router :refer (link)]
             [ui.utils.string :refer (class-names)]
             [ui.components.inputs.generic.button :refer (button-class)]))
 
-(def ^:private Button (.-Button Menu))
-(def ^:private Items (.-Items Menu))
-(def ^:private Item (.-Item Menu))
+(def menu-class (class-names
+                 "rounded-md border border-neutral-700"
+                 "backdrop-blur bg-neutral-800/75 shadow-lg"
+                 "overflow-y-auto"))
 
-(defn menu-item [item item-class]
-  [:> Item
-   (fn [props]
-     (r/as-element
-      [:li {:class (class-names item-class "p-1.5 w-full cursor-pointer")}
-       [:div {:class (class-names
-                      "rounded p-1.5 px-2 w-full"
-                      (when (. props -active) "bg-neutral-700"))}
-        (:label item)]]))])
+(def menu-item-class "cursor-pointer relative block px-4 py-3 text-sm")
+(def menu-item-active-class "after:z-[-1] after:block after:absolute after:rounded after:inset-1 after:bg-neutral-700/50")
+
+(defn menu-item [{:keys [label to]} item-class]
+  [ui/menu-item
+   (fn [{:keys [active]}]
+     [:div
+      [link {:to to
+             :class (class-names
+                     item-class
+                     menu-item-class
+                     (when active menu-item-active-class))}
+
+       label]])])
 
 (defn menu [{label :label
              items :items
              class-map :class-map}]
   (let [{button-class! :button!
          item-class :item} class-map]
-    [:> Menu {:as "div" :class (class-names "z-10 relative inline-flex")}
-     [:> Button {:class (or button-class! button-class)} label]
-     [:> Items {:as "ul" :class (class-names
-                                 "absolute right-0 top-[100%] origin-top-right"
-                                 "mt-2 rounded-md border border-neutral-500"
-                                 "divide-y divide-neutral-700"
-                                 "text-neutral-100 bg-neutral-900"
-                                 "shadow-lg overflow-hidden")}
-      (doall
+    [ui/menu {:as "div" :class (class-names "z-10 relative inline-flex")}
+     [ui/menu-button {:class (or button-class! button-class)} label]
+     [ui/menu-items {:as "div"
+                     :class (class-names
+                             menu-class
+                             "absolute right-0 top-[100%] origin-top-right"
+                             "mt-2"
+                             "divide-y divide-neutral-700"
+                             "overflow-y-auto")}
+      [:<>
        (for [[idx item] (map-indexed vector items)]
          ^{:key idx}
          [:<>
@@ -40,4 +47,4 @@
              (for [[sub-idx sub-item] (map-indexed vector item)]
                ^{:key (str idx "-" sub-idx)}
                [menu-item sub-item item-class])]
-            [menu-item item item-class])]))]]))
+            [menu-item item item-class])])]]]))

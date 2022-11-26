@@ -8,8 +8,8 @@
   [cljs-bean "1.8.0"]
   [funcool/promesa "9.0.489"]
   [com.taoensso/tempura "1.3.0"]
-  [com.teknql/shadow-cljs-tailwind-jit "1.0.0"]
-  [cider/cider-nrepl "0.28.5"]]
+  [com.github.mainej/headlessui-reagent "1.6.6.71"]
+  [com.teknql/shadow-cljs-tailwind-jit "1.0.0"]]
 
  :builds {:test {:target :node-test
                  :output-to "out/test.js"

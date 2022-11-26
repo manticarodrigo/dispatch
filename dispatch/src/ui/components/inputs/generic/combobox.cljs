@@ -1,17 +1,14 @@
 (ns ui.components.inputs.generic.combobox
-  (:require [react :refer (Fragment useState)]
+  (:require [react :as react]
+            [headlessui-reagent.core :as ui]
             [react-feather :rename {ChevronDown ChevronDownIcon}]
-            ["@headlessui/react" :refer (Combobox Transition)]
             [clojure.string :as s]
             [ui.utils.i18n :refer (tr)]
             [ui.utils.string :refer (class-names)]
-            [ui.components.inputs.generic.input :refer (label-class input-class)]))
-
-(def ^:private Label (.-Label Combobox))
-(def ^:private Input (.-Input Combobox))
-(def ^:private Button (.-Button Combobox))
-(def ^:private Option (.-Option Combobox))
-(def ^:private Options (.-Options Combobox))
+            [ui.components.inputs.generic.input :refer (label-class input-class)]
+            [ui.components.inputs.generic.menu :refer (menu-class
+                                                       menu-item-class
+                                                       menu-item-active-class)]))
 
 (defn combobox [{aria-label :aria-label
                  label :label
@@ -26,7 +23,7 @@
                  on-select :on-select
                  :or {option-to-value #(:value %)
                       option-to-label #(:label %)}}]
-  (let [[query set-query] (useState "")
+  (let [[query set-query] (react/useState "")
         filtered-options (filter #(-> %
                                       option-to-label
                                       s/lower-case
@@ -36,56 +33,52 @@
                    (if on-text
                      (on-text (-> e .-target .-value))
                      (set-query (-> e .-target .-value))))]
-    [:> Combobox {:as "div"
-                  :class (class-names class "relative")
-                  :value value
-                  :on-change (fn [option]
-                               (when on-change (on-change option))
-                               (when (and option-to-value on-select)
-                                 (on-select (some
-                                             #(when (= option (option-to-value %)) %)
-                                             options))))}
-     [:> Label {:class (if aria-label "sr-only" label-class)} (or aria-label label)]
-     [:> Button {:as "div" :class "relative"}
-      [:> Input {:placeholder placeholder
-                 :class input-class
-                 :style {:padding-right "3rem"}
-                 :display-value (fn [v]
-                                  (option-to-label
-                                   (first (filter #(= v (option-to-value %)) options))))
-                 :on-change on-query}]
+    [ui/combobox
+     {:as "div"
+      :class (class-names class "relative")
+      :value value
+      :on-change (fn [option]
+                   (when on-change (on-change option))
+                   (when (and option-to-value on-select)
+                     (on-select (some
+                                 #(when (= option (option-to-value %)) %)
+                                 options))))}
+
+     [ui/combobox-label
+      {:class (if aria-label "sr-only" label-class)}
+      (or aria-label label)]
+
+     [ui/combobox-button {:as "div" :class "relative"}
+      [ui/combobox-input {:placeholder placeholder
+                          :class input-class
+                          :style {:padding-right "3rem"}
+                          :display-value (fn [v]
+                                           (option-to-label
+                                            (first (filter #(= v (option-to-value %)) options))))
+                          :on-change on-query}]
       [:div {:class "cursor-text absolute top-[50%] translate-y-[-50%] right-0 pr-2 lg:pr-4"}
        [:> ChevronDownIcon]]]
-     [:> Transition
-      {:as Fragment
-       :leave "transition ease-in duration-100"
+
+     [ui/transition
+      {:leave "transition ease-in duration-100"
        :leave-from "opacity-100"
        :leave-to "opacity-0"}
-      [:> Options {:static true
-                   :class (class-names
-                           "z-10"
-                           "ring-1 ring-neutral-50 ring-opacity-5 focus:outline-none"
-                           "absolute rounded mt-2 py-1 max-h-60 w-full"
-                           "text-sm text-neutral-200"
-                           "bg-neutral-800 shadow shadow-neutral-800 overflow-auto")}
-       (when (= (count filtered-options) 0)
-         [:div {:class "relative cursor-default select-none p-2"}
-          (tr [:location/search-empty])])
-       (doall
+      [ui/combobox-options {:class (class-names
+                                    menu-class
+                                    "z-10"
+                                    "absolute mt-2"
+                                    "max-h-60 w-full")}
+       [:<>
+        (when (= (count filtered-options) 0)
+          [:div {:class menu-item-class}
+           (tr [:location/search-empty])])
+
         (for [option filtered-options]
-          (let [l (if option-to-label
-                    (option-to-label option)
-                    (:label option))
-                v (if option-to-value
-                    (option-to-value option)
-                    (:key option))]
-            [:> Option {:key v
-                        :value v
-                        :class (fn [props]
-                                 (let [{active :active checked :checked} (js->clj props :keywordize-keys true)]
-                                   (class-names
-                                    "relative cursor-pointer select-none p-2"
-                                    (when (or checked active)
-                                      (class-names
-                                       "text-neutral-50"
-                                       (if checked "bg-neutral-600" "bg-neutral-700"))))))} l])))]]]))
+          ^{:key (option-to-value option)}
+          [ui/combobox-option {:value (option-to-value option)
+                               :class (fn [{:keys [active selected]}]
+                                        (class-names
+                                         menu-item-class
+                                         (when active menu-item-active-class)
+                                         (when selected "underline")))}
+           (option-to-label option)])]]]]))

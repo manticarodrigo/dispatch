@@ -22,7 +22,7 @@
 (defonce error-link
   (onError
    (fn [^js res]
-     (when (= (.. res -networkError -statusCode) 401)
+     (when (= (some-> res .-networkError .-statusCode) 401)
        (remove-session)))))
 
 (defonce client

@@ -11,9 +11,6 @@
    [ui.components.inputs.generic.menu :refer (menu)]
    [ui.components.nav :refer (nav)]))
 
-(defn menu-item [to label]
-  [link {:to to :class "block w-full h-full text-sm"} label])
-
 (defn title [text]
   [:h1 {:class
         (class-names
@@ -55,8 +52,8 @@
    [nav]
 
    [menu {:label [:> SettingsIcon]
-          :items [[{:label [menu-item "/register" "Register"]}
-                   {:label [menu-item "/login" "Login"]}]
-                  {:label [menu-item "/logout" "Sign out..."]}]
+          :items [[{:label  "Register" :to "/register"}
+                   {:label "Login" :to "/login"}]
+                  {:label "Sign out..." :to "/logout"}]
           :class-map {:button! "h-full"
                       :item "min-w-[12rem]"}}]])
