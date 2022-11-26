@@ -48,8 +48,8 @@
                 {:id #(-> ^js % .-id)
                  :name #(-> ^js % .-name)
                  :description #(-> ^js % .-description)
-                 :lat #(-> ^js % .-lng)
-                 :lng #(-> ^js % .-lat)}
+                 :lat #(-> ^js % .-lat)
+                 :lng #(-> ^js % .-lng)}
                 :Stop
                 {:id #(-> ^js % .-id)
                  :address #(-> ^js % .-address)

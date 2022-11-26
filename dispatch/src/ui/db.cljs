@@ -10,9 +10,10 @@
             :language config/LANGUAGE}
    :origin {:lat 12.072344778464416, :lng -86.24555969727164}
    :location nil
-   :stops [{:lat 12.103727746418377 :lng -86.2492445291432} ;; galerias
-           {:lat 12.086721023651428 :lng -86.23377698736607} ;; vivian pellas
-           {:lat 12.129391854083744 :lng -86.26494075705381} ;; metrocentro
+   :stops [
+        ;;    {:lat 12.103727746418377 :lng -86.2492445291432} ;; galerias
+        ;;    {:lat 12.086721023651428 :lng -86.23377698736607} ;; vivian pellas
+        ;;    {:lat 12.129391854083744 :lng -86.26494075705381} ;; metrocentro
            ]
    :route {:legs [{:distance 4573 :duration 609 :address "Galerías Santo Domingo, Managua, Nicaragua" :location {:lat 12.1040642 :lng -86.2493812}}
                   {:distance 3728 :duration 537 :address "Metrocentro Noreste, Pista Juan Pablo II, Managua 14005, Nicaragua" :location {:lat 12.1293441 :lng -86.26492420000001}}

@@ -12,14 +12,16 @@
                            submit)]
    [ui.lib.google.maps.autocomplete :refer (init-autocomplete)]
    [ui.lib.google.maps.places :refer (init-places)]
-   [tests.mocks.google :refer (mock-google)]))
+   [tests.mocks.google :refer (mock-google)]
+   [tests.util.location :refer (nearby)]))
 
 (defn create-address []
   (p/let [query (inline "mutations/address/create.graphql")
+          [lat lng] (nearby)
           variables {:name (.. faker -company name)
                      :description (.. faker -address (streetAddress true))
-                     :lat (js/parseFloat (.. faker -address latitude))
-                     :lng (js/parseFloat (.. faker -address longitude))}
+                     :lat lat
+                     :lng lng}
           request  {:query query :variables variables}
           result (send request)]
     {:request request

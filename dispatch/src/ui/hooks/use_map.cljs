@@ -31,7 +31,6 @@
 
 (defn use-map []
   (let [location (listen [:location])
-        origin (listen [:origin])
         stops (listen [:stops])
         legs (listen [:route/legs])
         path (listen [:route/path])]
@@ -50,15 +49,22 @@
 
     (useEffect
      (fn []
-       (when @!map
-         (if (and (seq legs) (seq path))
-           (do (set-markers @!map legs)
-               (set-polyline @!map path)
-               (center-route))
-           (when (and origin (seq stops))
-             (set-route! origin stops))))
+       (when (and @!map (seq legs) (seq path))
+         (set-markers @!map legs)
+         (set-polyline @!map path)
+         (center-route))
        #())
-     #js[@!map origin stops legs path])
+     #js[@!map legs path])
+
+    (useEffect
+     (fn []
+       (when (and @!map (seq stops))
+         (set-route! (first stops)
+                     (if (= (count stops) 1)
+                       (first stops)
+                       (drop 1 stops))))
+       #())
+     #js[@!map stops])
 
     {:ref !el
      :map @!map

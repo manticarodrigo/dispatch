@@ -33,6 +33,11 @@
  (assoc-key :origin))
 
 (rf/reg-event-db
+ :stops/set
+ [trim-v]
+ (assoc-key :stops))
+
+(rf/reg-event-db
  :location/set
  [trim-v]
  (assoc-key :location))
