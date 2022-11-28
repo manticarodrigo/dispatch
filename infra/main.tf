@@ -41,11 +41,12 @@ module "vpc" {
 }
 
 module "db" {
-  source   = "./db"
-  env      = var.env
-  region   = var.aws_region
-  app_name = var.app_name
-  vpc_id   = module.vpc.vpc_id
+  source         = "./db"
+  env            = var.env
+  region         = var.aws_region
+  app_name       = var.app_name
+  vpc_id         = module.vpc.vpc_id
+  vpc_subnet_ids = module.vpc.default_subnet_ids
 }
 
 module "build" {
@@ -53,17 +54,22 @@ module "build" {
 }
 
 module "api" {
-  source      = "./api"
-  sha1        = module.build.sha1
-  build       = module.build.build
-  env         = var.env
-  domain_name = var.domain_name
-  app_name    = var.app_name
-  db_host     = module.db.host
-  db_name     = module.db.name
-  db_port     = module.db.port
-  db_user     = module.db.username
-  db_pass     = module.db.password
+  source                   = "./api"
+  sha1                     = module.build.sha1
+  build                    = module.build.build
+  env                      = var.env
+  region                   = var.aws_region
+  account_id               = var.aws_account_id
+  domain_name              = var.domain_name
+  app_name                 = var.app_name
+  db_host                  = module.db.host
+  db_name                  = module.db.name
+  db_port                  = module.db.port
+  db_user                  = module.db.username
+  db_pass                  = module.db.password
+  lambda_security_group_id = module.db.lambda_security_group_id
+  proxy_resource_id        = module.db.proxy_resource_id
+  vpc_subnet_ids           = module.vpc.default_subnet_ids
 }
 
 module "site" {

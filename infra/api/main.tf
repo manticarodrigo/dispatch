@@ -122,18 +122,17 @@ resource "aws_lambda_function" "api" {
 
   role = aws_iam_role.api.arn
 
+  vpc_config {
+    security_group_ids = [var.lambda_security_group_id]
+    subnet_ids         = var.vpc_subnet_ids
+  }
+
   environment {
     variables = {
       "STAGE"        = var.env
       "DATABASE_URL" = local.db_url
     }
   }
-}
-
-resource "aws_cloudwatch_log_group" "api-lambda" {
-  name = "/aws/lambda/${aws_lambda_function.api.function_name}"
-
-  retention_in_days = 30
 }
 
 resource "aws_iam_role" "api" {
@@ -153,9 +152,42 @@ resource "aws_iam_role" "api" {
   })
 }
 
+resource "aws_iam_policy" "api" {
+  name = "${var.app_name}-api-${var.env}"
+
+  policy = <<POLICY
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "rds-db:connect"
+            ],
+            "Resource": "arn:aws:rds-db:${var.region}:${var.account_id}:dbuser:${var.proxy_resource_id}/*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+                "ec2:CreateNetworkInterface",
+                "ec2:DescribeNetworkInterfaces",
+                "ec2:DeleteNetworkInterface",
+                "ec2:AssignPrivateIpAddresses",
+                "ec2:UnassignPrivateIpAddresses"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+POLICY
+}
+
 resource "aws_iam_role_policy_attachment" "api" {
   role       = aws_iam_role.api.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+  policy_arn = aws_iam_policy.api.arn
 }
 
 # API Gateway
@@ -221,12 +253,6 @@ resource "aws_apigatewayv2_api_mapping" "api" {
   domain_name = aws_apigatewayv2_domain_name.api.id
 }
 
-resource "aws_cloudwatch_log_group" "api-gw" {
-  name = "/aws/api_gw/${aws_apigatewayv2_api.api.name}"
-
-  retention_in_days = 30
-}
-
 resource "aws_lambda_permission" "api" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
@@ -234,4 +260,18 @@ resource "aws_lambda_permission" "api" {
   principal     = "apigateway.amazonaws.com"
 
   source_arn = "${aws_apigatewayv2_api.api.execution_arn}/*/*"
+}
+
+# Cloudwatch
+
+resource "aws_cloudwatch_log_group" "api-gw" {
+  name = "/aws/api_gw/${aws_apigatewayv2_api.api.name}"
+
+  retention_in_days = 30
+}
+
+resource "aws_cloudwatch_log_group" "api-lambda" {
+  name = "/aws/lambda/${aws_lambda_function.api.function_name}"
+
+  retention_in_days = 30
 }

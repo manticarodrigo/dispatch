@@ -1,6 +1,8 @@
 variable "sha1" {}
 variable "build" {}
 variable "env" {}
+variable "region" {}
+variable "account_id" {}
 variable "domain_name" {}
 variable "app_name" {}
 variable "db_host" {}
@@ -8,3 +10,6 @@ variable "db_name" {}
 variable "db_port" {}
 variable "db_user" {}
 variable "db_pass" {}
+variable "lambda_security_group_id" {}
+variable "proxy_resource_id" {}
+variable "vpc_subnet_ids" {}
