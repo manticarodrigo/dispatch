@@ -14,21 +14,20 @@
                      :damping 20,
                      :stiffness 100}
         :drag "y"
-        :dragConstraints {:top 0 :bottom 0}
-        :dragElastic 0.5
-        :onDragEnd (fn [_ info]
-                     (if @!show
-                       (when (< 0 (.. info -offset -y))
-                         (reset! !show false))
-                       (when (> 0 (.. info -offset -y))
-                         (reset! !show true))))
+        :drag-constraints {:top 0 :bottom 0}
+        :drag-elastic 1
+        :on-drag-end (fn [_ info]
+                       (if @!show
+                         (when (< 0 (.. info -offset -y))
+                           (reset! !show false))
+                         (when (> 0 (.. info -offset -y))
+                           (reset! !show true))))
+        :on-click #(swap! !show not)
         :class (class-names
                 class
-                "z-10 absolute lg:hidden"
+                "z-10 fixed lg:hidden"
                 "w-full h-full bg-neutral-900")}
-       [:button {:on-click (fn []
-                             (swap! !show not))
-                 :class "flex justify-center items-center p-4 w-full"}
+       [:div {:class "flex justify-center items-center p-4 w-full"}
         [:span {:class "w-16 h-1 m-0.5 rounded-full bg-neutral-50"}]]
        [:div {:class "w-full h-[calc(100%_-_2.5rem)]"}
         children]])))
