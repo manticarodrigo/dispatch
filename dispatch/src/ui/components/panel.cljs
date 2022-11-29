@@ -24,10 +24,10 @@
           :variants {:visible {:y 0}
                      :hidden {:y bottom}}
           :transition {:type "spring"
-                       :damping 20
-                       :stiffness 100}
+                       :damping 40
+                       :stiffness 400}
           :drag "y"
-          :drag-elastic 0.1
+          :drag-elastic 0.2
           :drag-constraints {:top 0 :bottom bottom}
           :on-drag-end (fn [_ info]
                          (let [velocity (.. info -velocity -y)
@@ -36,6 +36,7 @@
                                               (> velocity 20)
                                               (and (>= velocity 0)
                                                    (> point 45)))]
+                           (.start controls (if should-close? "hidden" "visible"))
                            (reset! !showing (not should-close?))))
           :class (class-names
                   class
