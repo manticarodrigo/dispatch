@@ -91,7 +91,7 @@
                 ^{:key (str idx "-" id)}
                 [:li {:class (class-names
                               base-button-class
-                              "flex items-center mb-2 rounded p-2 bg-neutral-900")}
+                              "flex items-center mb-2 rounded p-2")}
                  [:div {:class "flex-shrink-0 flex justify-center items-center rounded-full w-8 h-8 bg-neutral-600"}
                   (+ idx 1)]
                  [:div {:class "px-2 w-full"}
