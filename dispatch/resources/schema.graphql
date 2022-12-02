@@ -4,6 +4,7 @@ type Query {
   seat(id: ID!): Seat
   addresses: [Address]
   routes: [Route]
+  route(id: ID!): Route
 }
 
 type Mutation {

@@ -1,0 +1,27 @@
+query Route($id: ID!) {
+  route(id: $id) {
+    id
+    startAt
+    seat {
+      id
+      name
+      location {
+        id
+        lat
+        lng
+        createdAt
+      }
+    }
+    stops {
+      id
+      address {
+        id
+        name
+        description
+        lat
+        lng
+      }
+      arrivedAt
+    }
+  }
+}

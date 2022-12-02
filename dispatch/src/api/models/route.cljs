@@ -17,6 +17,15 @@
 (defn find-all [^js context]
   (prisma/find-many
    (.. context -prisma -route)
-   {:where {:user {:id (.. context -user -id)}} 
+   {:where {:user {:id (.. context -user -id)}}
+    :orderBy {:startAt "asc"}
     :include {:seat true
               :stops {:include {:address true}}}}))
+
+(defn find-unique [^js context {:keys [id]}]
+  (prisma/find-unique
+   (.. context -prisma -route)
+   {:where {:id id}
+    :include {:seat {:include {:location true}}
+              :stops {:include {:address true}}}}))
+

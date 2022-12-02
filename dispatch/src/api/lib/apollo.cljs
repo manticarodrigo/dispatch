@@ -30,7 +30,8 @@
                  :seats seat/fetch-seats
                  :seat seat/fetch-seat
                  :addresses address/fetch-addresses
-                 :routes route/fetch-routes}
+                 :routes route/fetch-routes
+                 :route route/fetch-route}
                 :User
                 {:id #(-> ^js % .-id)
                  :seats seat/fetch-seats

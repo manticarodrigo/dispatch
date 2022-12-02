@@ -17,4 +17,5 @@
 (defn find-all [^js context]
   (prisma/find-many
    (.. context -prisma -address)
-   {:where {:user {:id (.. context -user -id)}}}))
+   {:where {:user {:id (.. context -user -id)}}
+    :orderBy {:name "asc"}}))
