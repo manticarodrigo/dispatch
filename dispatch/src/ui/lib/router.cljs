@@ -9,9 +9,10 @@
             NavLink
             Link
             useNavigate
-            useParams)]
+            useParams
+            useSearchParams)]
    [reagent.core :as r]
-   [cljs-bean.core :refer (->clj)]
+   [cljs-bean.core :refer (->clj ->js)]
    [ui.subs :refer (listen)]
    [ui.utils.session :refer (remove-session)]))
 
@@ -44,6 +45,11 @@
 (defn use-params []
   (let [params (useParams)]
     (->clj params)))
+
+(defn use-search-params []
+  (let [[params set-params] (useSearchParams)]
+    [(->> params (js/URLSearchParams.) (.fromEntries js/Object) ->clj)
+     #(-> % ->js set-params)]))
 
 (defn nav-link [{to :to class-fn :class} & children]
   (into [:> NavLink {:to to

@@ -5,14 +5,15 @@
                            ChevronRight ChevronRightIcon
                            Plus PlusIcon}]
    [date-fns :as d]
-   [reagent.core :as r]
+   [clojure.string :as s]
    [shadow.resource :refer (inline)]
    [cljs-bean.core :refer (->clj)]
-   [ui.lib.router :refer (link)]
+   [ui.lib.router :refer (link use-search-params)]
    [ui.utils.string :refer (class-names)]
    [ui.utils.css :refer (padding)]
    [ui.components.inputs.generic.input :refer (input)]
-   [ui.components.inputs.generic.button :refer (button-class)]))
+   [ui.components.inputs.generic.button :refer (button-class)]
+   [ui.components.inputs.generic.radio-group :refer (radio-group)]))
 
 (defn item [{:keys [seat startAt]}]
   (let [{:keys [name]} seat
@@ -41,30 +42,51 @@
 (def FETCH_ROUTES (gql (inline "queries/route/fetch-all.graphql")))
 
 (defn view []
-  (let [!search (r/atom "")]
-    (fn []
-      (let [query (useQuery FETCH_ROUTES)
-            {:keys [data loading]} (->clj query)
-            routes (some-> data :routes)]
-        [:div {:class (class-names padding)}
-         [:div {:class "mb-4 flex justify-between"}
-          [input {:aria-label "Search"
-                  :value @!search
-                  :placeholder "Search routes"
-                  :class "w-full mr-2"
-                  :on-text #(reset! !search %)}]
-          [link
-           {:to "/routes/create"
-            :class button-class}
-           [:span {:class "sr-only"} "Add route"]
-           [:> PlusIcon]]]
+  (let [[search-params set-search-params] (use-search-params)
+        query (useQuery FETCH_ROUTES)
+        {:keys [data loading]} (->clj query)
+        routes (some-> data :routes)
+        filtered-routes (if (empty? (-> search-params :text))
+                          routes
+                          (filter
+                           #(s/includes?
+                             (-> % :seat :name s/lower-case)
+                             (s/lower-case (-> search-params :text)))
+                           routes))]
+    [:div {:class (class-names padding)}
+     [:div {:class "mb-4"}
+      [:div {:class "flex justify-between"}
 
-         [:ul
-          (for [{:keys [id] :as route} routes]
-            ^{:key id}
-            [:li
-             [link {:to (str "/routes/" id)
-                    :class (class-names "mb-2 block" button-class)}
-              [item route]]])
-          (when (and (not loading) (empty? routes)) [:p {:class "text-center"} "No routes found."])
-          (when loading [:p {:class "text-center"} "Loading routes..."])]]))))
+       [input {:aria-label "Search"
+               :value (-> search-params :text)
+               :placeholder "Search routes"
+               :class "mr-2 w-full"
+               :on-text (fn [query]
+                          (set-search-params (if (empty? query)
+                                               (dissoc search-params :text)
+                                               (assoc search-params :text query))))}]
+       [link
+        {:to "/routes/create"
+         :class button-class}
+        [:span {:class "sr-only"} "Add route"]
+        [:> PlusIcon]]]
+      [:div {:class "mt-2 flex"}
+       [input {:aria-label "foo" :type "date" :class "mr-2 text-xs w-1/2 bg-transparent"}]
+       [input {:aria-label "foo" :type "date" :class "text-xs w-1/2 bg-transparent"}]]
+      [:div {:class "mt-2"}
+       [radio-group {:sr-label "Select status"
+                     :value "all"
+                     :options [{:key "all" :label "All" :value "all"}
+                               {:key "active" :label "Active" :value "active"}
+                               {:key "inactive" :label "Inactive" :value "inactive"}]
+                     :on-change js/console.log}]]]
+
+     [:ul
+      (for [{:keys [id] :as route} filtered-routes]
+        ^{:key id}
+        [:li
+         [link {:to (str "/routes/" id)
+                :class (class-names "mb-2 block" button-class)}
+          [item route]]])
+      (when (and (not loading) (empty? filtered-routes)) [:p {:class "text-center"} "No routes found."])
+      (when loading [:p {:class "text-center"} "Loading routes..."])]]))
