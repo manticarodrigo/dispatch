@@ -7,7 +7,6 @@
 
 (defn use-window-size []
   (let [[size set-size] (useState (get-window-size))]
-    (prn size)
     (useEffect
      (fn []
        (let [listener #(set-size (get-window-size))]

@@ -16,8 +16,8 @@
 (def ^:private !el (atom nil))
 (def ^:private !map (r/atom false))
 
-(defn- set-route! [origin stops]
-  (go (dispatch [:route/set (<p! (calc-route origin stops))])))
+(defn- set-route! [waypoints]
+  (go (dispatch [:route/set (<p! (calc-route waypoints))])))
 (defn- set-origin! [place-id]
   (go (dispatch [:origin/set (<p! (find-place place-id))])))
 (defn- set-search! [text]
@@ -58,11 +58,8 @@
 
     (useEffect
      (fn []
-       (when (and @!map (seq stops))
-         (set-route! (first stops)
-                     (if (= (count stops) 1)
-                       (first stops)
-                       (drop 1 stops))))
+       (when (and @!map (> (count stops) 1))
+         (set-route! stops))
        #())
      #js[@!map stops])
 
