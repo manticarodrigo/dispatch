@@ -36,7 +36,7 @@
         "Status"]
        [:div {:class "flex items-center text-xs text-left text-neutral-200"}
         (if started? "Active" "Inactive")]]
-      [:div {:class "ml-2"} [:> ChevronDownIcon]]]]))
+      [:div {:class "ml-2"} [:> ChevronDownIcon {:class "w-4 h-4"}]]]]))
 
 (defn item-description [{:keys [stops]}]
   [:ol

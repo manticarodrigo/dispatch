@@ -36,7 +36,7 @@
         (when-not started? "in ")
         (-> start-date d/formatDistanceToNowStrict)
         (when started? " ago")]]
-      [:div {:class "ml-2"} [:> ChevronRightIcon]]]]))
+      [:div {:class "ml-2"} [:> ChevronRightIcon {:class "w-4 h-4"}]]]]))
 
 (def FETCH_ROUTES (gql (inline "queries/route/fetch-all.graphql")))
 
