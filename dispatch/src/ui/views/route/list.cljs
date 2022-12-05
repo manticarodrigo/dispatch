@@ -12,6 +12,7 @@
    [ui.utils.string :refer (class-names)]
    [ui.utils.css :refer (padding)]
    [ui.components.inputs.generic.input :refer (input)]
+   [ui.components.inputs.generic.date :refer (date-select)]
    [ui.components.inputs.generic.button :refer (button-class)]
    [ui.components.inputs.generic.radio-group :refer (radio-group)]))
 
@@ -71,8 +72,21 @@
         [:span {:class "sr-only"} "Add route"]
         [:> PlusIcon]]]
       [:div {:class "mt-2 flex"}
-       [input {:aria-label "foo" :type "date" :class "mr-2 text-xs w-1/2 bg-transparent"}]
-       [input {:aria-label "foo" :type "date" :class "text-xs w-1/2 bg-transparent"}]]
+       [date-select {:class "w-1/2"
+                     :label "Start date"
+                     :value (-> (or (some-> search-params :start js/parseInt js/Date.)
+                                    (js/Date.))
+                                d/startOfDay)
+                     :on-select #(set-search-params
+                                  (assoc search-params :start (-> % .getTime)))}]
+       [:span {:class "w-2"}]
+       [date-select {:class "w-1/2"
+                     :label "End date"
+                     :value (-> (or (some-> search-params :end js/parseInt js/Date.)
+                                    (js/Date.))
+                                d/endOfDay)
+                     :on-select #(set-search-params
+                                  (assoc search-params :end (-> % .getTime)))}]]
       [:div {:class "mt-2"}
        [radio-group {:sr-label "Select status"
                      :value "all"

@@ -13,7 +13,7 @@
      [:div {:ref #(reset! !el %) :class "w-full h-full"}]
      (when bounds
        [button {:aria-label (tr [:location/center])
-                :label [:> Crosshair {:class "w-5 h-5"}]
+                :label [:> Crosshair]
                 :class (class-names "absolute"
                                     "right-3 sm:right-4 md:right-6 lg:right-8"
                                     "top-3 sm:top-4 md:top-6")
