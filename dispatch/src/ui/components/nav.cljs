@@ -1,7 +1,7 @@
 (ns ui.components.nav
   (:require
    [react-feather
-    :rename {Map MapIcon
+    :rename {Calendar CalendarIcon
              Users UsersIcon
              MapPin PinIcon}]
    [ui.lib.router :refer (nav-link)]
@@ -20,6 +20,6 @@
 
 (defn nav []
   [:nav [:ul {:class "flex justify-center"}
-         [nav-item "/routes" MapIcon]
+         [nav-item "/routes" CalendarIcon]
          [nav-item "/seats" UsersIcon]
          [nav-item "/addresses" PinIcon]]])
