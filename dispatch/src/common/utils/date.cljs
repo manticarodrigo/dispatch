@@ -17,3 +17,9 @@
   (let [full-iso (-> date .toISOString)
         [part-iso] (s/split full-iso ".")]
     (str part-iso "." "000Z")))
+
+(def date-scalar-map
+  {:serialize #(.getTime %)
+   :parseValue #(js/Date. %)
+   :parseLiteral #(when (= "IntValue" (.. % -kind))
+                    (js/Date. (.. % -value)))})

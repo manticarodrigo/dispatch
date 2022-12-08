@@ -8,9 +8,15 @@
                      useQuery)]
             ["@apollo/client/link/context" :refer (setContext)]
             ["@apollo/client/link/error" :refer (onError)]
+            ["@graphql-tools/schema" :refer (makeExecutableSchema)]
+            [apollo-link-scalars :refer (withScalars)]
+            [shadow.resource :refer (inline)]
             [cljs-bean.core :refer (->clj ->js)]
+            [common.utils.date :refer (date-scalar-map)]
             [ui.config :as config]
             [ui.utils.session :refer (get-session-request remove-session)]))
+
+(def gql apollo/gql)
 
 (defonce http-link
   (createHttpLink
@@ -25,9 +31,19 @@
      (when (= (some-> res .-networkError .-statusCode) 401)
        (remove-session)))))
 
+(def resolvers (->js {:Date date-scalar-map}))
+
+(def schema (makeExecutableSchema (->js {:typeDefs (gql (inline "schema.graphql"))
+                                         :resolvers resolvers})))
+
+(defonce scalar-link
+  (withScalars
+   (->js {:schema schema
+          :typesMap resolvers})))
+
 (defonce client
   (ApolloClient.
-   (->js {:link (apollo/from #js[auth-link error-link http-link])
+   (->js {:link (apollo/from #js[scalar-link auth-link error-link http-link])
           :cache (InMemoryCache.)})))
 
 (defn apollo-provider [& children]
@@ -37,8 +53,6 @@
 (defn parse-anoms [^js e]
   (let [anoms (mapv #(-> % :extensions :anom) (some-> e .-graphQLErrors ->clj))]
     anoms))
-
-(def gql apollo/gql)
 
 (defn use-query [query options]
   (let [q (useQuery query (->js options))]

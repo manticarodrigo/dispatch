@@ -1,9 +1,11 @@
 (ns api.lib.apollo
   (:require ["@apollo/server" :refer (ApolloServer)]
             ["@apollo/server/express4" :refer (expressMiddleware)]
+            [graphql :refer (GraphQLScalarType)]
             [shadow.resource :refer (inline)]
             [cljs-bean.core :refer (->clj ->js)]
             [promesa.core :as p]
+            [common.utils.date :refer (date-scalar-map)]
             [api.lib.prisma :refer (open-prisma)]
             [api.util.prisma :refer (find-unique)]
             [api.util.anom :as anom]
@@ -17,7 +19,14 @@
 (defn get-type-defs []
   (inline "schema.graphql"))
 
-(def resolvers {:Mutation
+(def date-scalar
+  (GraphQLScalarType.
+   (->js (merge {:name "Date"
+                 :description "Date custom scalar type"}
+                date-scalar-map))))
+
+(def resolvers {:Date date-scalar
+                :Mutation
                 {:createUser user/create-user
                  :loginUser user/login-user
                  :createSeat seat/create-seat
@@ -30,7 +39,8 @@
                  :seats seat/fetch-seats
                  :seat seat/fetch-seat
                  :addresses address/fetch-addresses
-                 :routes route/fetch-routes}
+                 :routes route/fetch-routes
+                 :route route/fetch-route}
                 :User
                 {:id #(-> ^js % .-id)
                  :seats seat/fetch-seats

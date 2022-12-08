@@ -1,19 +1,15 @@
 (ns ui.views.seat.detail
   (:require [react-feather :rename {GitPullRequest RouteIcon
-                                    Check CheckIcon
-                                    Minus MinusIcon
-                                    Package PackageIcon
-                                    ChevronDown ChevronDownIcon}]
+                                    ChevronRight ChevronRightIcon}]
             [date-fns :as d]
             [shadow.resource :refer (inline)]
-            [cljs-bean.core :refer (->clj)]
             [ui.lib.apollo :refer (gql use-query)]
-            [ui.lib.router :refer (use-params)]
+            [ui.lib.router :refer (use-params link)]
             [ui.utils.string :refer (class-names)]
             [ui.utils.css :refer (padding)]
-            [ui.components.inputs.generic.accordion :refer (accordion)]))
+            [ui.components.inputs.generic.button :refer (button-class)]))
 
-(defn item-term [{:keys [startAt]}]
+(defn item [{:keys [startAt]}]
   (let [start-date (-> (js/parseInt startAt) js/Date.)
         started? (-> start-date (d/isBefore (js/Date.)))]
     [:div {:class "flex justify-between w-full text-left"}
@@ -36,40 +32,14 @@
         "Status"]
        [:div {:class "flex items-center text-xs text-left text-neutral-200"}
         (if started? "Active" "Inactive")]]
-      [:div {:class "ml-2"} [:> ChevronDownIcon]]]]))
-
-(defn item-description [{:keys [stops]}]
-  [:ol
-   (for [{:keys [id address arrivedAt]} stops]
-     (let [{:keys [name description]} address]
-       ^{:key id}
-       [:li {:class (class-names  "py-2 flex")}
-        (if arrivedAt
-          [:> CheckIcon {:class (class-names "shrink-0 flex justify-center items-center"
-                                             "mt-1"
-                                             "w-3 h-3"
-                                             "text-green-500")}]
-          [:> MinusIcon {:class (class-names "relative"
-                                             "shrink-0 flex justify-center items-center"
-                                             "mt-1"
-                                             "w-3 h-3"
-                                             "text-neutral-500")}])
-        [:div {:class "pl-2 lg:pl-4 flex w-full"}
-         [:div {:class "w-full"}
-          [:div {:class "text-sm"} name]
-          [:div {:class "font-light text-xs text-neutral-300"} description]]
-         [:div {:class "shrink-0 flex flex-col items-end pl-4 lg:pl-6 text-xs text-neutral-300"}
-          (when arrivedAt
-            [:div {:class "flex"}
-             [:> PackageIcon {:class "mr-1 w-4 h-4"}]
-             (-> arrivedAt (js/parseInt) (js/Date.) (d/format "hh:mmaaa"))])]]]))])
+      [:div {:class "ml-2"} [:> ChevronRightIcon {:class "w-4 h-4"}]]]]))
 
 (def FETCH_SEAT (gql (inline "queries/seat/fetch.graphql")))
 
 (defn view []
   (let [params (use-params)
         query (use-query FETCH_SEAT {:variables {:id (:id params)}})
-        {:keys [data loading]} (->clj query)
+        {:keys [data loading]} query
         {:keys [name location routes]} (:seat data)]
     [:div {:class (class-names padding)}
      (when loading [:p "Loading..."])
@@ -78,12 +48,21 @@
       [:div {:class "text-xs font-light"}
        "Last seen "
        (if location
-         (-> location :createdAt (js/parseInt) (d/formatRelative (js/Date.)))
+         (str
+          (-> location :createdAt (js/parseInt) (d/formatRelative (js/Date.)))
+          " ("
+          (-> location :createdAt (js/parseInt) (d/formatDistanceToNowStrict #js{:addSuffix true}))
+          ")")
          "never")]]
      [:div {:class "mb-4"}
       [:button {:class "mr-2 pb-1 border-b border-neutral-200 text-sm"} "Upcoming"]
       [:button {:class "mr-2 pb-1 border-b border-neutral-700 text-sm"} "Completed"]]
-     [accordion {:items routes
-                 :item-class "mb-2"
-                 :item-to-term item-term
-                 :item-to-description item-description}]]))
+     [:ul
+      (for [{:keys [id] :as route} routes]
+        ^{:key id}
+        [:li
+         [link {:to (str "/routes/" id)
+                :class (class-names "mb-2 block" button-class)}
+          [item route]]])
+      (when (and (not loading) (empty? routes)) [:p {:class "text-center"} "No routes found."])
+      (when loading [:p {:class "text-center"} "Loading routes..."])]]))

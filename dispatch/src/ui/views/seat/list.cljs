@@ -35,7 +35,7 @@
         "Status"]
        [:div {:class "flex items-center text-xs text-left text-neutral-200"}
         (if active? "Active" "Inactive")]]
-      [:div {:class "ml-2"} [:> ChevronRightIcon]]]]))
+      [:div {:class "ml-2"} [:> ChevronRightIcon {:class "w-4 h-4"}]]]]))
 
 (def FETCH_SEATS (gql (inline "queries/seat/fetch-all.graphql")))
 

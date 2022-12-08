@@ -1,11 +1,17 @@
-query Routes($filters: RouteFilters) {
-  routes(filters: $filters) {
+query Route($id: ID!) {
+  route(id: $id) {
     id
+    startAt
     seat {
       id
       name
+      location {
+        id
+        lat
+        lng
+        createdAt
+      }
     }
-    startAt
     stops {
       id
       address {
@@ -15,6 +21,7 @@ query Routes($filters: RouteFilters) {
         lat
         lng
       }
+      arrivedAt
     }
   }
 }

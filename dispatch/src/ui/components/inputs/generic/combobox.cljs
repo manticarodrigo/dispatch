@@ -57,7 +57,7 @@
                                             (first (filter #(= v (option-to-value %)) options))))
                           :on-change on-query}]
       [:div {:class "cursor-text absolute top-[50%] translate-y-[-50%] right-0 pr-2 lg:pr-4"}
-       [:> ChevronDownIcon]]]
+       [:> ChevronDownIcon {:class "w-4 h-4"}]]]
 
      [ui/transition
       {:leave "transition ease-in duration-100"

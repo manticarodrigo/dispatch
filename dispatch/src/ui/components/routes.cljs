@@ -16,6 +16,7 @@
    ["/logout" [router/remove-auth-route]]
    ["/seats" [router/auth-route [seat/list-view]]]
    ["/routes" [router/auth-route [route/list-view]]]
+   ["/routes/:id" [router/auth-route [route/detail-view]]]
    ["/routes/create" [router/auth-route [route/create-view]]]
    ["/seats/:id" [router/auth-route [seat/detail-view]]]
    ["/seats/create" [router/auth-route [seat/create-view]]]

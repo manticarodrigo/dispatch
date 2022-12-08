@@ -41,8 +41,9 @@
            (to-datetime-local (js/Date. startAt)))
 
           #_{:clj-kondo/ignore [:unresolved-symbol]}
-          (p/doseq [address addresses]
-            (select-combobox user component "Add address" (-> address :name)))
+          (p/doseq [{:keys [name]} addresses]
+            (select-combobox user component "Add address" name)
+            (.findByText component name))
 
           (submit (-> component (.-container) (.querySelector "form")))
           (f component))))))

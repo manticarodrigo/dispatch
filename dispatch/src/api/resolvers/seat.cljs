@@ -6,9 +6,7 @@
 
 (defn create-seat
   [_ args context _]
-  (-> (p/let [payload (->clj args)
-              seat-id (models.seat/create context payload)]
-        seat-id)
+  (-> (models.seat/create context (->clj args))
       (p/catch anom/handle-resolver-error)))
 
 (defn fetch-seats

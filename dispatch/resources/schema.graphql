@@ -1,9 +1,12 @@
+scalar Date
+
 type Query {
   user: User
   seats: [Seat]
   seat(id: ID!): Seat
   addresses: [Address]
-  routes: [Route]
+  routes(filters: RouteFilters): [Route]
+  route(id: ID!): Route
 }
 
 type Mutation {
@@ -66,4 +69,9 @@ type Route {
   seat: Seat!
   startAt: String!
   stops: [Stop]!
+}
+
+input RouteFilters {
+  start: Date
+  end: Date
 }

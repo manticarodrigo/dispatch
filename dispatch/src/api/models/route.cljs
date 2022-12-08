@@ -14,9 +14,23 @@
                              :startAt startAt}})]
     (some-> route .-id)))
 
-(defn find-all [^js context]
-  (prisma/find-many
+(defn find-all [^js context {:keys [filters]}]
+  (let [{:keys [start end]} filters
+        and (if (and start end)
+              [{:startAt {:gte start}}
+               {:startAt {:lte end}}]
+              [])]
+    (prisma/find-many
+     (.. context -prisma -route)
+     {:where {:user {:id (.. context -user -id)}
+              :AND and}
+      :orderBy {:startAt "asc"}
+      :include {:seat true
+                :stops {:include {:address true}}}})))
+
+(defn find-unique [^js context {:keys [id]}]
+  (prisma/find-unique
    (.. context -prisma -route)
-   {:where {:user {:id (.. context -user -id)}} 
-    :include {:seat true
+   {:where {:id id}
+    :include {:seat {:include {:location true}}
               :stops {:include {:address true}}}}))
