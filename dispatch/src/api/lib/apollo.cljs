@@ -1,6 +1,7 @@
 (ns api.lib.apollo
   (:require ["@apollo/server" :refer (ApolloServer)]
             ["@apollo/server/express4" :refer (expressMiddleware)]
+            [graphql :refer (GraphQLScalarType)]
             [shadow.resource :refer (inline)]
             [cljs-bean.core :refer (->clj ->js)]
             [promesa.core :as p]
@@ -17,7 +18,17 @@
 (defn get-type-defs []
   (inline "schema.graphql"))
 
-(def resolvers {:Mutation
+(def date-scalar
+  (GraphQLScalarType.
+   (->js {:name "Date"
+          :description "Date custom scalar type"
+          :serialize #(.getTime %)
+          :parseValue #(js/Date. %)
+          :parseLiteral #(when (= "IntValue" (.. % -kind))
+                           (js/Date. (.. % -value)))})))
+
+(def resolvers {:Date date-scalar
+                :Mutation
                 {:createUser user/create-user
                  :loginUser user/login-user
                  :createSeat seat/create-seat

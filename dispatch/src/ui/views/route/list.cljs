@@ -47,7 +47,7 @@
   (if date (-> date js/parseInt js/Date.) (js/Date.)))
 
 (defn transform-date [date fn]
-  (-> date parse-date fn .getTime str))
+  (-> date parse-date fn .getTime))
 
 (defn view []
   (let [[search-params set-search-params] (use-search-params)

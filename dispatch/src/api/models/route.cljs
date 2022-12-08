@@ -15,9 +15,10 @@
     (some-> route .-id)))
 
 (defn find-all [^js context {:keys [filters]}]
-  (let [and (if (and (contains? filters :start) (contains? filters :end))
-              [{:startAt {:gte (-> filters :start js/parseFloat js/Date.)}}
-               {:startAt {:lte (-> filters :end js/parseFloat js/Date.)}}]
+  (let [{:keys [start end]} filters
+        and (if (and start end)
+              [{:startAt {:gte start}}
+               {:startAt {:lte end}}]
               [])]
     (prisma/find-many
      (.. context -prisma -route)
