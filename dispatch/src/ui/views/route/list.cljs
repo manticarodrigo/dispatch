@@ -46,14 +46,11 @@
 (defn parse-date [date]
   (if date (-> date js/parseInt js/Date.) (js/Date.)))
 
-(defn transform-date [date fn]
-  (-> date parse-date fn .getTime))
-
 (defn view []
   (let [[search-params set-search-params] (use-search-params)
-        variables {:filters
-                   {:start (-> search-params :start (transform-date d/startOfDay))
-                    :end  (-> search-params :end (transform-date d/endOfDay))}}
+        {:keys [start end]} search-params
+        variables {:filters {:start (-> start parse-date d/startOfDay)
+                             :end  (-> end parse-date d/endOfDay)}}
         query (use-query FETCH_ROUTES {:variables variables})
         {:keys [data loading]} (->clj query)
         routes (some-> data :routes)

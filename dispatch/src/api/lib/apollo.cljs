@@ -5,6 +5,7 @@
             [shadow.resource :refer (inline)]
             [cljs-bean.core :refer (->clj ->js)]
             [promesa.core :as p]
+            [common.utils.date :refer (date-scalar-map)]
             [api.lib.prisma :refer (open-prisma)]
             [api.util.prisma :refer (find-unique)]
             [api.util.anom :as anom]
@@ -20,12 +21,9 @@
 
 (def date-scalar
   (GraphQLScalarType.
-   (->js {:name "Date"
-          :description "Date custom scalar type"
-          :serialize #(.getTime %)
-          :parseValue #(js/Date. %)
-          :parseLiteral #(when (= "IntValue" (.. % -kind))
-                           (js/Date. (.. % -value)))})))
+   (->js (merge {:name "Date"
+                 :description "Date custom scalar type"}
+                date-scalar-map))))
 
 (def resolvers {:Date date-scalar
                 :Mutation
