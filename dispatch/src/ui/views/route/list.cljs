@@ -1,6 +1,6 @@
 (ns ui.views.route.list
   (:require
-   ["@apollo/client" :refer (gql useQuery)]
+   ["@apollo/client" :refer (gql)]
    [react-feather :rename {GitPullRequest RouteIcon
                            ChevronRight ChevronRightIcon
                            Plus PlusIcon}]
@@ -8,6 +8,7 @@
    [clojure.string :as s]
    [shadow.resource :refer (inline)]
    [cljs-bean.core :refer (->clj)]
+   [ui.lib.apollo :refer (use-query)]
    [ui.lib.router :refer (link use-search-params)]
    [ui.utils.string :refer (class-names)]
    [ui.utils.css :refer (padding)]
@@ -42,9 +43,18 @@
 
 (def FETCH_ROUTES (gql (inline "queries/route/fetch-all.graphql")))
 
+(defn parse-date [date]
+  (if date (-> date js/parseInt js/Date.) (js/Date.)))
+
+(defn transform-date [date fn]
+  (-> date parse-date fn .getTime str))
+
 (defn view []
   (let [[search-params set-search-params] (use-search-params)
-        query (useQuery FETCH_ROUTES)
+        variables {:filters
+                   {:start (-> search-params :start (transform-date d/startOfDay))
+                    :end  (-> search-params :end (transform-date d/endOfDay))}}
+        query (use-query FETCH_ROUTES {:variables variables})
         {:keys [data loading]} (->clj query)
         routes (some-> data :routes)
         filtered-routes (if (empty? (-> search-params :text))

@@ -13,8 +13,8 @@
       (p/catch anom/handle-resolver-error)))
 
 (defn fetch-routes
-  [_ _ context _]
-  (-> (model/find-all context)
+  [_ args context _]
+  (-> (model/find-all context (->clj args))
       (p/catch anom/handle-resolver-error)))
 
 (defn fetch-route

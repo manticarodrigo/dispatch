@@ -3,7 +3,6 @@
                                     ChevronRight ChevronRightIcon}]
             [date-fns :as d]
             [shadow.resource :refer (inline)]
-            [cljs-bean.core :refer (->clj)]
             [ui.lib.apollo :refer (gql use-query)]
             [ui.lib.router :refer (use-params link)]
             [ui.utils.string :refer (class-names)]
@@ -40,7 +39,7 @@
 (defn view []
   (let [params (use-params)
         query (use-query FETCH_SEAT {:variables {:id (:id params)}})
-        {:keys [data loading]} (->clj query)
+        {:keys [data loading]} query
         {:keys [name location routes]} (:seat data)]
     [:div {:class (class-names padding)}
      (when loading [:p "Loading..."])
