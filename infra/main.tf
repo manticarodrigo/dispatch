@@ -27,11 +27,10 @@ provider "aws" {
 variable "env" {}
 variable "aws_account_id" {}
 variable "aws_region" {}
-variable "domain_name" {
-  default = "ambito.app"
-}
-variable "app_name" {
-  default = "dispatch"
+
+locals {
+  domain_name = var.env == "prod" ? "ambito.app" : "ambito.dev"
+  app_name    = "dispatch"
 }
 
 # modules
@@ -44,12 +43,14 @@ module "db" {
   source   = "./db"
   env      = var.env
   region   = var.aws_region
-  app_name = var.app_name
+  app_name = local.app_name
   vpc_id   = module.vpc.vpc_id
 }
 
 module "build" {
-  source = "./build"
+  source      = "./build"
+  domain_name = local.domain_name
+  app_name    = local.app_name
 }
 
 module "api" {
@@ -57,8 +58,8 @@ module "api" {
   sha1        = module.build.sha1
   build       = module.build.build
   env         = var.env
-  domain_name = var.domain_name
-  app_name    = var.app_name
+  domain_name = local.domain_name
+  app_name    = local.app_name
   db_host     = module.db.host
   db_name     = module.db.name
   db_port     = module.db.port
@@ -71,6 +72,6 @@ module "site" {
   sha1        = module.build.sha1
   build       = module.build.build
   env         = var.env
-  domain_name = var.domain_name
-  app_name    = var.app_name
+  domain_name = local.domain_name
+  app_name    = local.app_name
 }

@@ -1,0 +1,6 @@
+{:closure-defines
+ {ui.config/REGION #shadow/env "REGION"
+  ui.config/LANGUAGE #shadow/env "LANGUAGE"
+  ui.config/API_URL #shadow/env "API_URL"
+  ui.config/SECURE_COOKIE #shadow/env "SECURE_COOKIE"
+  ui.config/GOOGLE_MAPS_API_KEY #shadow/env "GOOGLE_MAPS_API_KEY"}}
