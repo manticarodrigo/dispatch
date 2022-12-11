@@ -16,7 +16,7 @@ terraform {
     bucket = "ambito-infra-state"
     key = "ambito/terraform.tfstate"
     region = "us-east-1"
-    workspace_key_prefix = "env:/"
+    workspace_key_prefix = "env"
   }
 }
 
