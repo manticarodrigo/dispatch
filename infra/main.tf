@@ -14,6 +14,9 @@ terraform {
 
   backend "s3" {
     bucket = "ambito-infra-state"
+    key = "ambito/terraform.tfstate"
+    region = "us-east-1"
+    workspace_key_prefix = "env:/"
   }
 }
 
@@ -28,7 +31,11 @@ variable "aws_account_id" {}
 variable "aws_region" {}
 
 locals {
-  domain_name = terraform.workspace == "prod" ? "ambito.app" : "ambito.dev"
+  domain_map = {
+    prod = "ambito.app"
+    dev  = "ambito.dev"
+  }
+  domain_name = local.domain_map[terraform.workspace]
   app_name    = "dispatch"
 }
 
