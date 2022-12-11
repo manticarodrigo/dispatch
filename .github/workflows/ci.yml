@@ -55,12 +55,10 @@ jobs:
           cd infra
           if [[ "${{github.base_ref}}" == "master" || "${{github.ref}}" == "refs/heads/master" ]]; then
             terraform init -input=false -migrate-state
-            terraform workspace new prod
             terraform workspace select prod
           fi
           if [[ "${{github.base_ref}}" == "develop" || "${{github.ref}}" == "refs/heads/develop" ]]; then
             terraform init -input=false -migrate-state
-            terraform workspace new dev
             terraform workspace select dev
           fi
       - name: Plan terraform
