@@ -24,12 +24,11 @@ provider "aws" {
 
 # variables
 
-variable "env" {}
 variable "aws_account_id" {}
 variable "aws_region" {}
 
 locals {
-  domain_name = var.env == "prod" ? "ambito.app" : "ambito.dev"
+  domain_name = terraform.workspace == "prod" ? "ambito.app" : "ambito.dev"
   app_name    = "dispatch"
 }
 
@@ -41,7 +40,6 @@ module "vpc" {
 
 module "db" {
   source   = "./db"
-  env      = var.env
   region   = var.aws_region
   app_name = local.app_name
   vpc_id   = module.vpc.vpc_id
@@ -57,7 +55,6 @@ module "api" {
   source      = "./api"
   sha1        = module.build.sha1
   build       = module.build.build
-  env         = var.env
   domain_name = local.domain_name
   app_name    = local.app_name
   db_host     = module.db.host
@@ -71,7 +68,6 @@ module "site" {
   source      = "./site"
   sha1        = module.build.sha1
   build       = module.build.build
-  env         = var.env
   domain_name = local.domain_name
   app_name    = local.app_name
 }

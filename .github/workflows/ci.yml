@@ -4,12 +4,12 @@ on:
   push:
     branches:
       - master
+      - develop
 
 jobs:
   deploy:
     name: deploy infra
     env:
-      TF_VAR_env: prod
       TF_VAR_aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
       TF_VAR_aws_region: us-east-1
     runs-on: ubuntu-20.04
@@ -53,7 +53,12 @@ jobs:
       - name: Initialize terraform
         run: |
           cd infra
-          terraform init -input=false -backend-config="key=prod"
+          if [[ "${{github.base_ref}}" == "master" || "${{github.ref}}" == "refs/heads/master" ]]; then
+            terraform init -input=false -backend-config="key=prod"
+          fi
+          if [[ "${{github.base_ref}}" == "develop" || "${{github.ref}}" == "refs/heads/develop" ]]; then
+            terraform init -input=false -backend-config="key=dev"
+          fi
       - name: Plan terraform
         id: plan
         run: |

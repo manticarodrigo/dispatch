@@ -4,7 +4,7 @@ locals {
 
 resource "aws_security_group" "db" {
   vpc_id = var.vpc_id
-  name   = "${local.identifier}-sg-${var.env}"
+  name   = "${local.identifier}-sg-${terraform.workspace}"
 
   ingress {
     from_port   = 5432
@@ -22,7 +22,7 @@ resource "aws_security_group" "db" {
 }
 
 resource "aws_db_instance" "master" {
-  identifier     = "${var.app_name}-db-${var.env}"
+  identifier     = "${var.app_name}-db-${terraform.workspace}"
   engine         = "postgres"
   engine_version = "13.7"
   instance_class = "db.t4g.micro"
@@ -45,7 +45,7 @@ resource "aws_db_instance" "master" {
 }
 
 # resource "aws_db_instance" "replica" {
-#   identifier          = "${var.app_name}-db-replica-${var.env}"
+#   identifier          = "${var.app_name}-db-replica-${terraform.workspace}"
 #   replicate_source_db = aws_db_instance.master.identifier
 #   instance_class      = aws_db_instance.master.instance_class
 #   allocated_storage   = aws_db_instance.master.allocated_storage

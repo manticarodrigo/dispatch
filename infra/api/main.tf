@@ -50,7 +50,7 @@ resource "aws_acm_certificate_validation" "api_cert_validate" {
 # S3
 
 resource "aws_s3_bucket" "api" {
-  bucket = "${var.app_name}-api-${var.env}"
+  bucket = "${var.app_name}-api-${terraform.workspace}"
 }
 
 resource "aws_s3_bucket_acl" "api" {
@@ -110,7 +110,7 @@ resource "null_resource" "api_db_sync" {
 # Lambda
 
 resource "aws_lambda_function" "api" {
-  function_name = "${var.app_name}-api-${var.env}"
+  function_name = "${var.app_name}-api-${terraform.workspace}"
 
   runtime       = "nodejs16.x"
   architectures = ["arm64"]
@@ -124,7 +124,7 @@ resource "aws_lambda_function" "api" {
 
   environment {
     variables = {
-      "STAGE"        = var.env
+      "STAGE"        = terraform.workspace
       "DATABASE_URL" = local.db_url
     }
   }
@@ -137,7 +137,7 @@ resource "aws_cloudwatch_log_group" "api-lambda" {
 }
 
 resource "aws_iam_role" "api" {
-  name = "${var.app_name}-api-${var.env}"
+  name = "${var.app_name}-api-${terraform.workspace}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -161,7 +161,7 @@ resource "aws_iam_role_policy_attachment" "api" {
 # API Gateway
 
 resource "aws_apigatewayv2_api" "api" {
-  name          = "${var.app_name}-api-${var.env}"
+  name          = "${var.app_name}-api-${terraform.workspace}"
   protocol_type = "HTTP"
 }
 

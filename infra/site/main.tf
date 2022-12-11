@@ -1,7 +1,7 @@
 locals {
   domain_name = "${var.app_name}.${var.domain_name}"
-  bucket_name = "${var.app_name}-site-${var.env}"
-  origin_name = "${var.app_name}-origin-${var.env}"
+  bucket_name = "${var.app_name}-site-${terraform.workspace}"
+  origin_name = "${var.app_name}-origin-${terraform.workspace}"
 }
 
 
