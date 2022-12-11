@@ -48,7 +48,7 @@ module "vpc" {
 module "db" {
   source         = "./db"
   region         = var.aws_region
-  app_name       = var.app_name
+  app_name       = local.app_name
   vpc_id         = module.vpc.vpc_id
   vpc_subnet_ids = module.vpc.default_subnet_ids
 }
@@ -65,8 +65,8 @@ module "api" {
   build                    = module.build.build
   region                   = var.aws_region
   account_id               = var.aws_account_id
-  domain_name              = var.domain_name
-  app_name                 = var.app_name
+  domain_name              = local.domain_name
+  app_name                 = local.app_name
   db_host                  = module.db.host
   db_name                  = module.db.name
   db_port                  = module.db.port
