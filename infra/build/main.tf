@@ -33,5 +33,10 @@ resource "null_resource" "build" {
                   yarn release
                   EOT
     working_dir = "../dispatch"
+
+    environment = {
+      API_URL       = "https://api.${var.app_name}.${var.domain_name}"
+      SECURE_COOKIE = true
+    }
   }
 }

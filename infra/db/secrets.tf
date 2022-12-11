@@ -1,5 +1,5 @@
 resource "aws_secretsmanager_secret" "rds_secret" {
-  name_prefix             = "${var.app_name}-rds-proxy-secret-${var.env}"
+  name_prefix             = "${var.app_name}-rds-proxy-secret-${terraform.workspace}"
   recovery_window_in_days = 7
 }
 

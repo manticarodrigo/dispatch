@@ -14,6 +14,9 @@ terraform {
 
   backend "s3" {
     bucket = "ambito-infra-state"
+    key = "ambito/terraform.tfstate"
+    region = "us-east-1"
+    workspace_key_prefix = "env"
   }
 }
 
@@ -24,14 +27,16 @@ provider "aws" {
 
 # variables
 
-variable "env" {}
 variable "aws_account_id" {}
 variable "aws_region" {}
-variable "domain_name" {
-  default = "ambito.app"
-}
-variable "app_name" {
-  default = "dispatch"
+
+locals {
+  domain_map = {
+    prod = "ambito.app"
+    dev  = "ambito.dev"
+  }
+  domain_name = local.domain_map[terraform.workspace]
+  app_name    = "dispatch"
 }
 
 # modules
@@ -42,7 +47,6 @@ module "vpc" {
 
 module "db" {
   source         = "./db"
-  env            = var.env
   region         = var.aws_region
   app_name       = var.app_name
   vpc_id         = module.vpc.vpc_id
@@ -50,14 +54,15 @@ module "db" {
 }
 
 module "build" {
-  source = "./build"
+  source      = "./build"
+  domain_name = local.domain_name
+  app_name    = local.app_name
 }
 
 module "api" {
   source                   = "./api"
   sha1                     = module.build.sha1
   build                    = module.build.build
-  env                      = var.env
   region                   = var.aws_region
   account_id               = var.aws_account_id
   domain_name              = var.domain_name
@@ -76,7 +81,6 @@ module "site" {
   source      = "./site"
   sha1        = module.build.sha1
   build       = module.build.build
-  env         = var.env
-  domain_name = var.domain_name
-  app_name    = var.app_name
+  domain_name = local.domain_name
+  app_name    = local.app_name
 }

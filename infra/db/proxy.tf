@@ -14,7 +14,7 @@ resource "aws_db_proxy_target" "rds_proxy_target" {
 }
 
 resource "aws_db_proxy" "db_proxy" {
-  name                   = "${var.app_name}-rds-proxy-${var.env}"
+  name                   = "${var.app_name}-rds-proxy-${terraform.workspace}"
   debug_logging          = false
   engine_family          = "POSTGRESQL"
   idle_client_timeout    = 1800

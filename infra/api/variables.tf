@@ -1,6 +1,5 @@
 variable "sha1" {}
 variable "build" {}
-variable "env" {}
 variable "region" {}
 variable "account_id" {}
 variable "domain_name" {}

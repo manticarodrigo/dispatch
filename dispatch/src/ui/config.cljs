@@ -3,8 +3,8 @@
 (def debug?
   ^boolean goog.DEBUG)
 
-(goog-define REGION "")
-(goog-define LANGUAGE "")
-(goog-define API_URL "")
-(goog-define SECURE_COOKIE "")
-(goog-define GOOGLE_MAPS_API_KEY "")
+(goog-define REGION "US")
+(goog-define LANGUAGE "en")
+(goog-define API_URL "http://localhost:3000")
+(goog-define SECURE_COOKIE false)
+(goog-define GOOGLE_MAPS_API_KEY "AIzaSyAVgq9NMzbNqubtOPSoPHpyEYYtxGJdbhs")

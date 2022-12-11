@@ -1,6 +1,6 @@
 resource "aws_security_group" "lambda" {
   vpc_id = var.vpc_id
-  name   = "${local.identifier}-lambda-sg-${var.env}"
+  name   = "${local.identifier}-lambda-sg-${terraform.workspace}"
 
   egress {
     from_port   = 0
@@ -12,7 +12,7 @@ resource "aws_security_group" "lambda" {
 
 resource "aws_security_group" "proxy" {
   vpc_id = var.vpc_id
-  name   = "${local.identifier}-proxy-sg-${var.env}"
+  name   = "${local.identifier}-proxy-sg-${terraform.workspace}"
 
   ingress {
     from_port       = 5432
@@ -31,7 +31,7 @@ resource "aws_security_group" "proxy" {
 
 resource "aws_security_group" "db" {
   vpc_id = var.vpc_id
-  name   = "${local.identifier}-sg-${var.env}"
+  name   = "${local.identifier}-sg-${terraform.workspace}"
 
   ingress {
     from_port       = 5432
