@@ -53,14 +53,13 @@ jobs:
       - name: Initialize terraform
         run: |
           cd infra
-          terraform workspace list
           if [[ "${{github.base_ref}}" == "master" || "${{github.ref}}" == "refs/heads/master" ]]; then
-            terraform workspace select prod
             terraform init -input=false -backend-config="key=prod"
+            terraform workspace select prod
           fi
           if [[ "${{github.base_ref}}" == "develop" || "${{github.ref}}" == "refs/heads/develop" ]]; then
-            terraform workspace select dev
             terraform init -input=false -backend-config="key=dev"
+            terraform workspace select dev
           fi
       - name: Plan terraform
         id: plan
