@@ -19,9 +19,11 @@
           middleware (apollo/create-middleware server)
           app (express)]
     (.use app (.json express))
-    (.use app (fn [_ res next]
+    (.use app (fn [req res next]
                 (.set res (->js headers))
-                (next)))
+                (if (= (.. req -method) "OPTIONS")
+                  (.send res 200)
+                  (next))))
     (.use app middleware)
     app))
 
