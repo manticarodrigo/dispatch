@@ -1,7 +1,7 @@
 locals {
   identifier = "${var.app_name}-db"
   db_instance_class_map = {
-    prod = "db.t4g.large"
+    prod = "db.t4g.small"
     dev  = "db.t4g.micro"
   }
 }
