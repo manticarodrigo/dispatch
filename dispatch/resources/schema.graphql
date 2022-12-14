@@ -75,3 +75,13 @@ input RouteFilters {
   start: Date
   end: Date
 }
+
+type Note {
+  id: ID!
+  title: String!
+  content: String!
+  type: String!
+  id_type: Int!
+  createdAt: String!
+  updatedAt: String!
+}

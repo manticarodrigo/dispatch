@@ -5,6 +5,7 @@
             [ui.views.seat.core :as seat]
             [ui.views.address.core :as address]
             [ui.views.route.core :as route]
+            [ui.views.note.core :as note]
             [ui.views.not-found :as not-found]))
 
 (defn routes []
@@ -22,4 +23,5 @@
    ["/seats/create" [router/auth-route [seat/create-view]]]
    ["/addresses" [router/auth-route [address/list-view]]]
    ["/addresses/create" [router/auth-route [address/create-view]]]
+   ["/note" [note/list-view]]
    ["*" [not-found/view]]])

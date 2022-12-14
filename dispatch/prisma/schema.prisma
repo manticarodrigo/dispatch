@@ -85,3 +85,13 @@ model Stop {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
+
+model Note {
+  id          Int     @default(autoincrement()) @id
+  title       String 
+  content     String
+  type        String
+  id_type     Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
