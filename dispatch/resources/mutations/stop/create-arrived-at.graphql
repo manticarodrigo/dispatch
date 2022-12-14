@@ -1,5 +1,5 @@
-mutation CreateArrivedAt($stopId: ID!) {
-  createArrivedAt(stopId: $stopId) {
+mutation createStopArrival($stopId: ID!, $Note: String) {
+  createStopArrival(stopId: $stopId, Note: $Note) {
     id
     arrivedAt
   }

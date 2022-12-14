@@ -33,7 +33,7 @@
                  :createAddress address/create-address
                  :createRoute route/create-route
                  :createLocation location/create-location
-                 :createArrivedAt stop/create-arrived-at}
+                 :createStopArrival stop/create-arrived-at}
                 :Query
                 {:user user/logged-in-user
                  :seats seat/fetch-seats

@@ -232,7 +232,7 @@
                                         (stop/create-arrived-at (-> stops first :id)))
                                       (-> route-mocks :result :data :routes)))]
            (testing "api returns data"
-             (is (every? #(-> % :result :data :createArrivedAt :arrivedAt) create-mocks))
+             (is (every? #(-> % :result :data :createStopArrival :arrivedAt) create-mocks))
              (done)))))
 
 (deftest fetch-seat
