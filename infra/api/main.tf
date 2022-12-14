@@ -6,6 +6,8 @@ locals {
   domain_name    = "api.${var.app_name}.${var.domain_name}"
   db_url         = local.db_map[terraform.workspace]
   db_migrate_url = "postgresql://${var.db_user}:${var.db_pass}@${var.db_host}:${var.db_port}/${var.db_name}?schema=public"
+  api_name       = "${var.app_name}-api-${terraform.workspace}"
+  api_stage_name = "${var.app_name}-api-stage-${terraform.workspace}"
 }
 
 
@@ -166,14 +168,14 @@ resource "aws_iam_role_policy_attachment" "api" {
 # API Gateway
 
 resource "aws_apigatewayv2_api" "api" {
-  name          = "${var.app_name}-api-${terraform.workspace}"
+  name          = local.api_name
   protocol_type = "HTTP"
 }
 
 resource "aws_apigatewayv2_stage" "api" {
   api_id = aws_apigatewayv2_api.api.id
 
-  name        = "${var.app_name}-api-stage"
+  name        = local.api_stage_name
   auto_deploy = true
 
   access_log_settings {

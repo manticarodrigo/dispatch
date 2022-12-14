@@ -13,9 +13,9 @@ terraform {
   }
 
   backend "s3" {
-    bucket = "ambito-infra-state"
-    key = "ambito/terraform.tfstate"
-    region = "us-east-1"
+    bucket               = "ambito-infra-state"
+    key                  = "ambito/terraform.tfstate"
+    region               = "us-east-1"
     workspace_key_prefix = "env"
   }
 }
@@ -72,9 +72,11 @@ module "api" {
 }
 
 module "site" {
-  source      = "./site"
-  sha1        = module.build.sha1
-  build       = module.build.build
-  domain_name = local.domain_name
-  app_name    = local.app_name
+  source         = "./site"
+  sha1           = module.build.sha1
+  build          = module.build.build
+  domain_name    = local.domain_name
+  app_name       = local.app_name
+  api_invoke_url = module.api.api_invoke_url
+  api_stage_name = module.api.api_stage_name
 }

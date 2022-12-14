@@ -1,7 +1,8 @@
 locals {
-  domain_name = "${var.app_name}.${var.domain_name}"
-  bucket_name = "${var.app_name}-site-${terraform.workspace}"
-  origin_name = "${var.app_name}-origin-${terraform.workspace}"
+  domain_name     = "${var.app_name}.${var.domain_name}"
+  bucket_name     = "${var.app_name}-site-${terraform.workspace}"
+  origin_name     = "${var.app_name}-origin-${terraform.workspace}"
+  api_origin_name = "${var.app_name}-api-origin-${terraform.workspace}"
 }
 
 
@@ -121,23 +122,48 @@ resource "aws_cloudfront_distribution" "site_s3_dist" {
     origin_id   = local.origin_name
   }
 
+  origin {
+    domain_name = replace(var.api_invoke_url, "/^https?://([^/]*).*/", "$1")
+    origin_id   = local.api_origin_name
+
+    custom_origin_config {
+      http_port              = 80
+      https_port             = 443
+      origin_protocol_policy = "https-only"
+      origin_ssl_protocols   = ["TLSv1.2"]
+    }
+  }
+
   default_cache_behavior {
-    allowed_methods  = ["GET", "HEAD"]
-    cached_methods   = ["GET", "HEAD"]
+    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
+    cached_methods   = ["GET", "HEAD", "OPTIONS"]
     target_origin_id = local.origin_name
 
-    forwarded_values {
-      query_string = false
-
-      cookies {
-        forward = "none"
-      }
-    }
-
-    viewer_protocol_policy = "redirect-to-https"
     max_ttl                = 86400
     default_ttl            = 3600
     min_ttl                = 0
+    viewer_protocol_policy = "redirect-to-https"
+
+
+    cache_policy_id          = data.aws_cloudfront_cache_policy.site.id
+    origin_request_policy_id = data.aws_cloudfront_origin_request_policy.site_s3.id
+  }
+
+  ordered_cache_behavior {
+    path_pattern     = var.api_stage_name
+    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
+    cached_methods   = ["GET", "HEAD", "OPTIONS"]
+    target_origin_id = local.api_origin_name
+
+    min_ttl                = 0
+    default_ttl            = 0
+    max_ttl                = 0
+    compress               = true
+    viewer_protocol_policy = "redirect-to-https"
+
+
+    cache_policy_id          = data.aws_cloudfront_cache_policy.site.id
+    origin_request_policy_id = data.aws_cloudfront_origin_request_policy.site_api.id
   }
 
   restrictions {
@@ -157,4 +183,15 @@ resource "aws_cloudfront_distribution" "site_s3_dist" {
     response_code      = 200
     response_page_path = "/index.html"
   }
+}
+
+data "aws_cloudfront_origin_request_policy" "site_s3" {
+  name = "Managed-CORS-S3Origin"
+}
+data "aws_cloudfront_origin_request_policy" "site_api" {
+  name = "Managed-CORS-CustomOrigin"
+}
+
+data "aws_cloudfront_cache_policy" "site" {
+  name = "Managed-CachingOptimized"
 }
