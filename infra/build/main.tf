@@ -28,8 +28,9 @@ resource "null_resource" "build" {
                   set -e
                   source local.env
                   yarn
-                  yarn db-generate
+                  yarn db-gen
                   yarn test
+                  npx prisma generate --data-proxy
                   yarn release
                   EOT
     working_dir = "../dispatch"
