@@ -62,7 +62,7 @@ type Stop {
   id: ID!
   address: Address!
   arrivedAt: String
-  Note: String
+  note: String
 }
 
 type Route {

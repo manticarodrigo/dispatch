@@ -23,5 +23,4 @@
    ["/seats/create" [router/auth-route [seat/create-view]]]
    ["/addresses" [router/auth-route [address/list-view]]]
    ["/addresses/create" [router/auth-route [address/create-view]]]
-   ["/note" [note/list-view]]
    ["*" [not-found/view]]])
