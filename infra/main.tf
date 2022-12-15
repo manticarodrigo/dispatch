@@ -10,6 +10,10 @@ terraform {
       source  = "hashicorp/archive"
       version = "2.2.0"
     }
+    datadog = {
+      source  = "DataDog/datadog"
+      version = "3.18.0"
+    }
   }
 
   backend "s3" {
@@ -79,4 +83,9 @@ module "site" {
   app_name       = local.app_name
   api_invoke_url = module.api.api_invoke_url
   api_stage_name = module.api.api_stage_name
+}
+
+module "datadog" {
+  source         = "./datadog"
+  api_lambda_arn = module.api.api_lambda_arn
 }
