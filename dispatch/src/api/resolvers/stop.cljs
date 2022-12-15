@@ -5,8 +5,8 @@
    [api.util.anom :as anom]
    [api.models.stop :as models.stop]))
 
-(defn create-arrived-at
+(defn create-stop-arrival
   [_ args context _]
-  (-> (models.stop/create-arrived-at context (->clj args))
+  (-> (models.stop/create-stop-arrival context (->clj args))
       (p/catch anom/handle-resolver-error)))
 
