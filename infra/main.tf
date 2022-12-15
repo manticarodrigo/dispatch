@@ -24,16 +24,6 @@ terraform {
   }
 }
 
-provider "aws" {
-  allowed_account_ids = [var.aws_account_id]
-  region              = var.aws_region
-}
-
-# variables
-
-variable "aws_account_id" {}
-variable "aws_region" {}
-
 locals {
   domain_map = {
     prod = "ambito.app"
@@ -51,7 +41,6 @@ module "vpc" {
 
 module "db" {
   source   = "./db"
-  region   = var.aws_region
   app_name = local.app_name
   vpc_id   = module.vpc.vpc_id
 }
