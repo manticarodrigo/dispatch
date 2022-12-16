@@ -10,8 +10,8 @@ jobs:
   deploy:
     name: deploy infra
     env:
-      TF_VAR_dd_api_key: ${{ secrets.DD_API_KEY }}
-      TF_VAR_dd_app_key: ${{ secrets.DD_APP_KEY }}
+      DD_API_KEY: ${{ secrets.DD_API_KEY }}
+      DD_APP_KEY: ${{ secrets.DD_APP_KEY }}
     runs-on: ubuntu-20.04
     steps:
       - name: Check out code
