@@ -15,6 +15,10 @@ locals {
 
 # Datadog
 
+data "datadog_api_key" "current" {
+  name = terraform.workspace
+}
+
 resource "datadog_integration_aws" "integration" {
   account_id = local.account_id
   role_name  = "DatadogAWSIntegrationRole"

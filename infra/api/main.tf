@@ -10,6 +10,7 @@ locals {
   api_stage_name = "${var.app_name}-api-stage-${terraform.workspace}"
 }
 
+data "aws_region" "current" {}
 
 # Route53
 
@@ -121,7 +122,7 @@ resource "aws_lambda_function" "api" {
 
   runtime       = "nodejs16.x"
   architectures = ["arm64"]
-  handler       = "index.handler"
+  handler       = "/opt/nodejs/node_modules/datadog-lambda-js/handler.handler"
   timeout       = 10
 
   s3_bucket = aws_s3_bucket.api.id
@@ -129,18 +130,20 @@ resource "aws_lambda_function" "api" {
 
   role = aws_iam_role.api.arn
 
+  layers = [
+    "arn:aws:lambda:${data.aws_region.current.name}:464622532012:layer:Datadog-Node16-x:85",
+    "arn:aws:lambda:${data.aws_region.current.name}:464622532012:layer:Datadog-Extension-ARM:34"
+  ]
+
   environment {
     variables = {
-      "STAGE"        = terraform.workspace
-      "DATABASE_URL" = local.db_url
+      "STAGE"             = terraform.workspace
+      "DATABASE_URL"      = local.db_url
+      "DD_LAMBDA_HANDLER" = "index.handler"
+      "DD_SITE"           = "datadoghq.com"
+      "DD_API_KEY"        = var.datadog_api_key
     }
   }
-}
-
-resource "aws_cloudwatch_log_group" "api-lambda" {
-  name = "/aws/lambda/${aws_lambda_function.api.function_name}"
-
-  retention_in_days = 30
 }
 
 resource "aws_iam_role" "api" {
@@ -228,12 +231,6 @@ resource "aws_apigatewayv2_api_mapping" "api" {
   domain_name = aws_apigatewayv2_domain_name.api.id
 }
 
-resource "aws_cloudwatch_log_group" "api-gw" {
-  name = "/aws/api_gw/${aws_apigatewayv2_api.api.name}"
-
-  retention_in_days = 30
-}
-
 resource "aws_lambda_permission" "api" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
@@ -241,4 +238,18 @@ resource "aws_lambda_permission" "api" {
   principal     = "apigateway.amazonaws.com"
 
   source_arn = "${aws_apigatewayv2_api.api.execution_arn}/*/*"
+}
+
+# Monitoring
+
+resource "aws_cloudwatch_log_group" "api-lambda" {
+  name = "/aws/lambda/${aws_lambda_function.api.function_name}"
+
+  retention_in_days = 30
+}
+
+resource "aws_cloudwatch_log_group" "api-gw" {
+  name = "/aws/api_gw/${aws_apigatewayv2_api.api.name}"
+
+  retention_in_days = 30
 }

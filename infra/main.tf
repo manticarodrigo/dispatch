@@ -52,16 +52,17 @@ module "build" {
 }
 
 module "api" {
-  source      = "./api"
-  sha1        = module.build.sha1
-  build       = module.build.build
-  domain_name = local.domain_name
-  app_name    = local.app_name
-  db_host     = module.db.host
-  db_name     = module.db.name
-  db_port     = module.db.port
-  db_user     = module.db.username
-  db_pass     = module.db.password
+  source          = "./api"
+  sha1            = module.build.sha1
+  build           = module.build.build
+  domain_name     = local.domain_name
+  app_name        = local.app_name
+  db_host         = module.db.host
+  db_name         = module.db.name
+  db_port         = module.db.port
+  db_user         = module.db.username
+  db_pass         = module.db.password
+  datadog_api_key = module.datadog.datadog_api_key
 }
 
 module "site" {
