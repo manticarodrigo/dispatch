@@ -10,8 +10,6 @@ jobs:
   deploy:
     name: deploy infra
     env:
-      TF_VAR_aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
-      TF_VAR_aws_region: us-east-1
     runs-on: ubuntu-20.04
     steps:
       - name: Check out code
