@@ -24,6 +24,14 @@ terraform {
   }
 }
 
+variable "dd_api_key" {}
+variable "dd_app_key" {}
+
+provider "datadog" {
+  api_key = var.dd_api_key
+  app_key = var.dd_app_key
+}
+
 locals {
   domain_map = {
     prod = "ambito.app"
