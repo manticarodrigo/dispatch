@@ -36,6 +36,8 @@ resource "null_resource" "build" {
     working_dir = "../dispatch"
 
     environment = {
+      STAGE         = terraform.workspace
+      VERSION       = local.sha1
       API_URL       = "https://api.${var.app_name}.${var.domain_name}"
       SECURE_COOKIE = true
     }

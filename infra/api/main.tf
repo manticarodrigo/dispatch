@@ -73,7 +73,6 @@ resource "null_resource" "api_sync" {
 
   provisioner "local-exec" {
     command     = <<-EOT
-                  mv client/* .
                   zip -r api.zip *
                   aws s3 cp api.zip s3://${aws_s3_bucket.api.id}/api.zip
                 EOT
@@ -137,11 +136,17 @@ resource "aws_lambda_function" "api" {
 
   environment {
     variables = {
-      "STAGE"             = terraform.workspace
-      "DATABASE_URL"      = local.db_url
-      "DD_LAMBDA_HANDLER" = "index.handler"
-      "DD_SITE"           = "datadoghq.com"
-      "DD_API_KEY"        = var.datadog_api_key
+      STAGE             = terraform.workspace
+      DATABASE_URL      = local.db_url
+      DD_LAMBDA_HANDLER = "index.handler"
+      DD_SITE           = "datadoghq.com"
+      DD_API_KEY        = var.datadog_api_key
+      DD_ENV            = terraform.workspace
+      DD_SERVICE        = "api"
+      DD_VERSION        = var.sha1
+      DD_LOG_LEVEL      = "debug"
+      DD_TRACE_DEBUG    = "true"
+      DD_LOGS_INJECTION = "true"
     }
   }
 }

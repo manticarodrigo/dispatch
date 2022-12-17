@@ -76,6 +76,5 @@ module "site" {
 }
 
 module "datadog" {
-  source         = "./datadog"
-  api_lambda_arn = module.api.api_lambda_arn
+  source = "./datadog"
 }

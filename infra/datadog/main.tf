@@ -24,9 +24,15 @@ resource "datadog_integration_aws" "integration" {
   role_name  = "DatadogAWSIntegrationRole"
 }
 
-resource "datadog_integration_aws_lambda_arn" "api" {
-  account_id = local.account_id
-  lambda_arn = var.api_lambda_arn
+resource "aws_cloudformation_stack" "datadog_forwarder" {
+  name         = "datadog-forwarder"
+  capabilities = ["CAPABILITY_IAM", "CAPABILITY_NAMED_IAM", "CAPABILITY_AUTO_EXPAND"]
+  parameters = {
+    DdApiKey     = data.datadog_api_key.current.key
+    DdSite       = "datadoghq.com",
+    FunctionName = "datadog-forwarder"
+  }
+  template_url = "https://datadog-cloudformation-template.s3.amazonaws.com/aws/forwarder/latest.yaml"
 }
 
 # IAM
