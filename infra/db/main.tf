@@ -1,5 +1,9 @@
 locals {
   identifier = "${var.app_name}-db"
+  db_instance_class_map = {
+    prod = "db.t4g.micro"
+    dev  = "db.t4g.micro"
+  }
 }
 
 resource "aws_security_group" "db" {
@@ -25,7 +29,7 @@ resource "aws_db_instance" "master" {
   identifier     = "${var.app_name}-db-${terraform.workspace}"
   engine         = "postgres"
   engine_version = "13.7"
-  instance_class = "db.t4g.micro"
+  instance_class = local.db_instance_class_map[terraform.workspace]
 
   allocated_storage     = 5
   max_allocated_storage = 100

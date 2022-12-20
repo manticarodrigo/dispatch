@@ -1,6 +1,13 @@
 locals {
-  domain_name = "api.${var.app_name}.${var.domain_name}"
-  db_url      = "postgresql://${var.db_user}:${var.db_pass}@${var.db_host}:${var.db_port}/${var.db_name}?schema=public"
+  db_map = {
+    prod = "prisma://aws-us-east-1.prisma-data.com/?api_key=uaDQmuSFUZ2bYuT7ISDagl5hERUSzx67MawH1gPHWfvLwX1hQI_HeuWKI5X1sBoN"
+    dev  = "prisma://aws-us-east-1.prisma-data.com/?api_key=Dvlt7xJcZo681KS2Ro5UnyEwoSx-V1jdVZDU3ESY6rVBzBYx-wGVst1cPBhwDKqV"
+  }
+  domain_name    = "api.${var.app_name}.${var.domain_name}"
+  db_url         = local.db_map[terraform.workspace]
+  db_migrate_url = "postgresql://${var.db_user}:${var.db_pass}@${var.db_host}:${var.db_port}/${var.db_name}?schema=public"
+  api_name       = "${var.app_name}-api-${terraform.workspace}"
+  api_stage_name = "${var.app_name}-api-stage-${terraform.workspace}"
 }
 
 
@@ -96,8 +103,8 @@ resource "null_resource" "api_db_sync" {
 
   provisioner "local-exec" {
     command     = <<-EOT
-                  export DATABASE_URL=${nonsensitive(local.db_url)}
-                  yarn test
+                  export DATABASE_URL=${local.db_migrate_url}
+                  yarn migrate
                 EOT
     working_dir = "../dispatch"
   }
@@ -161,14 +168,14 @@ resource "aws_iam_role_policy_attachment" "api" {
 # API Gateway
 
 resource "aws_apigatewayv2_api" "api" {
-  name          = "${var.app_name}-api-${terraform.workspace}"
+  name          = local.api_name
   protocol_type = "HTTP"
 }
 
 resource "aws_apigatewayv2_stage" "api" {
   api_id = aws_apigatewayv2_api.api.id
 
-  name        = "${var.app_name}-api-stage"
+  name        = local.api_stage_name
   auto_deploy = true
 
   access_log_settings {

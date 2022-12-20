@@ -12,7 +12,10 @@
 
 (def headers {"Access-Control-Allow-Origin" "*"
               "Access-Control-Allow-Methods" "OPTIONS,POST,GET"
-              "Access-Control-Allow-Headers" "Content-Type,Authorization"})
+              "Access-Control-Allow-Headers" "Content-Type,Authorization"
+              "Access-Control-Max-Age" 86400
+              "Cache-Control" "public, max-age=86400"
+              "Vary" "origin"})
 (defn create-app
   []
   (p/let [server (apollo/start-server)
