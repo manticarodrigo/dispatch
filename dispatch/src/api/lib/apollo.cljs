@@ -33,14 +33,15 @@
                  :createAddress address/create-address
                  :createRoute route/create-route
                  :createLocation location/create-location
-                 :createArrivedAt stop/create-arrived-at}
+                 :createStopArrival stop/create-stop-arrival}
                 :Query
                 {:user user/logged-in-user
                  :seats seat/fetch-seats
                  :seat seat/fetch-seat
                  :addresses address/fetch-addresses
                  :routes route/fetch-routes
-                 :route route/fetch-route}
+                 :route route/fetch-route
+                 :stop stop/fetch-stop}
                 :User
                 {:id #(-> ^js % .-id)
                  :seats seat/fetch-seats
@@ -63,7 +64,8 @@
                 :Stop
                 {:id #(-> ^js % .-id)
                  :address #(-> ^js % .-address)
-                 :arrivedAt #(-> ^js % .-arrivedAt)}
+                 :arrivedAt #(-> ^js % .-arrivedAt)
+                 :note #(-> ^js % .-note)}
                 :Route
                 {:id #(-> ^js % .-id)
                  :seat #(-> ^js % .-seat)
