@@ -8,5 +8,6 @@
 (defn create-stop-arrival
   [_ args context _]
   (-> (models.stop/create-stop-arrival context (->clj args))
-      (p/catch anom/handle-resolver-error)))
+      ;;(p/catch anom/handle-resolver-error)
+      ))
 

@@ -63,7 +63,8 @@
                 :Stop
                 {:id #(-> ^js % .-id)
                  :address #(-> ^js % .-address)
-                 :arrivedAt #(-> ^js % .-arrivedAt)}
+                 :arrivedAt #(-> ^js % .-arrivedAt)
+                 :note #(-> ^js % .-note)}
                 :Route
                 {:id #(-> ^js % .-id)
                  :seat #(-> ^js % .-seat)

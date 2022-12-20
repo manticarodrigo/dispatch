@@ -1,6 +1,7 @@
 mutation createStopArrival($stopId: ID!, $note: String) {
   createStopArrival(stopId: $stopId, note: $note) {
     id
+    note
     arrivedAt
   }
 }

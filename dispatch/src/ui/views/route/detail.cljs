@@ -1,21 +1,25 @@
 (ns ui.views.route.detail
-  (:require [react-feather :rename {Check CheckIcon
+  (:require [react :as react]
+            [react-feather :rename {Check CheckIcon
                                     Minus MinusIcon
                                     Package PackageIcon
                                     Clock ClockIcon}]
             [date-fns :as d]
             [shadow.resource :refer (inline)]
-            [cljs-bean.core :refer (->clj)]
-            [ui.lib.apollo :refer (gql use-query)]
+            [cljs-bean.core :refer (->js ->clj)]
+            [ui.lib.apollo :refer (gql use-query use-mutation)]
             [ui.lib.router :refer (use-params)]
             [ui.utils.string :refer (class-names)]
             [ui.utils.css :refer (padding)]))
 
 (def FETCH_ROUTE (gql (inline "queries/route/fetch.graphql")))
+(def CREATE_STOP_ARRIVAL (gql (inline "mutations/stop/create-stop-arrival.graphql")))
 
 (defn view []
-  (let [params (use-params)
+  (let [[note set-note] (react/useState "")
+        params (use-params)
         query (use-query FETCH_ROUTE {:variables {:id (:id params)}})
+        [create-stop-arrival] (use-mutation CREATE_STOP_ARRIVAL {})
         {:keys [data loading]} (->clj query)
         {:keys [seat]} (:route data)
         stops (-> data :route :stops reverse)
@@ -34,10 +38,22 @@
           ")")
          "never")]]
      [:ol
-      (for [{:keys [id address arrivedAt]} stops]
+      (for [{:keys [id address arrivedAt] :as stop} stops]
         (let [{:keys [name description]} address]
           ^{:key id}
           [:li {:class (class-names  "py-2 flex")}
+
+           [:p "Note: " (:note stop)]
+           [:form {:on-submit (fn [e]
+                                (.preventDefault e)
+                                (-> (create-stop-arrival (->js {:variables
+                                                                {:stopId id
+                                                                 :note note}}))))}
+            [:input {:value note
+                     :on-change (fn [e]
+                                  (set-note (.. e -target -value)))}]
+            [:button "enviar"]]
+
            (if arrivedAt
              [:> CheckIcon {:class (class-names "shrink-0 flex justify-center items-center"
                                                 "mt-1"

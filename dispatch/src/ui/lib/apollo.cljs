@@ -5,7 +5,8 @@
                      InMemoryCache
                      ApolloProvider
                      createHttpLink
-                     useQuery)]
+                     useQuery
+                     useMutation)]
             ["@apollo/client/link/context" :refer (setContext)]
             ["@apollo/client/link/error" :refer (onError)]
             ["@graphql-tools/schema" :refer (makeExecutableSchema)]
@@ -57,3 +58,7 @@
 (defn use-query [query options]
   (let [q (useQuery query (->js options))]
     (->clj q)))
+
+(defn use-mutation [query options]
+  (let [m (useMutation query (->js options))]
+    (->clj m)))
