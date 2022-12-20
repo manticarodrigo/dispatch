@@ -144,9 +144,6 @@ resource "aws_lambda_function" "api" {
       DD_ENV            = terraform.workspace
       DD_SERVICE        = "api"
       DD_VERSION        = var.sha1
-      DD_LOG_LEVEL      = "debug"
-      DD_TRACE_DEBUG    = "true"
-      DD_LOGS_INJECTION = "true"
     }
   }
 }
