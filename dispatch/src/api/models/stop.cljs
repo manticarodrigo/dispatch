@@ -9,3 +9,9 @@
                     {:where {:id stopId}
                      :data {:arrivedAt (js/Date.) :note note}})]
     ^js stop))
+
+(defn find-unique [^js context {:keys [id]}]
+  (prisma/find-unique
+   (.. context -prisma -stop)
+   {:where {:id id}
+    :include {:address true}}))
