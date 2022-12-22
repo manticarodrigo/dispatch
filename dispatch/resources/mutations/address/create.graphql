@@ -1,8 +1,16 @@
 mutation CreateAddress(
   $name: String!
   $description: String!
+  $phone: String
+  $email: String
   $lat: Float!
   $lng: Float!
 ) {
-  createAddress(name: $name, description: $description, lat: $lat, lng: $lng)
+  createAddress(
+    name: $name, 
+    description: $description, 
+    phone: $phone,
+    email: $email,
+    lat: $lat, 
+    lng: $lng)
 }

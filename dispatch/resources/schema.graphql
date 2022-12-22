@@ -16,6 +16,8 @@ type Mutation {
   createAddress(
     name: String!
     description: String!
+    phone: String
+    email: String
     lat: Float!
     lng: Float!
   ): String!
@@ -53,6 +55,8 @@ type Location {
 type Address {
   id: ID!
   name: String!
+  phone: String
+  email: String
   description: String!
   lat: Float!
   lng: Float!

@@ -53,6 +53,8 @@ model Location {
 model Address {
   id          String   @id @default(uuid())
   name        String
+  phone       String
+  email       String
   description String
   lat         Float
   lng         Float
