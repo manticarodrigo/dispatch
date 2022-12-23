@@ -80,8 +80,6 @@
                   :class "pb-4"
                   :on-text #(swap! !state assoc :email %)}]
           
-          [:h3 !state]
-
           [button {:label "Submit" :class "my-4"}]
           (doall (for [anom @!anoms]
                    [:span {:key (:reason anom)
