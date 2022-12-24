@@ -1,0 +1,14 @@
+query Stop($id: ID!) {
+  stop(id: $id) {
+    id
+    address {
+      id
+      name
+      description
+      lat
+      lng
+    }
+    note
+    arrivedAt
+  }
+}

@@ -224,15 +224,15 @@
              (is (every? #(-> % :result :data :createLocation) create-mocks))
              (done)))))
 
-(deftest create-arrived-at
+(deftest create-stop-arrival
   (async done
          (p/let [route-mocks (route/fetch-routes)
                  create-mocks (p/all (map
                                       (fn [{:keys [stops]}]
-                                        (stop/create-arrived-at (-> stops first :id)))
+                                        (stop/create-stop-arrival (-> stops first :id)))
                                       (-> route-mocks :result :data :routes)))]
            (testing "api returns data"
-             (is (every? #(-> % :result :data :createArrivedAt :arrivedAt) create-mocks))
+             (is (every? #(-> % :result :data :createStopArrival :arrivedAt) create-mocks))
              (done)))))
 
 (deftest fetch-seat

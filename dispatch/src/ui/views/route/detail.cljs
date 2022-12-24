@@ -7,9 +7,11 @@
             [shadow.resource :refer (inline)]
             [cljs-bean.core :refer (->clj)]
             [ui.lib.apollo :refer (gql use-query)]
-            [ui.lib.router :refer (use-params)]
+            [ui.lib.router :refer (link use-params)]
             [ui.utils.string :refer (class-names)]
-            [ui.utils.css :refer (padding)]))
+            [ui.utils.css :refer (padding)]
+            [ui.components.inputs.generic.button :refer (button-class)]
+            [ui.components.list-item :refer (list-item)]))
 
 (def FETCH_ROUTE (gql (inline "queries/route/fetch.graphql")))
 
@@ -37,26 +39,17 @@
       (for [{:keys [id address arrivedAt]} stops]
         (let [{:keys [name description]} address]
           ^{:key id}
-          [:li {:class (class-names  "py-2 flex")}
-           (if arrivedAt
-             [:> CheckIcon {:class (class-names "shrink-0 flex justify-center items-center"
-                                                "mt-1"
-                                                "w-3 h-3"
-                                                "text-green-500")}]
-             [:> MinusIcon {:class (class-names "relative"
-                                                "shrink-0 flex justify-center items-center"
-                                                "mt-1"
-                                                "w-3 h-3"
-                                                "text-neutral-500")}])
-           [:div {:class "pl-2 lg:pl-4 flex w-full"}
-            [:div {:class "w-full"}
-             [:div {:class "text-sm"} name]
-             [:div {:class "font-light text-xs text-neutral-300"} description]]
-            [:div {:class "shrink-0 flex flex-col items-end pl-4 lg:pl-6 text-xs text-neutral-300"}
-             (if arrivedAt
-               [:div {:class "flex"}
-                [:> PackageIcon {:class "mr-3 w-4 h-4"}]
-                (-> arrivedAt (js/parseInt) (js/Date.) (d/format "hh:mmaaa"))]
-               [:div {:class "flex"}
-                [:> ClockIcon {:class "mr-3 w-4 h-4"}]
-                (-> (js/Date.) (d/format "hh:mmaaa"))])]]]))]]))
+          [:li {:class (class-names "mb-2")}
+           [link {:to (str "/stops/" id)
+                  :class (class-names "block" button-class)}
+            [list-item {:icon (if arrivedAt CheckIcon MinusIcon)
+                        :title name
+                        :subtitle description
+                        :detail [:div {:class "shrink-0 flex flex-col items-end pl-4 lg:pl-6 text-xs text-neutral-300"}
+                                 (if arrivedAt
+                                   [:div {:class "flex"}
+                                    [:> PackageIcon {:class "mr-3 w-4 h-4 text-green-500"}]
+                                    (-> arrivedAt (js/parseInt) (js/Date.) (d/format "hh:mmaaa"))]
+                                   [:div {:class "flex"}
+                                    [:> ClockIcon {:class "mr-3 w-4 h-4 text-neutral-500"}]
+                                    (-> (js/Date.) (d/format "hh:mmaaa"))])]}]]]))]]))

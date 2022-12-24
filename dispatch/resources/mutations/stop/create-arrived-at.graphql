@@ -1,6 +1,0 @@
-mutation CreateArrivedAt($stopId: ID!) {
-  createArrivedAt(stopId: $stopId) {
-    id
-    arrivedAt
-  }
-}
