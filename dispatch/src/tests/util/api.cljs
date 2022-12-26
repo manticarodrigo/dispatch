@@ -3,15 +3,8 @@
             [goog.object :as gobj]
             [promesa.core :as p]
             [cljs-bean.core :refer (->clj ->js)]
-            [api.lib.apollo :refer (create-server options)]
+            [api.lib.apollo :refer (server options)]
             [ui.utils.session :refer (get-session-request)]))
-
-(defonce !server (atom nil))
-
-(defn init-server []
-  (p/let [server (if @!server @!server (create-server))]
-    (reset! !server server)
-    server))
 
 (defn obj->clj
   [^js obj]
@@ -30,8 +23,7 @@
    {:operationName (some-> body :query gql ->clj :definitions first :name :value)}})
 
 (defn send [body]
-  (p/let [^js server (init-server)
-          context (.context options (->js {:req (merge
+  (p/let [context (.context options (->js {:req (merge
                                                  (get-session-request)
                                                  (get-body-request body))}))
           ^js res (.executeOperation server (->js body) (->js {:contextValue context}))
