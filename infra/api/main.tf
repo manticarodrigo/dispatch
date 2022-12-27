@@ -133,7 +133,7 @@ resource "aws_lambda_function" "api" {
 
   layers = [
     "arn:aws:lambda:${data.aws_region.current.name}:464622532012:layer:Datadog-Node16-x:85",
-    "arn:aws:lambda:${data.aws_region.current.name}:464622532012:layer:Datadog-Extension-ARM:34"
+    "arn:aws:lambda:${data.aws_region.current.name}:464622532012:layer:Datadog-Extension-ARM:35"
   ]
 
   environment {
@@ -146,6 +146,7 @@ resource "aws_lambda_function" "api" {
       DD_ENV            = terraform.workspace
       DD_SERVICE        = "api"
       DD_VERSION        = var.sha1
+      DD_LOGS_INJECTION = true
     }
   }
 }
