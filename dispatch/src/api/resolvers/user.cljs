@@ -20,7 +20,7 @@
                                   :password password}))]
     (cond
       (not user) (anom/gql (anom/not-found :account-not-found))
-      (not session-id) (anom/gql (anom/forbidden :invalid-password))
+      (not session-id) (anom/gql (anom/incorrect :invalid-password))
       :else session-id)))
 
 (defn logged-in-user

@@ -104,7 +104,7 @@
 
            (testing "api returns anom"
              (is (and
-                  (= "forbidden" (-> anom :category))
+                  (= "incorrect" (-> anom :category))
                   (= "invalid-password" (-> anom :reason)))))
 
            (user/with-submit-login

@@ -52,8 +52,7 @@
    (into [:<>] children)])
 
 (defn parse-anoms [^js e]
-  (let [anoms (mapv #(-> % :extensions :anom) (some-> e .-graphQLErrors ->clj))]
-    anoms))
+  (mapv #(-> % :extensions :anom) (some-> e .-graphQLErrors ->clj)))
 
 (defn use-query [query options]
   (let [q (useQuery query (->js options))]
