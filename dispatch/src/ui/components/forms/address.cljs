@@ -71,6 +71,7 @@
                   :value (:phone @!state)
                   :required false
                   :class "pb-4"
+                  :type "tel"
                   :on-text #(swap! !state assoc :phone %)}]
 
           [input {:id "email"
@@ -78,6 +79,7 @@
                   :value (:email @!state)
                   :required false
                   :class "pb-4"
+                  :type "email"
                   :on-text #(swap! !state assoc :email %)}]
           
           [button {:label "Submit" :class "my-4"}]
