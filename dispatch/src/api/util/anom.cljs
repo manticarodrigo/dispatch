@@ -68,6 +68,6 @@
     (known-prisma-error? e) (parse-prisma-anom e)
     :else (fault :unknown)))
 
-(defn handle-resolver-error [e]
+(defn handle-error [^js e]
   (if (= "GraphQLError" (.-name e)) e
       (gql (parse-anom e))))

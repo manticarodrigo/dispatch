@@ -1,16 +1,11 @@
 (ns api.resolvers.stop
-  (:require
-   [promesa.core :as p]
-   [cljs-bean.core :refer (->clj)]
-   [api.util.anom :as anom]
-   [api.models.stop :as model]))
+  (:require [cljs-bean.core :refer (->clj)]
+            [api.models.stop :as model]))
 
 (defn create-stop-arrival
   [_ args context _]
-  (-> (model/create-stop-arrival context (->clj args))
-      (p/catch anom/handle-resolver-error)))
+  (model/create-stop-arrival context (->clj args)))
 
 (defn fetch-stop
   [_ args context _]
-  (-> (model/find-unique context (->clj args))
-      (p/catch anom/handle-resolver-error)))
+  (model/find-unique context (->clj args)))

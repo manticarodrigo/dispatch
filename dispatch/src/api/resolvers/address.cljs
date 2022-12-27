@@ -1,18 +1,11 @@
 (ns api.resolvers.address
-  (:require
-   [promesa.core :as p]
-   [cljs-bean.core :refer (->clj)]
-   [api.util.anom :as anom]
-   [api.models.address :as models.address]))
+  (:require [cljs-bean.core :refer (->clj)]
+            [api.models.address :as model]))
 
 (defn create-address
   [_ args context _]
-  (-> (p/let [payload (->clj args)
-              seat-id (models.address/create context payload)]
-        seat-id)
-      (p/catch anom/handle-resolver-error)))
+  (model/create context (->clj args)))
 
 (defn fetch-addresses
   [_ _ context _]
-  (-> (models.address/find-all context)
-      (p/catch anom/handle-resolver-error)))
+  (model/find-all context))
