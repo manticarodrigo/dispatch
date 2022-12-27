@@ -168,6 +168,13 @@
   resolved "https://registry.yarnpkg.com/@apollo/utils.withrequired/-/utils.withrequired-1.0.1.tgz#7718b2edc87e35c65411cd4069694a33b8db9508"
   integrity sha512-5DYufeISXjz9UqtISIwte86F8ELjTrKVeXcPtdnUnV/PX+4EXUjqIp1FLJTYrCQ1a9OyFAMeCZ2QhUy1D8w7/A==
 
+"@as-integrations/aws-lambda@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@as-integrations/aws-lambda/-/aws-lambda-1.1.0.tgz#6e552108c3d69facb7889e8bb00f8fe3aeaebd56"
+  integrity sha512-ITyDiAPK9OBnI4wChSePoJ2tp/peFvyhrBGY+lnwmJOIAUhA5Q31naQN0O8s5MrMPNwaU9rTQxRyHy18NONUBQ==
+  dependencies:
+    "@types/aws-lambda" "^8.10.106"
+
 "@babel/code-frame@^7.10.4":
   version "7.18.6"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.18.6.tgz#3b25d38c89600baa2dcc219edfa88a74eb2c427a"
@@ -207,6 +214,26 @@
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/@capacitor/geolocation/-/geolocation-4.0.1.tgz#2567caf704abe5321e0e2d94fa2285252c205e9a"
   integrity sha512-5dxXfDU1rCkn8xrXk6cQwUr+F2ZRycZoU5zi8MFVnH7JvHruV3B152Uz+urRkF/GtKQrgvxEW78GbejOW+nfYw==
+
+"@datadog/browser-core@4.28.1":
+  version "4.28.1"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-core/-/browser-core-4.28.1.tgz#a2846340d45c85c03b0570cd66c4858d396e9328"
+  integrity sha512-BmMJA3SpZtI5VVukuxMKYc7ALBLcydnG+tRh5pXP/Tjjejh9sx611TdspeAd00rfpYQ4c51CcHkhem3oU/WJCQ==
+
+"@datadog/browser-rum-core@4.28.1":
+  version "4.28.1"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-rum-core/-/browser-rum-core-4.28.1.tgz#a0dae06234e62f2de7ef1021b1893c560b2b2193"
+  integrity sha512-uN9rjaQodDmYBF0LPeOzW5nH2z7Zcsrn/r0+PgEtdKuZKugGBF5vmFx8LthzFTF1F7e7LXsm1MbuDQS7LCYjiQ==
+  dependencies:
+    "@datadog/browser-core" "4.28.1"
+
+"@datadog/browser-rum@^4.28.1":
+  version "4.28.1"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-rum/-/browser-rum-4.28.1.tgz#1c97a98a1006ee7378f6decd86ecc86436826e02"
+  integrity sha512-pHFgutFeFKDe4akDRhVE28wcqDSzlr2JBEOesSy6eJQOw9W006zUTC4c9zkjSlZpBved8ndj6zjcy9DAuQ7+7g==
+  dependencies:
+    "@datadog/browser-core" "4.28.1"
+    "@datadog/browser-rum-core" "4.28.1"
 
 "@emotion/is-prop-valid@^0.8.2":
   version "0.8.8"
@@ -477,6 +504,11 @@
   version "4.2.2"
   resolved "https://registry.yarnpkg.com/@types/aria-query/-/aria-query-4.2.2.tgz#ed4e0ad92306a704f9fb132a0cfcf77486dbe2bc"
   integrity sha512-HnYpAE1Y6kRyKM/XkEuiRQhTHvkzMBurTHnpFLYLBGPIylZNPs9jJcuOOYWxPLJCSEtmZT0Y8rHDokKN7rRTig==
+
+"@types/aws-lambda@^8.10.106":
+  version "8.10.109"
+  resolved "https://registry.yarnpkg.com/@types/aws-lambda/-/aws-lambda-8.10.109.tgz#2f434cbfafe083529e365fe9c114787827a169a8"
+  integrity sha512-/ME92FneNyXQzrAfcnQQlW1XkCZGPDlpi2ao1MJwecN+6SbeonKeggU8eybv1DfKli90FAVT1MlIZVXfwVuCyg==
 
 "@types/body-parser@*":
   version "1.19.2"

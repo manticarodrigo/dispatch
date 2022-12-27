@@ -16,9 +16,6 @@
             [api.resolvers.location :as location]
             [api.resolvers.stop :as stop]))
 
-(defn get-type-defs []
-  (inline "schema.graphql"))
-
 (def date-scalar
   (GraphQLScalarType.
    (->js (merge {:name "Date"
@@ -97,17 +94,16 @@
       (->js clj-error)
       (->js (assoc-in clj-error [:extensions :anom] (anom/fault :unknown))))))
 
-(defn create-server []
-  (p/let [type-defs (get-type-defs)]
-    (ApolloServer. (->js
-                    {:typeDefs type-defs
-                     :resolvers resolvers
-                     :formatError format-error}))))
+(defonce server
+  (ApolloServer.
+   (->js
+    {:typeDefs (inline "schema.graphql")
+     :resolvers resolvers
+     :formatError format-error})))
 
 (defn start-server []
-  (p/let [server (create-server)
-          _ (.start server)]
-    server))
+  (.startInBackgroundHandlingStartupErrorsByLoggingAndFailingAllRequests server)
+  server)
 
 (defn create-middleware [server]
   (expressMiddleware server options))

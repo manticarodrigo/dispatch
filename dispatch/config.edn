@@ -1,5 +1,7 @@
 {:closure-defines
- {ui.config/REGION #shadow/env "REGION"
+ {ui.config/STAGE #shadow/env "STAGE"
+  ui.config/VERSION #shadow/env "VERSION"
+  ui.config/REGION #shadow/env "REGION"
   ui.config/LANGUAGE #shadow/env "LANGUAGE"
   ui.config/API_URL #shadow/env "API_URL"
   ui.config/SECURE_COOKIE #shadow/env "SECURE_COOKIE"

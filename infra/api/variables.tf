@@ -7,3 +7,4 @@ variable "db_name" {}
 variable "db_port" {}
 variable "db_user" {}
 variable "db_pass" {}
+variable "datadog_api_key" {}

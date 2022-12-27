@@ -10,6 +10,10 @@ terraform {
       source  = "hashicorp/archive"
       version = "2.2.0"
     }
+    datadog = {
+      source  = "DataDog/datadog"
+      version = "3.18.0"
+    }
   }
 
   backend "s3" {
@@ -19,16 +23,6 @@ terraform {
     workspace_key_prefix = "env"
   }
 }
-
-provider "aws" {
-  allowed_account_ids = [var.aws_account_id]
-  region              = var.aws_region
-}
-
-# variables
-
-variable "aws_account_id" {}
-variable "aws_region" {}
 
 locals {
   domain_map = {
@@ -47,7 +41,6 @@ module "vpc" {
 
 module "db" {
   source   = "./db"
-  region   = var.aws_region
   app_name = local.app_name
   vpc_id   = module.vpc.vpc_id
 }
@@ -59,16 +52,17 @@ module "build" {
 }
 
 module "api" {
-  source      = "./api"
-  sha1        = module.build.sha1
-  build       = module.build.build
-  domain_name = local.domain_name
-  app_name    = local.app_name
-  db_host     = module.db.host
-  db_name     = module.db.name
-  db_port     = module.db.port
-  db_user     = module.db.username
-  db_pass     = module.db.password
+  source          = "./api"
+  sha1            = module.build.sha1
+  build           = module.build.build
+  domain_name     = local.domain_name
+  app_name        = local.app_name
+  db_host         = module.db.host
+  db_name         = module.db.name
+  db_port         = module.db.port
+  db_user         = module.db.username
+  db_pass         = module.db.password
+  datadog_api_key = module.datadog.datadog_api_key
 }
 
 module "site" {
@@ -79,4 +73,8 @@ module "site" {
   app_name       = local.app_name
   api_invoke_url = module.api.api_invoke_url
   api_stage_name = module.api.api_stage_name
+}
+
+module "datadog" {
+  source = "./datadog"
 }
