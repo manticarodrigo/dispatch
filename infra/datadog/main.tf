@@ -30,7 +30,7 @@ resource "aws_cloudformation_stack" "datadog_forwarder" {
   parameters = {
     DdApiKey     = data.datadog_api_key.current.key
     DdSite       = "datadoghq.com",
-    FunctionName = "datadog-forwarder"
+    FunctionName = "datadog-forwarder-${terraform.workspace}"
   }
   template_url = "https://datadog-cloudformation-template.s3.amazonaws.com/aws/forwarder/latest.yaml"
 }
