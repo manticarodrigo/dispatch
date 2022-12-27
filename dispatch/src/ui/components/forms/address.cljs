@@ -66,6 +66,22 @@
                                   (-> (find-place (:place_id option))
                                       (.then #(merge % option))
                                       (.then #(swap! !state merge (select-keys % [:place_id :description :lat :lng])))))}]
+          [input {:id "phone"
+                  :label "Phone"
+                  :value (:phone @!state)
+                  :required false
+                  :class "pb-4"
+                  :type "tel"
+                  :on-text #(swap! !state assoc :phone %)}]
+
+          [input {:id "email"
+                  :label "Email"
+                  :value (:email @!state)
+                  :required false
+                  :class "pb-4"
+                  :type "email"
+                  :on-text #(swap! !state assoc :email %)}]
+          
           [button {:label "Submit" :class "my-4"}]
           (doall (for [anom @!anoms]
                    [:span {:key (:reason anom)

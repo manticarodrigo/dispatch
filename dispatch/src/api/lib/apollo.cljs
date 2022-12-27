@@ -56,6 +56,8 @@
                 {:id #(-> ^js % .-id)
                  :name #(-> ^js % .-name)
                  :description #(-> ^js % .-description)
+                 :phone #(-> ^js % .-phone)
+                 :email #(-> ^js % .-email)
                  :lat #(-> ^js % .-lat)
                  :lng #(-> ^js % .-lng)}
                 :Stop
