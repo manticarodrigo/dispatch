@@ -154,7 +154,7 @@ resource "aws_lambda_function" "api" {
   }
 }
 
-resource "aws_lambda_provisioned_concurrency_config" "example" {
+resource "aws_lambda_provisioned_concurrency_config" "api" {
   function_name                     = aws_lambda_function.api.function_name
   provisioned_concurrent_executions = local.concurrency_map[terraform.workspace]
   qualifier                         = aws_lambda_function.api.version
