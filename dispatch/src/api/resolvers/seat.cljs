@@ -1,20 +1,15 @@
 (ns api.resolvers.seat
-  (:require [promesa.core :as p]
-            [cljs-bean.core :refer (->clj)]
-            [api.util.anom :as anom]
-            [api.models.seat :as models.seat]))
+  (:require [cljs-bean.core :refer (->clj)]
+            [api.models.seat :as model]))
 
 (defn create-seat
   [_ args context _]
-  (-> (models.seat/create context (->clj args))
-      (p/catch anom/handle-resolver-error)))
+  (model/create context (->clj args)))
 
 (defn fetch-seats
   [_ _ context _]
-  (-> (models.seat/find-all context)
-      (p/catch anom/handle-resolver-error)))
+  (model/find-all context))
 
 (defn fetch-seat
   [_ args context _]
-  (-> (models.seat/find-unique context (->clj args))
-      (p/catch anom/handle-resolver-error)))
+  (model/find-unique context (->clj args)))

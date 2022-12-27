@@ -1,12 +1,13 @@
 (ns api.lib.apollo
   (:require ["@apollo/server" :refer (ApolloServer)]
             ["@apollo/server/express4" :refer (expressMiddleware)]
+            ["@apollo/server/errors" :refer (unwrapResolverError)]
             [graphql :refer (GraphQLScalarType)]
             [shadow.resource :refer (inline)]
             [cljs-bean.core :refer (->clj ->js)]
             [promesa.core :as p]
             [common.utils.date :refer (date-scalar-map)]
-            [api.lib.prisma :refer (open-prisma)]
+            [api.lib.prisma :refer (prisma)]
             [api.util.prisma :refer (find-unique)]
             [api.util.anom :as anom]
             [api.resolvers.user :as user]
@@ -73,8 +74,7 @@
 
 (def options
   (->js {:context (fn [^js ctx]
-                    (p/let [^js prisma (open-prisma)
-                            session-id (some-> ctx .-req .-headers ->clj :authorization)
+                    (p/let [session-id (some-> ctx .-req .-headers ->clj :authorization)
                             ^js session (when session-id
                                           (find-unique (. prisma -session)
                                                        {:where {:id session-id}
@@ -88,13 +88,13 @@
                         (anom/gql (anom/forbidden :invalid-session)))
                       (->js {:prisma prisma :user user})))}))
 
-(defn format-error [formatted-error e]
+(defn format-error [formatted-error error]
   (let [clj-error (->clj formatted-error)
         anom (-> clj-error :extensions :anom)]
-    (js/console.log "error" e)
+    (js/console.error "error" error)
     (if anom
       (->js clj-error)
-      (->js (assoc-in clj-error [:extensions :anom] (anom/fault :unknown))))))
+      (anom/handle-error (unwrapResolverError error)))))
 
 (defonce server
   (ApolloServer.

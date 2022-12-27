@@ -26,7 +26,5 @@
   (p/let [context (.context options (->js {:req (merge
                                                  (get-session-request)
                                                  (get-body-request body))}))
-          ^js res (.executeOperation server (->js body) (->js {:contextValue context}))
-          {:keys [data errors]} (->clj (.. res -body -singleResult))]
-    {:data (obj->clj data)
-     :errors errors}))
+          ^js res (.executeOperation server (->js body) (->js {:contextValue context}))]
+    (obj->clj (.. res -body -singleResult))))

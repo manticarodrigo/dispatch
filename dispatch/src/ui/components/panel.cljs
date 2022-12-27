@@ -29,7 +29,7 @@
           :drag "y"
           :drag-elastic 0.2
           :drag-constraints {:top 0 :bottom bottom}
-          :on-drag-end (fn [_ info]
+          :on-drag-end (fn [_ ^js info]
                          (let [velocity (.. info -velocity -y)
                                point (.. info -point -y)
                                should-close? (or
