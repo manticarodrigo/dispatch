@@ -1,7 +1,7 @@
 (ns api.core
   (:require
    ["express" :as express]
-   ["serverless-http" :as serverless]
+   ["@as-integrations/aws-lambda" :refer (startServerAndCreateLambdaHandler)]
    ["http" :as http]
    [promesa.core :as p]
    [cljs-bean.core :refer (->js)]
@@ -17,23 +17,19 @@
               "Cache-Control" "public, max-age=86400"
               "Vary" "origin"})
 
-(defonce !app (atom nil))
-
 (defn create-app
   []
-  (or @!app
-      (p/let [server (apollo/start-server)
-              middleware (apollo/create-middleware server)
-              app (express)]
-        (.use app (.json express))
-        (.use app (fn [req res next]
-                    (.set res (->js headers))
-                    (if (= (.. req -method) "OPTIONS")
-                      (.send res 200)
-                      (next))))
-        (.use app middleware)
-        (reset! !app app)
-        app)))
+  (p/let [server (apollo/start-server)
+          middleware (apollo/create-middleware server)
+          app (express)]
+    (.use app (.json express))
+    (.use app (fn [req res next]
+                (.set res (->js headers))
+                (if (= (.. req -method) "OPTIONS")
+                  (.send res 200)
+                  (next))))
+    (.use app middleware)
+    app))
 
 (defn start-server []
   (p/let [port 3000
@@ -45,9 +41,6 @@
 (when dev?
   (start-server))
 
-(defn handler [event context]
-  (p/let [^js app (create-app)
-          handler (serverless app)
-          result (handler event context)]
-    result))
-
+(def handler
+  (when-not dev?
+    (startServerAndCreateLambdaHandler apollo/server)))
