@@ -102,9 +102,8 @@
      :formatError format-error})))
 
 (defn start-server []
-  (p/do
-    (.start server)
-    server))
+  (.startInBackgroundHandlingStartupErrorsByLoggingAndFailingAllRequests server)
+  server)
 
 (defn create-middleware [server]
   (expressMiddleware server options))

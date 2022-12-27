@@ -125,6 +125,7 @@ resource "aws_lambda_function" "api" {
 
   runtime       = "nodejs16.x"
   architectures = ["arm64"]
+  memory_size   = 256
   handler       = "/opt/nodejs/node_modules/datadog-lambda-js/handler.handler"
   timeout       = 10
   publish       = true

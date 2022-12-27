@@ -1,7 +1,7 @@
 (ns api.core
   (:require
    ["express" :as express]
-   ["@as-integrations/aws-lambda" :refer (startServerAndCreateLambdaHandler)]
+   ["serverless-http" :as serverless]
    ["http" :as http]
    [promesa.core :as p]
    [cljs-bean.core :refer (->js)]
@@ -19,9 +19,9 @@
 
 (defn create-app
   []
-  (p/let [server (apollo/start-server)
-          middleware (apollo/create-middleware server)
-          app (express)]
+  (let [server (apollo/start-server)
+        middleware (apollo/create-middleware server)
+        app (express)]
     (.use app (.json express))
     (.use app (fn [req res next]
                 (.set res (->js headers))
@@ -31,9 +31,10 @@
     (.use app middleware)
     app))
 
+(def app (create-app))
+
 (defn start-server []
   (p/let [port 3000
-          ^js app (create-app)
           ^js server (.createServer http app)]
     (.listen server port (fn []
                            (println "listening on 3000...")))))
@@ -41,6 +42,7 @@
 (when dev?
   (start-server))
 
-(def handler
-  (when-not dev?
-    (startServerAndCreateLambdaHandler apollo/server)))
+(defn handler [event context]
+  (p/let [handler (serverless app)
+          result (handler event context)]
+    result))
