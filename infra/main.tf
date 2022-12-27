@@ -76,5 +76,6 @@ module "site" {
 }
 
 module "datadog" {
-  source = "./datadog"
+  source   = "./datadog"
+  app_name = local.app_name
 }

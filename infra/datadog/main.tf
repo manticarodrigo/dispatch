@@ -16,23 +16,12 @@ locals {
 # Datadog
 
 data "datadog_api_key" "current" {
-  name = terraform.workspace
+  name = var.app_name
 }
 
 resource "datadog_integration_aws" "integration" {
   account_id = local.account_id
-  role_name  = "DatadogAWSIntegrationRole-${terraform.workspace}"
-}
-
-resource "aws_cloudformation_stack" "datadog_forwarder" {
-  name         = "datadog-forwarder-${terraform.workspace}"
-  capabilities = ["CAPABILITY_IAM", "CAPABILITY_NAMED_IAM", "CAPABILITY_AUTO_EXPAND"]
-  parameters = {
-    DdApiKey     = data.datadog_api_key.current.key
-    DdSite       = "datadoghq.com",
-    FunctionName = "datadog-forwarder-${terraform.workspace}"
-  }
-  template_url = "https://datadog-cloudformation-template.s3.amazonaws.com/aws/forwarder/latest.yaml"
+  role_name  = "DatadogAWSIntegrationRole"
 }
 
 # IAM
