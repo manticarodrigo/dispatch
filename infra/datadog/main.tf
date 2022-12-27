@@ -21,11 +21,11 @@ data "datadog_api_key" "current" {
 
 resource "datadog_integration_aws" "integration" {
   account_id = local.account_id
-  role_name  = "DatadogAWSIntegrationRole"
+  role_name  = "DatadogAWSIntegrationRole-${terraform.workspace}"
 }
 
 resource "aws_cloudformation_stack" "datadog_forwarder" {
-  name         = "datadog-forwarder"
+  name         = "datadog-forwarder-${terraform.workspace}"
   capabilities = ["CAPABILITY_IAM", "CAPABILITY_NAMED_IAM", "CAPABILITY_AUTO_EXPAND"]
   parameters = {
     DdApiKey     = data.datadog_api_key.current.key
@@ -140,13 +140,12 @@ data "aws_iam_policy_document" "datadog_aws_integration" {
 }
 
 resource "aws_iam_policy" "datadog_aws_integration" {
-  name   = "DatadogAWSIntegrationPolicy"
+  name   = "DatadogAWSIntegrationPolicy-${terraform.workspace}"
   policy = data.aws_iam_policy_document.datadog_aws_integration.json
 }
 
 resource "aws_iam_role" "datadog_aws_integration" {
-  name               = "DatadogAWSIntegrationRole"
-  description        = "Role for Datadog AWS Integration"
+  name               = "DatadogAWSIntegrationRole-${terraform.workspace}"
   assume_role_policy = data.aws_iam_policy_document.datadog_aws_integration_assume_role.json
 }
 
