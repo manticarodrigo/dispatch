@@ -34,6 +34,9 @@
 
     DirectionsService))
 
+(defn mock-lat-lng []
+  (->js {:lat (fn []) :lng (fn [])}))
+
 (defn mock-google [data]
   (->js
    {:maps

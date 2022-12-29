@@ -34,12 +34,16 @@
                         :address-tuples []
                         ;; directions api payload
                         :route nil})
+        !loading-route (r/atom false)
         debounced-calc-route (debounce
                               (fn [w]
                                 (if (seq w)
                                   (-> (calc-route w)
-                                      (.then #(swap! !state assoc :route %)))
-                                  (swap! !state assoc :route nil)))
+                                      (.then #(do (swap! !state assoc :route %)
+                                                  (reset! !loading-route false))))
+                                  (do
+                                    (swap! !state assoc :route nil)
+                                    (reset! !loading-route false))))
                               500)]
     (fn []
       (let [{:keys [data loading]} (use-query FETCH_USER {})
@@ -58,6 +62,7 @@
 
         (react/useEffect
          (fn []
+           (reset! !loading-route true)
            (debounced-calc-route selected-addresses)
            #())
          #js[address-tuples])
@@ -72,13 +77,17 @@
          (if loading
            [:p {:class "sr-only"} "Loading..."]
            [:p {:class "sr-only"} "Loaded..."])
+         (if @!loading-route
+           [:p {:class "sr-only"} "Loading route"]
+           [:p {:class "sr-only"} "Loaded route"])
          [:form {:class "flex flex-col"
                  :on-submit
                  (fn [e]
                    (.preventDefault e)
                    (-> (create {:variables {:seatId seatId
                                             :startAt startAt
-                                            :addressIds address-ids}})
+                                            :addressIds address-ids
+                                            :route route}})
                        (.then #(navigate "/seats"))
                        (.catch #(reset! !anoms (parse-anoms %)))))}
           [combobox {:label "Assigned seat"
