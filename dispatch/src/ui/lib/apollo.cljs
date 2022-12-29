@@ -59,5 +59,5 @@
     (->clj q)))
 
 (defn use-mutation [query options]
-  (let [m (useMutation query (->js options))]
-    (->clj m)))
+  (let [[fn res] (useMutation query (->js options))]
+    [#(fn (->js %)) (->clj res)]))

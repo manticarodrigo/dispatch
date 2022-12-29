@@ -5,11 +5,13 @@
    [re-frame.core :refer (dispatch)]
    [cljs.core.async :refer (go)]
    [cljs.core.async.interop :refer-macros (<p!)]
+   [cljs-bean.core :refer (->js)]
    [ui.subs :refer (listen)]
    [ui.lib.google.maps.core :refer (init-api)]
    [ui.lib.google.maps.autocomplete :refer (search-places)]
    [ui.lib.google.maps.places :refer (find-place)]
-   [ui.lib.google.maps.polyline :refer (set-polyline)]
+   [ui.lib.google.maps.polyline :refer (set-polyline clear-polyline!)]
+   [ui.lib.google.maps.marker :refer (clear-markers!)]
    [ui.lib.google.maps.overlay :refer (update-overlay)]
    [ui.lib.google.maps.directions :refer (calc-route set-markers)]))
 
@@ -26,8 +28,11 @@
 (defn- center-route []
   (let [^js gmap @!map
         bounds (listen [:route/bounds])]
-    (.fitBounds gmap (clj->js bounds))
-    (.panToBounds gmap (clj->js bounds))))
+    (if bounds
+      (do (.fitBounds gmap (clj->js bounds))
+          (.panToBounds gmap (clj->js bounds)))
+      (do (.setZoom gmap 2)
+          (.setCenter gmap (->js {:lat 0 :lng 0}))))))
 
 (defn use-map []
   (let [location (listen [:location])
@@ -43,16 +48,20 @@
     (useEffect
      (fn []
        (when (and @!map location)
-         (update-overlay (clj->js location)))
+         (update-overlay (->js location)))
        #())
      #js[@!map location])
 
     (useEffect
      (fn []
-       (when (and @!map (seq legs) (seq path))
-         (set-markers @!map legs)
-         (set-polyline @!map path)
-         (center-route))
+       (when @!map
+         (center-route)
+         (if legs
+           (set-markers @!map legs)
+           (clear-markers!))
+         (if path
+           (set-polyline @!map path)
+           (clear-polyline!)))
        #())
      #js[@!map legs path])
 

@@ -2,6 +2,8 @@
   (:require [shadow.resource :refer (inline)]
             [promesa.core :as p]
             [common.utils.date :refer (to-datetime-local)]
+            [ui.lib.google.maps.directions :refer (init-directions)]
+            [tests.mocks.google :refer (mock-google)]
             [tests.util.api :refer (send)]
             [tests.util.ui :refer (with-mounted-component
                                     test-app
@@ -39,6 +41,9 @@
           (change
            (.getByLabelText component "Departure time")
            (to-datetime-local (js/Date. startAt)))
+
+          (set! js/google (mock-google {:routes [{:legs [] :overview_path []}]}))
+          (init-directions)
 
           #_{:clj-kondo/ignore [:unresolved-symbol]}
           (p/doseq [{:keys [name]} addresses]

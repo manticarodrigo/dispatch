@@ -1,5 +1,5 @@
 (ns ui.components.forms.route
-  (:require ["@apollo/client" :refer (gql useQuery useMutation)]
+  (:require ["@apollo/client" :refer (gql)]
             [uuid :rename {v4 uuid}]
             [react :as react]
             [react-feather
@@ -9,10 +9,10 @@
             [reagent.core :as r]
             [re-frame.core :refer (dispatch)]
             [shadow.resource :refer (inline)]
-            [cljs-bean.core :refer (->clj ->js)]
             [common.utils.date :refer (to-datetime-local from-datetime-local)]
-            [ui.lib.apollo :refer (parse-anoms)]
+            [ui.lib.apollo :refer (parse-anoms use-query use-mutation)]
             [ui.lib.router :refer (use-navigate)]
+            [ui.lib.google.maps.directions :refer (calc-route)]
             [ui.utils.string :refer (class-names)]
             [ui.utils.error :refer (tr-error)]
             [ui.utils.vector :refer (vec-remove)]
@@ -31,18 +31,25 @@
         !state (r/atom {:seatId nil
                         :startAt (from-datetime-local (js/Date.))
                         ;; tuples of [draggable-item-id address-id] to use for reorderable list 
-                        :address-tuples []})
-        debounced-dispatch-stops (debounce #(dispatch [:stops/set %]) 500)]
+                        :address-tuples []
+                        ;; directions api payload
+                        :route nil})
+        debounced-calc-route (debounce
+                              (fn [w]
+                                (if (seq w)
+                                  (-> (calc-route w)
+                                      (.then #(swap! !state assoc :route %)))
+                                  (swap! !state assoc :route nil)))
+                              500)]
     (fn []
-      (let [query (useQuery FETCH_USER)
-            [create] (useMutation CREATE_ROUTE)
+      (let [{:keys [data loading]} (use-query FETCH_USER {})
+            [create] (use-mutation CREATE_ROUTE {})
             navigate (use-navigate)
-            {:keys [data loading]} (->clj query)
             seats (some-> data :user :seats)
             addresses (some-> data :user :addresses)
             address-map (into {} (for [address addresses]
                                    {(:id address) address}))
-            address-tuples (-> @!state :address-tuples)
+            {:keys [seatId startAt address-tuples route]} @!state
             address-ids (mapv second address-tuples)
             selected-addresses (mapv #(get address-map %) address-ids)
             draggable-item-ids (mapv first address-tuples)
@@ -51,9 +58,15 @@
 
         (react/useEffect
          (fn []
-           (debounced-dispatch-stops selected-addresses)
+           (debounced-calc-route selected-addresses)
            #())
-         #js[selected-addresses])
+         #js[address-tuples])
+
+        (react/useEffect
+         (fn []
+           (dispatch [:route/set route])
+           #())
+         #js[route])
 
         [:<>
          (if loading
@@ -63,9 +76,9 @@
                  :on-submit
                  (fn [e]
                    (.preventDefault e)
-                   (-> (create (->js {:variables (-> @!state
-                                                     (assoc :addressIds address-ids)
-                                                     (dissoc :address-tuples))}))
+                   (-> (create {:variables {:seatId seatId
+                                            :startAt startAt
+                                            :addressIds address-ids}})
                        (.then #(navigate "/seats"))
                        (.catch #(reset! !anoms (parse-anoms %)))))}
           [combobox {:label "Assigned seat"
