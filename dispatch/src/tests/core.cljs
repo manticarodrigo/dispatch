@@ -188,7 +188,10 @@
                                                                   :result
                                                                   :data
                                                                   :user
-                                                                  :addresses))}))
+                                                                  :addresses))
+                                        :route {:legs []
+                                                :path []
+                                                :bounds {:north nil :east nil :south nil :west nil}}}))
                                     seats))
                                  (range 5))))]
 

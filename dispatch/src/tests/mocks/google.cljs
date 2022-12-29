@@ -23,9 +23,24 @@
 
     PlacesService))
 
+(defn mock-directions [data]
+  (let [^js DirectionsService (fn [])]
+    (set!
+     (.. DirectionsService -prototype -route)
+     (fn [_ cb]
+       (js/setTimeout
+        (fn [] (cb (->js data) "OK"))
+        500)))
+
+    DirectionsService))
+
+(defn mock-lat-lng []
+  (->js {:lat (fn []) :lng (fn [])}))
+
 (defn mock-google [data]
   (->js
    {:maps
-    {:places
+    {:DirectionsService (mock-directions data)
+     :places
      {:PlacesService (mock-places data)
       :AutocompleteService (mock-autocomplete data)}}}))

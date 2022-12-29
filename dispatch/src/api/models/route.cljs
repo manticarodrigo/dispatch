@@ -3,7 +3,7 @@
    [promesa.core :as p]
    [api.util.prisma :as prisma]))
 
-(defn create [^js context {:keys [seatId startAt addressIds]}]
+(defn create [^js context {:keys [seatId startAt addressIds route]}]
   (p/let [^js route (prisma/create!
                      (.. context -prisma -route)
                      {:data {:user {:connect {:id (.. context -user -id)}}
@@ -11,6 +11,7 @@
                              :stops {:create (mapv (fn [id]
                                                      {:address {:connect {:id id}}})
                                                    addressIds)}
+                             :route route
                              :startAt startAt}})]
     (some-> route .-id)))
 
