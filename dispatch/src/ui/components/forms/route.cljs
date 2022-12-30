@@ -17,6 +17,7 @@
             [ui.utils.error :refer (tr-error)]
             [ui.utils.vector :refer (vec-remove)]
             [ui.utils.input :refer (debounce)]
+            [ui.components.icons :as icons]
             [ui.components.inputs.generic.combobox :refer (combobox)]
             [ui.components.inputs.generic.input :refer (input)]
             [ui.components.inputs.generic.button :refer (button base-button-class)]))
@@ -35,7 +36,7 @@
         debounced-dispatch-stops (debounce #(dispatch [:stops/set %]) 500)]
     (fn []
       (let [query (useQuery FETCH_USER)
-            [create] (useMutation CREATE_ROUTE)
+            [create, results] (useMutation CREATE_ROUTE)
             navigate (use-navigate)
             {:keys [data loading]} (->clj query)
             seats (some-> data :user :seats)
@@ -48,7 +49,7 @@
             draggable-item-ids (mapv first address-tuples)
             draggable-item-map (into {} (for [[item-id address-id] (:address-tuples @!state)]
                                           {item-id address-id}))]
-
+        
         (react/useEffect
          (fn []
            (debounced-dispatch-stops selected-addresses)
@@ -119,7 +120,23 @@
                    :on-click #(swap! !state update :address-tuples vec-remove idx)}
                   [:> XIcon]]]))]]
 
-          [button {:label "Submit" :class "my-4"}]
+          (println (str icons/loading_circle "Submit"))
+
+          (if (.-loading results)
+            [:div {:class "w-full"}
+             [button
+              {:label [:span {:class "flex justify-center"} (icons/loading_circle) "Loading..."]
+               :class "my-4 w-full "}]]
+
+            [:div {:class "w-full"}
+             [button
+              {:label "Submit"
+               :class "my-4 w-full "}]])
+
+          (if (.-loading results)
+            (prn (.-loading results))
+            (println "Verdadero"))
+
           (doall (for [anom @!anoms]
                    [:span {:key (:reason anom)
                            :class "my-2 p-2 rounded border border-red-300 text-sm text-red-100 bg-red-800"}
