@@ -132,11 +132,7 @@
              [button
               {:label "Submit"
                :class "my-4 w-full "}]])
-
-          (if (.-loading results)
-            (prn (.-loading results))
-            (println "Verdadero"))
-
+          
           (doall (for [anom @!anoms]
                    [:span {:key (:reason anom)
                            :class "my-2 p-2 rounded border border-red-300 text-sm text-red-100 bg-red-800"}
