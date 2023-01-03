@@ -14,6 +14,7 @@
             [shadow.resource :refer (inline)]
             [cljs-bean.core :refer (->clj ->js)]
             [common.utils.date :refer (date-scalar-map)]
+            [common.utils.json :refer (json-scalar-map)]
             [ui.config :as config]
             [ui.utils.session :refer (get-session-request remove-session)]))
 
@@ -32,7 +33,8 @@
      (when (= (some-> res .-networkError .-statusCode) 401)
        (remove-session)))))
 
-(def resolvers (->js {:Date date-scalar-map}))
+(def resolvers (->js {:Date date-scalar-map
+                      :JSON json-scalar-map}))
 
 (def schema (makeExecutableSchema (->js {:typeDefs (gql (inline "schema.graphql"))
                                          :resolvers resolvers})))
@@ -59,5 +61,5 @@
     (->clj q)))
 
 (defn use-mutation [query options]
-  (let [m (useMutation query (->js options))]
-    (->clj m)))
+  (let [[fn res] (useMutation query (->js options))]
+    [#(fn (->js %)) (->clj res)]))

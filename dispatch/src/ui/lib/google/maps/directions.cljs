@@ -9,13 +9,12 @@
   (js/google.maps.DirectionsService.))
 
 (defn- create-route-request [waypoints]
-  (let [stops (map (fn [stop] {:location (clj->js stop) :stopover true}) waypoints)]
-    (clj->js {
-              :origin (-> stops first :location ->js)
-              :destination (-> stops last :location ->js)
-              :waypoints (->> stops (drop-last 1) ->js)
-              ;; :optimizeWaypoints true
-              :travelMode "DRIVING"})))
+  (let [stops (map (fn [stop] {:location (->js stop) :stopover true}) waypoints)]
+    (->js {:origin (-> stops first :location ->js)
+           :destination (-> stops last :location ->js)
+           :waypoints (->> stops (drop-last 1) ->js)
+           ;; :optimizeWaypoints true
+           :travelMode "DRIVING"})))
 
 (defn set-markers [gmap legs]
   (clear-markers!)
@@ -23,7 +22,7 @@
     (create-marker!
      {:map gmap
       :zIndex idx
-      :position (clj->js (:location leg))
+      :position (->js (:location leg))
       :title (:address leg)
       :label {:text (str (+ 1 idx))
               :color "white"}

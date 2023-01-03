@@ -7,6 +7,7 @@
             [cljs-bean.core :refer (->clj ->js)]
             [promesa.core :as p]
             [common.utils.date :refer (date-scalar-map)]
+            [common.utils.json :refer (json-scalar-map)]
             [api.lib.prisma :refer (prisma)]
             [api.util.prisma :refer (find-unique)]
             [api.util.anom :as anom]
@@ -23,7 +24,14 @@
                  :description "Date custom scalar type"}
                 date-scalar-map))))
 
+(def json-scalar
+  (GraphQLScalarType.
+   (->js (merge {:name "JSON"
+                 :description "JSON custom scalar type"}
+                json-scalar-map))))
+
 (def resolvers {:Date date-scalar
+                :JSON json-scalar
                 :Mutation
                 {:createUser user/create-user
                  :loginUser user/login-user
@@ -70,7 +78,8 @@
                 {:id #(-> ^js % .-id)
                  :seat #(-> ^js % .-seat)
                  :startAt #(-> ^js % .-startAt)
-                 :stops #(-> ^js % .-stops)}})
+                 :stops #(-> ^js % .-stops)
+                 :route #(-> ^js % .-route)}})
 
 (def options
   (->js {:context (fn [^js ctx]

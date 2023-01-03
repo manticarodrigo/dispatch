@@ -1,5 +1,5 @@
 (ns ui.components.forms.route
-  (:require ["@apollo/client" :refer (gql useQuery useMutation)]
+  (:require ["@apollo/client" :refer (gql)]
             [uuid :rename {v4 uuid}]
             [react :as react]
             [react-feather
@@ -9,10 +9,10 @@
             [reagent.core :as r]
             [re-frame.core :refer (dispatch)]
             [shadow.resource :refer (inline)]
-            [cljs-bean.core :refer (->clj ->js)]
             [common.utils.date :refer (to-datetime-local from-datetime-local)]
-            [ui.lib.apollo :refer (parse-anoms)]
+            [ui.lib.apollo :refer (parse-anoms use-query use-mutation)]
             [ui.lib.router :refer (use-navigate)]
+            [ui.lib.google.maps.directions :refer (calc-route)]
             [ui.utils.string :refer (class-names)]
             [ui.utils.error :refer (tr-error)]
             [ui.utils.vector :refer (vec-remove)]
@@ -32,41 +32,63 @@
         !state (r/atom {:seatId nil
                         :startAt (from-datetime-local (js/Date.))
                         ;; tuples of [draggable-item-id address-id] to use for reorderable list 
-                        :address-tuples []})
-        debounced-dispatch-stops (debounce #(dispatch [:stops/set %]) 500)]
+                        :address-tuples []
+                        ;; directions api payload
+                        :route nil})
+        !loading-route (r/atom false)
+        debounced-calc-route (debounce
+                              (fn [w]
+                                (if (seq w)
+                                  (-> (calc-route w)
+                                      (.then #(do (swap! !state assoc :route %)
+                                                  (reset! !loading-route false))))
+                                  (do
+                                    (swap! !state assoc :route nil)
+                                    (reset! !loading-route false))))
+                              500)]
     (fn []
-      (let [query (useQuery FETCH_USER)
-            [create, results] (useMutation CREATE_ROUTE)
+      (let [{:keys [data loading]} (use-query FETCH_USER {})
+            [create results] (use-mutation CREATE_ROUTE {})
             navigate (use-navigate)
-            {:keys [data loading]} (->clj query)
             seats (some-> data :user :seats)
             addresses (some-> data :user :addresses)
             address-map (into {} (for [address addresses]
                                    {(:id address) address}))
-            address-tuples (-> @!state :address-tuples)
+            {:keys [seatId startAt address-tuples route]} @!state
             address-ids (mapv second address-tuples)
             selected-addresses (mapv #(get address-map %) address-ids)
             draggable-item-ids (mapv first address-tuples)
             draggable-item-map (into {} (for [[item-id address-id] (:address-tuples @!state)]
                                           {item-id address-id}))]
-        
+
         (react/useEffect
          (fn []
-           (debounced-dispatch-stops selected-addresses)
+           (reset! !loading-route true)
+           (debounced-calc-route selected-addresses)
            #())
-         #js[selected-addresses])
+         #js[address-tuples])
+
+        (react/useEffect
+         (fn []
+           (dispatch [:route/set route])
+           #())
+         #js[route])
 
         [:<>
          (if loading
            [:p {:class "sr-only"} "Loading..."]
            [:p {:class "sr-only"} "Loaded..."])
+         (if @!loading-route
+           [:p {:class "sr-only"} "Loading route"]
+           [:p {:class "sr-only"} "Loaded route"])
          [:form {:class "flex flex-col"
                  :on-submit
                  (fn [e]
                    (.preventDefault e)
-                   (-> (create (->js {:variables (-> @!state
-                                                     (assoc :addressIds address-ids)
-                                                     (dissoc :address-tuples))}))
+                   (-> (create {:variables {:seatId seatId
+                                            :startAt startAt
+                                            :addressIds address-ids
+                                            :route route}})
                        (.then #(navigate "/seats"))
                        (.catch #(reset! !anoms (parse-anoms %)))))}
           [combobox {:label "Assigned seat"
@@ -122,7 +144,7 @@
 
           (println (str icons/loading_circle "Submit"))
 
-          (if (.-loading results)
+          (if (:loading results)
             [:div {:class "w-full"}
              [button
               {:label [:span {:class "flex justify-center"} (icons/loading_circle) "Loading..."]
@@ -132,7 +154,7 @@
              [button
               {:label "Submit"
                :class "my-4 w-full "}]])
-          
+
           (doall (for [anom @!anoms]
                    [:span {:key (:reason anom)
                            :class "my-2 p-2 rounded border border-red-300 text-sm text-red-100 bg-red-800"}

@@ -1,4 +1,5 @@
 scalar Date
+scalar JSON
 
 type Query {
   user: User
@@ -22,7 +23,12 @@ type Mutation {
     lat: Float!
     lng: Float!
   ): String!
-  createRoute(seatId: ID!, startAt: String!, addressIds: [ID]!): String!
+  createRoute(
+    seatId: ID!
+    startAt: String!
+    addressIds: [ID]!
+    route: JSON!
+  ): String!
   createLocation(
     seatId: ID!
     lat: Float!
@@ -75,6 +81,7 @@ type Route {
   seat: Seat!
   startAt: String!
   stops: [Stop]!
+  route: JSON!
 }
 
 input RouteFilters {
