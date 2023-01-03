@@ -48,7 +48,7 @@
                               500)]
     (fn []
       (let [{:keys [data loading]} (use-query FETCH_USER {})
-            [create results] (use-mutation CREATE_ROUTE {})
+            [create status] (use-mutation CREATE_ROUTE {})
             navigate (use-navigate)
             seats (some-> data :user :seats)
             addresses (some-> data :user :addresses)
@@ -142,18 +142,13 @@
                    :on-click #(swap! !state update :address-tuples vec-remove idx)}
                   [:> XIcon]]]))]]
 
-          (println (str icons/loading_circle "Submit"))
-
-          (if (:loading results)
-            [:div {:class "w-full"}
-             [button
-              {:label [:span {:class "flex justify-center"} (icons/loading_circle) "Loading..."]
-               :class "my-4 w-full "}]]
-
-            [:div {:class "w-full"}
-             [button
-              {:label "Submit"
-               :class "my-4 w-full "}]])
+          [button
+           {:label (if (:loading status)
+                     [:span {:class "flex justify-center items-center"}
+                      [icons/loading_circle {:class "animate-spin mr-2 w-5 h-5"}] "Loading..."]
+                     "Submit")
+            :class (class-names "my-4 w-full" (when (:loading status) "cursor-progress"))
+            :disabled (:loading status)}]
 
           (doall (for [anom @!anoms]
                    [:span {:key (:reason anom)
