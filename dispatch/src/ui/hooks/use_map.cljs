@@ -11,32 +11,24 @@
    [ui.lib.google.maps.autocomplete :refer (search-places)]
    [ui.lib.google.maps.places :refer (find-place)]
    [ui.lib.google.maps.polyline :refer (set-polyline clear-polyline!)]
-   [ui.lib.google.maps.marker :refer (clear-markers!)]
+   [ui.lib.google.maps.marker :refer (clear-markers! fit-bounds-to-visible-markers)]
    [ui.lib.google.maps.overlay :refer (update-overlay)]
-   [ui.lib.google.maps.directions :refer (calc-route set-markers)]))
+   [ui.lib.google.maps.directions :refer (set-markers)]))
 
 (def ^:private !el (atom nil))
 (def ^:private !map (r/atom false))
 
-(defn- set-route! [waypoints]
-  (go (dispatch [:route/set (<p! (calc-route waypoints))])))
 (defn- set-origin! [place-id]
   (go (dispatch [:origin/set (<p! (find-place place-id))])))
 (defn- set-search! [text]
   (go (dispatch [:search/set (<p! (search-places text))])))
 
 (defn- center-route []
-  (let [^js gmap @!map
-        bounds (listen [:route/bounds])]
-    (if bounds
-      (do (.fitBounds gmap (clj->js bounds))
-          (.panToBounds gmap (clj->js bounds)))
-      (do (.setZoom gmap 2)
-          (.setCenter gmap (->js {:lat 0 :lng 0}))))))
+  (let [^js gmap @!map]
+    (fit-bounds-to-visible-markers gmap)))
 
 (defn use-map []
   (let [location (listen [:location])
-        stops (listen [:stops])
         legs (listen [:route/legs])
         path (listen [:route/path])]
 
@@ -55,22 +47,15 @@
     (useEffect
      (fn []
        (when @!map
-         (center-route)
          (if legs
            (set-markers @!map legs)
            (clear-markers!))
          (if path
            (set-polyline @!map path)
-           (clear-polyline!)))
+           (clear-polyline!))
+         (center-route))
        #())
      #js[@!map legs path])
-
-    (useEffect
-     (fn []
-       (when (and @!map (> (count stops) 1))
-         (set-route! stops))
-       #())
-     #js[@!map stops])
 
     {:ref !el
      :map @!map

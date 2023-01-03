@@ -1,7 +1,7 @@
 (ns ui.components.forms.route
   (:require ["@apollo/client" :refer (gql)]
             [uuid :rename {v4 uuid}]
-            [react :as react]
+            [react]
             [react-feather
              :rename {Menu MenuIcon
                       X XIcon}]
@@ -70,7 +70,7 @@
         (react/useEffect
          (fn []
            (dispatch [:route/set route])
-           #())
+           #(dispatch [:route/set nil]))
          #js[route])
 
         [:<>

@@ -13,8 +13,6 @@
 (rf/reg-sub :search #(:search %))
 (rf/reg-sub :origin #(:origin %))
 (rf/reg-sub :location #(:location %))
-(rf/reg-sub :stops #(:stops %))
-
 
 (rf/reg-sub :route #(-> % :route))
 (rf/reg-sub :route/legs #(some-> % :route :legs))
