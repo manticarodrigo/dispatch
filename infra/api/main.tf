@@ -131,6 +131,14 @@ resource "aws_lambda_function" "api" {
 
   role = aws_iam_role.api.arn
 
+  tracing_config {
+    mode = "Active"
+  }
+
+  layers = [
+    "arn:aws:lambda:us-east-1:580247275435:layer:LambdaInsightsExtension-Arm64:2"
+  ]
+
   environment {
     variables = {
       STAGE        = terraform.workspace
@@ -144,21 +152,36 @@ resource "aws_iam_role" "api" {
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
-    Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
-      Sid    = ""
-      Principal = {
-        Service = "lambda.amazonaws.com"
-      }
+    Statement = [
+      {
+        Sid    = ""
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
       }
     ]
   })
 }
 
-resource "aws_iam_role_policy_attachment" "api" {
+resource "aws_iam_role_policy_attachment" "execution_policy" {
   role       = aws_iam_role.api.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
+resource "aws_iam_role_policy_attachment" "insights_policy" {
+  role       = aws_iam_role.api.id
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy"
+}
+
+data "aws_iam_policy" "lambda_xray" {
+  name = "AWSXRayDaemonWriteAccess"
+}
+
+resource "aws_iam_role_policy_attachment" "aws_xray_write_only_access" {
+  role       = aws_iam_role.api.name
+  policy_arn = data.aws_iam_policy.lambda_xray.arn
 }
 
 # API Gateway

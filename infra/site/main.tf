@@ -1,8 +1,9 @@
 locals {
-  domain_name     = "${var.app_name}.${var.domain_name}"
-  bucket_name     = "${var.app_name}-site-${terraform.workspace}"
-  origin_name     = "${var.app_name}-origin-${terraform.workspace}"
-  api_origin_name = "${var.app_name}-api-origin-${terraform.workspace}"
+  domain_name      = "${var.app_name}.${var.domain_name}"
+  bucket_name      = "${var.app_name}-site-${terraform.workspace}"
+  origin_name      = "${var.app_name}-origin-${terraform.workspace}"
+  api_origin_name  = "${var.app_name}-api-origin-${terraform.workspace}"
+  rum_monitor_name = "${var.app_name}-rum-monitor-${terraform.workspace}"
 }
 
 
@@ -195,4 +196,15 @@ data "aws_cloudfront_origin_request_policy" "site_api" {
 
 data "aws_cloudfront_cache_policy" "site" {
   name = "Managed-CachingOptimized"
+}
+
+resource "aws_rum_app_monitor" "site" {
+  name   = local.rum_monitor_name
+  domain = local.domain_name
+
+  app_monitor_configuration {
+    allow_cookies       = true
+    enable_xray         = true
+    session_sample_rate = 1
+  }
 }

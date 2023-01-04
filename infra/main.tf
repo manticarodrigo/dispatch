@@ -42,22 +42,23 @@ module "db" {
 }
 
 module "build" {
-  source      = "./build"
-  domain_name = local.domain_name
-  app_name    = local.app_name
+  source         = "./build"
+  domain_name    = local.domain_name
+  app_name       = local.app_name
+  rum_monitor_id = module.site.rum_monitor_id
 }
 
 module "api" {
-  source          = "./api"
-  sha1            = module.build.sha1
-  build           = module.build.build
-  domain_name     = local.domain_name
-  app_name        = local.app_name
-  db_host         = module.db.host
-  db_name         = module.db.name
-  db_port         = module.db.port
-  db_user         = module.db.username
-  db_pass         = module.db.password
+  source      = "./api"
+  sha1        = module.build.sha1
+  build       = module.build.build
+  domain_name = local.domain_name
+  app_name    = local.app_name
+  db_host     = module.db.host
+  db_name     = module.db.name
+  db_port     = module.db.port
+  db_user     = module.db.username
+  db_pass     = module.db.password
 }
 
 module "site" {
