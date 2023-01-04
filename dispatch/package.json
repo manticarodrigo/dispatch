@@ -18,7 +18,6 @@
     "@apollo/server": "^4.0.4",
     "@capacitor/core": "^4.0.1",
     "@capacitor/geolocation": "^4.0.1",
-    "@datadog/browser-rum": "^4.28.1",
     "@floating-ui/react-dom": "^1.0.1",
     "@googlemaps/js-api-loader": "^1.14.3",
     "@headlessui/react": "^1.6.6",

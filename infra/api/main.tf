@@ -122,7 +122,7 @@ resource "aws_lambda_function" "api" {
   runtime       = "nodejs16.x"
   architectures = ["arm64"]
   memory_size   = 256
-  handler       = "/opt/nodejs/node_modules/datadog-lambda-js/handler.handler"
+  handler       = "index.handler"
   timeout       = 10
   publish       = true
 
@@ -131,22 +131,10 @@ resource "aws_lambda_function" "api" {
 
   role = aws_iam_role.api.arn
 
-  layers = [
-    "arn:aws:lambda:${data.aws_region.current.name}:464622532012:layer:Datadog-Node16-x:85",
-    "arn:aws:lambda:${data.aws_region.current.name}:464622532012:layer:Datadog-Extension-ARM:35"
-  ]
-
   environment {
     variables = {
-      STAGE             = terraform.workspace
-      DATABASE_URL      = local.db_url
-      DD_LAMBDA_HANDLER = "index.handler"
-      DD_SITE           = "datadoghq.com"
-      DD_API_KEY        = var.datadog_api_key
-      DD_ENV            = terraform.workspace
-      DD_SERVICE        = "api"
-      DD_VERSION        = var.sha1
-      DD_LOGS_INJECTION = true
+      STAGE        = terraform.workspace
+      DATABASE_URL = local.db_url
     }
   }
 }
