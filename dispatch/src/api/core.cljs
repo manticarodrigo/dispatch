@@ -12,7 +12,7 @@
 
 (def headers {"Access-Control-Allow-Origin" "*"
               "Access-Control-Allow-Methods" "OPTIONS,POST,GET"
-              "Access-Control-Allow-Headers" "authorization,content-type"
+              "Access-Control-Allow-Headers" "authorization,content-type,x-amzn-trace-id"
               "Access-Control-Max-Age" 86400
               "Cache-Control" "public, max-age=86400"
               "Vary" "origin"})

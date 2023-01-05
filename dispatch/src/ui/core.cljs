@@ -5,6 +5,7 @@
    [goog.dom :as gdom]
    [reagent.core :as r]
    [re-frame.core :as rf]
+   [cljs-bean.core :refer (->js)]
    [ui.config :as config]
    [ui.events :as events]
    [ui.lib.router :refer [browser-router]]
@@ -17,13 +18,13 @@
    config/RUM_MONITOR_ID
    config/VERSION
    "us-east-1"
-   #js{:sessionSampleRate 1
-       :endpoint "https://dataplane.rum.us-east-1.amazonaws.com"
-       :guestRoleArn config/RUM_GUEST_ROLE_ARN
-       :identityPoolId config/RUM_IDENTITY_POOL_ID
-       :telemetries #js["errors" "performance" "http"]
-       :allowCookies true
-       :enableXray true}))
+   (->js {:sessionSampleRate 1
+          :endpoint "https://dataplane.rum.us-east-1.amazonaws.com"
+          :guestRoleArn config/RUM_GUEST_ROLE_ARN
+          :identityPoolId config/RUM_IDENTITY_POOL_ID
+          :telemetries ["errors" "performance" ["http" {:addXRayTraceIdHeader true}]]
+          :allowCookies true
+          :enableXray true})))
 
 (def functional-compiler (r/create-compiler {:function-components true}))
 (r/set-default-compiler! functional-compiler)
