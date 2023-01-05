@@ -20,6 +20,7 @@
    ["/routes/create" [router/auth-route [route/create-view]]]
    ["/seats" [router/auth-route [seat/list-view]]]
    ["/seats/:id" [router/auth-route [seat/detail-view]]]
+   ["/seats/:id/:status" [router/auth-route [seat/detail-status-view]]]
    ["/seats/create" [router/auth-route [seat/create-view]]]
    ["/addresses" [router/auth-route [address/list-view]]]
    ["/addresses/create" [router/auth-route [address/create-view]]]
