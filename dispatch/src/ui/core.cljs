@@ -1,11 +1,10 @@
 (ns ui.core
   (:require
    ["react-dom/client" :refer (createRoot)]
-   ["@datadog/browser-rum" :refer (datadogRum)]
+   ["aws-rum-web" :refer (AwsRum)]
    [goog.dom :as gdom]
    [reagent.core :as r]
    [re-frame.core :as rf]
-   [cljs-bean.core :refer (->js)]
    [ui.config :as config]
    [ui.events :as events]
    [ui.lib.router :refer [browser-router]]
@@ -13,21 +12,18 @@
    [ui.components.main :refer (main)]
    [ui.components.routes :refer (routes)]))
 
-(when config/STAGE
-  (.init
-   datadogRum
-   (->js {:applicationId "4afda6c4-4568-4cb5-8ceb-35a7f4267572"
-          :clientToken "pube6b39edae8d33b6565be537b13f40e1d"
-          :site "datadoghq.com"
-          :service "ui"
-          :env config/STAGE
-          :version config/VERSION
-          :sampleRate 100
-          :sessionReplaySampleRate 20
-          :trackInteractions true
-          :trackResources true
-          :trackLongTasks true
-          :allowedTracingOrigins #js[config/API_URL]})))
+(when config/RUM_MONITOR_ID
+  (AwsRum.
+   config/RUM_MONITOR_ID
+   config/VERSION
+   "us-east-1"
+   #js{:sessionSampleRate 1
+       :endpoint "https://dataplane.rum.us-east-1.amazonaws.com"
+       :guestRoleArn config/RUM_GUEST_ROLE_ARN
+       :identityPoolId config/RUM_IDENTITY_POOL_ID
+       :telemetries #js["errors" "performance" "http"]
+       :allowCookies true
+       :enableXray true}))
 
 (def functional-compiler (r/create-compiler {:function-components true}))
 (r/set-default-compiler! functional-compiler)

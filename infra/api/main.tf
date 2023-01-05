@@ -122,7 +122,7 @@ resource "aws_lambda_function" "api" {
   runtime       = "nodejs16.x"
   architectures = ["arm64"]
   memory_size   = 256
-  handler       = "/opt/nodejs/node_modules/datadog-lambda-js/handler.handler"
+  handler       = "index.handler"
   timeout       = 10
   publish       = true
 
@@ -131,22 +131,18 @@ resource "aws_lambda_function" "api" {
 
   role = aws_iam_role.api.arn
 
+  tracing_config {
+    mode = "Active"
+  }
+
   layers = [
-    "arn:aws:lambda:${data.aws_region.current.name}:464622532012:layer:Datadog-Node16-x:85",
-    "arn:aws:lambda:${data.aws_region.current.name}:464622532012:layer:Datadog-Extension-ARM:35"
+    "arn:aws:lambda:us-east-1:580247275435:layer:LambdaInsightsExtension-Arm64:2"
   ]
 
   environment {
     variables = {
-      STAGE             = terraform.workspace
-      DATABASE_URL      = local.db_url
-      DD_LAMBDA_HANDLER = "index.handler"
-      DD_SITE           = "datadoghq.com"
-      DD_API_KEY        = var.datadog_api_key
-      DD_ENV            = terraform.workspace
-      DD_SERVICE        = "api"
-      DD_VERSION        = var.sha1
-      DD_LOGS_INJECTION = true
+      STAGE        = terraform.workspace
+      DATABASE_URL = local.db_url
     }
   }
 }
@@ -156,21 +152,36 @@ resource "aws_iam_role" "api" {
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
-    Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
-      Sid    = ""
-      Principal = {
-        Service = "lambda.amazonaws.com"
-      }
+    Statement = [
+      {
+        Sid    = ""
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
       }
     ]
   })
 }
 
-resource "aws_iam_role_policy_attachment" "api" {
+resource "aws_iam_role_policy_attachment" "execution_policy" {
   role       = aws_iam_role.api.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
+resource "aws_iam_role_policy_attachment" "insights_policy" {
+  role       = aws_iam_role.api.id
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy"
+}
+
+data "aws_iam_policy" "lambda_xray" {
+  name = "AWSXRayDaemonWriteAccess"
+}
+
+resource "aws_iam_role_policy_attachment" "aws_xray_write_only_access" {
+  role       = aws_iam_role.api.name
+  policy_arn = data.aws_iam_policy.lambda_xray.arn
 }
 
 # API Gateway
