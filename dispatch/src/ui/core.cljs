@@ -18,8 +18,10 @@
    config/VERSION
    "us-east-1"
    #js{:sessionSampleRate 1
-       :endpoint "https://dataplace.rum.us-east-1.amazonaws.com"
-       :telemetries #js[]
+       :endpoint "https://dataplane.rum.us-east-1.amazonaws.com"
+       :guestRoleArn config/RUM_GUEST_ROLE_ARN
+       :identityPoolId config/RUM_IDENTITY_POOL_ID
+       :telemetries #js["errors" "performance" "http"]
        :allowCookies true
        :enableXray true}))
 

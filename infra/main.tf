@@ -42,10 +42,12 @@ module "db" {
 }
 
 module "build" {
-  source         = "./build"
-  domain_name    = local.domain_name
-  app_name       = local.app_name
-  rum_monitor_id = module.site.rum_monitor_id
+  source               = "./build"
+  domain_name          = local.domain_name
+  app_name             = local.app_name
+  rum_monitor_id       = module.site.rum_monitor_id
+  rum_identity_pool_id = module.site.rum_identity_pool_id
+  rum_guest_role_arn   = module.site.rum_guest_role_arn
 }
 
 module "api" {

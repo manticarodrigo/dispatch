@@ -51,7 +51,7 @@
     "nodemon": "^2.0.20",
     "postcss": "^8.4.16",
     "prettier": "^2.7.1",
-    "prisma": "^4.5.0",
+    "prisma": "^4.8.0",
     "shadow-cljs": "2.19.9",
     "tailwindcss": "^3.1.8"
   }

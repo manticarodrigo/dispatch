@@ -36,11 +36,13 @@ resource "null_resource" "build" {
     working_dir = "../dispatch"
 
     environment = {
-      STAGE          = terraform.workspace
-      VERSION        = local.sha1
-      API_URL        = "https://api.${var.app_name}.${var.domain_name}"
-      SECURE_COOKIE  = true
-      RUM_MONITOR_ID = var.rum_monitor_id
+      STAGE                = terraform.workspace
+      VERSION              = local.sha1
+      API_URL              = "https://api.${var.app_name}.${var.domain_name}"
+      SECURE_COOKIE        = true
+      RUM_MONITOR_ID       = var.rum_monitor_id
+      RUM_IDENTITY_POOL_ID = var.rum_identity_pool_id
+      RUM_GUEST_ROLE_ARN   = var.rum_guest_role_arn
     }
   }
 }
