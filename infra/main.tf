@@ -10,10 +10,6 @@ terraform {
       source  = "hashicorp/archive"
       version = "2.2.0"
     }
-    datadog = {
-      source  = "DataDog/datadog"
-      version = "3.18.0"
-    }
   }
 
   backend "s3" {
@@ -46,23 +42,25 @@ module "db" {
 }
 
 module "build" {
-  source      = "./build"
-  domain_name = local.domain_name
-  app_name    = local.app_name
+  source               = "./build"
+  domain_name          = local.domain_name
+  app_name             = local.app_name
+  rum_monitor_id       = module.site.rum_monitor_id
+  rum_identity_pool_id = module.site.rum_identity_pool_id
+  rum_guest_role_arn   = module.site.rum_guest_role_arn
 }
 
 module "api" {
-  source          = "./api"
-  sha1            = module.build.sha1
-  build           = module.build.build
-  domain_name     = local.domain_name
-  app_name        = local.app_name
-  db_host         = module.db.host
-  db_name         = module.db.name
-  db_port         = module.db.port
-  db_user         = module.db.username
-  db_pass         = module.db.password
-  datadog_api_key = module.datadog.datadog_api_key
+  source      = "./api"
+  sha1        = module.build.sha1
+  build       = module.build.build
+  domain_name = local.domain_name
+  app_name    = local.app_name
+  db_host     = module.db.host
+  db_name     = module.db.name
+  db_port     = module.db.port
+  db_user     = module.db.username
+  db_pass     = module.db.password
 }
 
 module "site" {
@@ -73,9 +71,4 @@ module "site" {
   app_name       = local.app_name
   api_invoke_url = module.api.api_invoke_url
   api_stage_name = module.api.api_stage_name
-}
-
-module "datadog" {
-  source   = "./datadog"
-  app_name = local.app_name
 }

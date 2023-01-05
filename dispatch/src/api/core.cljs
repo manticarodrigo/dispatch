@@ -8,11 +8,11 @@
    [api.config :as config]
    [api.lib.apollo :as apollo]))
 
-(def dev? (= config/STAGE "dev"))
+(def dev? (= config/STAGE "local"))
 
 (def headers {"Access-Control-Allow-Origin" "*"
               "Access-Control-Allow-Methods" "OPTIONS,POST,GET"
-              "Access-Control-Allow-Headers" "authorization,content-type,x-datadog-origin,x-datadog-parent-id,x-datadog-sampling-priority,x-datadog-trace-id"
+              "Access-Control-Allow-Headers" "authorization,content-type"
               "Access-Control-Max-Age" 86400
               "Cache-Control" "public, max-age=86400"
               "Vary" "origin"})

@@ -5,6 +5,8 @@ locals {
   api_origin_name = "${var.app_name}-api-origin-${terraform.workspace}"
 }
 
+data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
 
 # Route53
 
@@ -195,4 +197,78 @@ data "aws_cloudfront_origin_request_policy" "site_api" {
 
 data "aws_cloudfront_cache_policy" "site" {
   name = "Managed-CachingOptimized"
+}
+
+# RUM
+
+resource "aws_rum_app_monitor" "site" {
+  name   = "${var.app_name}-rum-monitor-${terraform.workspace}"
+  domain = local.domain_name
+
+  app_monitor_configuration {
+    allow_cookies       = true
+    enable_xray         = true
+    session_sample_rate = 1
+    telemetries         = ["errors", "performance", "http"]
+    identity_pool_id    = aws_cognito_identity_pool.rum.id
+    guest_role_arn      = aws_iam_role.rum.arn
+  }
+}
+
+resource "aws_cognito_identity_pool" "rum" {
+  identity_pool_name               = "${var.app_name}-identity-pool-${terraform.workspace}"
+  allow_unauthenticated_identities = true
+  allow_classic_flow               = true
+}
+
+resource "aws_cognito_identity_pool_roles_attachment" "rum" {
+  identity_pool_id = aws_cognito_identity_pool.rum.id
+  roles = {
+    "unauthenticated" = aws_iam_role.rum.arn
+  }
+}
+
+resource "aws_iam_role" "rum" {
+  name = "${var.app_name}-rum-role-${terraform.workspace}"
+
+  assume_role_policy = <<EOF
+    {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Effect": "Allow",
+          "Principal": {
+            "Federated": "cognito-identity.amazonaws.com"
+          },
+          "Action": "sts:AssumeRoleWithWebIdentity",
+          "Condition": {
+            "StringEquals": {
+              "cognito-identity.amazonaws.com:aud": "${aws_cognito_identity_pool.rum.id}"
+            },
+            "ForAnyValue:StringLike": {
+              "cognito-identity.amazonaws.com:amr": "unauthenticated"
+            }
+          }
+        }
+      ]
+    }
+  EOF
+}
+
+resource "aws_iam_policy" "rum" {
+  name = "${var.app_name}-rum-policy-${terraform.workspace}"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect   = "Allow",
+      Action   = ["rum:PutRumEvents"],
+      Resource = ["arn:aws:rum:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:appmonitor/${aws_rum_app_monitor.site.id}"]
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "rum" {
+  role       = aws_iam_role.rum.name
+  policy_arn = aws_iam_policy.rum.arn
 }
