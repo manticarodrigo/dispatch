@@ -11,6 +11,10 @@
                                     select-combobox
                                     submit)]))
 
+(defn sort-by-id [coll order]
+  (let [id-map (zipmap (map :id coll) coll)]
+    (map #(id-map %) order)))
+
 (defn fetch-routes []
   (p/let [query (inline "queries/route/fetch-all.graphql")
           request  {:query query}
@@ -29,10 +33,23 @@
   (let [{:keys [mocks]} ctx
         [fetch-mock create-mock] mocks
         {:keys [seats addresses]} (-> fetch-mock :result :data :user)
-        {:keys [seatId startAt]} (-> create-mock :request :variables)
-        seat (some #(when (= (:id %) seatId) %) seats)]
+        {:keys [seatId startAt addressIds route]} (-> create-mock :request :variables)
+        seat (some #(when (= (:id %) seatId) %) seats)
+        {:keys [path]} route
+        overview-path (mapv (fn [{:keys [lat lng]}]
+                              #js{:lat (fn [] lat)
+                                  :lng (fn [] lng)})
+                            path)]
+
     (with-mounted-component
-      [test-app {:route "/routes/create" :mocks mocks}]
+      [test-app
+       {:route "/routes/create"
+        :mocks [fetch-mock (assoc-in create-mock
+                                     [:request
+                                      :variables
+                                      :route
+                                      :path]
+                                     path)]}]
       (fn [^js component user]
         (p/do
           (.findByText component "Loaded...")
@@ -45,13 +62,13 @@
           (set! js/google (mock-google
                            {:routes
                             [{:legs []
-                              :overview_path []
+                              :overview_path overview-path
                               :bounds {:getNorthEast mock-lat-lng
                                        :getSouthWest mock-lat-lng}}]}))
           (init-directions)
 
           #_{:clj-kondo/ignore [:unresolved-symbol]}
-          (p/doseq [{:keys [name]} addresses]
+          (p/doseq [{:keys [name]} (sort-by-id addresses addressIds)]
             (select-combobox user component "Add address" name)
             (.findByText component name))
 

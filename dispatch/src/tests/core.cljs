@@ -6,6 +6,7 @@
    [common.utils.date :refer (from-datetime-local)]
    [ui.utils.error :refer (tr-error)]
    [tests.util.ui :as ui :refer (with-mounted-component test-app)]
+   [tests.util.location :refer (generate-polyline)]
    [tests.user :as user]
    [tests.seat :as seat]
    [tests.address :as address]
@@ -151,7 +152,7 @@
 
 (deftest create-addresses
   (async done
-         (-> (p/all (map (fn [_] (address/create-address)) (range 5)))
+         (-> (p/all (map (fn [_] (address/create-address)) (range 15)))
              (.then (fn [mocks]
                       (testing "api returns data"
                         (is (every? #(-> % :result :data :createAddress) mocks)))
@@ -174,24 +175,23 @@
 (deftest create-route
   (async done
          (p/let [fetch-mock (user/logged-in-user)
-                 seats (-> fetch-mock :result :data :user :seats)
+                 {:keys [seats addresses]} (-> fetch-mock :result :data :user)
                  create-mocks (p/all
                                (flatten
                                 (map
                                  (fn [idx]
                                    (map
                                     (fn [seat]
-                                      (route/create-route
-                                       {:seatId (:id seat)
-                                        :startAt (from-datetime-local (d/addDays (js/Date.) idx))
-                                        :addressIds (mapv :id (-> fetch-mock
-                                                                  :result
-                                                                  :data
-                                                                  :user
-                                                                  :addresses))
-                                        :route {:legs []
-                                                :path []
-                                                :bounds {:north nil :east nil :south nil :west nil}}}))
+                                      (let [shuffled-addresses (->> addresses shuffle (take 5))]
+                                        (route/create-route
+                                         {:seatId (:id seat)
+                                          :startAt (from-datetime-local (d/addDays (js/Date.) idx))
+                                          :addressIds (mapv :id shuffled-addresses)
+                                          :route {:legs []
+                                                  :path (->> shuffled-addresses
+                                                             (map #(select-keys % [:lat :lng]))
+                                                             (generate-polyline))
+                                                  :bounds {:north nil :east nil :south nil :west nil}}})))
                                     seats))
                                  (range 5))))]
 

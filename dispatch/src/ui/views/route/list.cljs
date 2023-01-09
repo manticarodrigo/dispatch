@@ -14,7 +14,6 @@
    [ui.utils.css :refer (padding)]
    [ui.components.inputs.generic.input :refer (input)]
    [ui.components.inputs.generic.date :refer (date-select)]
-   [ui.components.inputs.generic.button :refer (button-class)]
    [ui.components.inputs.generic.radio-group :refer (radio-group)]
    [ui.components.link-card :refer (link-card)]))
 
@@ -24,13 +23,13 @@
   (if date (-> date js/parseInt js/Date.) (js/Date.)))
 
 (defn view []
-  (let [[{:keys [start end text] :as search-params} set-search-params] (use-search-params)
+  (let [[{:keys [date text] :as search-params} set-search-params] (use-search-params)
         {:keys [data loading]} (use-query
                                 FETCH_ROUTES
                                 {:variables
                                  {:filters
-                                  {:start (-> start parse-date d/startOfDay)
-                                   :end  (-> end parse-date d/endOfDay)}}})
+                                  {:start (-> date parse-date d/startOfDay)
+                                   :end  (-> date parse-date d/endOfDay)}}})
         {:keys [routes]} data
         filtered-routes (if (empty? text)
                           routes
@@ -47,38 +46,27 @@
      #js[routes text])
 
     [:div {:class (class-names padding)}
-     [:div {:class "mb-4"}
+     [:div {:class "flex justify-between items-center mb-4"}
+      [:h1 {:class "text-lg"} "Routes"]
+      [link {:to "/routes/create" :class "underline text-sm"} [:> PlusIcon {:class "inline mr-1 w-3 h-3"}] "Create"]]
+     [:div {:class "mb-2"}
       [:div {:class "flex justify-between"}
-
-       [input {:aria-label "Search"
+       [input {:aria-label "Search routes"
                :value (-> search-params :text)
-               :placeholder "Search routes"
-               :class "mr-2 w-full"
+               :placeholder "Search"
+               :class "w-full"
                :on-text (fn [query]
                           (set-search-params (if (empty? query)
                                                (dissoc search-params :text)
                                                (assoc search-params :text query))))}]
-       [link
-        {:to "/routes/create"
-         :class button-class}
-        [:span {:class "sr-only"} "Add route"]
-        [:> PlusIcon]]]
-      [:div {:class "mt-2 flex"}
-       [date-select {:class "w-1/2"
-                     :label "Start date"
-                     :value (-> (or (some-> search-params :start js/parseInt js/Date.)
+       [:div {:class "w-2"}]
+       [date-select {:label "Select date"
+                     :value (-> (or (some-> search-params :date js/parseInt js/Date.)
                                     (js/Date.))
                                 d/startOfDay)
                      :on-select #(set-search-params
-                                  (assoc search-params :start (-> % .getTime)))}]
-       [:span {:class "w-2"}]
-       [date-select {:class "w-1/2"
-                     :label "End date"
-                     :value (-> (or (some-> search-params :end js/parseInt js/Date.)
-                                    (js/Date.))
-                                d/endOfDay)
-                     :on-select #(set-search-params
-                                  (assoc search-params :end (-> % .getTime)))}]]
+                                  (assoc search-params :date (-> % .getTime)))}]]
+
       [:div {:class "mt-2"}
        [radio-group {:sr-label "Select status"
                      :value "all"
@@ -86,7 +74,6 @@
                                {:key "active" :label "Active" :value "active"}
                                {:key "inactive" :label "Inactive" :value "inactive"}]
                      :on-change js/console.log}]]]
-
      [:ul
       (for [{:keys [id seat startAt]} filtered-routes]
         (let [{:keys [name]} seat

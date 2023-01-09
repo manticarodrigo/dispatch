@@ -28,7 +28,7 @@
 (defn set-polylines [gmap paths]
   (let [polylines (->> paths
                        (remove empty?)
-                       (take 5)
+                       (take 10)
                        (map-indexed vector)
                        (mapv
                         (fn [[idx path]]
