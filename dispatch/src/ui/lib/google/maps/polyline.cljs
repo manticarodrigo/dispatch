@@ -26,12 +26,15 @@
 
 
 (defn set-polylines [gmap paths]
-  (let [polylines (mapv
-                   (fn [[idx path]]
-                     (create-polyline {:path path
-                                       :color (get-color idx)
-                                       :opacity (- 0.75 (/ idx 10))}))
-                   (map-indexed vector paths))]
+  (let [polylines (->> paths
+                       (remove empty?)
+                       (take 5)
+                       (map-indexed vector)
+                       (mapv
+                        (fn [[idx path]]
+                          (create-polyline {:path path
+                                            :color (get-color idx)
+                                            :opacity (max 0 (- 1 (/ idx 10)))}))))]
     (doseq [^js polyline polylines]
       (.setMap polyline gmap))
     polylines))
