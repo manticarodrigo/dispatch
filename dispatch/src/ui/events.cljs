@@ -47,3 +47,10 @@
  [trim-v]
  (fn [db [v]]
    (assoc-in db [:route :legs] v)))
+
+(rf/reg-event-db
+ :map/set-paths
+ [trim-v]
+ (fn [db [v]]
+   (assoc-in
+    db [:map :paths] v)))

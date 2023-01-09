@@ -30,3 +30,5 @@
 
 (rf/reg-sub :route/minutes get-minutes)
 (rf/reg-sub :route/kilometers get-kms)
+
+(rf/reg-sub :map/paths #(some-> % :map :paths))

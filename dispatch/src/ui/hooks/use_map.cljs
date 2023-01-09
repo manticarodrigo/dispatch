@@ -10,7 +10,11 @@
    [ui.lib.google.maps.core :refer (init-api)]
    [ui.lib.google.maps.autocomplete :refer (search-places)]
    [ui.lib.google.maps.places :refer (find-place)]
-   [ui.lib.google.maps.polyline :refer (set-polyline clear-polyline!)]
+   [ui.lib.google.maps.polyline :refer (set-polyline
+                                        clear-polyline!
+                                        set-polylines
+                                        clear-polylines
+                                        fit-bounds-to-path)]
    [ui.lib.google.maps.marker :refer (clear-markers! fit-bounds-to-visible-markers)]
    [ui.lib.google.maps.overlay :refer (update-overlay)]
    [ui.lib.google.maps.directions :refer (set-markers)]))
@@ -28,7 +32,8 @@
     (fit-bounds-to-visible-markers gmap)))
 
 (defn use-map []
-  (let [location (listen [:location])
+  (let [paths (listen [:map/paths])
+        location (listen [:location])
         legs (listen [:route/legs])
         path (listen [:route/path])]
 
@@ -56,6 +61,13 @@
          (center-route))
        #())
      #js[@!map legs path])
+
+    (useEffect
+     (fn []
+       (let [polylines (when (and @!map (seq paths)) (set-polylines @!map paths))]
+         (when polylines (fit-bounds-to-path @!map (mapcat identity paths)))
+         #(clear-polylines polylines)))
+     #js[@!map paths])
 
     {:ref !el
      :map @!map
