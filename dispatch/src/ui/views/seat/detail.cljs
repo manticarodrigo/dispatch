@@ -38,6 +38,7 @@
 
 (defn list-upcoming []
   (println "upcoming")
+
   )
 
 (defn list-completed []
@@ -46,7 +47,8 @@
 
 (defn view []
   (let [params (use-params)
-        query (use-query FETCH_SEAT {:variables {:id (:id params)}})
+        query (use-query FETCH_SEAT {:variables {:id (:id params)
+                                                 :status (:status params)}})
         {:keys [data loading]} query
         {:keys [name location routes]} (:seat data)]
     [:div {:class (class-names padding)}
@@ -63,8 +65,13 @@
           ")")
          "never")]]
      [:div {:class "mb-4"}
-      [:button {:class "mr-2 pb-1 border-b border-neutral-200 text-sm" :on-click #(list-upcoming)} "Upcoming"]
-      [:button {:class "mr-2 pb-1 border-b border-neutral-700 text-sm" :on-click #(list-completed)} "Completed" ]]
+      [:button {
+                :class "mr-2 pb-1 border-b border-neutral-200 text-sm" 
+                :on-click #(list-upcoming)} "Upcoming"]
+      
+      [:button {
+                :class "mr-2 pb-1 border-b border-neutral-700 text-sm" 
+                :on-click #(list-completed)} "Completed" ]]
      [:ul
       (for [{:keys [id] :as route} routes]
         ^{:key id}

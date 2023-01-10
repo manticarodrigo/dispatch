@@ -1,5 +1,5 @@
-query Seat($id: ID!) {
-  seat(id: $id) {
+query Seat($id: ID!, $status: String!) {
+  seat(id: $id, status: $status) {
     id
     name
     routes {
