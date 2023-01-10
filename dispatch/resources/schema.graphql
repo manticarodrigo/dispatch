@@ -3,7 +3,7 @@ scalar Date
 type Query {
   user: User
   seats: [Seat]
-  seat(id: ID!, status: String!): Seat
+  seat(id: ID!, status: String): Seat
   addresses: [Address]
   routes(filters: RouteFilters): [Route]
   route(id: ID!): Route
@@ -41,7 +41,7 @@ type User {
 
 type Seat {
   id: ID!
-  Status: String!
+  status: String
   name: String!
   routes: [Route]
   location: Location
