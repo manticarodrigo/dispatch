@@ -83,6 +83,7 @@ model Stop {
   routeId   String
   address   Address   @relation(fields: [addressId], references: [id])
   addressId String
+  order     Int
   note      String?
   arrivedAt DateTime?
   createdAt DateTime  @default(now())

@@ -72,8 +72,9 @@ type Address {
 type Stop {
   id: ID!
   address: Address!
-  arrivedAt: String
+  order: Int!
   note: String
+  arrivedAt: String
 }
 
 type Route {

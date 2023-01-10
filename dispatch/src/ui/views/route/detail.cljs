@@ -19,14 +19,12 @@
   (let [params (use-params)
         query (use-query FETCH_ROUTE {:variables {:id (:id params)}})
         {:keys [data loading]} query
-        {:keys [seat route]} data
-        stops (some-> route :stops reverse)
-        path (some-> route :route :path)
+        {:keys [seat stops route]} (:route data)
+        {:keys [path]} route
         {:keys [name location]} seat
         markers (->> stops
                      (mapv :address)
                      (mapv (fn [{:keys [lat lng name]}]
-                             (prn lat lng name)
                              {:position {:lat lat :lng lng}
                               :title name})))]
 
