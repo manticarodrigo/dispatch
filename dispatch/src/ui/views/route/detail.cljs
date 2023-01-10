@@ -1,11 +1,12 @@
 (ns ui.views.route.detail
-  (:require [react-feather :rename {Check CheckIcon
+  (:require [react]
+            [react-feather :rename {Check CheckIcon
                                     Minus MinusIcon
                                     Package PackageIcon
                                     Clock ClockIcon}]
             [date-fns :as d]
+            [re-frame.core :refer (dispatch)]
             [shadow.resource :refer (inline)]
-            [cljs-bean.core :refer (->clj)]
             [ui.lib.apollo :refer (gql use-query)]
             [ui.lib.router :refer (use-params)]
             [ui.utils.string :refer (class-names)]
@@ -17,10 +18,27 @@
 (defn view []
   (let [params (use-params)
         query (use-query FETCH_ROUTE {:variables {:id (:id params)}})
-        {:keys [data loading]} (->clj query)
-        {:keys [seat]} (:route data)
-        stops (-> data :route :stops reverse)
-        {:keys [name location]} seat]
+        {:keys [data loading]} query
+        {:keys [seat route]} data
+        stops (some-> route :stops reverse)
+        path (some-> route :route :path)
+        {:keys [name location]} seat
+        markers (->> stops
+                     (mapv :address)
+                     (mapv (fn [{:keys [lat lng name]}]
+                             (prn lat lng name)
+                             {:position {:lat lat :lng lng}
+                              :title name})))]
+
+    (react/useEffect
+     (fn []
+       (dispatch [:map/set-paths (when path [path])])
+       (dispatch [:map/set-points markers])
+       #(do
+          (dispatch [:map/set-paths nil])
+          (dispatch [:map/set-points nil])))
+     #js[route])
+
     [:div {:class (class-names padding)}
      (when loading [:p "Loading..."])
      [:div {:class "mb-4"}
