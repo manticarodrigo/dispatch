@@ -58,7 +58,11 @@
             selected-addresses (mapv #(get address-map %) address-ids)
             draggable-item-ids (mapv first address-tuples)
             draggable-item-map (into {} (for [[item-id address-id] (:address-tuples @!state)]
-                                          {item-id address-id}))]
+                                          {item-id address-id}))
+            markers (->> route :legs (mapv
+                                      (fn [{:keys [location address]}]
+                                        {:position (select-keys location [:lat :lng])
+                                         :title address})))]
 
         (react/useEffect
          (fn []
@@ -69,8 +73,11 @@
 
         (react/useEffect
          (fn []
-           (dispatch [:route/set route])
-           #(dispatch [:route/set nil]))
+           (dispatch [:map/set-paths (when route [(:path route)])])
+           (dispatch [:map/set-points markers])
+           #(do
+              (dispatch [:map/set-paths nil])
+              (dispatch [:map/set-points nil])))
          #js[route])
 
         [:<>

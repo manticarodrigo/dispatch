@@ -1,24 +1,29 @@
 (ns ui.lib.google.maps.marker
   (:require [cljs-bean.core :refer (->js)]))
 
-(defonce ^:private !markers (atom []))
+(defn create-marker [options]
+  (js/google.maps.Marker. (->js options)))
 
-(defn create-marker! [options]
-  (let [marker (js/google.maps.Marker. (->js options))]
-    (swap! !markers conj marker)
-    marker))
+(defn clear-marker [^js marker]
+  (.setMap marker nil))
 
-(defn clear-markers! []
-  (doseq [^js marker @!markers] (.setMap marker nil))
-  (reset! !markers []))
+(defn set-markers [^js gmap points]
+  (let [markers (mapv
+                 (fn [[idx {:keys [position title]}]]
+                   (create-marker
+                    {:map gmap
+                     :zIndex idx
+                     :position position
+                     :title title
+                     :label {:text (str (+ 1 idx))
+                             :color "white"}
+                     :icon {:url "/images/svg/pin.svg"
+                            :scaledSize (js/google.maps.Size. 30 30)}}))
+                 (map-indexed vector points))]
+    (doseq [^js marker markers]
+      (.setMap marker gmap))
+    markers))
 
-(defn fit-bounds-to-visible-markers [^js gmap]
-  (let [bounds (js/google.maps.LatLngBounds.)]
-    (if (seq @!markers)
-      (do
-        (doseq [^js marker @!markers]
-          (.extend bounds (.getPosition marker)))
-        (.fitBounds gmap bounds)
-        (.panToBounds gmap bounds))
-      (do (.setZoom gmap 2)
-          (.setCenter gmap (->js {:lat 0 :lng 0}))))))
+(defn clear-markers [markers]
+  (doseq [marker markers]
+    (clear-marker marker)))

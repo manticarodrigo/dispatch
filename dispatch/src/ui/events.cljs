@@ -23,34 +23,15 @@
  (assoc-key :locale))
 
 (rf/reg-event-db
- :search/set
- [trim-v]
- (assoc-key :search))
-
-(rf/reg-event-db
- :origin/set
- [trim-v]
- (assoc-key :origin))
-
-(rf/reg-event-db
- :location/set
- [trim-v]
- (assoc-key :location))
-
-(rf/reg-event-db
- :route/set
- [trim-v]
- (assoc-key :route))
-
-(rf/reg-event-db
- :route/legs
- [trim-v]
- (fn [db [v]]
-   (assoc-in db [:route :legs] v)))
-
-(rf/reg-event-db
  :map/set-paths
  [trim-v]
  (fn [db [v]]
    (assoc-in
     db [:map :paths] v)))
+
+(rf/reg-event-db
+ :map/set-points
+ [trim-v]
+ (fn [db [v]]
+   (assoc-in
+    db [:map :points] v)))

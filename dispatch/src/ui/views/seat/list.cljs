@@ -57,15 +57,14 @@
             filtered-markers (filter #(:location %) filtered-seats)
             markers (mapv
                      (fn [{:keys [location name]}]
-                       {:location {:lat (-> location :lat js/parseFloat)
-                                   :lng (-> location :lng js/parseFloat)}
-                        :address name})
+                       {:position (select-keys location [:lat :lng])
+                        :title name})
                      filtered-markers)]
 
         (react/useEffect
          (fn []
-           (dispatch [:route/legs markers])
-           #(dispatch [:route/legs nil]))
+           (dispatch [:map/set-points markers])
+           #(dispatch [:map/set-points nil]))
          #js[seats @!search])
 
         [:div {:class (class-names padding)}
