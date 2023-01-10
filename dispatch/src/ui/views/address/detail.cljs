@@ -1,4 +1,4 @@
-(ns ui.views.seat.detail
+(ns ui.views.address.detail
   (:require [react]
             [react-feather :rename {GitPullRequest RouteIcon}]
             [date-fns :as d]
@@ -10,13 +10,13 @@
             [ui.utils.css :refer (padding)]
             [ui.components.link-card :refer (link-card)]))
 
-(def FETCH_SEAT (gql (inline "queries/seat/fetch.graphql")))
+(def FETCH_ADDRESS (gql (inline "queries/address/fetch.graphql")))
 
 (defn view []
   (let [params (use-params)
-        query (use-query FETCH_SEAT {:variables {:id (:id params)}})
+        query (use-query FETCH_ADDRESS {:variables {:id (:id params)}})
         {:keys [data loading]} query
-        {:keys [name location routes]} (:seat data)]
+        {:keys [name description routes]} (:address data)]
 
     (react/useEffect
      (fn []
@@ -28,15 +28,7 @@
      (when loading [:p "Loading..."])
      [:div {:class "mb-4"}
       [:div {:class "text-lg font-medium"} name]
-      [:div {:class "text-xs font-light"}
-       "Last seen "
-       (if location
-         (str
-          (-> location :createdAt (js/parseInt) (d/formatRelative (js/Date.)))
-          " ("
-          (-> location :createdAt (js/parseInt) (d/formatDistanceToNowStrict #js{:addSuffix true}))
-          ")")
-         "never")]]
+      [:div {:class "text-xs font-light"} description]]
      [:div {:class "mb-4"}
       [:button {:class "mr-2 pb-1 border-b border-neutral-200 text-sm"} "Upcoming"]
       [:button {:class "mr-2 pb-1 border-b border-neutral-700 text-sm"} "Completed"]]

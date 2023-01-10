@@ -10,7 +10,7 @@
 
 (rf/reg-event-db
  ::initialize-db
- (fn [] db/seed-db))
+ (fn [] db/default-db))
 
 (rf/reg-event-db
  :session/set
@@ -23,26 +23,15 @@
  (assoc-key :locale))
 
 (rf/reg-event-db
- :search/set
+ :map/set-paths
  [trim-v]
- (assoc-key :search))
+ (fn [db [v]]
+   (assoc-in
+    db [:map :paths] v)))
 
 (rf/reg-event-db
- :origin/set
+ :map/set-points
  [trim-v]
- (assoc-key :origin))
-
-(rf/reg-event-db
- :stops/set
- [trim-v]
- (assoc-key :stops))
-
-(rf/reg-event-db
- :location/set
- [trim-v]
- (assoc-key :location))
-
-(rf/reg-event-db
- :route/set
- [trim-v]
- (assoc-key :route))
+ (fn [db [v]]
+   (assoc-in
+    db [:map :points] v)))

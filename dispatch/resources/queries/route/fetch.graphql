@@ -21,6 +21,7 @@ query Route($id: ID!) {
         lat
         lng
       }
+      order
       note
       arrivedAt
     }

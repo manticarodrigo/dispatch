@@ -9,3 +9,7 @@
 (defn fetch-addresses
   [_ _ context _]
   (model/find-all context))
+
+(defn fetch-address
+  [_ args context _]
+  (model/find-unique context (->clj args)))

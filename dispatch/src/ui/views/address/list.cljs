@@ -1,10 +1,13 @@
 (ns ui.views.address.list
   (:require
    ["@apollo/client" :refer (gql useQuery)]
+   [react]
    [react-feather :rename {MapPin PinIcon
                            ChevronRight ChevronRightIcon
                            Plus PlusIcon}]
    [reagent.core :as r]
+   [re-frame.core :refer (dispatch)]
+   [clojure.string :as s]
    [shadow.resource :refer (inline)]
    [cljs-bean.core :refer (->clj)]
    [ui.lib.router :refer (link)]
@@ -40,7 +43,27 @@
     (fn []
       (let [query (useQuery FETCH_ADDRESSES)
             {:keys [data loading]} (->clj query)
-            addresses (some-> data :addresses)]
+            addresses (some-> data :addresses)
+            filtered-addresses (if (empty? @!search)
+                                 addresses
+                                 (filter
+                                  #(s/includes?
+                                    (-> % :name s/lower-case)
+                                    (s/lower-case @!search))
+                                  addresses))
+            markers (mapv
+                     (fn [{:keys [lat lng name]}]
+                       {:title name
+                        :position {:lat lat
+                                   :lng lng}})
+                     filtered-addresses)]
+
+        (react/useEffect
+         (fn []
+           (dispatch [:map/set-points markers])
+           #(dispatch [:map/set-points nil]))
+         #js[addresses @!search])
+
         [:div {:class (class-names padding)}
          [:div {:class "mb-4 flex justify-between"}
           [input {:aria-label "Search"
@@ -55,11 +78,11 @@
            [:> PlusIcon]]]
 
          [:ul
-          (for [{:keys [id] :as address} addresses]
+          (for [{:keys [id] :as address} filtered-addresses]
             ^{:key id}
             [:li
              [link {:to (str "/addresses/" id)
                     :class (class-names "mb-2 block" button-class)}
               [item address]]])
-          (when (and (not loading) (empty? addresses)) [:p {:class "text-center"} "No addresses found."])
+          (when (and (not loading) (empty? filtered-addresses)) [:p {:class "text-center"} "No addresses found."])
           (when loading [:p {:class "text-center"} "Loading addresses..."])]]))))

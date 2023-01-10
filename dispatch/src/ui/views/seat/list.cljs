@@ -1,11 +1,13 @@
 (ns ui.views.seat.list
   (:require
    ["@apollo/client" :refer (gql useQuery)]
+   [react]
    [react-feather :rename {User UserIcon
                            ChevronRight ChevronRightIcon
                            Plus PlusIcon}]
    [date-fns :as d]
    [reagent.core :as r]
+   [re-frame.core :refer (dispatch)]
    [clojure.string :as s]
    [shadow.resource :refer (inline)]
    [cljs-bean.core :refer (->clj)]
@@ -51,7 +53,20 @@
                               #(s/includes?
                                 (-> % :name s/lower-case)
                                 (s/lower-case @!search))
-                              seats))]
+                              seats))
+            filtered-markers (filter #(:location %) filtered-seats)
+            markers (mapv
+                     (fn [{:keys [location name]}]
+                       {:position (select-keys location [:lat :lng])
+                        :title name})
+                     filtered-markers)]
+
+        (react/useEffect
+         (fn []
+           (dispatch [:map/set-points markers])
+           #(dispatch [:map/set-points nil]))
+         #js[seats @!search])
+
         [:div {:class (class-names padding)}
          [:div {:class "mb-4 flex justify-between"}
           [input {:aria-label "Search"
