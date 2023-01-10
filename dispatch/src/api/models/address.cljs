@@ -21,3 +21,8 @@
    (.. context -prisma -address)
    {:where {:user {:id (.. context -user -id)}}
     :orderBy {:name "asc"}}))
+
+(defn find-unique [^js context {:keys [id]}]
+  (prisma/find-unique
+   (.. context -prisma -address)
+   {:where {:id id}}))

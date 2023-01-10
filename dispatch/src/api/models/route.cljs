@@ -38,3 +38,12 @@
     :include {:seat {:include {:location true}}
               :stops {:include {:address true}
                       :orderBy {:order "asc"}}}}))
+
+(defn find-by-address [^js context {:keys [id]}]
+  (prisma/find-many
+   (.. context -prisma -route)
+   {:where {:stops {:some {:address {:id id}}}}
+    :orderBy {:startAt "asc"}
+    :include {:seat true
+              :stops {:include {:address true}
+                      :orderBy {:order "asc"}}}}))

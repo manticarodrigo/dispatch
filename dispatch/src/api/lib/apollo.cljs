@@ -45,42 +45,18 @@
                  :seats seat/fetch-seats
                  :seat seat/fetch-seat
                  :addresses address/fetch-addresses
+                 :address address/fetch-address
                  :routes route/fetch-routes
                  :route route/fetch-route
                  :stop stop/fetch-stop}
                 :User
-                {:id #(-> ^js % .-id)
-                 :seats seat/fetch-seats
+                {:seats seat/fetch-seats
                  :addresses address/fetch-addresses}
-                :Seat
-                {:id #(-> ^js % .-id)
-                 :name #(-> ^js % .-name)
-                 :location #(-> ^js % .-location)}
-                :Location
-                {:id #(-> ^js % .-id)
-                 :lat #(-> ^js % .-lat)
-                 :lng #(-> ^js % .-lng)
-                 :createdAt #(-> ^js % .-createdAt)}
-                :Address
-                {:id #(-> ^js % .-id)
-                 :name #(-> ^js % .-name)
-                 :description #(-> ^js % .-description)
-                 :phone #(-> ^js % .-phone)
-                 :email #(-> ^js % .-email)
-                 :lat #(-> ^js % .-lat)
-                 :lng #(-> ^js % .-lng)}
-                :Stop
-                {:id #(-> ^js % .-id)
-                 :address #(-> ^js % .-address)
-                 :order #(-> ^js % .-order)
-                 :note #(-> ^js % .-note)
-                 :arrivedAt #(-> ^js % .-arrivedAt)}
-                :Route
-                {:id #(-> ^js % .-id)
-                 :seat #(-> ^js % .-seat)
-                 :startAt #(-> ^js % .-startAt)
-                 :stops #(-> ^js % .-stops)
-                 :route #(-> ^js % .-route)}})
+                :Seat {}
+                :Location {}
+                :Address {:routes route/fetch-routes-by-address}
+                :Stop {}
+                :Route {}})
 
 (def options
   (->js {:context (fn [^js ctx]

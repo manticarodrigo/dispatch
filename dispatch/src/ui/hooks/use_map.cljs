@@ -45,8 +45,7 @@
            (center-route)
            #(do
               (clear-polylines polylines)
-              (clear-markers markers)
-              (center-route)))
+              (clear-markers markers)))
          #()))
      #js[@!map paths points])
 

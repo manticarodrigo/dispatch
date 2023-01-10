@@ -6,6 +6,7 @@ type Query {
   seats: [Seat]
   seat(id: ID!): Seat
   addresses: [Address]
+  address(id: ID!): Address
   routes(filters: RouteFilters): [Route]
   route(id: ID!): Route
   stop(id: ID!): Stop
@@ -48,8 +49,8 @@ type User {
 type Seat {
   id: ID!
   name: String!
-  routes: [Route]
   location: Location
+  routes: [Route]
 }
 
 type Location {
@@ -67,6 +68,7 @@ type Address {
   description: String!
   lat: Float!
   lng: Float!
+  routes: [Route]
 }
 
 type Stop {

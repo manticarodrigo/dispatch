@@ -118,7 +118,7 @@
 (deftest create-seats
   (async done
          (->
-          (p/all (map (fn [_] (seat/create-seat)) (range 5)))
+          (p/all (map (fn [_] (seat/create-seat)) (range 50)))
           (.then (fn [mocks]
                    (testing "api returns data"
                      (is (every? #(-> % :result :data :createSeat) mocks)))
@@ -152,7 +152,7 @@
 
 (deftest create-addresses
   (async done
-         (-> (p/all (map (fn [_] (address/create-address)) (range 15)))
+         (-> (p/all (map (fn [_] (address/create-address)) (range 50)))
              (.then (fn [mocks]
                       (testing "api returns data"
                         (is (every? #(-> % :result :data :createAddress) mocks)))
@@ -182,7 +182,7 @@
                                  (fn [idx]
                                    (map
                                     (fn [seat]
-                                      (let [shuffled-addresses (->> addresses shuffle (take 5))]
+                                      (let [shuffled-addresses (->> addresses shuffle (take 10))]
                                         (route/create-route
                                          {:seatId (:id seat)
                                           :startAt (from-datetime-local (d/addDays (js/Date.) idx))
