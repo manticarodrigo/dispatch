@@ -4,7 +4,7 @@
             [date-fns :as d]
             [shadow.resource :refer (inline)]
             [ui.lib.apollo :refer (gql use-query)]
-            [ui.lib.router :refer (use-params link)]
+            [ui.lib.router :refer (link use-search-params use-params)]
             [ui.utils.string :refer (class-names)]
             [ui.utils.css :refer (padding)]
             [ui.components.inputs.generic.button :refer (button-class)]))
@@ -36,21 +36,17 @@
 
 (def FETCH_SEAT (gql (inline "queries/seat/fetch.graphql")))
 
-(defn list-upcoming []
-  (println "upcoming")
-
-  )
-
-(defn list-completed []
-  (println "completed")
-)
-
 (defn view []
-  (let [params (use-params)
-        query (use-query FETCH_SEAT {:variables {:id (:id params)
-                                                 :status (:status params)}})
+  (let [[search-params set-search-params] (use-search-params)
+        {:keys [status]} search-params
+        params (use-params)
+        variables {:id (get params :id)
+                   :status status}
+        query (use-query FETCH_SEAT {:variables variables})
         {:keys [data loading]} query
         {:keys [name location routes]} (:seat data)]
+
+    (prn (get search-params :status))
     [:div {:class (class-names padding)}
      (when loading [:p "Loading..."])
      [:div {:class "mb-4"}
@@ -65,13 +61,16 @@
           ")")
          "never")]]
      [:div {:class "mb-4"}
-      [:button {
-                :class "mr-2 pb-1 border-b border-neutral-200 text-sm" 
-                :on-click #(list-upcoming)} "Upcoming"]
-      
-      [:button {
-                :class "mr-2 pb-1 border-b border-neutral-700 text-sm" 
-                :on-click #(list-completed)} "Completed" ]]
+      [:button {:class (class-names "mr-2 pb-1 border-b border-neutral-700 text-sm"
+                                    (when (= (get search-params :status) "upcoming") "border-neutral-200"))
+                :on-click #(set-search-params
+                            (assoc search-params :status (-> "upcoming")))} "Upcoming"]
+
+      [:button {:class (class-names "mr-2 pb-1 border-b border-neutral-700 text-sm"
+                                    (when (= (get search-params :status) "completed") "border-neutral-200"))
+                :on-click #(set-search-params
+                            (assoc search-params :status (-> "completed")))} "Completed"]]
+
      [:ul
       (for [{:keys [id] :as route} routes]
         ^{:key id}
