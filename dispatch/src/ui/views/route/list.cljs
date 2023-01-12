@@ -48,9 +48,10 @@
 
 (defn view []
   (let [[search-params set-search-params] (use-search-params)
-        {:keys [start end]} search-params
+        {:keys [start end status]} search-params
         variables {:filters {:start (-> start parse-date d/startOfDay)
-                             :end  (-> end parse-date d/endOfDay)}}
+                             :end  (-> end parse-date d/endOfDay)
+                             :status status}}
         query (use-query FETCH_ROUTES {:variables variables})
         {:keys [data loading]} (->clj query)
         routes (some-> data :routes)
@@ -100,7 +101,9 @@
                      :options [{:key "all" :label "All" :value "all"}
                                {:key "active" :label "Active" :value "active"}
                                {:key "inactive" :label "Inactive" :value "inactive"}]
-                     :on-change js/console.log}]]]
+                     :on-change (fn [event]
+                                  (set-search-params
+                                   (assoc search-params :status event)))}]]]
 
      [:ul
       (for [{:keys [id] :as route} filtered-routes]
