@@ -3,7 +3,7 @@
    [react-feather
     :rename {ArrowLeft ArrowLeftIcon
              Settings SettingsIcon}]
-   [ui.lib.router :refer (routes link)]
+   [ui.lib.router :refer (routes use-navigate)]
    [ui.utils.i18n :refer (tr)]
    [ui.utils.string :refer (class-names)]
    [ui.utils.css :refer (padding-x)]
@@ -18,8 +18,9 @@
          "font-semibold text-white text-sm sm:text-base lg:text-xl")}
    text])
 
-(defn link-back [to]
-  [link {:to to} [:> ArrowLeftIcon]])
+(defn back-button []
+  (let [navigate (use-navigate)]
+    [:button {:on-click #(navigate -1)} [:> ArrowLeftIcon]]))
 
 (defn header []
   [:header {:class (class-names
@@ -33,12 +34,13 @@
     ["/register" [icons/dispatch]]
     ["/login" [icons/dispatch]]
     ["/routes" [icons/dispatch]]
-    ["/routes/*" [link-back "/routes"]]
+    ["/routes/*" [back-button]]
+    ["/stops/*" [back-button]]
     ["/seats" [icons/dispatch]]
-    ["/seats/*" [link-back "/seats"]]
+    ["/seats/*" [back-button]]
     ["/addresses" [icons/dispatch]]
-    ["/addresses/*" [link-back "/addresses"]]
-    ["*" [link-back "/"]]]
+    ["/addresses/*" [back-button]]
+    ["*" [back-button]]]
 
    [routes
     ["/" [title "Home"]]

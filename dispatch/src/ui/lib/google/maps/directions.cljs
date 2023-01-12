@@ -1,6 +1,5 @@
 (ns ui.lib.google.maps.directions
   (:require [ui.lib.google.maps.serializer :refer (parse-route)]
-            [ui.lib.google.maps.marker :refer (clear-markers! create-marker!)]
             [cljs-bean.core :refer (->js)]))
 
 (defonce ^:private !service (atom nil))
@@ -15,19 +14,6 @@
            :waypoints (->> stops (drop-last 1) ->js)
            ;; :optimizeWaypoints true
            :travelMode "DRIVING"})))
-
-(defn set-markers [gmap legs]
-  (clear-markers!)
-  (doseq [[idx leg] (map-indexed vector legs)]
-    (create-marker!
-     {:map gmap
-      :zIndex idx
-      :position (->js (:location leg))
-      :title (:address leg)
-      :label {:text (str (+ 1 idx))
-              :color "white"}
-      :icon {:url "/images/svg/pin.svg"
-             :scaledSize (js/google.maps.Size. 30 30)}})))
 
 (defn calc-route [waypoints]
   (js/Promise.

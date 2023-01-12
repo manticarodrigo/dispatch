@@ -4,7 +4,7 @@
 (defn mock-autocomplete [data]
   (let [^js AutocompleteService (fn [])]
     (set!
-     (.. AutocompleteService -prototype -getQueryPredictions)
+     (.. AutocompleteService -prototype -getPlacePredictions)
      (fn [_ cb]
        (js/setTimeout
         (fn [] (cb (->js data) "OK"))

@@ -56,7 +56,6 @@
                      :on-text (fn [text]
                                 (when (seq text)
                                   (-> (search-places text)
-                                      (.then #(filterv :place_id %))
                                       (.then #(reset! !options %)))))
                      :on-select (fn [option]
                                   (reset! !state
@@ -81,7 +80,7 @@
                   :class "pb-4"
                   :type "email"
                   :on-text #(swap! !state assoc :email %)}]
-          
+
           [button {:label "Submit" :class "my-4"}]
           (doall (for [anom @!anoms]
                    [:span {:key (:reason anom)

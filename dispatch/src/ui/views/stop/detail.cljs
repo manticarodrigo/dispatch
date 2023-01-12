@@ -1,8 +1,10 @@
 (ns ui.views.stop.detail
   (:require [date-fns :as d]
+            [react]
             [shadow.resource :refer (inline)]
             [cljs-bean.core :refer (->js)]
             [reagent.core :as r]
+            [re-frame.core :refer (dispatch)]
             [ui.lib.apollo :refer (gql use-query use-mutation parse-anoms)]
             [ui.lib.router :refer (use-params)]
             [ui.utils.string :refer (class-names)]
@@ -23,7 +25,14 @@
             [create-stop-arrival] (use-mutation CREATE_STOP_ARRIVAL {})
             {:keys [data loading]} query
             {:keys [id address note arrivedAt]} (:stop data)
-            {:keys [name description]} address]
+            {:keys [name description lat lng]} address]
+
+        (react/useEffect
+         (fn []
+           (dispatch [:map/set-points (when address [{:position {:lat lat :lng lng} :title name}])])
+           #(dispatch [:map/set-points nil]))
+         #js[name lat lng])
+
         [:div {:class (class-names padding)}
          (when loading [:p "Loading..."])
          [:div

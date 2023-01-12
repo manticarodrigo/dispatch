@@ -1,6 +1,6 @@
 (ns ui.components.panel
   (:require ["framer-motion" :refer [motion useAnimation]]
-            [react :as react]
+            [react]
             [reagent.core :as r]
             [ui.utils.string :refer (class-names)]
             [ui.hooks.use-media-query :refer (use-media-query lg)]

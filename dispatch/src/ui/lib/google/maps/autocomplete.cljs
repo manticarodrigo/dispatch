@@ -1,4 +1,5 @@
-(ns ui.lib.google.maps.autocomplete)
+(ns ui.lib.google.maps.autocomplete
+  (:require [cljs-bean.core :refer (->clj)]))
 
 (defonce ^:private !autocomplete-service (atom nil))
 
@@ -9,13 +10,13 @@
   (js/Promise.
    (fn [resolve _]
      (let [^js service @!autocomplete-service]
-       (.getQueryPredictions
+       (.getPlacePredictions
         service
         #js{:input text}
         (fn [results status]
           (when (or (= status "OK")
                     (count results))
-            (resolve (js->clj results :keywordize-keys true)))))))))
+            (resolve (->clj results)))))))))
 
 (defn init-autocomplete []
   (reset! !autocomplete-service (create-autocomplete-service)))
