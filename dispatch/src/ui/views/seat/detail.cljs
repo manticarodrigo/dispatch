@@ -45,8 +45,7 @@
         query (use-query FETCH_SEAT {:variables variables})
         {:keys [data loading]} query
         {:keys [name location routes]} (:seat data)]
-
-    (prn (get search-params :status))
+    
     [:div {:class (class-names padding)}
      (when loading [:p "Loading..."])
      [:div {:class "mb-4"}

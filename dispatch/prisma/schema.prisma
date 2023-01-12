@@ -35,7 +35,6 @@ model Seat {
   locationId String?    @unique
   locations  Location[] @relation("SeatLocations")
   routes     Route[]
-  status     String?
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
 }
