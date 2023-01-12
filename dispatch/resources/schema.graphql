@@ -5,7 +5,7 @@ type Query {
   seats: [Seat]
   seat(id: ID!, status: String): Seat
   addresses: [Address]
-  routes(filters: RouteFilters): [Route]
+  routes(filters: RouteFilters, status: String): [Route]
   route(id: ID!): Route
   stop(id: ID!): Stop
 }
@@ -74,6 +74,7 @@ type Stop {
 type Route {
   id: ID!
   seat: Seat!
+  status: String
   startAt: String!
   stops: [Stop]!
 }

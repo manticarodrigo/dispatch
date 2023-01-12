@@ -73,6 +73,7 @@ model Route {
   seatId    String
   stops     Stop[]
   startAt   DateTime
+  status    String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

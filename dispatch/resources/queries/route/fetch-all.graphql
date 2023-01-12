@@ -1,5 +1,5 @@
-query Routes($filters: RouteFilters) {
-  routes(filters: $filters) {
+query Routes($filters: RouteFilters, $status: String) {
+  routes(filters: $filters, status: $status) {
     id
     seat {
       id
