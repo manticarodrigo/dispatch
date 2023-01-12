@@ -5,7 +5,7 @@ locals {
   }
   domain_name    = "api.${var.app_name}.${var.domain_name}"
   db_url         = local.db_map[terraform.workspace]
-  db_migrate_url = "postgresql://${var.db_user}:${var.db_pass}@${var.db_host}:${var.db_port}/${var.db_name}?schema=public"
+  db_migrate_url = "postgresql://${var.db_user}:${var.db_pass}@${var.db_host}:${var.db_port}/${var.db_name}"
   api_name       = "${var.app_name}-api-${terraform.workspace}"
   api_stage_name = "${var.app_name}-api-stage-${terraform.workspace}"
 }
@@ -103,7 +103,7 @@ resource "null_resource" "api_db_sync" {
 
   provisioner "local-exec" {
     command     = <<-EOT
-                  export DATABASE_URL=${local.db_migrate_url}
+                  export DATABASE_URL=${nonsensitive(local.db_migrate_url)}
                   yarn migrate
                 EOT
     working_dir = "../dispatch"
