@@ -101,9 +101,9 @@
                      :options [{:key "all" :label "All" :value "all"}
                                {:key "active" :label "Active" :value "active"}
                                {:key "inactive" :label "Inactive" :value "inactive"}]
-                     :on-change (fn [event]
+                     :on-change (fn [value]
                                   (set-search-params
-                                   (assoc search-params :status event)))}]]]
+                                   (assoc search-params :status value)))}]]]
 
      [:ul
       (for [{:keys [id] :as route} filtered-routes]
