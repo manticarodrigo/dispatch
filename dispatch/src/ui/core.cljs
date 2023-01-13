@@ -21,9 +21,12 @@
        :endpoint "https://dataplane.rum.us-east-1.amazonaws.com"
        :guestRoleArn config/RUM_GUEST_ROLE_ARN
        :identityPoolId config/RUM_IDENTITY_POOL_ID
-       :telemetries #js["errors" "performance" "http"]
+       :telemetries #js["errors"
+                        "performance"
+                        #js["http" #js{:urlsToInclude #js[(re-pattern config/API_URL)]
+                                       :addXRayTraceIdHeader true}]]
        :allowCookies true
-       :enableXray true}))
+       :enableXRay true}))
 
 (def functional-compiler (r/create-compiler {:function-components true}))
 (r/set-default-compiler! functional-compiler)
