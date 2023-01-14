@@ -3,6 +3,10 @@ locals {
     prod = "prisma://aws-us-east-1.prisma-data.com/?api_key=uaDQmuSFUZ2bYuT7ISDagl5hERUSzx67MawH1gPHWfvLwX1hQI_HeuWKI5X1sBoN"
     dev  = "prisma://aws-us-east-1.prisma-data.com/?api_key=Dvlt7xJcZo681KS2Ro5UnyEwoSx-V1jdVZDU3ESY6rVBzBYx-wGVst1cPBhwDKqV"
   }
+  concurrency_map = {
+    prod = 2
+    dev  = 1
+  }
   domain_name    = "api.${var.app_name}.${var.domain_name}"
   db_url         = local.db_map[terraform.workspace]
   db_migrate_url = "postgresql://${var.db_user}:${var.db_pass}@${var.db_host}:${var.db_port}/${var.db_name}"
@@ -145,6 +149,12 @@ resource "aws_lambda_function" "api" {
       DATABASE_URL = local.db_url
     }
   }
+}
+
+resource "aws_lambda_provisioned_concurrency_config" "example" {
+  function_name                     = aws_lambda_function.api.function_name
+  provisioned_concurrent_executions = local.concurrency_map[terraform.workspace]
+  qualifier                         = aws_lambda_function.api.version
 }
 
 resource "aws_iam_role" "api" {
