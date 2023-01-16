@@ -4,7 +4,7 @@ locals {
     dev  = "prisma://aws-us-east-1.prisma-data.com/?api_key=Dvlt7xJcZo681KS2Ro5UnyEwoSx-V1jdVZDU3ESY6rVBzBYx-wGVst1cPBhwDKqV"
   }
   concurrency_map = {
-    prod = 2
+    prod = 1
     dev  = 1
   }
   domain_name    = "api.${var.app_name}.${var.domain_name}"
@@ -92,7 +92,20 @@ resource "null_resource" "api_lambda_sync" {
   }
 
   provisioner "local-exec" {
-    command = "aws lambda update-function-code --function-name ${aws_lambda_function.api.function_name} --s3-bucket ${aws_s3_bucket.api.id} --s3-key api.zip"
+    command = <<-EOT
+              version=$(aws lambda update-function-code \
+                --function-name ${aws_lambda_function.api.function_name} \
+                --s3-bucket ${aws_s3_bucket.api.id} \
+                --s3-key api.zip \
+                --publish \
+                --query Version \
+                --output text)
+              aws lambda update-alias \
+                --function-name ${aws_lambda_function.api.function_name} \
+                --name ${aws_lambda_alias.api.name} \
+                --function-version $version \
+                --routing-config AdditionalVersionWeights={}
+            EOT
   }
 
   depends_on = [
@@ -128,7 +141,6 @@ resource "aws_lambda_function" "api" {
   memory_size   = 256
   handler       = "index.handler"
   timeout       = 10
-  publish       = true
 
   s3_bucket = aws_s3_bucket.api.id
   s3_key    = "api.zip"
@@ -151,10 +163,16 @@ resource "aws_lambda_function" "api" {
   }
 }
 
-resource "aws_lambda_provisioned_concurrency_config" "example" {
+resource "aws_lambda_alias" "api" {
+  name             = "${var.app_name}-api-alias-${terraform.workspace}"
+  function_name    = aws_lambda_function.api.arn
+  function_version = aws_lambda_function.api.version
+}
+
+resource "aws_lambda_provisioned_concurrency_config" "api" {
   function_name                     = aws_lambda_function.api.function_name
   provisioned_concurrent_executions = local.concurrency_map[terraform.workspace]
-  qualifier                         = aws_lambda_function.api.version
+  qualifier                         = aws_lambda_alias.api.name
 }
 
 resource "aws_iam_role" "api" {
@@ -229,7 +247,7 @@ resource "aws_apigatewayv2_stage" "api" {
 resource "aws_apigatewayv2_integration" "api" {
   api_id = aws_apigatewayv2_api.api.id
 
-  integration_uri    = aws_lambda_function.api.invoke_arn
+  integration_uri    = aws_lambda_alias.api.invoke_arn
   integration_type   = "AWS_PROXY"
   integration_method = "POST"
 }
@@ -262,8 +280,8 @@ resource "aws_lambda_permission" "api" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.api.function_name
   principal     = "apigateway.amazonaws.com"
-
-  source_arn = "${aws_apigatewayv2_api.api.execution_arn}/*/*"
+  source_arn    = "${aws_apigatewayv2_api.api.execution_arn}/*/*"
+  qualifier     = aws_lambda_alias.api.name
 }
 
 # Monitoring
