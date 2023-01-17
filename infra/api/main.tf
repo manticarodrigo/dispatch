@@ -247,10 +247,6 @@ resource "aws_apigatewayv2_stage" "api" {
       }
     )
   }
-
-  default_route_settings {
-    detailed_metrics_enabled = true
-  }
 }
 
 resource "aws_apigatewayv2_integration" "api" {
