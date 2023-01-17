@@ -217,6 +217,12 @@ resource "aws_iam_role_policy_attachment" "aws_xray_write_only_access" {
 resource "aws_apigatewayv2_api" "api" {
   name          = local.api_name
   protocol_type = "HTTP"
+  cors_configuration {
+    allow_origins = ["*"]
+    allow_methods = ["OPTIONS", "GET", "POST"]
+    allow_headers = ["content-type", "authorization", "x-amzn-trace-id"]
+    max_age       = 86400
+  }
 }
 
 resource "aws_apigatewayv2_stage" "api" {
@@ -252,10 +258,17 @@ resource "aws_apigatewayv2_integration" "api" {
   integration_method = "POST"
 }
 
-resource "aws_apigatewayv2_route" "api" {
+resource "aws_apigatewayv2_route" "get" {
   api_id = aws_apigatewayv2_api.api.id
 
-  route_key = "ANY /{proxy+}"
+  route_key = "GET /{proxy+}"
+  target    = "integrations/${aws_apigatewayv2_integration.api.id}"
+}
+
+resource "aws_apigatewayv2_route" "post" {
+  api_id = aws_apigatewayv2_api.api.id
+
+  route_key = "POST /{proxy+}"
   target    = "integrations/${aws_apigatewayv2_integration.api.id}"
 }
 
