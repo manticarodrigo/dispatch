@@ -1,6 +1,7 @@
 (ns ui.hooks.use-route
   (:require
    [react :refer (createContext useContext)]
+   [cljs-bean.core :refer (->clj)]
    [ui.hooks.use-map :refer (use-map)]
    [ui.hooks.use-location :refer (use-location)]))
 
@@ -8,7 +9,7 @@
 
 (defn use-route-context []
   (let [val (useContext route-context)]
-    (js->clj val :keywordize-keys true)))
+    (->clj val)))
 
 (def route-context-provider (.-Provider route-context))
 

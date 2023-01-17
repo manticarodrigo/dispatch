@@ -8,9 +8,10 @@
                      (.. context -prisma -route)
                      {:data {:user {:connect {:id (.. context -user -id)}}
                              :seat {:connect {:id seatId}}
-                             :stops {:create (mapv (fn [id]
-                                                     {:address {:connect {:id id}}})
-                                                   addressIds)}
+                             :stops {:create (mapv (fn [[idx id]]
+                                                     {:order idx
+                                                      :address {:connect {:id id}}})
+                                                   (map-indexed vector addressIds))}
                              :route route
                              :startAt startAt}})]
     (some-> route .-id)))
@@ -27,11 +28,22 @@
               :AND and}
       :orderBy {:startAt "asc"}
       :include {:seat true
-                :stops {:include {:address true}}}})))
+                :stops {:include {:address true}
+                        :orderBy {:order "asc"}}}})))
 
 (defn find-unique [^js context {:keys [id]}]
   (prisma/find-unique
    (.. context -prisma -route)
    {:where {:id id}
     :include {:seat {:include {:location true}}
-              :stops {:include {:address true}}}}))
+              :stops {:include {:address true}
+                      :orderBy {:order "asc"}}}}))
+
+(defn find-by-address [^js context {:keys [id]}]
+  (prisma/find-many
+   (.. context -prisma -route)
+   {:where {:stops {:some {:address {:id id}}}}
+    :orderBy {:startAt "asc"}
+    :include {:seat true
+              :stops {:include {:address true}
+                      :orderBy {:order "asc"}}}}))

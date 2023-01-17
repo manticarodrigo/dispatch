@@ -2,78 +2,53 @@
   (:require
    [react :refer (useEffect)]
    [reagent.core :as r]
-   [re-frame.core :refer (dispatch)]
-   [cljs.core.async :refer (go)]
-   [cljs.core.async.interop :refer-macros (<p!)]
-   [cljs-bean.core :refer (->js)]
+   [promesa.core :as p]
    [ui.subs :refer (listen)]
    [ui.lib.google.maps.core :refer (init-api)]
-   [ui.lib.google.maps.autocomplete :refer (search-places)]
-   [ui.lib.google.maps.places :refer (find-place)]
-   [ui.lib.google.maps.polyline :refer (set-polyline clear-polyline!)]
-   [ui.lib.google.maps.marker :refer (clear-markers!)]
-   [ui.lib.google.maps.overlay :refer (update-overlay)]
-   [ui.lib.google.maps.directions :refer (calc-route set-markers)]))
+   [ui.lib.google.maps.polyline :refer (set-polylines clear-polylines)]
+   [ui.lib.google.maps.marker :refer (set-markers clear-markers)]))
 
 (def ^:private !el (atom nil))
 (def ^:private !map (r/atom false))
 
-(defn- set-route! [waypoints]
-  (go (dispatch [:route/set (<p! (calc-route waypoints))])))
-(defn- set-origin! [place-id]
-  (go (dispatch [:origin/set (<p! (find-place place-id))])))
-(defn- set-search! [text]
-  (go (dispatch [:search/set (<p! (search-places text))])))
-
 (defn- center-route []
-  (let [^js gmap @!map
-        bounds (listen [:route/bounds])]
-    (if bounds
-      (do (.fitBounds gmap (clj->js bounds))
-          (.panToBounds gmap (clj->js bounds)))
+  (let [paths (listen [:map/paths])
+        points (listen [:map/points])
+        coords (flatten (concat paths (map :position points)))
+        bounds (js/google.maps.LatLngBounds.)
+        ^js gmap @!map]
+    (if (seq coords)
+      (do
+        (doseq [{:keys [lat lng]} coords]
+          (.extend bounds #js{:lat lat :lng lng}))
+        (.fitBounds gmap bounds)
+        (.panToBounds gmap bounds))
       (do (.setZoom gmap 2)
-          (.setCenter gmap (->js {:lat 0 :lng 0}))))))
+          (.setCenter gmap #js{:lat 0 :lng 0})))))
 
 (defn use-map []
-  (let [location (listen [:location])
-        stops (listen [:stops])
-        legs (listen [:route/legs])
-        path (listen [:route/path])]
+  (let [paths (listen [:map/paths])
+        points (listen [:map/points])]
 
     (useEffect
      (fn []
-       (go (reset! !map (<p! (init-api @!el))))
-       #()) #js[])
-
-    (useEffect
-     (fn []
-       (when (and @!map location)
-         (update-overlay (->js location)))
+       (p/let [gmap (init-api @!el)]
+         (reset! !map gmap))
        #())
-     #js[@!map location])
+     #js[])
 
     (useEffect
      (fn []
-       (when @!map
-         (center-route)
-         (if legs
-           (set-markers @!map legs)
-           (clear-markers!))
-         (if path
-           (set-polyline @!map path)
-           (clear-polyline!)))
-       #())
-     #js[@!map legs path])
-
-    (useEffect
-     (fn []
-       (when (and @!map (> (count stops) 1))
-         (set-route! stops))
-       #())
-     #js[@!map stops])
+       (if @!map
+         (let [polylines (when (seq paths) (set-polylines @!map paths))
+               markers (when (seq points) (set-markers @!map points))]
+           (center-route)
+           #(do
+              (clear-polylines polylines)
+              (clear-markers markers)))
+         #()))
+     #js[@!map paths points])
 
     {:ref !el
      :map @!map
-     :search set-search!
-     :origin set-origin!
      :center center-route}))

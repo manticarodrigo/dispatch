@@ -22,6 +22,7 @@
    ["/seats/:id" [router/auth-route [seat/detail-view]]]
    ["/seats/create" [router/auth-route [seat/create-view]]]
    ["/addresses" [router/auth-route [address/list-view]]]
+   ["/addresses/:id" [router/auth-route [address/detail-view]]]
    ["/addresses/create" [router/auth-route [address/create-view]]]
    ["/stops/:id" [router/auth-route [stop/detail-view]]]
    ["*" [not-found/view]]])

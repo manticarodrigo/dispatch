@@ -4,8 +4,10 @@
    [cljs.test :as t :refer-macros [deftest async testing is use-fixtures]]
    [promesa.core :as p]
    [common.utils.date :refer (from-datetime-local)]
+   [common.utils.promise :refer (each)]
    [ui.utils.error :refer (tr-error)]
    [tests.util.ui :as ui :refer (with-mounted-component test-app)]
+   [tests.util.location :refer (generate-polyline)]
    [tests.user :as user]
    [tests.seat :as seat]
    [tests.address :as address]
@@ -117,7 +119,7 @@
 (deftest create-seats
   (async done
          (->
-          (p/all (map (fn [_] (seat/create-seat)) (range 5)))
+          (p/all (map (fn [_] (seat/create-seat)) (range 50)))
           (.then (fn [mocks]
                    (testing "api returns data"
                      (is (every? #(-> % :result :data :createSeat) mocks)))
@@ -141,17 +143,13 @@
            (with-mounted-component
              [test-app {:route "/seats" :mocks [{:request request :result result}]}]
              (fn [^js component]
-               (p/->
-                (p/all
-                 (map (fn [{:keys [name]}]
-                        (-> (.findByText component name)
-                            (.then #(testing "ui presents seat name" (is (some? %))))))
-                      (-> result :data :seats)))
-                done))))))
+               (-> (p/all (map #(.findByText component (:name %)) (-> result :data :seats)))
+                   (.then #(testing "ui presents seat names" (is (every? some? %))))
+                   (.then done)))))))
 
 (deftest create-addresses
   (async done
-         (-> (p/all (map (fn [_] (address/create-address)) (range 5)))
+         (-> (p/all (map (fn [_] (address/create-address)) (range 50)))
              (.then (fn [mocks]
                       (testing "api returns data"
                         (is (every? #(-> % :result :data :createAddress) mocks)))
@@ -174,26 +172,28 @@
 (deftest create-route
   (async done
          (p/let [fetch-mock (user/logged-in-user)
-                 seats (-> fetch-mock :result :data :user :seats)
-                 create-mocks (p/all
-                               (flatten
-                                (map
-                                 (fn [idx]
-                                   (map
-                                    (fn [seat]
-                                      (route/create-route
-                                       {:seatId (:id seat)
-                                        :startAt (from-datetime-local (d/addDays (js/Date.) idx))
-                                        :addressIds (mapv :id (-> fetch-mock
-                                                                  :result
-                                                                  :data
-                                                                  :user
-                                                                  :addresses))
-                                        :route {:legs []
-                                                :path []
-                                                :bounds {:north nil :east nil :south nil :west nil}}}))
-                                    seats))
-                                 (range 5))))]
+                 {:keys [seats addresses]} (-> fetch-mock :result :data :user)
+                 promise-fn (fn [idx seat]
+                              (let [shuffled-addresses (->> addresses shuffle (take (+ 2 (rand-int 8))))]
+                                (fn []
+                                  (route/create-route
+                                   {:seatId (:id seat)
+                                    :startAt (from-datetime-local (d/addDays (js/Date.) idx))
+                                    :addressIds (mapv :id shuffled-addresses)
+                                    :route {:legs []
+                                            :path (->> shuffled-addresses
+                                                       (map #(select-keys % [:lat :lng]))
+                                                       (generate-polyline))
+                                            :bounds {:north nil :east nil :south nil :west nil}}}))))
+                 promise-fns (flatten
+                              (map
+                               (fn [idx]
+                                 (map
+                                  (fn [seat]
+                                    (promise-fn idx seat))
+                                  (take 10 seats)))
+                               (range 3)))
+                 create-mocks (each promise-fns)]
 
            (testing "api returns data"
              (is (every? #(-> % :result :data :createRoute) create-mocks)))

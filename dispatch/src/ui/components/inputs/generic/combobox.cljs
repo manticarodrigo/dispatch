@@ -1,5 +1,5 @@
 (ns ui.components.inputs.generic.combobox
-  (:require [react :as react]
+  (:require [react]
             [headlessui-reagent.core :as ui]
             [react-feather :rename {ChevronDown ChevronDownIcon}]
             [clojure.string :as s]

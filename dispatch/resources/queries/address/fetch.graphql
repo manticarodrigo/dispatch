@@ -1,7 +1,12 @@
-query Seat($id: ID!) {
-  seat(id: $id) {
+query Address($id: ID!) {
+  address(id: $id) {
     id
     name
+    phone
+    email
+    description
+    lat
+    lng
     routes {
       id
       startAt
@@ -17,12 +22,6 @@ query Seat($id: ID!) {
         arrivedAt
       }
       route
-    }
-    location {
-      id
-      lat
-      lng
-      createdAt
     }
   }
 }

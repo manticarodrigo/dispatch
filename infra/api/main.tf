@@ -3,9 +3,13 @@ locals {
     prod = "prisma://aws-us-east-1.prisma-data.com/?api_key=uaDQmuSFUZ2bYuT7ISDagl5hERUSzx67MawH1gPHWfvLwX1hQI_HeuWKI5X1sBoN"
     dev  = "prisma://aws-us-east-1.prisma-data.com/?api_key=Dvlt7xJcZo681KS2Ro5UnyEwoSx-V1jdVZDU3ESY6rVBzBYx-wGVst1cPBhwDKqV"
   }
+  concurrency_map = {
+    prod = 1
+    dev  = 1
+  }
   domain_name    = "api.${var.app_name}.${var.domain_name}"
   db_url         = local.db_map[terraform.workspace]
-  db_migrate_url = "postgresql://${var.db_user}:${var.db_pass}@${var.db_host}:${var.db_port}/${var.db_name}?schema=public"
+  db_migrate_url = "postgresql://${var.db_user}:${var.db_pass}@${var.db_host}:${var.db_port}/${var.db_name}"
   api_name       = "${var.app_name}-api-${terraform.workspace}"
   api_stage_name = "${var.app_name}-api-stage-${terraform.workspace}"
 }
@@ -88,7 +92,20 @@ resource "null_resource" "api_lambda_sync" {
   }
 
   provisioner "local-exec" {
-    command = "aws lambda update-function-code --function-name ${aws_lambda_function.api.function_name} --s3-bucket ${aws_s3_bucket.api.id} --s3-key api.zip"
+    command = <<-EOT
+              version=$(aws lambda update-function-code \
+                --function-name ${aws_lambda_function.api.function_name} \
+                --s3-bucket ${aws_s3_bucket.api.id} \
+                --s3-key api.zip \
+                --publish \
+                --query Version \
+                --output text)
+              aws lambda update-alias \
+                --function-name ${aws_lambda_function.api.function_name} \
+                --name ${aws_lambda_alias.api.name} \
+                --function-version $version \
+                --routing-config AdditionalVersionWeights={}
+            EOT
   }
 
   depends_on = [
@@ -103,7 +120,7 @@ resource "null_resource" "api_db_sync" {
 
   provisioner "local-exec" {
     command     = <<-EOT
-                  export DATABASE_URL=${local.db_migrate_url}
+                  export DATABASE_URL=${nonsensitive(local.db_migrate_url)}
                   yarn migrate
                 EOT
     working_dir = "../dispatch"
@@ -122,33 +139,40 @@ resource "aws_lambda_function" "api" {
   runtime       = "nodejs16.x"
   architectures = ["arm64"]
   memory_size   = 256
-  handler       = "/opt/nodejs/node_modules/datadog-lambda-js/handler.handler"
+  handler       = "index.handler"
   timeout       = 10
-  publish       = true
 
   s3_bucket = aws_s3_bucket.api.id
   s3_key    = "api.zip"
 
   role = aws_iam_role.api.arn
 
+  tracing_config {
+    mode = "Active"
+  }
+
   layers = [
-    "arn:aws:lambda:${data.aws_region.current.name}:464622532012:layer:Datadog-Node16-x:85",
-    "arn:aws:lambda:${data.aws_region.current.name}:464622532012:layer:Datadog-Extension-ARM:35"
+    "arn:aws:lambda:us-east-1:580247275435:layer:LambdaInsightsExtension-Arm64:2"
   ]
 
   environment {
     variables = {
-      STAGE             = terraform.workspace
-      DATABASE_URL      = local.db_url
-      DD_LAMBDA_HANDLER = "index.handler"
-      DD_SITE           = "datadoghq.com"
-      DD_API_KEY        = var.datadog_api_key
-      DD_ENV            = terraform.workspace
-      DD_SERVICE        = "api"
-      DD_VERSION        = var.sha1
-      DD_LOGS_INJECTION = true
+      STAGE        = terraform.workspace
+      DATABASE_URL = local.db_url
     }
   }
+}
+
+resource "aws_lambda_alias" "api" {
+  name             = "${var.app_name}-api-alias-${terraform.workspace}"
+  function_name    = aws_lambda_function.api.arn
+  function_version = aws_lambda_function.api.version
+}
+
+resource "aws_lambda_provisioned_concurrency_config" "api" {
+  function_name                     = aws_lambda_function.api.function_name
+  provisioned_concurrent_executions = local.concurrency_map[terraform.workspace]
+  qualifier                         = aws_lambda_alias.api.name
 }
 
 resource "aws_iam_role" "api" {
@@ -156,21 +180,36 @@ resource "aws_iam_role" "api" {
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
-    Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
-      Sid    = ""
-      Principal = {
-        Service = "lambda.amazonaws.com"
-      }
+    Statement = [
+      {
+        Sid    = ""
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
       }
     ]
   })
 }
 
-resource "aws_iam_role_policy_attachment" "api" {
+resource "aws_iam_role_policy_attachment" "execution_policy" {
   role       = aws_iam_role.api.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
+resource "aws_iam_role_policy_attachment" "insights_policy" {
+  role       = aws_iam_role.api.id
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy"
+}
+
+data "aws_iam_policy" "lambda_xray" {
+  name = "AWSXRayDaemonWriteAccess"
+}
+
+resource "aws_iam_role_policy_attachment" "aws_xray_write_only_access" {
+  role       = aws_iam_role.api.name
+  policy_arn = data.aws_iam_policy.lambda_xray.arn
 }
 
 # API Gateway
@@ -178,12 +217,17 @@ resource "aws_iam_role_policy_attachment" "api" {
 resource "aws_apigatewayv2_api" "api" {
   name          = local.api_name
   protocol_type = "HTTP"
+  cors_configuration {
+    allow_origins = ["*"]
+    allow_methods = ["OPTIONS", "GET", "POST"]
+    allow_headers = ["content-type", "authorization", "x-amzn-trace-id"]
+    max_age       = 86400
+  }
 }
 
 resource "aws_apigatewayv2_stage" "api" {
-  api_id = aws_apigatewayv2_api.api.id
-
   name        = local.api_stage_name
+  api_id      = aws_apigatewayv2_api.api.id
   auto_deploy = true
 
   access_log_settings {
@@ -203,20 +247,31 @@ resource "aws_apigatewayv2_stage" "api" {
       }
     )
   }
+
+  default_route_settings {
+    detailed_metrics_enabled = true
+  }
 }
 
 resource "aws_apigatewayv2_integration" "api" {
   api_id = aws_apigatewayv2_api.api.id
 
-  integration_uri    = aws_lambda_function.api.invoke_arn
+  integration_uri    = aws_lambda_alias.api.invoke_arn
   integration_type   = "AWS_PROXY"
   integration_method = "POST"
 }
 
-resource "aws_apigatewayv2_route" "api" {
+resource "aws_apigatewayv2_route" "get" {
   api_id = aws_apigatewayv2_api.api.id
 
-  route_key = "ANY /{proxy+}"
+  route_key = "GET /{proxy+}"
+  target    = "integrations/${aws_apigatewayv2_integration.api.id}"
+}
+
+resource "aws_apigatewayv2_route" "post" {
+  api_id = aws_apigatewayv2_api.api.id
+
+  route_key = "POST /{proxy+}"
   target    = "integrations/${aws_apigatewayv2_integration.api.id}"
 }
 
@@ -241,8 +296,8 @@ resource "aws_lambda_permission" "api" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.api.function_name
   principal     = "apigateway.amazonaws.com"
-
-  source_arn = "${aws_apigatewayv2_api.api.execution_arn}/*/*"
+  source_arn    = "${aws_apigatewayv2_api.api.execution_arn}/*/*"
+  qualifier     = aws_lambda_alias.api.name
 }
 
 # Monitoring
