@@ -1,11 +1,12 @@
 (ns ui.components.forms.seat
-  (:require ["@apollo/client" :refer (gql useMutation)]
+  (:require ["@apollo/client" :refer (gql)]
             [shadow.resource :refer (inline)]
             [reagent.core :as r]
-            [cljs-bean.core :refer (->js)]
-            [ui.lib.apollo :refer (parse-anoms)]
+            [ui.lib.apollo :refer (parse-anoms use-mutation)]
             [ui.lib.router :refer (use-navigate)]
             [ui.utils.error :refer (tr-error)]
+            [ui.utils.string :refer (class-names)]
+            [ui.components.icons.spinner :refer (spinner)]
             [ui.components.inputs.generic.input :refer (input)]
             [ui.components.inputs.generic.button :refer (button)]))
 
@@ -16,14 +17,13 @@
   (let [!state (r/atom {})
         !anoms (r/atom {})]
     (fn []
-      (let [[create] (useMutation
-                      CREATE_SEAT
-                      (->js {:refetchQueries [{:query FETCH_SEATS}]}))
+      (let [[create status] (use-mutation CREATE_SEAT {:refetchQueries [{:query FETCH_SEATS}]})
+            {:keys [loading]} status
             navigate (use-navigate)]
         [:form {:class "flex flex-col"
                 :on-submit (fn [e]
                              (.preventDefault e)
-                             (-> (create (->js {:variables @!state}))
+                             (-> (create {:variables @!state})
                                  (.then (fn []
                                           (navigate "/seats")))
                                  (.catch #(reset! !anoms (parse-anoms %)))))}
@@ -33,7 +33,13 @@
                  :required true
                  :class "pb-4"
                  :on-text #(swap! !state assoc :name %)}]
-         [button {:label "Submit" :class "my-4"}]
+         [button
+          {:label (if loading
+                    [:span {:class "flex justify-center items-center"}
+                     [spinner {:class "mr-2 w-5 h-5"}] "Loading..."]
+                    "Submit")
+           :class (class-names "my-4 w-full" (when loading "cursor-progress"))
+           :disabled loading}]
          (doall (for [anom @!anoms]
                   [:span {:key (:reason anom)
                           :class "my-2 p-2 rounded border border-red-300 text-sm text-red-100 bg-red-800"}

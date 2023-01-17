@@ -52,7 +52,7 @@
                                      path)]}]
       (fn [^js component user]
         (p/do
-          (.findByText component "Loaded...")
+          (.findByText component "Submit")
           (select-combobox user component "Assigned seat" (-> seat :name))
 
           (change
@@ -72,8 +72,8 @@
             (select-combobox user component "Add address" name)
             (.findByText component name))
 
-          (.findByText component "Loading route")
-          (.findByText component "Loaded route" #js{} #js{:timeout 3000})
+          (.findByText component "Loading...")
+          (.findByText component "Submit" #js{} #js{:timeout 3000})
 
           (submit (-> component (.-container) (.querySelector "form")))
           (f component))))))
