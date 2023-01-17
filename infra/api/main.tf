@@ -226,9 +226,8 @@ resource "aws_apigatewayv2_api" "api" {
 }
 
 resource "aws_apigatewayv2_stage" "api" {
-  api_id = aws_apigatewayv2_api.api.id
-
   name        = local.api_stage_name
+  api_id      = aws_apigatewayv2_api.api.id
   auto_deploy = true
 
   access_log_settings {
@@ -247,6 +246,10 @@ resource "aws_apigatewayv2_stage" "api" {
       integrationErrorMessage = "$context.integrationErrorMessage"
       }
     )
+  }
+
+  default_route_settings {
+    detailed_metrics_enabled = true
   }
 }
 
