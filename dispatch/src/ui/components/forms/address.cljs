@@ -1,13 +1,14 @@
 (ns ui.components.forms.address
-  (:require ["@apollo/client" :refer (gql useMutation)]
+  (:require ["@apollo/client" :refer (gql)]
             [shadow.resource :refer (inline)]
             [reagent.core :as r]
-            [cljs-bean.core :refer (->js)]
             [ui.utils.error :refer (tr-error)]
-            [ui.lib.apollo :refer (parse-anoms)]
+            [ui.utils.string :refer (class-names)]
+            [ui.lib.apollo :refer (parse-anoms use-mutation)]
             [ui.lib.router :refer (use-navigate)]
             [ui.lib.google.maps.autocomplete :refer (search-places)]
             [ui.lib.google.maps.places :refer (find-place)]
+            [ui.components.icons.spinner :refer (spinner)]
             [ui.components.inputs.generic.input :refer (input)]
             [ui.components.inputs.generic.combobox :refer (combobox)]
             [ui.components.inputs.generic.button :refer (button)]))
@@ -20,9 +21,8 @@
         !anoms (r/atom {})
         !options (r/atom [])]
     (fn []
-      (let [[create] (useMutation
-                      CREATE_ADDRESS
-                      (->js {:refetchQueries [{:query FETCH_ADDRESSES}]}))
+      (let [[create status] (use-mutation CREATE_ADDRESS {:refetchQueries [{:query FETCH_ADDRESSES}]})
+            {:keys [loading]} status
             navigate (use-navigate)]
         [:<>
          (when (and (-> @!state :lat)
@@ -32,7 +32,7 @@
          [:form {:class "flex flex-col"
                  :on-submit (fn [e]
                               (.preventDefault e)
-                              (-> (create (->js {:variables (dissoc @!state :place_id)}))
+                              (-> (create {:variables (dissoc @!state :place_id)})
                                   (.then (fn [] (navigate "/routes")))
                                   (.catch #(reset! !anoms (parse-anoms %)))))}
           [input {:id "name"
@@ -81,7 +81,13 @@
                   :type "email"
                   :on-text #(swap! !state assoc :email %)}]
 
-          [button {:label "Submit" :class "my-4"}]
+          [button
+           {:label (if loading
+                     [:span {:class "flex justify-center items-center"}
+                      [spinner {:class "mr-2 w-5 h-5"}] "Loading..."]
+                     "Submit")
+            :class (class-names "my-4 w-full" (when loading "cursor-progress"))
+            :disabled loading}]
           (doall (for [anom @!anoms]
                    [:span {:key (:reason anom)
                            :class "my-2 p-2 rounded border border-red-300 text-sm text-red-100 bg-red-800"}
