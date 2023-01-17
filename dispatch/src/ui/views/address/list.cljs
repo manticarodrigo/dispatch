@@ -1,6 +1,6 @@
 (ns ui.views.address.list
   (:require
-   ["@apollo/client" :refer (gql useQuery)]
+   ["@apollo/client" :refer (gql)]
    [react]
    [react-feather :rename {MapPin PinIcon
                            ChevronRight ChevronRightIcon
@@ -9,7 +9,7 @@
    [re-frame.core :refer (dispatch)]
    [clojure.string :as s]
    [shadow.resource :refer (inline)]
-   [cljs-bean.core :refer (->clj)]
+   [ui.lib.apollo :refer (use-query)]
    [ui.lib.router :refer (link)]
    [ui.utils.string :refer (class-names)]
    [ui.utils.css :refer (padding)]
@@ -41,8 +41,8 @@
 (defn view []
   (let [!search (r/atom "")]
     (fn []
-      (let [query (useQuery FETCH_ADDRESSES)
-            {:keys [data loading]} (->clj query)
+      (let [query (use-query FETCH_ADDRESSES {})
+            {:keys [data loading]} query
             addresses (some-> data :addresses)
             filtered-addresses (if (empty? @!search)
                                  addresses
