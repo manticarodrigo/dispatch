@@ -3,7 +3,7 @@
    ["@apollo/client" :refer (gql)]
    [shadow.resource :refer (inline)]
    [reagent.core :as r]
-   [cljs-bean.core :refer (->clj ->js)]
+   [cljs-bean.core :refer (->clj)]
    [ui.lib.apollo :refer (parse-anoms use-mutation)]
    [ui.lib.router :refer (use-navigate)]
    [ui.utils.session :refer (create-session)]
@@ -27,7 +27,7 @@
                 :on-submit
                 (fn [e]
                   (.preventDefault e)
-                  (-> (login (->js {:variables @!state}))
+                  (-> (login {:variables @!state})
                       (.then (fn [res]
                                (create-session (-> res ->clj :data :loginUser))
                                (.resetStore client)
