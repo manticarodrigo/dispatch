@@ -17,7 +17,7 @@
             [ui.utils.error :refer (tr-error)]
             [ui.utils.vector :refer (vec-remove)]
             [ui.utils.input :refer (debounce)]
-            [ui.components.icons :as icons]
+            [ui.components.icons.spinner :refer (spinner)]
             [ui.components.inputs.generic.combobox :refer (combobox)]
             [ui.components.inputs.generic.input :refer (input)]
             [ui.components.inputs.generic.button :refer (button base-button-class)]))
@@ -47,11 +47,14 @@
                                     (reset! !loading-route false))))
                               500)]
     (fn []
-      (let [{:keys [data loading]} (use-query FETCH_USER {})
+      (let [navigate (use-navigate)
+            query (use-query FETCH_USER {})
             [create status] (use-mutation CREATE_ROUTE {})
-            navigate (use-navigate)
-            seats (some-> data :user :seats)
-            addresses (some-> data :user :addresses)
+            loading (or
+                     (:loading query)
+                     (:loading status)
+                     @!loading-route)
+            {:keys [seats addresses]} (some-> query :data :user)
             address-map (into {} (for [address addresses]
                                    {(:id address) address}))
             {:keys [seatId startAt address-tuples route]} @!state
@@ -82,12 +85,6 @@
          #js[route])
 
         [:<>
-         (if loading
-           [:p {:class "sr-only"} "Loading..."]
-           [:p {:class "sr-only"} "Loaded..."])
-         (if @!loading-route
-           [:p {:class "sr-only"} "Loading route"]
-           [:p {:class "sr-only"} "Loaded route"])
          [:form {:class "flex flex-col"
                  :on-submit
                  (fn [e]
@@ -150,12 +147,12 @@
                   [:> XIcon]]]))]]
 
           [button
-           {:label (if (:loading status)
+           {:label (if loading
                      [:span {:class "flex justify-center items-center"}
-                      [icons/loading_circle {:class "animate-spin mr-2 w-5 h-5"}] "Loading..."]
+                      [spinner {:class "mr-2 w-5 h-5"}] "Loading..."]
                      "Submit")
-            :class (class-names "my-4 w-full" (when (:loading status) "cursor-progress"))
-            :disabled (:loading status)}]
+            :class (class-names "my-4 w-full" (when loading "cursor-progress"))
+            :disabled loading}]
 
           (doall (for [anom @!anoms]
                    [:span {:key (:reason anom)

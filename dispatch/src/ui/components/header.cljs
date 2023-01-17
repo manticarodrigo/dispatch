@@ -7,7 +7,7 @@
    [ui.utils.i18n :refer (tr)]
    [ui.utils.string :refer (class-names)]
    [ui.utils.css :refer (padding-x)]
-   [ui.components.icons :as icons]
+   [ui.components.icons.dispatch :refer (dispatch)]
    [ui.components.inputs.generic.menu :refer (menu)]
    [ui.components.nav :refer (nav)]))
 
@@ -30,15 +30,15 @@
                     padding-x
                     "w-full h-[60px]")}
    [routes
-    ["/" [icons/dispatch]]
-    ["/register" [icons/dispatch]]
-    ["/login" [icons/dispatch]]
-    ["/routes" [icons/dispatch]]
+    ["/" [dispatch]]
+    ["/register" [dispatch]]
+    ["/login" [dispatch]]
+    ["/routes" [dispatch]]
     ["/routes/*" [back-button]]
     ["/stops/*" [back-button]]
-    ["/seats" [icons/dispatch]]
+    ["/seats" [dispatch]]
     ["/seats/*" [back-button]]
-    ["/addresses" [icons/dispatch]]
+    ["/addresses" [dispatch]]
     ["/addresses/*" [back-button]]
     ["*" [back-button]]]
 
