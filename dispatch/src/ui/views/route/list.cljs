@@ -23,13 +23,14 @@
   (if date (-> date js/parseInt js/Date.) (js/Date.)))
 
 (defn view []
-  (let [[{:keys [date text] :as search-params} set-search-params] (use-search-params)
+  (let [[{:keys [date text status] :as search-params} set-search-params] (use-search-params)
         {:keys [data loading]} (use-query
                                 FETCH_ROUTES
                                 {:variables
                                  {:filters
                                   {:start (-> date parse-date d/startOfDay)
-                                   :end  (-> date parse-date d/endOfDay)}}})
+                                   :end  (-> date parse-date d/endOfDay)
+                                   :status status}}})
         {:keys [routes]} data
         filtered-routes (if (empty? text)
                           routes
@@ -55,10 +56,9 @@
                :value (-> search-params :text)
                :placeholder "Search"
                :class "w-full"
-               :on-text (fn [query]
-                          (set-search-params (if (empty? query)
-                                               (dissoc search-params :text)
-                                               (assoc search-params :text query))))}]
+               :on-text #(set-search-params (if (empty? %)
+                                              (dissoc search-params :text)
+                                              (assoc search-params :text %)))}]
        [:div {:class "w-2"}]
        [date-select {:label "Select date"
                      :value (-> (or (some-> search-params :date js/parseInt js/Date.)
@@ -66,14 +66,15 @@
                                 d/startOfDay)
                      :on-select #(set-search-params
                                   (assoc search-params :date (-> % .getTime)))}]]
-
       [:div {:class "mt-2"}
        [radio-group {:sr-label "Select status"
-                     :value "all"
-                     :options [{:key "all" :label "All" :value "all"}
-                               {:key "active" :label "Active" :value "active"}
-                               {:key "inactive" :label "Inactive" :value "inactive"}]
-                     :on-change js/console.log}]]]
+                     :value (or (-> search-params :status) "ALL")
+                     :options [{:key "all" :label "All" :value "ALL"}
+                               {:key "incomplete" :label "Incomplete" :value "INCOMPLETE"}
+                               {:key "complete" :label "Complete" :value "COMPLETE"}]
+                     :on-change #(set-search-params (if (= % "ALL")
+                                                      (dissoc search-params :status)
+                                                      (assoc search-params :status %)))}]]]
      [:ul
       (for [{:keys [id seat startAt]} filtered-routes]
         (let [{:keys [name]} seat

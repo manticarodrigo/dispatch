@@ -90,4 +90,10 @@ type Route {
 input RouteFilters {
   start: Date
   end: Date
+  status: RouteStatus
+}
+
+enum RouteStatus {
+  INCOMPLETE
+  COMPLETE
 }

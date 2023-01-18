@@ -17,7 +17,7 @@
     (some-> route .-id)))
 
 (defn find-all [^js context {:keys [filters]}]
-  (let [{:keys [start end]} filters
+  (let [{:keys [start end status]} filters
         and (if (and start end)
               [{:startAt {:gte start}}
                {:startAt {:lte end}}]
@@ -25,6 +25,10 @@
     (prisma/find-many
      (.. context -prisma -route)
      {:where {:user {:id (.. context -user -id)}
+              :stops (condp = status
+                       "INCOMPLETE" {:some {:arrivedAt {:equals nil}}}
+                       "COMPLETE" {:every {:arrivedAt {:not nil}}}
+                       nil {})
               :AND and}
       :orderBy {:startAt "asc"}
       :include {:seat true

@@ -25,19 +25,18 @@
               last? (= (+ 1 idx) (count options))]
           [:> Option
            {:key (:key option)
-            :value (:key option)
+            :value (:value option)
             :class (fn [props]
                      (let [{active :active checked :checked} (js->clj props :keywordize-keys true)]
                        (class-names
                         "cursor-pointer"
                         "border-y border-neutral-800 py-1 px-2"
                         "w-full text-center text-sm"
-                        (if first? "rounded-l border-l" "")
-                        (if last? "rounded-r border-r" "")
+                        (when first? "rounded-l border-l")
+                        (when last? "rounded-r border-r")
                         (if (or checked active)
                           (class-names
-                           "rounded text-neutral-50"
-                           (if checked "bg-neutral-800" "bg-neutral-900")
-                           (if active "" ""))
+                           "text-neutral-50"
+                           (when checked "rounded bg-neutral-800"))
                           "text-neutral-400 bg-neutral-900"))))}
            [:> Label {:as "p"} (:label option)]])))]]])
