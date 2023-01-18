@@ -25,7 +25,7 @@
               last? (= (+ 1 idx) (count options))]
           [:> Option
            {:key (:key option)
-            :value (:key option)
+            :value (:value option)
             :class (fn [props]
                      (let [{active :active checked :checked} (js->clj props :keywordize-keys true)]
                        (class-names
