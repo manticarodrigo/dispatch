@@ -4,6 +4,7 @@
   "scripts": {
     "ancient": "clojure -Sdeps '{:deps {com.github.liquidz/antq {:mvn/version \"RELEASE\"}}}' -m antq.core",
     "report": "shadow-cljs run shadow.cljs.build-report ui target/build-report.html",
+    "assets": "capacitor-assets generate --iconBackgroundColor \"#171717\" --splashBackgroundColor \"#171717\"",
     "db-gen": "prisma generate",
     "db-push": "prisma db push --accept-data-loss",
     "db-reset": "prisma migrate reset --force",
@@ -44,6 +45,7 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@capacitor/assets": "^2.0.4",
     "@capacitor/cli": "^4.6.2",
     "@faker-js/faker": "^7.6.0",
     "@testing-library/react": "^13.4.0",
