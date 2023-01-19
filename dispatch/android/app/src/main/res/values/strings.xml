@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">dispatch</string>
+    <string name="title_activity_main">dispatch</string>
+    <string name="package_name">app.ambito.dispatch</string>
+    <string name="custom_url_scheme">app.ambito.dispatch</string>
+</resources>
