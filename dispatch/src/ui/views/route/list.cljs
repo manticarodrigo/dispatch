@@ -8,6 +8,7 @@
    [re-frame.core :refer (dispatch)]
    [clojure.string :as s]
    [shadow.resource :refer (inline)]
+   [common.utils.date :refer (parse-date)]
    [ui.lib.apollo :refer (use-query)]
    [ui.lib.router :refer (link use-search-params)]
    [ui.utils.string :refer (class-names)]
@@ -18,9 +19,6 @@
    [ui.components.link-card :refer (link-card)]))
 
 (def FETCH_ROUTES (gql (inline "queries/route/fetch-all.graphql")))
-
-(defn parse-date [date]
-  (if date (-> date js/parseInt js/Date.) (js/Date.)))
 
 (defn view []
   (let [[{:keys [date text status] :as search-params} set-search-params] (use-search-params)
@@ -52,9 +50,9 @@
       [link {:to "/routes/create" :class "underline text-sm"} [:> PlusIcon {:class "inline mr-1 w-3 h-3"}] "Create"]]
      [:div {:class "mb-2"}
       [:div {:class "flex justify-between"}
-       [input {:aria-label "Search routes"
+       [input {:aria-label "Search by name"
                :value (-> search-params :text)
-               :placeholder "Search"
+               :placeholder "Search by name"
                :class "w-full"
                :on-text #(set-search-params (if (empty? %)
                                               (dissoc search-params :text)

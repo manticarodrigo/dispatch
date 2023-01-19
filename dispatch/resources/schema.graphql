@@ -4,9 +4,9 @@ scalar JSON
 type Query {
   user: User
   seats: [Seat]
-  seat(id: ID!): Seat
+  seat(id: ID!, filters: RouteFilters): Seat
   addresses: [Address]
-  address(id: ID!): Address
+  address(id: ID!, filters: RouteFilters): Address
   routes(filters: RouteFilters): [Route]
   route(id: ID!): Route
   stop(id: ID!): Stop
@@ -68,7 +68,7 @@ type Address {
   description: String!
   lat: Float!
   lng: Float!
-  routes: [Route]
+  routes(filters: RouteFilters): [Route]
 }
 
 type Stop {

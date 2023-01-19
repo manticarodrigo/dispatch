@@ -1,4 +1,4 @@
-query Address($id: ID!) {
+query Address($id: ID!, $filters: RouteFilters) {
   address(id: $id) {
     id
     name
@@ -7,7 +7,7 @@ query Address($id: ID!) {
     description
     lat
     lng
-    routes {
+    routes(filters: $filters) {
       id
       startAt
       stops {

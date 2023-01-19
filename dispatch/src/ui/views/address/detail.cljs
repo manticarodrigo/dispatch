@@ -4,19 +4,30 @@
             [date-fns :as d]
             [re-frame.core :refer (dispatch)]
             [shadow.resource :refer (inline)]
+            [common.utils.date :refer (parse-date)]
             [ui.lib.apollo :refer (gql use-query)]
-            [ui.lib.router :refer (use-params)]
+            [ui.lib.router :refer (use-params use-search-params)]
             [ui.utils.string :refer (class-names)]
             [ui.utils.css :refer (padding)]
+            [ui.components.inputs.generic.date :refer (date-select)]
+            [ui.components.inputs.generic.radio-group :refer (radio-group)]
             [ui.components.link-card :refer (link-card)]))
 
 (def FETCH_ADDRESS (gql (inline "queries/address/fetch.graphql")))
 
 (defn view []
-  (let [params (use-params)
-        query (use-query FETCH_ADDRESS {:variables {:id (:id params)}})
-        {:keys [data loading]} query
-        {:keys [name description routes]} (:address data)]
+  (let [{:keys [id]} (use-params)
+        [{:keys [date status] :as search-params} set-search-params] (use-search-params)
+        query (use-query
+               FETCH_ADDRESS
+               {:variables
+                {:id id
+                 :filters {:start (-> date parse-date d/startOfDay)
+                           :end  (-> date parse-date d/endOfDay)
+                           :status status}}})
+        {:keys [data previousData loading]} query
+        {:keys [routes]} (:address data)
+        {:keys [name description]} (or (:address previousData) (:address data))]
 
     (react/useEffect
      (fn []
@@ -25,13 +36,26 @@
      #js[routes])
 
     [:div {:class (class-names padding)}
-     (when loading [:p "Loading..."])
      [:div {:class "mb-4"}
       [:div {:class "text-lg font-medium"} name]
       [:div {:class "text-xs font-light"} description]]
-     [:div {:class "mb-4"}
-      [:button {:class "mr-2 pb-1 border-b border-neutral-200 text-sm"} "Upcoming"]
-      [:button {:class "mr-2 pb-1 border-b border-neutral-700 text-sm"} "Completed"]]
+     [:div {:class "mb-2"}
+      [:div {:class "mt-2"}
+       [date-select {:label "Select date"
+                     :value (-> (or (some-> search-params :date js/parseInt js/Date.)
+                                    (js/Date.))
+                                d/startOfDay)
+                     :on-select #(set-search-params
+                                  (assoc search-params :date (-> % .getTime)))}]]
+      [:div {:class "mt-2"}
+       [radio-group {:sr-label "Select status"
+                     :value (or (-> search-params :status) "ALL")
+                     :options [{:key "all" :label "All" :value "ALL"}
+                               {:key "incomplete" :label "Incomplete" :value "INCOMPLETE"}
+                               {:key "complete" :label "Complete" :value "COMPLETE"}]
+                     :on-change #(set-search-params (if (= % "ALL")
+                                                      (dissoc search-params :status)
+                                                      (assoc search-params :status %)))}]]]
      [:ul
       (for [{:keys [id startAt]} routes]
         (let [start-date (-> (js/parseInt startAt) js/Date.)
