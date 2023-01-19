@@ -23,3 +23,6 @@
    :parseValue #(js/Date. %)
    :parseLiteral #(when (= "IntValue" (.. % -kind))
                     (js/Date. (.. % -value)))})
+
+(defn parse-date [date]
+  (if date (-> date js/parseInt js/Date.) (js/Date.)))

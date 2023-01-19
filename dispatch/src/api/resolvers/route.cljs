@@ -15,5 +15,5 @@
   (model/find-all context (->clj args)))
 
 (defn fetch-routes-by-address
-  [parent _ context _]
-  (model/find-by-address context (->clj parent)))
+  [parent args context _]
+  (model/find-by-address context (merge (->clj parent) (->clj args))))

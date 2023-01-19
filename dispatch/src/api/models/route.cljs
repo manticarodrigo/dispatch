@@ -17,11 +17,7 @@
     (some-> route .-id)))
 
 (defn find-all [^js context {:keys [filters]}]
-  (let [{:keys [start end status]} filters
-        and (if (and start end)
-              [{:startAt {:gte start}}
-               {:startAt {:lte end}}]
-              [])]
+  (let [{:keys [start end status]} filters]
     (prisma/find-many
      (.. context -prisma -route)
      {:where {:user {:id (.. context -user -id)}
@@ -29,7 +25,10 @@
                        "INCOMPLETE" {:some {:arrivedAt {:equals nil}}}
                        "COMPLETE" {:every {:arrivedAt {:not nil}}}
                        nil {})
-              :AND and}
+              :AND (if (and start end)
+                     [{:startAt {:gte start}}
+                      {:startAt {:lte end}}]
+                     [])}
       :orderBy {:startAt "asc"}
       :include {:seat true
                 :stops {:include {:address true}
@@ -43,11 +42,18 @@
               :stops {:include {:address true}
                       :orderBy {:order "asc"}}}}))
 
-(defn find-by-address [^js context {:keys [id]}]
-  (prisma/find-many
-   (.. context -prisma -route)
-   {:where {:stops {:some {:address {:id id}}}}
-    :orderBy {:startAt "asc"}
-    :include {:seat true
-              :stops {:include {:address true}
-                      :orderBy {:order "asc"}}}}))
+(defn find-by-address [^js context {:keys [id filters]}]
+  (let [{:keys [start end status]} filters]
+    (prisma/find-many
+     (.. context -prisma -route)
+     {:where {:AND [{:stops {:some {:address {:id id}}}}
+                    {:stops (condp = status
+                              "INCOMPLETE" {:some {:arrivedAt {:equals nil}}}
+                              "COMPLETE" {:every {:arrivedAt {:not nil}}}
+                              nil {})}
+                    (if (and start end) {:startAt {:gte start}} {})
+                    (if (and start end) {:startAt {:lte end}} {})]}
+      :orderBy {:startAt "asc"}
+      :include {:seat true
+                :stops {:include {:address true}
+                        :orderBy {:order "asc"}}}})))
