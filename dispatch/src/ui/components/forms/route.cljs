@@ -73,7 +73,6 @@
 
         (react/useEffect
          (fn []
-           (prn selected-addresses)
            (reset! !loading-route true)
            (debounced-calc-route selected-addresses)
            #())
