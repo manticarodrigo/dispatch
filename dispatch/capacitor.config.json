@@ -2,5 +2,8 @@
   "appId": "app.ambito.dispatch",
   "appName": "dispatch",
   "webDir": "public",
-  "bundledWebRuntime": false
+  "bundledWebRuntime": false,
+  "server": {
+    "hostname": "dispatch.ambito.app"
+  }
 }

@@ -1,6 +1,8 @@
 apply plugin: 'com.android.application'
 
 android {
+
+    namespace 'app.ambito.dispatch'
     compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
         applicationId "app.ambito.dispatch"
