@@ -103,7 +103,7 @@ resource "null_resource" "api_lambda_sync" {
 
                 status="Pending"
 
-                while [ "$status" == "Pending" ]
+                while [ "$status" = "Pending" ]
                   do
                     status=$(aws lambda get-function-configuration \
                       --function-name ${aws_lambda_function.api.function_name} \
