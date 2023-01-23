@@ -100,6 +100,21 @@ resource "null_resource" "api_lambda_sync" {
                 --publish \
                 --query Version \
                 --output text)
+
+                status="Pending"
+
+                while [ "$status" == "Pending" ]
+                  do
+                    status=$(aws lambda get-function-configuration \
+                      --function-name ${aws_lambda_function.api.function_name} \
+                      --query State \
+                      --output text)
+                    echo "Current status: $status"
+                    sleep 5
+                done
+
+                echo "Lambda function version $version is now $status"
+
               aws lambda update-alias \
                 --function-name ${aws_lambda_function.api.function_name} \
                 --name ${aws_lambda_alias.api.name} \
