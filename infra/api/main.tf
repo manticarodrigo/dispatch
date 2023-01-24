@@ -184,11 +184,11 @@ resource "aws_lambda_alias" "api" {
   function_version = aws_lambda_function.api.version
 }
 
-resource "aws_lambda_provisioned_concurrency_config" "api" {
-  function_name                     = aws_lambda_function.api.function_name
-  provisioned_concurrent_executions = local.concurrency_map[terraform.workspace]
-  qualifier                         = aws_lambda_alias.api.name
-}
+# resource "aws_lambda_provisioned_concurrency_config" "api" {
+#   function_name                     = aws_lambda_function.api.function_name
+#   provisioned_concurrent_executions = local.concurrency_map[terraform.workspace]
+#   qualifier                         = aws_lambda_alias.api.name
+# }
 
 resource "aws_iam_role" "api" {
   name = "${var.app_name}-api-${terraform.workspace}"
@@ -265,8 +265,8 @@ resource "aws_apigatewayv2_stage" "api" {
 
   default_route_settings {
     detailed_metrics_enabled = true
-    throttling_burst_limit   = 5000
-    throttling_rate_limit    = 10000
+    throttling_burst_limit   = 50
+    throttling_rate_limit    = 100
   }
 }
 
