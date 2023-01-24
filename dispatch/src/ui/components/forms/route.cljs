@@ -31,8 +31,10 @@
   (let [!anoms (r/atom {})
         !state (r/atom {:seatId nil
                         :startAt (from-datetime-local (js/Date.))
+                        :origin-id nil
+                        :destination-id nil
                         ;; tuples of [draggable-item-id address-id] to use for reorderable list 
-                        :address-tuples []
+                        :stop-tuples []
                         ;; directions api payload
                         :route nil})
         !loading-route (r/atom false)
@@ -57,11 +59,12 @@
             {:keys [seats addresses]} (some-> query :data :user)
             address-map (into {} (for [address addresses]
                                    {(:id address) address}))
-            {:keys [seatId startAt address-tuples route]} @!state
-            address-ids (mapv second address-tuples)
+            {:keys [seatId startAt origin-id destination-id stop-tuples route]} @!state
+            stop-ids (mapv second stop-tuples)
+            address-ids (filterv some? (concat [origin-id] stop-ids [destination-id]))
             selected-addresses (mapv #(get address-map %) address-ids)
-            draggable-item-ids (mapv first address-tuples)
-            draggable-item-map (into {} (for [[item-id address-id] (:address-tuples @!state)]
+            draggable-item-ids (mapv first stop-tuples)
+            draggable-item-map (into {} (for [[item-id address-id] (:stop-tuples @!state)]
                                           {item-id address-id}))
             markers (->> route :legs (mapv
                                       (fn [{:keys [location address]}]
@@ -73,7 +76,7 @@
            (reset! !loading-route true)
            (debounced-calc-route selected-addresses)
            #())
-         #js[address-tuples])
+         #js[origin-id destination-id stop-tuples])
 
         (react/useEffect
          (fn []
@@ -96,64 +99,83 @@
                        (.then #(navigate "/seats"))
                        (.catch #(reset! !anoms (parse-anoms %)))))}
           [combobox {:label "Assigned seat"
-                     :class "pb-4"
                      :value (:seatId @!state)
+                     :required true
+                     :class "mb-4"
                      :options seats
                      :option-to-label #(:name %)
                      :option-to-value #(:id %)
                      :on-change #(swap! !state assoc :seatId %)}]
           [input {:id "start"
                   :label "Departure time"
-                  :placeholder "Select date and time"
                   :type "datetime-local"
                   :value (to-datetime-local
                           (js/Date. (:startAt @!state)))
                   :required true
-                  :class "pb-4"
+                  :class "mb-4"
                   :on-text #(swap! !state assoc :startAt
                                    (from-datetime-local (js/Date. %)))}]
-          [:label {:class "mb-2 text-sm"} "Manage stops"]
-          [:div
-           [combobox {:aria-label "Add address"
-                      :placeholder "Search for addresses"
-                      :class "mb-4"
-                      :options addresses
-                      :option-to-label #(:name %)
-                      :option-to-value #(:id %)
-                      :on-change #(swap! !state update :address-tuples conj [(uuid) %])}]
-           [:> (. Reorder -Group)
-            {:axis "y"
-             :values draggable-item-ids
-             :on-reorder #(swap! !state assoc :address-tuples (mapv
-                                                               (fn [id]
-                                                                 [id (get draggable-item-map id)])
-                                                               %))}
-            (for [[idx [draggable-item-id address-id]] (map-indexed vector address-tuples)]
-              (let [{:keys [name description]} (get address-map address-id)]
-                ^{:key draggable-item-id}
-                [:> (. Reorder -Item)
-                 {:value draggable-item-id
-                  :class (class-names
-                          base-button-class
-                          "cursor-grab flex items-center mb-2 rounded p-2")}
-                 [:> MenuIcon {:class "flex-shrink-0"}]
-                 [:div {:class "px-3 w-full"}
-                  [:div {:class "text-base"} name]
-                  [:div {:class "text-sm text-neutral-300"} description]]
-                 [:button
-                  {:type "button"
-                   :class "flex-shrink-0"
-                   :on-click #(swap! !state update :address-tuples vec-remove idx)}
-                  [:> XIcon]]]))]]
-
+          [combobox {:label "Origin address"
+                     :value (:origin-id @!state)
+                     :required true
+                     :class "mb-4"
+                     :options addresses
+                     :option-to-label #(:name %)
+                     :option-to-value #(:id %)
+                     :on-change (fn [id]
+                                  (swap! !state assoc :origin-id id)
+                                  (when-not (:destination-id @!state)
+                                    (swap! !state assoc :destination-id id)))}]
+          (when (and (:origin-id @!state) (:destination-id @!state))
+            [:div {:class "mb-4"}
+             [:label {:class "block mb-2 text-sm"} "Manage stops"]
+             [:div
+              [:> (. Reorder -Group)
+               {:axis "y"
+                :values draggable-item-ids
+                :on-reorder #(swap!
+                              !state
+                              assoc
+                              :stop-tuples
+                              (mapv (fn [id] [id (get draggable-item-map id)]) %))}
+               (for [[idx [draggable-item-id address-id]] (map-indexed vector stop-tuples)]
+                 (let [{:keys [name description]} (get address-map address-id)]
+                   ^{:key draggable-item-id}
+                   [:> (. Reorder -Item)
+                    {:value draggable-item-id
+                     :class (class-names
+                             base-button-class
+                             "cursor-grab flex items-center mb-2 rounded p-2")}
+                    [:> MenuIcon {:class "flex-shrink-0"}]
+                    [:div {:class "px-3 w-full"}
+                     [:div {:class "text-base"} name]
+                     [:div {:class "text-sm text-neutral-300"} description]]
+                    [:button
+                     {:type "button"
+                      :class "flex-shrink-0"
+                      :on-click #(swap! !state update :stop-tuples vec-remove idx)}
+                     [:> XIcon]]]))]
+              [combobox {:aria-label "Add new address"
+                         :placeholder "Add new address"
+                         :options addresses
+                         :option-to-label #(:name %)
+                         :option-to-value #(:id %)
+                         :on-change #(swap! !state update :stop-tuples conj [(uuid) %])}]]])
+          [combobox {:label "Destination address"
+                     :value (:destination-id @!state)
+                     :required true
+                     :class "mb-4"
+                     :options addresses
+                     :option-to-label #(:name %)
+                     :option-to-value #(:id %)
+                     :on-change #(swap! !state assoc :destination-id %)}]
           [button
            {:label (if loading
                      [:span {:class "flex justify-center items-center"}
                       [spinner {:class "mr-2 w-5 h-5"}] "Loading..."]
-                     "Submit")
+                     "Create route")
             :class (class-names "my-4 w-full" (when loading "cursor-progress"))
             :disabled loading}]
-
           (doall (for [anom @!anoms]
                    [:span {:key (:reason anom)
                            :class "my-2 p-2 rounded border border-red-300 text-sm text-red-100 bg-red-800"}

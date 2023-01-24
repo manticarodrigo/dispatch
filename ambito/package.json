@@ -1,0 +1,17 @@
+{
+  "name": "ambito",
+  "license": "UNLICENSED",
+  "scripts": {
+    "watch": "shadow-cljs watch ui",
+    "release": "shadow-cljs release ui"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.7.0"
+  },
+  "devDependencies": {
+    "shadow-cljs": "2.20.20",
+    "tailwindcss": "^3.2.4"
+  }
+}

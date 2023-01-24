@@ -72,3 +72,8 @@ module "site" {
   api_invoke_url = module.api.api_invoke_url
   api_stage_name = module.api.api_stage_name
 }
+
+module "ambito" {
+  source      = "../ambito/infra"
+  domain_name = local.domain_name
+}

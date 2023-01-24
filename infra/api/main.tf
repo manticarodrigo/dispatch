@@ -100,6 +100,21 @@ resource "null_resource" "api_lambda_sync" {
                 --publish \
                 --query Version \
                 --output text)
+
+                status="Pending"
+
+                while [ "$status" = "Pending" ]
+                  do
+                    status=$(aws lambda get-function-configuration \
+                      --function-name ${aws_lambda_function.api.function_name} \
+                      --query State \
+                      --output text)
+                    echo "Current status: $status"
+                    sleep 5
+                done
+
+                echo "Lambda function version $version is now $status"
+
               aws lambda update-alias \
                 --function-name ${aws_lambda_function.api.function_name} \
                 --name ${aws_lambda_alias.api.name} \
@@ -169,11 +184,11 @@ resource "aws_lambda_alias" "api" {
   function_version = aws_lambda_function.api.version
 }
 
-resource "aws_lambda_provisioned_concurrency_config" "api" {
-  function_name                     = aws_lambda_function.api.function_name
-  provisioned_concurrent_executions = local.concurrency_map[terraform.workspace]
-  qualifier                         = aws_lambda_alias.api.name
-}
+# resource "aws_lambda_provisioned_concurrency_config" "api" {
+#   function_name                     = aws_lambda_function.api.function_name
+#   provisioned_concurrent_executions = local.concurrency_map[terraform.workspace]
+#   qualifier                         = aws_lambda_alias.api.name
+# }
 
 resource "aws_iam_role" "api" {
   name = "${var.app_name}-api-${terraform.workspace}"
@@ -250,6 +265,8 @@ resource "aws_apigatewayv2_stage" "api" {
 
   default_route_settings {
     detailed_metrics_enabled = true
+    throttling_burst_limit   = 50
+    throttling_rate_limit    = 100
   }
 }
 

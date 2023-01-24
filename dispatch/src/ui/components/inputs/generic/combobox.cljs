@@ -13,8 +13,9 @@
 (defn combobox [{aria-label :aria-label
                  label :label
                  placeholder :placeholder
-                 class :class
                  value :value
+                 required :required
+                 class :class
                  options :options
                  option-to-label :option-to-label
                  option-to-value :option-to-value
@@ -50,6 +51,7 @@
 
      [ui/combobox-button {:as "div" :class "relative"}
       [ui/combobox-input {:placeholder placeholder
+                          :required required
                           :class input-class
                           :style {:padding-right "3rem"}
                           :display-value (fn [v]

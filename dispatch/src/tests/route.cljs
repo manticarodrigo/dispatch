@@ -39,7 +39,11 @@
         overview-path (mapv (fn [{:keys [lat lng]}]
                               #js{:lat (fn [] lat)
                                   :lng (fn [] lng)})
-                            path)]
+                            path)
+        sorted-addresses (sort-by-id addresses addressIds)
+        origin-address (first sorted-addresses)
+        destination-address (last sorted-addresses)
+        waypoints (->> sorted-addresses (drop 1) (drop-last 1))]
 
     (with-mounted-component
       [test-app
@@ -52,12 +56,15 @@
                                      path)]}]
       (fn [^js component user]
         (p/do
-          (.findByText component "Submit")
+          (.findByText component "Create route")
           (select-combobox user component "Assigned seat" (-> seat :name))
 
           (change
            (.getByLabelText component "Departure time")
            (to-datetime-local (js/Date. startAt)))
+
+          (select-combobox user component "Origin address" (-> origin-address :name))
+          (select-combobox user component "Destination address" (-> destination-address :name))
 
           (set! js/google (mock-google
                            {:routes
@@ -68,12 +75,12 @@
           (init-directions)
 
           #_{:clj-kondo/ignore [:unresolved-symbol]}
-          (p/doseq [{:keys [name]} (sort-by-id addresses addressIds)]
-            (select-combobox user component "Add address" name)
-            (.findByText component name))
+          (p/doseq [{address-name :name} waypoints]
+            (select-combobox user component "Add new address" address-name)
+            (.findByText component address-name))
 
           (.findByText component "Loading...")
-          (.findByText component "Submit" #js{} #js{:timeout 3000})
+          (.findByText component "Create route" #js{} #js{:timeout 3000})
 
           (submit (-> component (.-container) (.querySelector "form")))
           (f component))))))
