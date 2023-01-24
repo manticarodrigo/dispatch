@@ -1,0 +1,14 @@
+# ide
+/.calva/
+.nrepl-port
+
+# output
+/public/index.html
+/public/js/
+/public/css/
+
+# node dependencies
+/node_modules/
+
+# shadow-cljs cache, port files
+/.shadow-cljs/
