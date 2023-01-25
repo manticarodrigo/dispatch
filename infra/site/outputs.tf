@@ -9,3 +9,7 @@ output "rum_identity_pool_id" {
 output "rum_guest_role_arn" {
   value = aws_iam_role.rum.arn
 }
+
+output "site_bucket_name" {
+  value = aws_s3_bucket.site_bucket.bucket
+}

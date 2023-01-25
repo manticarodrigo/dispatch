@@ -64,10 +64,11 @@ resource "null_resource" "site_sync" {
 
   provisioner "local-exec" {
     command     = <<-EOT
-                 aws s3 sync dispatch/public s3://${aws_s3_bucket.site_bucket.id}
-                 aws cloudfront create-invalidation --distribution-id ${aws_cloudfront_distribution.site_s3_dist.id} --paths "/*"
+                  zip -r app.zip *
+                  aws s3 sync . s3://${aws_s3_bucket.site_bucket.id}
+                  aws cloudfront create-invalidation --distribution-id ${aws_cloudfront_distribution.site_s3_dist.id} --paths "/*"
                 EOT
-    working_dir = "../"
+    working_dir = "../dispatch/public"
   }
 
   depends_on = [var.build]

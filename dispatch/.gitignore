@@ -8,6 +8,7 @@
 /public/index.html
 /public/js/
 /public/css/
+/public/app.zip
 
 # node dependencies
 /node_modules/

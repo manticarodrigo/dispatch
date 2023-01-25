@@ -7,3 +7,4 @@ variable "db_name" {}
 variable "db_port" {}
 variable "db_user" {}
 variable "db_pass" {}
+variable "site_bucket_name" {}

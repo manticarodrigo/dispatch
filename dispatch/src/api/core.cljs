@@ -25,6 +25,14 @@
                 (if (= (.. req -method) "OPTIONS")
                   (.send res 200)
                   (next))))
+    (.post app "/update"
+           (fn [^js req ^js res]
+             (js/console.log "UPDATE REQ" (.-body req))
+             (.send res #js{:version config/VERSION
+                            :url (str
+                                  "https://s3.amazonaws.com/"
+                                  config/SITE_BUCKET_NAME
+                                  "/app.zip")})))
     (.use app middleware)
     app))
 

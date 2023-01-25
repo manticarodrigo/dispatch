@@ -1,9 +1,0 @@
-{
-  "appId": "app.ambito.dispatch",
-  "appName": "dispatch",
-  "webDir": "public",
-  "bundledWebRuntime": false,
-  "server": {
-    "hostname": "dispatch.ambito.app"
-  }
-}
