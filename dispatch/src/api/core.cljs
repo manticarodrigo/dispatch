@@ -27,8 +27,13 @@
                   (next))))
     (.post app "/update"
            (fn [^js req ^js res]
-             (let [version (.. req -body -version_name)]
-               (js/console.log "UPDATE REQUEST: " (.-body req))
+             (let [version-name (.. req -body -version_name)
+                   version-build (.. req -body -version_build)
+                   version (if (or (= version-name "builtin") (not version-name))
+                             version-build
+                             version-name)]
+               (js/console.log "APP VERSION: " config/VERSION)
+               (js/console.log "MOBILE UPDATE REQUEST: " (.-body req))
                (.send res (if (and version (not= version config/VERSION))
                             #js{:version config/VERSION
                                 :url (str
