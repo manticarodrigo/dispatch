@@ -21,6 +21,7 @@ terraform {
 }
 
 locals {
+  version_name = "0.0.2"
   domain_map = {
     prod = "ambito.app"
     dev  = "ambito.dev"
@@ -43,6 +44,7 @@ module "db" {
 
 module "build" {
   source               = "./build"
+  version_name         = local.version_name
   domain_name          = local.domain_name
   app_name             = local.app_name
   rum_monitor_id       = module.site.rum_monitor_id
@@ -52,6 +54,7 @@ module "build" {
 
 module "api" {
   source           = "./api"
+  version_name     = local.version_name
   sha1             = module.build.sha1
   build            = module.build.build
   domain_name      = local.domain_name

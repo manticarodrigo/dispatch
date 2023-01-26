@@ -173,7 +173,7 @@ resource "aws_lambda_function" "api" {
   environment {
     variables = {
       STAGE            = terraform.workspace
-      VERSION          = var.sha1
+      VERSION          = var.version_name
       DATABASE_URL     = local.db_url
       SITE_BUCKET_NAME = var.site_bucket_name
     }

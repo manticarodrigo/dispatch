@@ -37,7 +37,7 @@ resource "null_resource" "build" {
 
     environment = {
       STAGE                = terraform.workspace
-      VERSION              = local.sha1
+      VERSION              = var.version_name
       API_URL              = "https://api.${var.app_name}.${var.domain_name}"
       SECURE_COOKIE        = true
       RUM_MONITOR_ID       = var.rum_monitor_id
