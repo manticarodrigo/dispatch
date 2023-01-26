@@ -404,10 +404,10 @@
   resolved "https://registry.yarnpkg.com/@capacitor/ios/-/ios-4.6.2.tgz#e0266a1998912b5e552c967c6053dc7c5d9d2851"
   integrity sha512-3hQzbAOk+drCLyFjnytvkc20Mr077/9tQrv6iTghDXESDGR6EgcaYUXzKdVwuJscb0R459+5UQ2mYtkx6ES4TQ==
 
-"@capgo/capacitor-updater@^4.16.1":
-  version "4.16.1"
-  resolved "https://registry.yarnpkg.com/@capgo/capacitor-updater/-/capacitor-updater-4.16.1.tgz#455474cb410fb512d48bdc52e90b3b450ded7343"
-  integrity sha512-EAPz0LTLmT832y+NLeybahC0U7l87ynBT1csurYR+16smGu47sfChKwQAs2wnXGI47cWtqx8HpoIYvXRplF7lA==
+"@capgo/capacitor-updater@^4.17.11":
+  version "4.17.11"
+  resolved "https://registry.yarnpkg.com/@capgo/capacitor-updater/-/capacitor-updater-4.17.11.tgz#2777f38ea836c7777d313ae727d78fa9875e38bf"
+  integrity sha512-zaMc94wMQ9kMs01DmCM0MpAy4jBeuQz6iF+7g/SML2VJWV/50CEjH0P3hBqNRTpZSKvjq7YtlKZvOAV02KMsvQ==
 
 "@cspotcode/source-map-support@^0.8.0":
   version "0.8.1"

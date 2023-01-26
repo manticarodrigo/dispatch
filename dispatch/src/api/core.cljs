@@ -27,12 +27,17 @@
                   (next))))
     (.post app "/update"
            (fn [^js req ^js res]
-             (js/console.log "UPDATE REQ" (.-body req))
-             (.send res #js{:version config/VERSION
-                            :url (str
-                                  "https://s3.amazonaws.com/"
-                                  config/SITE_BUCKET_NAME
-                                  "/app.zip")})))
+             (let [version (.. req -body -version_name)]
+               (js/console.log "UPDATE REQUEST: " (.-body req))
+               (.send res (if (and version (not= version config/VERSION))
+                            #js{:version config/VERSION
+                                :url (str
+                                      "https://s3.amazonaws.com/"
+                                      config/SITE_BUCKET_NAME
+                                      "/app.zip")}
+                            #js{:message "No update available"
+                                :version ""
+                                :url ""})))))
     (.use app middleware)
     app))
 
