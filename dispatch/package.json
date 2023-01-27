@@ -12,7 +12,9 @@
     "serve": "nodemon --watch out out/api.js -e js",
     "test": "yarn db-reset && yarn db-push && shadow-cljs release test && node out/test.js",
     "migrate": "yarn db-reset && yarn db-push && shadow-cljs release test && node out/test.js",
-    "release": "shadow-cljs release api ui --config-merge ./config.edn && ncc build out/api.js -o dist/ --minify"
+    "release": "shadow-cljs release api ui --config-merge ./config.edn && ncc build out/api.js -o dist/ --minify",
+    "release:api": "shadow-cljs release api --config-merge ./config.edn && ncc build out/api.js -o dist/ --minify",
+    "release:ui": "shadow-cljs release ui --config-merge ./config.edn"
   },
   "dependencies": {
     "@apollo/client": "^3.7.0",

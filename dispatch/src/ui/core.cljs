@@ -1,6 +1,7 @@
 (ns ui.core
   (:require
    ["react-dom/client" :refer (createRoot)]
+   ["@capgo/capacitor-updater" :refer (CapacitorUpdater)]
    [goog.dom :as gdom]
    [reagent.core :as r]
    [re-frame.core :as rf]
@@ -10,6 +11,8 @@
    [ui.lib.apollo :refer (apollo-provider)]
    [ui.components.main :refer (main)]
    [ui.components.routes :refer (routes)]))
+
+(.notifyAppReady CapacitorUpdater)
 
 (def functional-compiler (r/create-compiler {:function-components true}))
 (r/set-default-compiler! functional-compiler)
