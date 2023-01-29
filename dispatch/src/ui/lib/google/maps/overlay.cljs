@@ -1,4 +1,5 @@
-(ns ui.lib.google.maps.overlay)
+(ns ui.lib.google.maps.overlay
+  (:require [cljs-bean.core :refer (->js)]))
 
 (defonce ^:private !location-overlay (atom nil))
 
@@ -52,7 +53,7 @@
 
 (defn update-overlay [latlng]
   (when-let [^js instance @!location-overlay]
-    (.update instance latlng)))
+    (.update instance (->js latlng))))
 
 (def ^:private html
   "<span class='relative'>

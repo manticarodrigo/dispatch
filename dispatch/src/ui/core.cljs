@@ -2,7 +2,6 @@
   (:require
    [react]
    ["react-dom/client" :refer (createRoot)]
-   ["@capacitor/core" :refer (Capacitor)]
    ["@capgo/capacitor-updater" :refer (CapacitorUpdater)]
    [goog.dom :as gdom]
    [reagent.core :as r]
@@ -11,12 +10,13 @@
    [ui.lib.aws.rum]
    [ui.lib.router :refer [browser-router]]
    [ui.lib.apollo :refer (apollo-provider)]
+   [ui.lib.platform :refer (platform)]
    [ui.lib.google.maps.overlay :refer (update-overlay)]
    [ui.hooks.use-location :refer (use-location)]
    [ui.components.main :refer (main)]
    [ui.components.routes :refer (routes)]))
 
-(when (not= (.getPlatform Capacitor) "web")
+(when (not= platform "web")
   (.notifyAppReady CapacitorUpdater))
 
 (def functional-compiler (r/create-compiler {:function-components true}))
@@ -28,9 +28,8 @@
      (fn []
        (watch-location
         (fn [location]
-          (update-overlay #js{:lat (.-latitude location)
-                              :lng (.-longitude location)})
-          (js/console.log (js/JSON.stringify location))))
+          (update-overlay {:lat (:latitude location)
+                           :lng (:longitude location)})))
        #())
      #js[])
     [browser-router

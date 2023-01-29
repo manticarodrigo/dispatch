@@ -1,6 +1,5 @@
 (ns ui.lib.location
-  (:require ["@capacitor/core" :refer (Capacitor registerPlugin)]
-            ["@capacitor/geolocation" :refer (Geolocation)]))
+  (:require ["@capacitor/core" :refer (Capacitor registerPlugin)]))
 
 (def BackgroundGeolocation (registerPlugin "BackgroundGeolocation"))
 
@@ -27,26 +26,20 @@
                   "Open settings now?"))
                  (.openSettings BackgroundGeolocation)))
              (.error js/console error))
-           (cb location))))
+           (cb {:latitude (.-latitude location)
+                :longitude (.-longitude location)
+                :accuracy (.-accuracy location)
+                :altitude (.-altitude location)
+                :altitudeAccuracy (.-altitudeAccuracy location)
+                :bearing (.-bearing location)
+                :speed (.-speed location)
+                :timestamp (.-timestamp location)}))))
       (.then (fn [watcher-id]
                #(.removeWatcher BackgroundGeolocation #js{:id watcher-id})))))
-
-(defn- watch-position-web [cb]
-  (-> Geolocation
-      (.watchPosition
-       #js{:enableHighAccuracy true
-           :timeout 10000
-           :maximumAge 0}
-       (fn [location error]
-         (if error
-           (.error js/console error)
-           (cb location))))
-      (.then (fn [watcher-id]
-               #(.clearWatch Geolocation #js{:id watcher-id})))))
 
 (defn watch-position [cb]
   (let [platform (.getPlatform Capacitor)]
     (condp = platform
       "android" (watch-position-mobile cb)
       "ios" (watch-position-mobile cb)
-      "web" (watch-position-web cb))))
+      (.alert js/window "Location not supported on this platform."))))

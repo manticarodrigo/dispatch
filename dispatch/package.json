@@ -15,8 +15,8 @@
     "release": "shadow-cljs release api ui --config-merge ./config.edn && ncc build out/api.js -o dist/ --minify",
     "release:api": "shadow-cljs release api --config-merge ./config.edn && ncc build out/api.js -o dist/ --minify",
     "release:ui": "shadow-cljs release ui --config-merge ./config.edn",
-    "cap:dev": "export API_URL=https://api.dispatch.ambito.dev npx cap sync",
-    "cap:android": "export RELOAD_URL=http://10.0.2.2:8000 npx cap sync"
+    "cap:dev": "export API_URL=https://api.dispatch.ambito.dev && npx cap sync",
+    "cap:android": "export RELOAD_URL=http://10.0.2.2:8000 && npx cap sync"
   },
   "dependencies": {
     "@apollo/client": "^3.7.0",
@@ -24,7 +24,6 @@
     "@capacitor-community/background-geolocation": "^1.2.7",
     "@capacitor/android": "^4.6.2",
     "@capacitor/core": "^4.6.2",
-    "@capacitor/geolocation": "^4.0.1",
     "@capacitor/ios": "^4.6.2",
     "@capgo/capacitor-updater": "^4.17.11",
     "@floating-ui/react-dom": "^1.0.1",

@@ -1,10 +1,10 @@
 (ns ui.utils.session
   (:require ["cookie" :refer (serialize parse)]
-            ["@capacitor/core" :refer (Capacitor)]
             [goog.object :as gobj]
             [cljs-bean.core :refer (->js)]
             [re-frame.core :refer (dispatch-sync)]
-            [ui.config :as config]))
+            [ui.config :as config]
+            [ui.lib.platform :refer (platform)]))
 
 (def cookie-name "sessionId")
 
@@ -16,8 +16,7 @@
     (gobj/get (parse cookie-str) cookie-name)))
 
 (defn create-session [session-id]
-  (let [platform (.getPlatform Capacitor)
-        web? (= platform "web")
+  (let [web? (= platform "web")
         secure? (and web? config/SECURE_COOKIE)
         opts {:domain (.-hostname js/window.location)
               :maxAge (reduce * [60 60 24 7])
