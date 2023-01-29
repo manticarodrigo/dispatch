@@ -4,4 +4,10 @@
     <string name="title_activity_main">dispatch</string>
     <string name="package_name">app.ambito.dispatch</string>
     <string name="custom_url_scheme">app.ambito.dispatch</string>
+    <string name="capacitor_background_geolocation_notification_channel_name">
+        Background Tracking
+    </string>
+    <string name="capacitor_background_geolocation_notification_icon">
+        mipmap/ic_launcher
+    </string>
 </resources>

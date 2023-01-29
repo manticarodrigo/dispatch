@@ -8,6 +8,9 @@ const config: CapacitorConfig = {
   appName: "dispatch",
   webDir: "public",
   bundledWebRuntime: false,
+  server: {
+    url: process.env.RELOAD_URL,
+  },
   plugins: {
     CapacitorUpdater: {
       updateUrl: `${process.env.API_URL}/update`,

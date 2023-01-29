@@ -1,12 +1,12 @@
 (ns ui.components.map
   (:require [react-feather :refer (Crosshair)]
-            [ui.hooks.use-route :refer (use-route-context)]
+            [ui.hooks.use-map :refer (use-map)]
             [ui.utils.i18n :refer (tr)]
             [ui.utils.string :refer (class-names)]
             [ui.components.inputs.generic.button :refer (button)]))
 
 (defn gmap [class]
-  (let [{!el :ref center-route :center} (use-route-context)]
+  (let [{!el :ref center-route :center} (use-map)]
     [:aside {:class (class-names class "relative w-full h-full")}
      [:div {:ref #(reset! !el %) :class "w-full h-full"}]
      [button {:aria-label (tr [:location/center])

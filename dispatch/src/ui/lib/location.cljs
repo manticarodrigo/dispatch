@@ -1,0 +1,52 @@
+(ns ui.lib.location
+  (:require ["@capacitor/core" :refer (Capacitor registerPlugin)]
+            ["@capacitor/geolocation" :refer (Geolocation)]))
+
+(def BackgroundGeolocation (registerPlugin "BackgroundGeolocation"))
+
+(defn- watch-position-mobile [cb]
+  (-> BackgroundGeolocation
+      (.addWatcher
+       #js
+        {:backgroundMessage "Cancel to prevent battery drain.",
+         :backgroundTitle "Tracking You.",
+         :requestPermissions true,
+         :stale false,
+         :distanceFilter 50}
+       (fn callback
+         [location error]
+         (if error
+           (do
+             (when (= (.-code error) "NOT_AUTHORIZED")
+               (when
+                (.confirm
+                 js/window
+                 (str
+                  "This app needs your location, "
+                  "but does not have permission.\n\n"
+                  "Open settings now?"))
+                 (.openSettings BackgroundGeolocation)))
+             (.error js/console error))
+           (cb location))))
+      (.then (fn [watcher-id]
+               #(.removeWatcher BackgroundGeolocation #js{:id watcher-id})))))
+
+(defn- watch-position-web [cb]
+  (-> Geolocation
+      (.watchPosition
+       #js{:enableHighAccuracy true
+           :timeout 10000
+           :maximumAge 0}
+       (fn [location error]
+         (if error
+           (.error js/console error)
+           (cb location))))
+      (.then (fn [watcher-id]
+               #(.clearWatch Geolocation #js{:id watcher-id})))))
+
+(defn watch-position [cb]
+  (let [platform (.getPlatform Capacitor)]
+    (condp = platform
+      "android" (watch-position-mobile cb)
+      "ios" (watch-position-mobile cb)
+      "web" (watch-position-web cb))))

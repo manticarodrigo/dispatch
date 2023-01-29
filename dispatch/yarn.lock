@@ -319,6 +319,11 @@
   dependencies:
     regenerator-runtime "^0.13.11"
 
+"@capacitor-community/background-geolocation@^1.2.7":
+  version "1.2.7"
+  resolved "https://registry.yarnpkg.com/@capacitor-community/background-geolocation/-/background-geolocation-1.2.7.tgz#64c7625307b3dfb49cbd6473be7785b7ce01afa2"
+  integrity sha512-6EesVy08AG5k5RGanSl7xNzsio8cJ7Tks+ir2IdxIeL460GdxPMpwVmUOinZ0YK5j1cEe1FkCBKwsygoEbQuuA==
+
 "@capacitor/android@^4.6.2":
   version "4.6.2"
   resolved "https://registry.yarnpkg.com/@capacitor/android/-/android-4.6.2.tgz#2589525479a07c153f7ffd610684c3145c322aff"
