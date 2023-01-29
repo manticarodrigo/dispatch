@@ -13,7 +13,7 @@
          :stale false,
          :distanceFilter 50}
        (fn callback
-         [location error]
+         [^js location ^js error]
          (if error
            (do
              (when (= (.-code error) "NOT_AUTHORIZED")
@@ -43,3 +43,19 @@
       "android" (watch-position-mobile cb)
       "ios" (watch-position-mobile cb)
       (.alert js/window "Location not supported on this platform."))))
+
+
+;; [react]
+;; [ui.lib.google.maps.overlay :refer (update-overlay)]
+;; [ui.hooks.use-location :refer (use-location)]
+;; (defn view []
+;;   (let [watch-location (use-location)]
+;;     (react/useEffect
+;;      (fn []
+;;        (watch-location
+;;         (fn [location]
+;;           (update-overlay {:lat (:latitude location)
+;;                            :lng (:longitude location)})))
+;;        #())
+;;      #js[])
+;;     [:<>]))

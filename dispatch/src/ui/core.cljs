@@ -1,6 +1,5 @@
 (ns ui.core
   (:require
-   [react]
    ["react-dom/client" :refer (createRoot)]
    ["@capgo/capacitor-updater" :refer (CapacitorUpdater)]
    [goog.dom :as gdom]
@@ -11,8 +10,6 @@
    [ui.lib.router :refer [browser-router]]
    [ui.lib.apollo :refer (apollo-provider)]
    [ui.lib.platform :refer (platform)]
-   [ui.lib.google.maps.overlay :refer (update-overlay)]
-   [ui.hooks.use-location :refer (use-location)]
    [ui.components.main :refer (main)]
    [ui.components.routes :refer (routes)]))
 
@@ -23,19 +20,10 @@
 (r/set-default-compiler! functional-compiler)
 
 (defn app []
-  (let [watch-location (use-location)]
-    (react/useEffect
-     (fn []
-       (watch-location
-        (fn [location]
-          (update-overlay {:lat (:latitude location)
-                           :lng (:longitude location)})))
-       #())
-     #js[])
-    [browser-router
-     [apollo-provider
-      [main
-       [routes]]]]))
+  [browser-router
+   [apollo-provider
+    [main
+     [routes]]]])
 
 (defonce !root (atom nil))
 
