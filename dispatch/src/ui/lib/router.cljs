@@ -27,17 +27,20 @@
                 :path path
                 :element (r/as-element hiccup)}])])
 
+(defn navigate-route [to]
+  [:> Navigate {:to to}])
+
 (defn auth-route [route]
   (let [session-id (listen [:session])]
     (if session-id
       route
-      [:> Navigate {:to "/login" :replace true}])))
+      [navigate-route "/login"])))
 
 (defn remove-auth-route []
   (let [^js client (useApolloClient)]
     (remove-session)
     (.resetStore client)
-    [:> Navigate {:to "/login" :replace true}]))
+    [navigate-route "/login"]))
 
 (defn use-navigate []
   (useNavigate))

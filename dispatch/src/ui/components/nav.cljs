@@ -5,7 +5,8 @@
              Users UsersIcon
              MapPin PinIcon}]
    [ui.lib.router :refer (nav-link)]
-   [ui.utils.string :refer (class-names)]))
+   [ui.utils.string :refer (class-names)]
+   [ui.subs :refer (listen)]))
 
 (defn nav-item [to icon]
   [:li {:class "px-1"}
@@ -19,7 +20,9 @@
     [:> icon]]])
 
 (defn nav []
-  [:nav [:ul {:class "flex justify-center"}
-         [nav-item "/routes" CalendarIcon]
-         [nav-item "/seats" UsersIcon]
-         [nav-item "/addresses" PinIcon]]])
+  (let [session-id (listen [:session])]
+    (when session-id
+      [:nav [:ul {:class "flex justify-center"}
+             [nav-item "/routes" CalendarIcon]
+             [nav-item "/seats" UsersIcon]
+             [nav-item "/addresses" PinIcon]]])))
