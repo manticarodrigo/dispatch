@@ -13,6 +13,7 @@
    [ui.lib.router :refer (link use-search-params)]
    [ui.utils.string :refer (class-names)]
    [ui.utils.css :refer (padding)]
+   [ui.utils.i18n :refer (tr)]
    [ui.components.inputs.generic.input :refer (input)]
    [ui.components.inputs.generic.date :refer (date-select)]
    [ui.components.inputs.generic.radio-group :refer (radio-group)]
@@ -46,7 +47,7 @@
 
     [:div {:class (class-names padding)}
      [:div {:class "flex justify-between items-center mb-4"}
-      [:h1 {:class "text-lg"} "Routes"]
+      [:h1 {:class "text-lg"} (tr [:view.route/title])]
       [link {:to "/routes/create" :class "underline text-sm"} [:> PlusIcon {:class "inline mr-1 w-3 h-3"}] "Create"]]
      [:div {:class "mb-2"}
       [:div {:class "flex justify-between"}

@@ -3,8 +3,7 @@
    [react-feather
     :rename {ArrowLeft ArrowLeftIcon
              Settings SettingsIcon}]
-   [ui.lib.router :refer (routes use-navigate)]
-   [ui.utils.i18n :refer (tr)]
+   [ui.lib.router :refer (routes use-navigate)] 
    [ui.utils.string :refer (class-names)]
    [ui.utils.css :refer (padding-x)]
    [ui.components.icons.dispatch :refer (dispatch)]
@@ -41,15 +40,6 @@
     ["/addresses" [dispatch]]
     ["/addresses/*" [back-button]]
     ["*" [back-button]]]
-
-   [routes
-    ["/" [title "Home"]]
-    ["/register" [title (tr [:view.register/title])]]
-    ["/login" [title (tr [:view.login/title])]]
-    ["/seats" [title (tr [:view.fleet/title])]]
-    ["/addresses" [title (tr [:view.address/title])]]
-    ["/routes" [title (tr [:view.route/title])]]
-    ["*" [title "Not found"]]]
 
    [nav]
 

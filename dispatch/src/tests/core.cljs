@@ -6,6 +6,7 @@
    [common.utils.date :refer (from-datetime-local)]
    [common.utils.promise :refer (each)]
    [ui.utils.error :refer (tr-error)]
+   [ui.utils.i18n :refer (tr)]
    [tests.util.ui :as ui :refer (with-mounted-component test-app)]
    [tests.util.location :refer (generate-polyline)]
    [tests.user :as user]
@@ -37,7 +38,7 @@
            (user/with-submit-register
              {:mocks [{:request request :result result}]}
              (fn [^js component]
-               (-> (.findByText component "Fleet")
+               (-> (.findByText component (tr [:view.route/title]))
                    (.then #(testing "ui submits and redirects" (is (some? %))))
                    (.then done)))))))
 
@@ -74,7 +75,7 @@
            (user/with-submit-login
              {:mocks [{:request request :result result}]}
              (fn [^js component]
-               (-> (.findByText component "Fleet")
+               (-> (.findByText component (tr [:view.route/title]))
                    (.then #(testing "ui submits and redirects" (is (some? %))))
                    (.then done)))))))
 
@@ -158,7 +159,7 @@
                         (address/with-submit-address
                           {:mocks [create-mock]}
                           (fn [^js component]
-                            (-> (.findByText component "Route")
+                            (-> (.findByText component (tr [:view.route/title]))
                                 (.then #(testing "ui submits and redirects" (is (some? %))))
                                 (.then done))))))))))
 
@@ -201,7 +202,7 @@
            (route/with-submit-route
              {:mocks [fetch-mock (first create-mocks)]}
              (fn [^js component]
-               (-> (.findByText component "Fleet")
+               (-> (.findByText component (tr [:view.route/title]))
                    (.then #(testing "ui submits and redirects" (is (some? %))))
                    (.then done)))))))
 

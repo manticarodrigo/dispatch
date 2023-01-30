@@ -23,12 +23,12 @@
                    :fields {:email "Email"
                             :password "Password"
                             :submit "Submit"}}
+           :route {:title "Routes"}
            :fleet {:title "Fleet"
                    :distance "Total distance"
                    :duration "Estimated time"
                    :summary {:title "Summary"}
                    :overview {:title "Route"}}
-           :route {:title "Route"}
            :address {:title "Address"}}
     :error {:unknown "An unknown error occurred."
             :unique-constraint "The account already exists."
@@ -56,12 +56,12 @@
                    :fields {:email "Correo electrónico"
                             :password "Contraseña"
                             :submit "Enviar"}}
+           :route {:title "Rutas"}
            :fleet {:title "Flota"
                    :distance "Distancia total"
                    :duration "Tiempo estimado"
                    :summary {:title "Resumen"}
                    :overview {:title "Ruta"}}
-           :route {:title "Ruta"}
            :address {:title "Dirección"}}
     :error {:unknown "Un error desconocido ocurrió."
             :unique-constraint "La cuenta ya existe."

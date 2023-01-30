@@ -96,7 +96,7 @@
                                             :startAt startAt
                                             :addressIds address-ids
                                             :route route}})
-                       (.then #(navigate "/seats"))
+                       (.then #(navigate "/routes"))
                        (.catch #(reset! !anoms (parse-anoms %)))))}
           [combobox {:label "Assigned seat"
                      :value (:seatId @!state)
