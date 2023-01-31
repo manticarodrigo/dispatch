@@ -9,7 +9,7 @@
   (let [{!el :ref center-route :center} (use-map)]
     [:aside {:class (class-names class "relative w-full h-full")}
      [:div {:ref #(reset! !el %) :class "w-full h-full"}]
-     [button {:aria-label (tr [:location/center])
+     [button {:aria-label (tr [:map/center])
               :label [:> Crosshair]
               :class (class-names "absolute"
                                   "right-3 sm:right-4 md:right-6 lg:right-8"

@@ -13,6 +13,7 @@
    [ui.lib.router :refer (link)]
    [ui.utils.string :refer (class-names)]
    [ui.utils.css :refer (padding)]
+   [ui.utils.i18n :refer (tr)]
    [ui.components.inputs.generic.input :refer (input)]
    [ui.components.inputs.generic.button :refer (button-class)]))
 
@@ -65,18 +66,15 @@
          #js[addresses @!search])
 
         [:div {:class (class-names padding)}
-         [:div {:class "mb-4 flex justify-between"}
+         [:div {:class "mb-4 flex justify-between items-center"}
+          [:h1 {:class "text-lg"} (tr [:view.address.list/title])]
+          [link {:to "/addresses/create" :class "underline text-sm"} [:> PlusIcon {:class "inline mr-1 w-3 h-3"}] "Create"]]
+         [:div {:class "mb-4"}
           [input {:aria-label "Search"
                   :value @!search
                   :placeholder "Search addresses"
                   :class "w-full mr-2"
-                  :on-text #(reset! !search %)}]
-          [link
-           {:to "/addresses/create"
-            :class button-class}
-           [:span {:class "sr-only"} "Add address"]
-           [:> PlusIcon]]]
-
+                  :on-text #(reset! !search %)}]]
          [:ul
           (for [{:keys [id] :as address} filtered-addresses]
             ^{:key id}

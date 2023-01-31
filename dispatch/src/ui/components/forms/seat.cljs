@@ -10,14 +10,13 @@
             [ui.components.inputs.generic.input :refer (input)]
             [ui.components.inputs.generic.button :refer (button)]))
 
-(def FETCH_SEATS (gql (inline "queries/seat/fetch-all.graphql")))
 (def CREATE_SEAT (gql (inline "mutations/seat/create.graphql")))
 
 (defn seat-form []
   (let [!state (r/atom {})
         !anoms (r/atom {})]
     (fn []
-      (let [[create status] (use-mutation CREATE_SEAT {:refetchQueries [{:query FETCH_SEATS}]})
+      (let [[create status] (use-mutation CREATE_SEAT {})
             {:keys [loading]} status
             navigate (use-navigate)]
         [:form {:class "flex flex-col"

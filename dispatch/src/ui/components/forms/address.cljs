@@ -13,7 +13,6 @@
             [ui.components.inputs.generic.combobox :refer (combobox)]
             [ui.components.inputs.generic.button :refer (button)]))
 
-(def FETCH_ADDRESSES (gql (inline "queries/address/fetch-all.graphql")))
 (def CREATE_ADDRESS (gql (inline "mutations/address/create.graphql")))
 
 (defn address-form []
@@ -21,7 +20,7 @@
         !anoms (r/atom {})
         !options (r/atom [])]
     (fn []
-      (let [[create status] (use-mutation CREATE_ADDRESS {:refetchQueries [{:query FETCH_ADDRESSES}]})
+      (let [[create status] (use-mutation CREATE_ADDRESS {})
             {:keys [loading]} status
             navigate (use-navigate)]
         [:<>
@@ -33,7 +32,7 @@
                  :on-submit (fn [e]
                               (.preventDefault e)
                               (-> (create {:variables (dissoc @!state :place_id)})
-                                  (.then (fn [] (navigate "/routes")))
+                                  (.then (fn [] (navigate "/addresses")))
                                   (.catch #(reset! !anoms (parse-anoms %)))))}
           [input {:id "name"
                   :label "Name"
