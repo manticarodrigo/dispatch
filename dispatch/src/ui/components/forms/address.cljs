@@ -32,7 +32,7 @@
                  :on-submit (fn [e]
                               (.preventDefault e)
                               (-> (create {:variables (dissoc @!state :place_id)})
-                                  (.then (fn [] (navigate "/addresses")))
+                                  (.then (fn [] (navigate "/admin/addresses")))
                                   (.catch #(reset! !anoms (parse-anoms %)))))}
           [input {:id "name"
                   :label "Name"

@@ -1,4 +1,4 @@
-(ns ui.views.address.detail
+(ns ui.views.admin.seat.detail
   (:require [react]
             [react-feather :rename {GitPullRequest RouteIcon}]
             [date-fns :as d]
@@ -13,21 +13,21 @@
             [ui.components.inputs.generic.radio-group :refer (radio-group)]
             [ui.components.link-card :refer (link-card)]))
 
-(def FETCH_ADDRESS (gql (inline "queries/address/fetch.graphql")))
+(def FETCH_SEAT (gql (inline "queries/seat/fetch.graphql")))
 
 (defn view []
   (let [{:keys [id]} (use-params)
         [{:keys [date status] :as search-params} set-search-params] (use-search-params)
         query (use-query
-               FETCH_ADDRESS
+               FETCH_SEAT
                {:variables
                 {:id id
                  :filters {:start (-> date parse-date d/startOfDay)
                            :end  (-> date parse-date d/endOfDay)
                            :status status}}})
         {:keys [data previousData loading]} query
-        {:keys [routes]} (:address data)
-        {:keys [name description]} (or (:address previousData) (:address data))]
+        {:keys [routes]} (:seat data)
+        {:keys [name location]} (or (:seat previousData) (:seat data))]
 
     (react/useEffect
      (fn []
@@ -38,7 +38,15 @@
     [:div {:class (class-names padding)}
      [:div {:class "mb-4"}
       [:div {:class "text-lg font-medium"} name]
-      [:div {:class "text-xs font-light"} description]]
+      [:div {:class "text-xs font-light"}
+       "Last seen "
+       (if location
+         (str
+          (-> location :createdAt (js/parseInt) (d/formatRelative (js/Date.)))
+          " ("
+          (-> location :createdAt (js/parseInt) (d/formatDistanceToNowStrict #js{:addSuffix true}))
+          ")")
+         "never")]]
      [:div {:class "mb-2"}
       [:div {:class "mt-2"}
        [date-select {:label "Select date"
@@ -62,7 +70,7 @@
               started? (-> start-date (d/isBefore (js/Date.)))]
           ^{:key id}
           [:li {:class "mb-2"}
-           [link-card {:to (str "/routes/" id)
+           [link-card {:to (str "/admin/routes/" id)
                        :icon RouteIcon
                        :title (str (if started? "Started" "Starts in")
                                    " "

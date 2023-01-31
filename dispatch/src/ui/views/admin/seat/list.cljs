@@ -1,4 +1,4 @@
-(ns ui.views.seat.list
+(ns ui.views.admin.seat.list
   (:require
    ["@apollo/client" :refer (gql)]
    [react]
@@ -71,7 +71,7 @@
         [:div {:class (class-names padding)}
          [:div {:class "mb-4 flex justify-between items-center"}
           [:h1 {:class "text-lg"} (tr [:view.seat.list/title])]
-          [link {:to "/seats/create" :class "underline text-sm"} [:> PlusIcon {:class "inline mr-1 w-3 h-3"}] "Create"]]
+          [link {:to "/admin/seats/create" :class "underline text-sm"} [:> PlusIcon {:class "inline mr-1 w-3 h-3"}] "Create"]]
          [:div {:class "mb-4"}
           [input {:aria-label "Search"
                   :value @!search
@@ -81,7 +81,7 @@
           (for [{:keys [id] :as seat} filtered-seats]
             ^{:key id}
             [:li
-             [link {:to (str "/seats/" id)
+             [link {:to (str "/admin/seats/" id)
                     :class (class-names "mb-2 block" button-class)}
               [item seat]]])
           (when (and (not loading) (empty? filtered-seats)) [:p {:class "text-center"} "No seats found."])

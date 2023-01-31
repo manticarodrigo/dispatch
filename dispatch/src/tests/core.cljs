@@ -142,7 +142,7 @@
              (is (-> fetch-mock :result :data :seats first :id)))
 
            (with-mounted-component
-             [test-app {:route "/seats" :mocks [fetch-mock]}]
+             [test-app {:route "/admin/seats" :mocks [fetch-mock]}]
              (fn [^js component]
                (-> (p/all (map #(.findByText component (:name %)) (-> fetch-mock :result :data :seats)))
                    (.then #(testing "ui presents seat names" (is (every? some? %))))
@@ -171,7 +171,7 @@
              (is (-> fetch-mock :result :data :addresses first :id))
 
              (with-mounted-component
-               [test-app {:route "/addresses" :mocks [fetch-mock]}]
+               [test-app {:route "/admin/addresses" :mocks [fetch-mock]}]
                (fn [^js component]
                  (-> (p/all (map #(.findByText component (:name %)) (-> fetch-mock :result :data :addresses)))
                      (.then #(testing "ui presents address names" (is (every? some? %))))
@@ -233,7 +233,7 @@
              (is (-> routes first :id))
 
              (with-mounted-component
-               [test-app {:route "/routes" :mocks [fetch-mock]}]
+               [test-app {:route "/admin/routes" :mocks [fetch-mock]}]
                (fn [^js component]
                  (-> (p/all (map #(.findByText component (-> % :seat :name)) routes))
                      (.then #(testing "ui presents seat names" (is (every? some? %))))

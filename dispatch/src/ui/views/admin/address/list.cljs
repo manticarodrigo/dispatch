@@ -1,4 +1,4 @@
-(ns ui.views.address.list
+(ns ui.views.admin.address.list
   (:require
    ["@apollo/client" :refer (gql)]
    [react]
@@ -68,7 +68,7 @@
         [:div {:class (class-names padding)}
          [:div {:class "mb-4 flex justify-between items-center"}
           [:h1 {:class "text-lg"} (tr [:view.address.list/title])]
-          [link {:to "/addresses/create" :class "underline text-sm"} [:> PlusIcon {:class "inline mr-1 w-3 h-3"}] "Create"]]
+          [link {:to "/admin/addresses/create" :class "underline text-sm"} [:> PlusIcon {:class "inline mr-1 w-3 h-3"}] "Create"]]
          [:div {:class "mb-4"}
           [input {:aria-label "Search"
                   :value @!search
@@ -79,7 +79,7 @@
           (for [{:keys [id] :as address} filtered-addresses]
             ^{:key id}
             [:li
-             [link {:to (str "/addresses/" id)
+             [link {:to (str "/admin/addresses/" id)
                     :class (class-names "mb-2 block" button-class)}
               [item address]]])
           (when (and (not loading) (empty? filtered-addresses)) [:p {:class "text-center"} "No addresses found."])

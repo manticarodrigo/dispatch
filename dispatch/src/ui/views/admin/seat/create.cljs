@@ -1,8 +1,8 @@
-(ns ui.views.route.create
+(ns ui.views.admin.seat.create
   (:require [ui.utils.string :refer (class-names)]
             [ui.utils.css :refer (padding)]
-            [ui.components.forms.route :refer (route-form)]))
+            [ui.components.forms.seat :refer (seat-form)]))
 
 (defn view []
   [:div {:class (class-names padding)}
-   [route-form]])
+   [seat-form]])

@@ -24,7 +24,7 @@
                              (.preventDefault e)
                              (-> (create {:variables @!state})
                                  (.then (fn []
-                                          (navigate "/seats")))
+                                          (navigate "/admin/seats")))
                                  (.catch #(reset! !anoms (parse-anoms %)))))}
          [input {:id "name"
                  :label "Name"

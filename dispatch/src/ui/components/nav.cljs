@@ -23,6 +23,6 @@
   (let [session-id (listen [:session])]
     (when session-id
       [:nav [:ul {:class "flex justify-center"}
-             [nav-item "/routes" CalendarIcon]
-             [nav-item "/seats" UsersIcon]
-             [nav-item "/addresses" PinIcon]]])))
+             [nav-item "/admin/routes" CalendarIcon]
+             [nav-item "/admin/seats" UsersIcon]
+             [nav-item "/admin/addresses" PinIcon]]])))

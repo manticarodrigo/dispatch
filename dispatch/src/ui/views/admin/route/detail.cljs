@@ -1,4 +1,4 @@
-(ns ui.views.route.detail
+(ns ui.views.admin.route.detail
   (:require [react]
             [react-feather :rename {Check CheckIcon
                                     Minus MinusIcon

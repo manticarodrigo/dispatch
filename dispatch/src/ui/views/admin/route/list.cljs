@@ -1,4 +1,4 @@
-(ns ui.views.route.list
+(ns ui.views.admin.route.list
   (:require
    ["@apollo/client" :refer (gql)]
    [react]
@@ -48,7 +48,7 @@
     [:div {:class (class-names padding)}
      [:div {:class "mb-4 flex justify-between items-center"}
       [:h1 {:class "text-lg"} (tr [:view.route.list/title])]
-      [link {:to "/routes/create" :class "underline text-sm"} [:> PlusIcon {:class "inline mr-1 w-3 h-3"}] "Create"]]
+      [link {:to "/admin/routes/create" :class "underline text-sm"} [:> PlusIcon {:class "inline mr-1 w-3 h-3"}] "Create"]]
      [:div {:class "mb-2"}
       [:div {:class "flex justify-between"}
        [input {:aria-label "Search by name"
@@ -81,7 +81,7 @@
               started? (-> start-date (d/isBefore (js/Date.)))]
           ^{:key id}
           [:li {:class "mb-2"}
-           [link-card {:to (str "/routes/" id)
+           [link-card {:to (str "/admin/routes/" id)
                        :icon RouteIcon
                        :title name
                        :subtitle (-> start-date (d/format "yyyy/MM/dd hh:mmaaa"))
