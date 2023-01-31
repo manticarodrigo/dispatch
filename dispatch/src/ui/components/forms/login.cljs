@@ -35,14 +35,14 @@
                       (.catch #(reset! !anoms (parse-anoms %)))))}
          [input {:id "email"
                  :type "email"
-                 :label (tr [:view.login.fields/email])
+                 :label (tr [:fields/email])
                  :value (:email @!state)
                  :required true
                  :class "pb-4"
                  :on-text #(swap! !state assoc :email %)}]
          [input {:id "password"
                  :type "password"
-                 :label (tr [:view.login.fields/password])
+                 :label (tr [:fields/password])
                  :value (:password @!state)
                  :required true
                  :class "pb-4"

@@ -46,8 +46,8 @@
      #js[routes text])
 
     [:div {:class (class-names padding)}
-     [:div {:class "flex justify-between items-center mb-4"}
-      [:h1 {:class "text-lg"} (tr [:view.route/title])]
+     [:div {:class "mb-4 flex justify-between items-center"}
+      [:h1 {:class "text-lg"} (tr [:view.route.list/title])]
       [link {:to "/routes/create" :class "underline text-sm"} [:> PlusIcon {:class "inline mr-1 w-3 h-3"}] "Create"]]
      [:div {:class "mb-2"}
       [:div {:class "flex justify-between"}

@@ -15,12 +15,19 @@
   (let [id-map (zipmap (map :id coll) coll)]
     (map #(id-map %) order)))
 
-(defn fetch-routes []
-  (p/let [query (inline "queries/route/fetch-all.graphql")
-          request  {:query query}
-          result (send request)]
-    {:request request
-     :result result}))
+(defn fetch-routes
+  ([]
+   (p/let [query (inline "queries/route/fetch-all.graphql")
+           request  {:query query}
+           result (send request)]
+     {:request request
+      :result result}))
+  ([variables]
+   (p/let [query (inline "queries/route/fetch-all.graphql")
+           request  {:query query :variables variables}
+           result (send request)]
+     {:request request
+      :result result})))
 
 (defn create-route [variables]
   (p/let [query (inline "mutations/route/create.graphql")
@@ -48,12 +55,7 @@
     (with-mounted-component
       [test-app
        {:route "/routes/create"
-        :mocks [fetch-mock (assoc-in create-mock
-                                     [:request
-                                      :variables
-                                      :route
-                                      :path]
-                                     path)]}]
+        :mocks mocks}]
       (fn [^js component user]
         (p/do
           (.findByText component "Create route")
