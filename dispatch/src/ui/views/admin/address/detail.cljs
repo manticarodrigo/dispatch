@@ -50,9 +50,9 @@
       [:div {:class "mt-2"}
        [radio-group {:sr-label "Select status"
                      :value (or (-> search-params :status) "ALL")
-                     :options [{:key "all" :label "All" :value "ALL"}
-                               {:key "incomplete" :label "Incomplete" :value "INCOMPLETE"}
-                               {:key "complete" :label "Complete" :value "COMPLETE"}]
+                     :options [{:key "ALL" :label "All" }
+                               {:key "INCOMPLETE" :label "Incomplete" }
+                               {:key "COMPLETE" :label "Complete"}]
                      :on-change #(set-search-params (if (= % "ALL")
                                                       (dissoc search-params :status)
                                                       (assoc search-params :status %)))}]]]
