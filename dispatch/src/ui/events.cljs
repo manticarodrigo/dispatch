@@ -18,9 +18,9 @@
  (assoc-key :session))
 
 (rf/reg-event-db
- :locale/set
+ :language/set
  [trim-v]
- (assoc-key :locale))
+ (assoc-key :language))
 
 (rf/reg-event-db
  :map/set-paths

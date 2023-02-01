@@ -38,8 +38,5 @@
 
 (defn tr [& args]
   (apply
-   (partial tempura/tr opts [(keyword (or (listen [:locale/language]) :en))])
+   (partial tempura/tr opts [(keyword (or (listen [:language]) :en))])
    args))
-
-(def locales {:en-US {:language "en" :region "US"}
-              :es-ES {:language "es" :region "ES"}})

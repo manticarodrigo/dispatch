@@ -12,21 +12,27 @@
 (def menu-item-class "cursor-pointer relative block px-4 py-3 text-sm")
 (def menu-item-active-class "after:z-[-1] after:block after:absolute after:rounded after:inset-1 after:bg-neutral-700/50")
 
-(defn menu-item [{:keys [label to]} item-class]
+(defn menu-item [{:keys [component label to]} item-class]
   [ui/menu-item
    (fn [{:keys [active]}]
-     [:div
-      [link {:to to
-             :class (class-names
-                     item-class
-                     menu-item-class
-                     (when active menu-item-active-class))}
+     (if component
+       [:div {:class (class-names
+                      item-class
+                      menu-item-class)}
+        component]
+       [:div
+        [link {:to to
+               :class (class-names
+                       item-class
+                       menu-item-class
+                       (when active menu-item-active-class))}
 
-       label]])])
+         label]]))])
 
 (defn menu [{label :label
              items :items
-             class-map :class-map}]
+             class-map :class-map}
+            & children]
   (let [{button-class! :button!
          item-class :item} class-map]
     [ui/menu {:as "div" :class (class-names "z-10 relative inline-flex")}
@@ -38,6 +44,10 @@
                              "mt-2"
                              "divide-y divide-neutral-700"
                              "overflow-y-auto")}
+      [:<>
+       (for [[idx component] (map-indexed vector children)]
+         ^{:key idx}
+         [:div {:class "w-full"} [menu-item {:component component} item-class]])]
       [:<>
        (for [[idx item] (map-indexed vector items)]
          ^{:key idx}

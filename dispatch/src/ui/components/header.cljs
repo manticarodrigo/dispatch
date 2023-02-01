@@ -8,7 +8,8 @@
    [ui.utils.css :refer (padding-x)]
    [ui.components.icons.dispatch :refer (dispatch)]
    [ui.components.inputs.generic.menu :refer (menu)]
-   [ui.components.nav :refer (nav)]))
+   [ui.components.nav :refer (nav)]
+   [ui.components.inputs.language-radio-group :refer (language-radio-group)]))
 
 (defn title [text]
   [:h1 {:class
@@ -48,4 +49,5 @@
                    {:label "Login" :to "/login"}]
                   {:label "Sign out..." :to "/logout"}]
           :class-map {:button! "h-full"
-                      :item "min-w-[12rem]"}}]])
+                      :item "min-w-[12rem]"}}
+    [language-radio-group]]])

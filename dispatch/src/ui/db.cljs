@@ -3,5 +3,4 @@
             [ui.utils.session :refer (get-session)]))
 
 (def default-db {:session (get-session)
-                 :locale {:region config/REGION
-                          :language config/LANGUAGE}})
+                 :language config/LANGUAGE})

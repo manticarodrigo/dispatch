@@ -25,7 +25,7 @@
               last? (= (+ 1 idx) (count options))]
           [:> Option
            {:key (:key option)
-            :value (:value option)
+            :value (:key option)
             :class (fn [props]
                      (let [{active :active checked :checked} (js->clj props :keywordize-keys true)]
                        (class-names
@@ -37,6 +37,7 @@
                         (if (or checked active)
                           (class-names
                            "text-neutral-50"
-                           (when checked "rounded bg-neutral-800"))
+                           "hover:border-neutral-500 focus:border-neutral-600"
+                           (when checked "border rounded bg-neutral-700"))
                           "text-neutral-400 bg-neutral-900"))))}
            [:> Label {:as "p"} (:label option)]])))]]])

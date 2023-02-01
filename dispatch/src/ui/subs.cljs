@@ -6,7 +6,6 @@
 
 
 (rf/reg-sub :session #(:session %))
-(rf/reg-sub :locale/language #(some-> % :locale :language))
-(rf/reg-sub :locale/region #(some-> % :locale :region))
+(rf/reg-sub :language #(some-> % :language))
 (rf/reg-sub :map/paths #(some-> % :map :paths))
 (rf/reg-sub :map/points #(some-> % :map :points))
