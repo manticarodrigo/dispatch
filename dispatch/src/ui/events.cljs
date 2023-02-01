@@ -23,6 +23,11 @@
  (assoc-key :language))
 
 (rf/reg-event-db
+ :device/set
+ [trim-v]
+ (assoc-key :device))
+
+(rf/reg-event-db
  :map/set-paths
  [trim-v]
  (fn [db [v]]

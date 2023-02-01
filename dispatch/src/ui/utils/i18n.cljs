@@ -38,5 +38,8 @@
 
 (defn tr [& args]
   (apply
-   (partial tempura/tr opts [(keyword (or (listen [:language]) :en))])
+   (partial tempura/tr opts [(keyword (condp = (listen [:language])
+                                        "en" "en"
+                                        "es" "es"
+                                        "en"))])
    args))

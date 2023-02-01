@@ -10,6 +10,7 @@
    [ui.lib.router :refer [browser-router]]
    [ui.lib.apollo :refer (apollo-provider)]
    [ui.lib.platform :refer (platform)]
+   [ui.components.loader :refer (loader)]
    [ui.components.main :refer (main)]
    [ui.components.routes :refer (routes)]))
 
@@ -22,8 +23,9 @@
 (defn app []
   [browser-router
    [apollo-provider
-    [main
-     [routes]]]])
+    [loader
+     [main
+      [routes]]]]])
 
 (defonce !root (atom nil))
 
