@@ -3,17 +3,17 @@
    [promesa.core :as p]
    [cljs-bean.core :refer (->clj)]
    [api.util.anom :as anom]
-   [api.models.user :as model]))
+   [api.models.user :as user]))
 
 (defn create-user
   [_ args context _]
-  (model/create context (->clj args)))
+  (user/create context (->clj args)))
 
 (defn login-user
   [_ args context _]
   (p/let [{:keys [email password]} (->clj args)
-          ^js user (when email (model/find-unique context {:email email}))
-          session-id (when user (model/create-session
+          ^js user (when email (user/find-unique context {:email email}))
+          session-id (when user (user/create-session
                                  context
                                  {:user-id (some-> user .-id)
                                   :user-password (some-> user .-password)
@@ -25,4 +25,4 @@
 
 (defn logged-in-user
   [_ _ context _]
-  (model/logged-in-user context))
+  (user/logged-in-user context))

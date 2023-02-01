@@ -14,7 +14,7 @@
               "Access-Control-Allow-Methods" "OPTIONS,GET,POST"
               "Access-Control-Allow-Headers" "authorization,content-type,x-amzn-trace-id"})
 
-;; todo move to express lib
+;; TODO: move to express lib
 (defn create-app
   []
   (let [server (apollo/start-server)

@@ -1,19 +1,19 @@
 (ns api.resolvers.route
   (:require [cljs-bean.core :refer (->clj)]
-            [api.models.route :as model]))
+            [api.models.route :as route]))
 
 (defn create-route
   [_ args context _]
-  (model/create context (->clj args)))
+  (route/create context (->clj args)))
 
 (defn fetch-route
   [_ args context _]
-  (model/find-unique context (->clj args)))
+  (route/find-unique context (->clj args)))
 
 (defn fetch-routes
   [_ args context _]
-  (model/find-all context (->clj args)))
+  (route/find-all context (->clj args)))
 
 (defn fetch-routes-by-address
   [parent args context _]
-  (model/find-by-address context (merge (->clj parent) (->clj args))))
+  (route/find-by-address context (merge (->clj parent) (->clj args))))
