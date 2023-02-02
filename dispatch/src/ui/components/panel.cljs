@@ -5,7 +5,7 @@
             [ui.utils.string :refer (class-names)]
             [ui.hooks.use-media-query :refer (use-media-query lg)]
             [ui.hooks.use-window-size :refer (use-window-size)]
-            [ui.components.header :refer (header)]))
+            [ui.components.header.core :refer (header)]))
 
 (defn panel-mobile [class children]
   (let [!showing (r/atom false)]
