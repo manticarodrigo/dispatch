@@ -1,12 +1,12 @@
-(ns ui.components.inputs.generic.combobox
+(ns ui.components.inputs.combobox
   (:require [react]
             [headlessui-reagent.core :as ui]
             [react-feather :rename {ChevronDown ChevronDownIcon}]
             [clojure.string :as s]
             [ui.utils.i18n :refer (tr)]
             [ui.utils.string :refer (class-names)]
-            [ui.components.inputs.generic.input :refer (label-class input-class)]
-            [ui.components.inputs.generic.menu :refer (menu-class
+            [ui.components.inputs.input :refer (label-class input-class)]
+            [ui.components.inputs.menu :refer (menu-class
                                                        menu-item-class
                                                        menu-item-active-class)]))
 

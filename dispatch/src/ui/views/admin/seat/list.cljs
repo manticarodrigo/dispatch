@@ -15,8 +15,8 @@
    [ui.utils.string :refer (class-names)]
    [ui.utils.css :refer (padding)]
    [ui.utils.i18n :refer (tr)]
-   [ui.components.inputs.generic.input :refer (input)]
-   [ui.components.inputs.generic.button :refer (button-class)]))
+   [ui.components.inputs.input :refer (input)]
+   [ui.components.inputs.button :refer (button-class)]))
 
 (defn item [{:keys [name location]}]
   (let [{:keys [createdAt]} location

@@ -2,7 +2,7 @@
   (:require [react-feather :rename {ChevronRight ChevronRightIcon}]
             [ui.lib.router :refer (link)]
             [ui.utils.string :refer (class-names)]
-            [ui.components.inputs.generic.button :refer (button-class)]))
+            [ui.components.inputs.button :refer (button-class)]))
 
 (defn link-card [{:keys [to icon title subtitle detail]}]
   [link {:to to

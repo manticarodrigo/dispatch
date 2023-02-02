@@ -11,8 +11,8 @@
    [ui.utils.error :refer (tr-error)]
    [ui.utils.string :refer (class-names)]
    [ui.components.icons.spinner :refer (spinner)]
-   [ui.components.inputs.generic.input :refer (input)]
-   [ui.components.inputs.generic.button :refer (button)]))
+   [ui.components.inputs.input :refer (input)]
+   [ui.components.inputs.button :refer (button)]))
 
 (def CREATE_USER (gql (inline "mutations/user/create.graphql")))
 

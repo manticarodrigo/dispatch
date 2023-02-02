@@ -15,9 +15,9 @@
    [ui.utils.css :refer (padding)]
    [ui.utils.i18n :refer (tr)]
    [ui.components.modal :refer (modal)]
-   [ui.components.inputs.generic.button :refer (button)]
-   [ui.components.inputs.generic.date :refer (date-select)]
-   [ui.components.inputs.generic.radio-group :refer (radio-group)]
+   [ui.components.inputs.button :refer (button)]
+   [ui.components.inputs.date :refer (date-select)]
+   [ui.components.inputs.radio-group :refer (radio-group)]
    [ui.components.link-card :refer (link-card)]))
 
 (def FETCH_SEAT (gql (inline "queries/seat/fetch-by-device.graphql")))

@@ -2,7 +2,7 @@
   (:require
    [re-frame.core :refer (dispatch)]
    [ui.subs :refer (listen)]
-   [ui.components.inputs.generic.radio-group :refer (radio-group)]))
+   [ui.components.inputs.radio-group :refer (radio-group)]))
 
 (def ^:private language-options
   [{:key "en" :label "EN"}

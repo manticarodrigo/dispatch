@@ -1,4 +1,4 @@
-(ns ui.components.inputs.generic.radio-group
+(ns ui.components.inputs.radio-group
   (:require ["@headlessui/react" :refer (RadioGroup)]
             [ui.utils.string :refer (class-names)]))
 

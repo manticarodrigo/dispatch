@@ -14,9 +14,9 @@
    [ui.utils.string :refer (class-names)]
    [ui.utils.css :refer (padding)]
    [ui.utils.i18n :refer (tr)]
-   [ui.components.inputs.generic.input :refer (input)]
-   [ui.components.inputs.generic.date :refer (date-select)]
-   [ui.components.inputs.generic.radio-group :refer (radio-group)]
+   [ui.components.inputs.input :refer (input)]
+   [ui.components.inputs.date :refer (date-select)]
+   [ui.components.inputs.radio-group :refer (radio-group)]
    [ui.components.link-card :refer (link-card)]))
 
 (def FETCH_ROUTES (gql (inline "queries/route/fetch-all.graphql")))

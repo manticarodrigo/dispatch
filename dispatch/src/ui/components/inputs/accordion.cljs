@@ -1,8 +1,8 @@
-(ns ui.components.inputs.generic.accordion
+(ns ui.components.inputs.accordion
   (:require [reagent.core :as r]
             ["@headlessui/react" :refer (Disclosure)]
             [ui.utils.string :refer (class-names)]
-            [ui.components.inputs.generic.button :refer (button-class base-button-class box-peer-interact-class)]))
+            [ui.components.inputs.button :refer (button-class base-button-class box-peer-interact-class)]))
 
 (def ^:private Button (.-Button Disclosure))
 (def ^:private Panel (.-Panel Disclosure))

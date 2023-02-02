@@ -10,8 +10,8 @@
             [ui.utils.css :refer (padding)]
             [ui.utils.error :refer (tr-error)]
             [ui.components.icons.spinner :refer (spinner)]
-            [ui.components.inputs.generic.button :refer (button)]
-            [ui.components.inputs.generic.input :refer (input)]))
+            [ui.components.inputs.button :refer (button)]
+            [ui.components.inputs.input :refer (input)]))
 
 (def FETCH_STOP (gql (inline "queries/stop/fetch.graphql")))
 (def CREATE_STOP_ARRIVAL (gql (inline "mutations/stop/create-stop-arrival.graphql")))

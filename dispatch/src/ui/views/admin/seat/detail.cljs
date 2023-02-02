@@ -9,8 +9,8 @@
             [ui.lib.router :refer (use-params use-search-params)]
             [ui.utils.string :refer (class-names)]
             [ui.utils.css :refer (padding)]
-            [ui.components.inputs.generic.date :refer (date-select)]
-            [ui.components.inputs.generic.radio-group :refer (radio-group)]
+            [ui.components.inputs.date :refer (date-select)]
+            [ui.components.inputs.radio-group :refer (radio-group)]
             [ui.components.link-card :refer (link-card)]))
 
 (def FETCH_SEAT (gql (inline "queries/seat/fetch.graphql")))

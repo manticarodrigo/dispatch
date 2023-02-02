@@ -7,16 +7,9 @@
    [ui.utils.string :refer (class-names)]
    [ui.utils.css :refer (padding-x)]
    [ui.components.icons.dispatch :refer (dispatch)]
-   [ui.components.inputs.generic.menu :refer (menu)]
+   [ui.components.inputs.menu :refer (menu)]
    [ui.components.nav :refer (nav)]
    [ui.components.inputs.language-radio-group :refer (language-radio-group)]))
-
-(defn title [text]
-  [:h1 {:class
-        (class-names
-         "sr-only"
-         "font-semibold text-white text-sm sm:text-base lg:text-xl")}
-   text])
 
 (defn back-button []
   (let [navigate (use-navigate)]

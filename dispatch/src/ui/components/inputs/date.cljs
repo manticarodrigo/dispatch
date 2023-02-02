@@ -1,4 +1,4 @@
-(ns ui.components.inputs.generic.date
+(ns ui.components.inputs.date
   (:require ["@floating-ui/react-dom" :refer (useFloating offset flip shift)]
             [react-feather :rename {ChevronLeft ChevronLeftIcon
                                     ChevronRight ChevronRightIcon}]
@@ -7,8 +7,8 @@
             [cljs-bean.core :refer (->clj)]
             [headlessui-reagent.core :as ui]
             [ui.utils.string :refer (class-names)]
-            [ui.components.inputs.generic.menu :refer (menu-class)]
-            [ui.components.inputs.generic.button :refer (button button-class)]))
+            [ui.components.inputs.menu :refer (menu-class)]
+            [ui.components.inputs.button :refer (button button-class)]))
 
 (defn date-select [{:keys [class label value on-select]}]
   (let [{:keys [x y reference floating strategy]}

@@ -1,8 +1,8 @@
-(ns ui.components.inputs.generic.menu
+(ns ui.components.inputs.menu
   (:require [headlessui-reagent.core :as ui]
             [ui.lib.router :refer (link)]
             [ui.utils.string :refer (class-names)]
-            [ui.components.inputs.generic.button :refer (button-class)]))
+            [ui.components.inputs.button :refer (button-class)]))
 
 (def menu-class (class-names
                  "rounded-md border border-neutral-700"

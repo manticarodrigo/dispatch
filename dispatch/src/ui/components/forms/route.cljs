@@ -18,9 +18,9 @@
             [ui.utils.vector :refer (vec-remove)]
             [ui.utils.input :refer (debounce)]
             [ui.components.icons.spinner :refer (spinner)]
-            [ui.components.inputs.generic.combobox :refer (combobox)]
-            [ui.components.inputs.generic.input :refer (input)]
-            [ui.components.inputs.generic.button :refer (button base-button-class)]))
+            [ui.components.inputs.combobox :refer (combobox)]
+            [ui.components.inputs.input :refer (input)]
+            [ui.components.inputs.button :refer (button base-button-class)]))
 
 
 
