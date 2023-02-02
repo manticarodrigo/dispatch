@@ -1,7 +1,8 @@
 (ns api.models.route
   (:require
    [promesa.core :as p]
-   [api.util.prisma :as prisma]))
+   [api.util.prisma :as prisma]
+   [api.filters.core :as filters]))
 
 (defn create [^js context {:keys [seatId startAt addressIds route]}]
   (p/let [^js route (prisma/create!
@@ -17,22 +18,14 @@
     (some-> route .-id)))
 
 (defn find-all [^js context {:keys [filters]}]
-  (let [{:keys [start end status]} filters]
-    (prisma/find-many
-     (.. context -prisma -route)
-     {:where {:user {:id (.. context -user -id)}
-              :stops (condp = status
-                       "INCOMPLETE" {:some {:arrivedAt {:equals nil}}}
-                       "COMPLETE" {:every {:arrivedAt {:not nil}}}
-                       nil {})
-              :AND (if (and start end)
-                     [{:startAt {:gte start}}
-                      {:startAt {:lte end}}]
-                     [])}
-      :orderBy {:startAt "asc"}
-      :include {:seat true
-                :stops {:include {:address true}
-                        :orderBy {:order "asc"}}}})))
+  (prisma/find-many
+   (.. context -prisma -route)
+   {:where (conj {:user {:id (.. context -user -id)}}
+                 (filters/route filters))
+    :orderBy {:startAt "asc"}
+    :include {:seat true
+              :stops {:include {:address true}
+                      :orderBy {:order "asc"}}}}))
 
 (defn find-unique [^js context {:keys [id]}]
   (prisma/find-unique
@@ -46,6 +39,7 @@
   (let [{:keys [start end status]} filters]
     (prisma/find-many
      (.. context -prisma -route)
+    ;;  TODO: move to address model
      {:where {:AND [{:stops {:some {:address {:id id}}}}
                     {:stops (condp = status
                               "INCOMPLETE" {:some {:arrivedAt {:equals nil}}}

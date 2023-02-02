@@ -12,6 +12,7 @@
             [api.util.prisma :refer (find-unique)]
             [api.util.anom :as anom]
             [api.resolvers.user :as user]
+            [api.resolvers.device :as device]
             [api.resolvers.seat :as seat]
             [api.resolvers.address :as address]
             [api.resolvers.route :as route]
@@ -35,6 +36,7 @@
                 :Mutation
                 {:createUser user/create-user
                  :loginUser user/login-user
+                 :linkDevice device/link-device
                  :createSeat seat/create-seat
                  :createAddress address/create-address
                  :createRoute route/create-route
@@ -68,7 +70,7 @@
                             ^js user (some-> session .-user)
                             public-operation? (some
                                                #(= % (-> ctx .-req .-body .-operationName))
-                                               ["CreateUser" "LoginUser"])]
+                                               ["CreateUser" "LoginUser" "SeatByDevice"])]
                       (when (and (not public-operation?)
                                  (not user))
                         (anom/gql (anom/forbidden :invalid-session)))

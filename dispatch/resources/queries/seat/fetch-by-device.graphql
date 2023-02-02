@@ -1,5 +1,5 @@
-query Seat($id: ID!, $filters: RouteFilters) {
-  seat(id: $id, filters: $filters) {
+query SeatByDevice($id: ID!, $token: String!, $filters: RouteFilters) {
+  seat(id: $id, token: $token, filters: $filters) {
     id
     name
     device {

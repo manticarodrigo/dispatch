@@ -5,8 +5,6 @@
 
 (def prisma (PrismaClient.))
 
-
-
 (when (not= config/STAGE "local")
   (.$use prisma
          (fn [^js params next]

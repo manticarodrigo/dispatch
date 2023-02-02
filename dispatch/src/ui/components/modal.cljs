@@ -1,4 +1,4 @@
-(ns ui.components.inputs.generic.modal
+(ns ui.components.modal
   (:require [react :refer (Fragment)]
             ["@headlessui/react" :refer (Transition Dialog)]))
 

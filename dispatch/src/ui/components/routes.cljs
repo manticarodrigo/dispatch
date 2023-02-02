@@ -1,29 +1,42 @@
 (ns ui.components.routes
-  (:require [ui.lib.router :as router]
-            [ui.subs :refer (listen)]
-            [ui.views.register :as register]
-            [ui.views.login :as login]
-            [ui.views.admin.route.core :as route]
-            [ui.views.admin.seat.core :as seat]
-            [ui.views.admin.address.core :as address]
-            [ui.views.admin.stop.core :as stop]
-            [ui.views.not-found :as not-found]))
+  (:require
+   [react-router-dom
+    :refer (Routes
+            Route
+            Navigate
+            Outlet)]
+   [reagent.core :as r]
+   [ui.lib.router :as router]
+   [ui.subs :refer (listen)]
+   [ui.views.register :as register]
+   [ui.views.login :as login]
+   [ui.views.admin.route.core :as admin-route]
+   [ui.views.admin.seat.core :as admin-seat]
+   [ui.views.admin.address.core :as admin-address]
+   [ui.views.admin.stop.core :as admin-stop]
+   [ui.views.seat.route.core :as seat-route]
+   [ui.views.not-found :as not-found]))
 
 (defn routes []
   (let [session-id (listen [:session])]
-    [router/routes
-     ["/" [router/navigate-route (if session-id "/admin/routes" "/login")]]
-     ["/register" [register/view]]
-     ["/login" [login/view]]
-     ["/logout" [router/remove-auth-route]]
-     ["/admin/routes" [router/auth-route [route/list-view]]]
-     ["/admin/routes/:id" [router/auth-route [route/detail-view]]]
-     ["/admin/routes/create" [router/auth-route [route/create-view]]]
-     ["/admin/seats" [router/auth-route [seat/list-view]]]
-     ["/admin/seats/:id" [router/auth-route [seat/detail-view]]]
-     ["/admin/seats/create" [router/auth-route [seat/create-view]]]
-     ["/admin/addresses" [router/auth-route [address/list-view]]]
-     ["/admin/addresses/:id" [router/auth-route [address/detail-view]]]
-     ["/admin/addresses/create" [router/auth-route [address/create-view]]]
-     ["/admin/stops/:id" [router/auth-route [stop/detail-view]]]
-     ["*" [not-found/view]]]))
+    [:> Routes
+     [:> Route {:path "/" :element (r/as-element [:> Navigate {:to (if session-id "/admin/routes" "/login")}])}]
+     [:> Route {:path "/register" :element (r/as-element [register/view])}]
+     [:> Route {:path "/login" :element (r/as-element [login/view])}]
+     [:> Route {:path "/logout" :element (r/as-element [router/remove-auth-route])}]
+
+     [:> Route {:path "/admin" :element (r/as-element [router/auth-route [:> Outlet]])}
+      [:> Route {:path "routes" :element (r/as-element [admin-route/list-view])}]
+      [:> Route {:path "routes/:id" :element (r/as-element [admin-route/detail-view])}]
+      [:> Route {:path "routes/create" :element (r/as-element [admin-route/create-view])}]
+      [:> Route {:path "seats" :element (r/as-element [admin-seat/list-view])}]
+      [:> Route {:path "seats/:id" :element (r/as-element [admin-seat/detail-view])}]
+      [:> Route {:path "seats/create" :element (r/as-element [admin-seat/create-view])}]
+      [:> Route {:path "addresses" :element (r/as-element [admin-address/list-view])}]
+      [:> Route {:path "addresses/:id" :element (r/as-element [admin-address/detail-view])}]
+      [:> Route {:path "addresses/create" :element (r/as-element [admin-address/create-view])}]
+      [:> Route {:path "stops/:id" :element (r/as-element [admin-stop/detail-view])}]]
+
+     [:> Route {:path "/seat/:id" :element (r/as-element [:> Outlet])}
+      [:> Route {:path "routes" :element (r/as-element [seat-route/list-view])}]]
+     [:> Route {:path "*" :element (r/as-element [not-found/view])}]]))

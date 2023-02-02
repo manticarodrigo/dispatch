@@ -4,7 +4,7 @@ scalar JSON
 type Query {
   user: User
   seats: [Seat]
-  seat(id: ID!, filters: RouteFilters): Seat
+  seat(id: ID!, token: String, filters: RouteFilters): Seat
   addresses: [Address]
   address(id: ID!, filters: RouteFilters): Address
   routes(filters: RouteFilters): [Route]
@@ -15,6 +15,7 @@ type Query {
 type Mutation {
   createUser(email: String!, password: String!): String!
   loginUser(email: String!, password: String!): String!
+  linkDevice(seatId: ID!, token: String!, info: JSON!): String!
   createSeat(name: String!): String!
   createAddress(
     name: String!
@@ -46,9 +47,17 @@ type User {
   addresses: [Address]
 }
 
+type Device {
+  id: ID!
+  token: String!
+  info: JSON!
+  seat: Seat!
+}
+
 type Seat {
   id: ID!
   name: String!
+  device: Device
   location: Location
   routes: [Route]
 }

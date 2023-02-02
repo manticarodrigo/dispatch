@@ -17,6 +17,9 @@
 (defn find-unique [^js model params]
   (.findUnique model (->js params)))
 
+(defn find-unique-or-throw [^js model params]
+  (.findUniqueOrThrow model (->js params)))
+
 (defn find-first [^js model params]
   (.findFirst model (->js params)))
 

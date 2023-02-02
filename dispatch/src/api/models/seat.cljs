@@ -1,7 +1,8 @@
 (ns api.models.seat
   (:require
    [promesa.core :as p]
-   [api.util.prisma :as prisma]))
+   [api.util.prisma :as prisma]
+   [api.filters.core :as filters]))
 
 (defn create [^js context {:keys [name]}]
   (p/let [user-id (.. context -user -id)
@@ -21,18 +22,11 @@
                (sort-by #(some-> % .-location .-createdAt) > res)))))
 
 (defn find-unique [^js context {:keys [id filters]}]
-  (let [{:keys [start end status]} filters]
-    (prisma/find-unique
-     (.. context -prisma -seat)
-     {:where {:id id}
-      :include {:location true
-                :routes {:where {:stops (condp = status
-                                          "INCOMPLETE" {:some {:arrivedAt {:equals nil}}}
-                                          "COMPLETE" {:every {:arrivedAt {:not nil}}}
-                                          nil {})
-                                 :AND (if (and start end)
-                                        [{:startAt {:gte start}}
-                                         {:startAt {:lte end}}]
-                                        [])}
-                         :orderBy {:startAt "asc"}
-                         :include {:stops {:include {:address true}}}}}})))
+  (prisma/find-unique
+   (.. context -prisma -seat)
+   {:where {:id id}
+    :include {:device true
+              :location true
+              :routes {:where (filters/route filters)
+                       :orderBy {:startAt "asc"}
+                       :include {:stops {:include {:address true}}}}}}))
