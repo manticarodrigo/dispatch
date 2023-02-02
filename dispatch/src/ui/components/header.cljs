@@ -1,19 +1,15 @@
 (ns ui.components.header
   (:require
    [react-feather
-    :rename {ArrowLeft ArrowLeftIcon
-             Settings SettingsIcon}]
-   [ui.lib.router :refer (routes use-navigate)]
+    :rename {Settings SettingsIcon}]
+   [ui.lib.router :refer (routes)]
    [ui.utils.string :refer (class-names)]
    [ui.utils.css :refer (padding-x)]
    [ui.components.icons.dispatch :refer (dispatch)]
    [ui.components.inputs.menu :refer (menu)]
+   [ui.components.inputs.back-button :refer (back-button)]
    [ui.components.nav :refer (nav)]
    [ui.components.inputs.language-radio-group :refer (language-radio-group)]))
-
-(defn back-button []
-  (let [navigate (use-navigate)]
-    [:button {:on-click #(navigate -1)} [:> ArrowLeftIcon]]))
 
 (defn header []
   [:header {:class (class-names
