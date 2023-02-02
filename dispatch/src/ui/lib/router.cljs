@@ -8,6 +8,8 @@
             Navigate
             NavLink
             Link
+            Outlet
+            useRoutes
             useNavigate
             useParams
             useSearchParams)]
@@ -20,6 +22,17 @@
   [:> BrowserRouter
    (into [:<>] children)])
 
+(defn transform-routes [routes]
+  (map (fn [item]
+         (let [new-item (assoc item :element (r/as-element (:element item)))]
+           (if (:children item)
+             (assoc new-item :children (transform-routes (:children item)))
+             new-item)))
+       routes))
+
+(defn use-routes [routes]
+  (useRoutes (->js (transform-routes routes))))
+
 (defn routes [& routes]
   [:> Routes
    (for [[path hiccup] routes]
@@ -27,20 +40,23 @@
                 :path path
                 :element (r/as-element hiccup)}])])
 
-(defn navigate-route [to]
+(defn navigate [to]
   [:> Navigate {:to to}])
+
+(defn outlet []
+  [:> Outlet])
 
 (defn auth-route [route]
   (let [session-id (listen [:session])]
     (if session-id
       route
-      [navigate-route "/login"])))
+      [navigate "/login"])))
 
 (defn remove-auth-route []
   (let [^js client (useApolloClient)]
     (remove-session)
     (.resetStore client)
-    [navigate-route "/login"]))
+    [navigate "/login"]))
 
 (defn use-navigate []
   (useNavigate))

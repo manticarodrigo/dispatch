@@ -22,7 +22,7 @@
                (sort-by #(some-> % .-location .-createdAt) > res)))))
 
 (defn find-unique [^js context {:keys [id filters]}]
-  (prisma/find-unique
+  (prisma/find-unique-or-throw
    (.. context -prisma -seat)
    {:where {:id id}
     :include {:device true

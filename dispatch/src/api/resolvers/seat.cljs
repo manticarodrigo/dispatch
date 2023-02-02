@@ -17,8 +17,9 @@
   (p/let [{:keys [token] :as clj-args} (->clj args)
           ^js seat (seat/find-unique context clj-args)
           device-token (some-> seat .-device .-token)]
-    (cond
-      (not token) seat
-      (not device-token) (anom/gql (anom/not-found :device-not-linked))
-      (not= device-token token) (anom/gql (anom/incorrect :invalid-token))
-      :else seat)))
+    (if token
+      (cond
+        (not device-token) (anom/gql (anom/not-found :device-not-linked))
+        (not= device-token token) (anom/gql (anom/incorrect :invalid-token))
+        :else seat)
+      seat)))
