@@ -70,11 +70,11 @@
                             ^js user (some-> session .-user)
                             public-operation? (some
                                                #(= % (-> ctx .-req .-body .-operationName))
-                                               ["CreateUser" "LoginUser" "SeatByDevice"])]
+                                               ["CreateUser" "LoginUser" "SeatByDevice" "LinkDevice"])]
                       (when (and (not public-operation?)
                                  (not user))
                         (anom/gql (anom/forbidden :invalid-session)))
-                      (->js {:prisma prisma :user user})))}))
+                      (->js {:prisma prisma :user user :session session-id})))}))
 
 (defn format-error [formatted-error error]
   (let [clj-error (->clj formatted-error)

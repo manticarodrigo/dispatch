@@ -2,7 +2,8 @@
   (:require
    [promesa.core :as p]
    [api.util.prisma :as prisma]
-   [api.util.crypto :refer (encrypt-string)]))
+   [api.util.crypto :refer (encrypt-string)]
+   [api.filters.core :as filters]))
 
 (defn create [^js context {:keys [email password]}]
   (p/let [encrypted-password (when password (encrypt-string password))
@@ -25,8 +26,8 @@
     (some-> user .-sessions last .-id)))
 
 (defn logged-in-user [^js context]
-  (prisma/find-unique (.. context -prisma -user)
-                      {:where {:id (.. context -user -id)}}))
+  (prisma/find-first (.. context -prisma -user)
+                     {:where (filters/session (.. context -session))}))
 
 (defn find-unique [^js context payload]
   (prisma/find-unique (.. context -prisma -user)
