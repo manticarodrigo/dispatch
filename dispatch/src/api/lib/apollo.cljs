@@ -42,7 +42,7 @@
                  :createLocation location/create-location
                  :createStopArrival stop/create-stop-arrival}
                 :Query
-                {:user user/logged-in-user
+                {:user user/active-user
                  :seats seat/fetch-seats
                  :seat seat/fetch-seat
                  :addresses address/fetch-addresses

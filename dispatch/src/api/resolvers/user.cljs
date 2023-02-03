@@ -23,6 +23,6 @@
       (not session-id) (anom/gql (anom/incorrect :invalid-password))
       :else session-id)))
 
-(defn logged-in-user
+(defn active-user
   [_ _ context _]
-  (user/logged-in-user context))
+  (user/active-user context))

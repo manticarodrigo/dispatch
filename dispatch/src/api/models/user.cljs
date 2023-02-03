@@ -30,7 +30,7 @@
   (prisma/find-unique (.. context -prisma -user)
                       {:where {:email email}}))
 
-(defn logged-in-user
+(defn active-user
   ([^js context]
    (p/-> (prisma/find-first (.. context -prisma -user)
                             {:where (filters/session (.. context -session))})

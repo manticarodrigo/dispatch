@@ -179,7 +179,7 @@
 
 (deftest create-route
   (async done
-         (p/let [fetch-user-mock (user/logged-in-user)
+         (p/let [fetch-user-mock (user/active-user)
                  {:keys [seats addresses]} (-> fetch-user-mock :result :data :user)
                  promise-fn (fn [idx seat]
                               (let [shuffled-addresses (->> addresses shuffle (take (+ 2 (rand-int 8))))]
@@ -274,9 +274,9 @@
              (is (-> result :data :seat :routes first :id))
              (done)))))
 
-(deftest logged-in-user
+(deftest active-user
   (async done
-         (p/let [{:keys [result]} (user/logged-in-user)]
+         (p/let [{:keys [result]} (user/active-user)]
            (testing "api returns data"
              (is (-> result :data :user :id)))
            (done))))

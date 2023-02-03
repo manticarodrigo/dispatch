@@ -4,10 +4,10 @@
    [goog.object :as gobj]
    [api.util.prisma :as prisma]
    [api.filters.core :as filters]
-   [api.models.user :refer (logged-in-user)]))
+   [api.models.user :refer (active-user)]))
 
 (defn create [^js context {:keys [seatId startAt addressIds route]}]
-  (p/let [^js user (logged-in-user context)]
+  (p/let [^js user (active-user context)]
     (prisma/create!
      (.. context -prisma -route)
      {:data {:user {:connect {:id (.-id user)}}
@@ -23,7 +23,7 @@
                         :orderBy {:order "asc"}}}})))
 
 (defn find-all [^js context {:keys [filters]}]
-  (p/-> (logged-in-user
+  (p/-> (active-user
          context
          {:include
           {:routes
@@ -35,7 +35,7 @@
         (gobj/get "routes")))
 
 (defn find-unique [^js context {:keys [id]}]
-  (p/-> (logged-in-user
+  (p/-> (active-user
          context
          {:include
           {:routes
@@ -48,7 +48,7 @@
 
 (defn find-by-address [^js context {:keys [id filters]}]
   (let [{:keys [start end status]} filters]
-    (p/-> (logged-in-user
+    (p/-> (active-user
            context
            ;; TODO: move to address model
            {:include
