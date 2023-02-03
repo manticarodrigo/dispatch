@@ -9,5 +9,23 @@ mutation CreateRoute(
     startAt: $startAt
     addressIds: $addressIds
     route: $route
-  )
+  ) {
+    id
+    seat {
+      id
+      name
+    }
+    startAt
+    stops {
+      id
+      address {
+        id
+        name
+        lat
+        lng
+      }
+      order
+    }
+    route
+  }
 }

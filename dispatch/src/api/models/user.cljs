@@ -3,6 +3,7 @@
    [promesa.core :as p]
    [api.util.prisma :as prisma]
    [api.util.crypto :refer (encrypt-string)]
+   [api.util.anom :as anom]
    [api.filters.core :as filters]))
 
 (defn create [^js context {:keys [email password]}]
@@ -25,10 +26,18 @@
                                       :include {:sessions true}}))]
     (some-> user .-sessions last .-id)))
 
-(defn logged-in-user [^js context]
-  (prisma/find-first (.. context -prisma -user)
-                     {:where (filters/session (.. context -session))}))
-
-(defn find-unique [^js context payload]
+(defn find-by-email [^js context email]
   (prisma/find-unique (.. context -prisma -user)
-                      {:where (prisma/filter-params payload)}))
+                      {:where {:email email}}))
+
+(defn logged-in-user
+  ([^js context]
+   (p/-> (prisma/find-first (.. context -prisma -user)
+                            {:where (filters/session (.. context -session))})
+         (or (throw (anom/gql (anom/forbidden :invalid-session))))))
+  ([^js context query]
+   (p/-> (prisma/find-first (.. context -prisma -user)
+                            (merge
+                             {:where (filters/session (.. context -session))}
+                             query))
+         (or (throw (anom/gql (anom/forbidden :invalid-session)))))))

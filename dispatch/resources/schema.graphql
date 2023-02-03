@@ -16,7 +16,7 @@ type Mutation {
   createUser(email: String!, password: String!): String!
   loginUser(email: String!, password: String!): String!
   linkDevice(seatId: ID!, token: String!, info: JSON!): String!
-  createSeat(name: String!): String!
+  createSeat(name: String!): Seat!
   createAddress(
     name: String!
     description: String!
@@ -24,13 +24,13 @@ type Mutation {
     email: String
     lat: Float!
     lng: Float!
-  ): String!
+  ): Address!
   createRoute(
     seatId: ID!
     startAt: String!
     addressIds: [ID]!
     route: JSON!
-  ): String!
+  ): Route!
   createLocation(
     seatId: ID!
     lat: Float!

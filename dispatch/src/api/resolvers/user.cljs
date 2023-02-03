@@ -12,7 +12,7 @@
 (defn login-user
   [_ args context _]
   (p/let [{:keys [email password]} (->clj args)
-          ^js user (when email (user/find-unique context {:email email}))
+          ^js user (when email (user/find-by-email context email))
           session-id (when user (user/create-session
                                  context
                                  {:user-id (some-> user .-id)
