@@ -3,7 +3,7 @@
             [ui.hooks.use-map :refer (use-map)]
             [ui.utils.i18n :refer (tr)]
             [ui.utils.string :refer (class-names)]
-            [ui.components.inputs.generic.button :refer (button)]))
+            [ui.components.inputs.button :refer (button)]))
 
 (defn gmap [class]
   (let [{!el :ref center-route :center} (use-map)]

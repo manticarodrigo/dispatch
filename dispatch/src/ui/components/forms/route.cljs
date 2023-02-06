@@ -18,9 +18,9 @@
             [ui.utils.vector :refer (vec-remove)]
             [ui.utils.input :refer (debounce)]
             [ui.components.icons.spinner :refer (spinner)]
-            [ui.components.inputs.generic.combobox :refer (combobox)]
-            [ui.components.inputs.generic.input :refer (input)]
-            [ui.components.inputs.generic.button :refer (button base-button-class)]))
+            [ui.components.inputs.combobox :refer (combobox)]
+            [ui.components.inputs.input :refer (input)]
+            [ui.components.inputs.button :refer (button base-button-class)]))
 
 
 
@@ -80,11 +80,9 @@
 
         (react/useEffect
          (fn []
-           (dispatch [:map/set-paths (when route [(:path route)])])
-           (dispatch [:map/set-points markers])
-           #(do
-              (dispatch [:map/set-paths nil])
-              (dispatch [:map/set-points nil])))
+           (dispatch [:map {:paths (when route [(:path route)])
+                            :points markers}])
+           #())
          #js[route])
 
         [:<>
@@ -96,7 +94,7 @@
                                             :startAt startAt
                                             :addressIds address-ids
                                             :route route}})
-                       (.then #(navigate "/routes"))
+                       (.then #(navigate "/admin/routes"))
                        (.catch #(reset! !anoms (parse-anoms %)))))}
           [combobox {:label "Assigned seat"
                      :value (:seatId @!state)

@@ -9,9 +9,9 @@
             [common.utils.date :refer (date-scalar-map)]
             [common.utils.json :refer (json-scalar-map)]
             [api.lib.prisma :refer (prisma)]
-            [api.util.prisma :refer (find-unique)]
             [api.util.anom :as anom]
             [api.resolvers.user :as user]
+            [api.resolvers.device :as device]
             [api.resolvers.seat :as seat]
             [api.resolvers.address :as address]
             [api.resolvers.route :as route]
@@ -35,13 +35,14 @@
                 :Mutation
                 {:createUser user/create-user
                  :loginUser user/login-user
+                 :linkDevice device/link-device
                  :createSeat seat/create-seat
                  :createAddress address/create-address
                  :createRoute route/create-route
                  :createLocation location/create-location
                  :createStopArrival stop/create-stop-arrival}
                 :Query
-                {:user user/logged-in-user
+                {:user user/active-user
                  :seats seat/fetch-seats
                  :seat seat/fetch-seat
                  :addresses address/fetch-addresses
@@ -59,20 +60,10 @@
                 :Route {}})
 
 (def options
-  (->js {:context (fn [^js ctx]
-                    (p/let [session-id (some-> ctx .-req .-headers ->clj :authorization)
-                            ^js session (when session-id
-                                          (find-unique (. prisma -session)
-                                                       {:where {:id session-id}
-                                                        :include {:user true}}))
-                            ^js user (some-> session .-user)
-                            public-operation? (some
-                                               #(= % (-> ctx .-req .-body .-operationName))
-                                               ["CreateUser" "LoginUser"])]
-                      (when (and (not public-operation?)
-                                 (not user))
-                        (anom/gql (anom/forbidden :invalid-session)))
-                      (->js {:prisma prisma :user user})))}))
+  #js{:context
+      (fn [^js ctx]
+        (let [session (some-> ctx .-req .-headers ->clj :authorization)]
+          #js{:prisma prisma :session session}))})
 
 (defn format-error [formatted-error error]
   (let [clj-error (->clj formatted-error)

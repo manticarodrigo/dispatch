@@ -14,11 +14,14 @@
 (defn update! [^js model params]
   (.update model (->js params)))
 
+(defn find-first [^js model params]
+  (.findFirst model (->js params)))
+
 (defn find-unique [^js model params]
   (.findUnique model (->js params)))
 
-(defn find-first [^js model params]
-  (.findFirst model (->js params)))
+(defn find-unique-or-throw [^js model params]
+  (.findUniqueOrThrow model (->js params)))
 
 (defn find-many [^js model params]
   (.findMany model (->js params)))

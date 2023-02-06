@@ -10,8 +10,8 @@
             [ui.utils.css :refer (padding)]
             [ui.utils.error :refer (tr-error)]
             [ui.components.icons.spinner :refer (spinner)]
-            [ui.components.inputs.generic.button :refer (button)]
-            [ui.components.inputs.generic.input :refer (input)]))
+            [ui.components.inputs.button :refer (button)]
+            [ui.components.inputs.input :refer (input)]))
 
 (def FETCH_STOP (gql (inline "queries/stop/fetch.graphql")))
 (def CREATE_STOP_ARRIVAL (gql (inline "mutations/stop/create-stop-arrival.graphql")))
@@ -20,8 +20,8 @@
   (let [!state (r/atom {})
         !anoms (r/atom nil)]
     (fn []
-      (let [params (use-params)
-            query (use-query FETCH_STOP {:variables {:id (:id params)}})
+      (let [{stop-id :stop} (use-params)
+            query (use-query FETCH_STOP {:variables {:id stop-id}})
             [create-stop-arrival status] (use-mutation CREATE_STOP_ARRIVAL {})
             loading (or (:loading query) (:loading status))
             {:keys [id address note arrivedAt]} (-> query :data :stop)
@@ -29,8 +29,8 @@
 
         (react/useEffect
          (fn []
-           (dispatch [:map/set-points (when address [{:position {:lat lat :lng lng} :title name}])])
-           #(dispatch [:map/set-points nil]))
+           (dispatch [:map {:points (when address [{:position {:lat lat :lng lng} :title name}])}])
+           #())
          #js[name lat lng])
 
         [:div {:class (class-names padding)}

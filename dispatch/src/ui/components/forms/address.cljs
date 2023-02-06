@@ -9,9 +9,9 @@
             [ui.lib.google.maps.autocomplete :refer (search-places)]
             [ui.lib.google.maps.places :refer (find-place)]
             [ui.components.icons.spinner :refer (spinner)]
-            [ui.components.inputs.generic.input :refer (input)]
-            [ui.components.inputs.generic.combobox :refer (combobox)]
-            [ui.components.inputs.generic.button :refer (button)]))
+            [ui.components.inputs.input :refer (input)]
+            [ui.components.inputs.combobox :refer (combobox)]
+            [ui.components.inputs.button :refer (button)]))
 
 (def CREATE_ADDRESS (gql (inline "mutations/address/create.graphql")))
 
@@ -32,7 +32,7 @@
                  :on-submit (fn [e]
                               (.preventDefault e)
                               (-> (create {:variables (dissoc @!state :place_id)})
-                                  (.then (fn [] (navigate "/addresses")))
+                                  (.then (fn [] (navigate "/admin/addresses")))
                                   (.catch #(reset! !anoms (parse-anoms %)))))}
           [input {:id "name"
                   :label "Name"

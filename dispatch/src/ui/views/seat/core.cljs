@@ -1,8 +1,11 @@
 (ns ui.views.seat.core
-  (:require [ui.views.seat.list :as list]
-            [ui.views.seat.detail :as detail]
-            [ui.views.seat.create :as create]))
+  (:require [ui.lib.router :as router]
+            [ui.views.seat.layout :refer (layout)]
+            [ui.views.seat.route.core :as route]
+            [ui.views.seat.stop.core :as stop]))
 
-(def list-view list/view)
-(def detail-view detail/view)
-(def create-view create/view)
+(def route {:path "seat/:seat"
+            :element [layout [router/outlet]]
+            :children [{:path "routes" :element [route/list-view]}
+                       {:path "routes/:route" :element [route/detail-view]}
+                       {:path "stops/:stop" :element [stop/detail-view]}]})

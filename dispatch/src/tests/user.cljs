@@ -7,7 +7,7 @@
                                     change
                                     submit)]))
 
-(defn logged-in-user []
+(defn active-user []
   (p/let [query (inline "queries/user/fetch.graphql")
           request  {:query query}
           result (send request)]

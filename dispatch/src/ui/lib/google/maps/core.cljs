@@ -24,8 +24,7 @@
       :apiKey config/GOOGLE_MAPS_API_KEY
       :version "weekly"
       :libraries ["places"]
-      :language (listen [:locale/language])
-      :region (listen [:locale/region])})))
+      :language (listen [:language])})))
   (.load @!loader))
 
 (defn- init-map [el]

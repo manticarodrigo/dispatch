@@ -13,25 +13,28 @@
  (fn [] db/default-db))
 
 (rf/reg-event-db
- :session/set
+ :session
  [trim-v]
  (assoc-key :session))
 
 (rf/reg-event-db
- :locale/set
+ :language
  [trim-v]
- (assoc-key :locale))
+ (assoc-key :language))
 
 (rf/reg-event-db
- :map/set-paths
+ :device
+ [trim-v]
+ (assoc-key :device))
+
+(rf/reg-event-db
+ :device/error
  [trim-v]
  (fn [db [v]]
    (assoc-in
-    db [:map :paths] v)))
+    db [:device :error] v)))
 
 (rf/reg-event-db
- :map/set-points
+ :map
  [trim-v]
- (fn [db [v]]
-   (assoc-in
-    db [:map :points] v)))
+ (assoc-key :map))

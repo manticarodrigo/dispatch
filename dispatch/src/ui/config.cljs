@@ -5,8 +5,6 @@
 
 (goog-define STAGE "")
 (goog-define VERSION "")
-(goog-define REGION "US")
-(goog-define LANGUAGE "en")
 (goog-define API_URL "http://localhost:3000")
 (goog-define SECURE_COOKIE false)
 (goog-define RUM_MONITOR_ID "")

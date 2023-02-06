@@ -1,3 +1,6 @@
 mutation CreateSeat($name: String!) {
-  createSeat(name: $name)
+  createSeat(name: $name) {
+    id
+    name
+  }
 }

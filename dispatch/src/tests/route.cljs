@@ -54,7 +54,7 @@
 
     (with-mounted-component
       [test-app
-       {:route "/routes/create"
+       {:route "/admin/routes/create"
         :mocks mocks}]
       (fn [^js component user]
         (p/do

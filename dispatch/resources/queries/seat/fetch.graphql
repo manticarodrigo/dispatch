@@ -2,6 +2,10 @@ query Seat($id: ID!, $filters: RouteFilters) {
   seat(id: $id, filters: $filters) {
     id
     name
+    device {
+      id
+      info
+    }
     routes {
       id
       startAt

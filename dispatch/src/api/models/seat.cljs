@@ -1,38 +1,62 @@
 (ns api.models.seat
-  (:require
-   [promesa.core :as p]
-   [api.util.prisma :as prisma]))
+  (:require [promesa.core :as p]
+            [goog.object :as gobj]
+            [api.util.prisma :as prisma]
+            [api.util.anom :as anom]
+            [api.filters.core :as filters]
+            [api.models.user :refer (active-user)]))
 
 (defn create [^js context {:keys [name]}]
-  (p/let [user-id (.. context -user -id)
-          ^js seat (prisma/create!
+  (p/let [^js user (active-user context)]
+    (prisma/create!
+     (.. context -prisma -seat)
+     {:data {:name name
+             :user {:connect {:id (.-id user)}}}})))
+
+(defn find-device [^js context {:keys [id token]}]
+  (p/let [^js seat (prisma/find-unique-or-throw
                     (.. context -prisma -seat)
-                    {:data {:name name
-                            :user {:connect {:id user-id}}}})]
-    (some-> seat .-id)))
+                    {:where {:id id}
+                     :include {:device true}})
+          device-token (some-> seat .-device .-token)]
+    (cond
+      (not device-token) (throw (anom/gql (anom/not-found :device-not-linked)))
+      (not= device-token token) (throw (anom/gql (anom/incorrect :invalid-token)))
+      :else seat)))
+
+(defn active-seat
+  [^js context {:keys [id token query] :or {query {}}}]
+  (p/let [^js seat (prisma/find-first (.. context -prisma -seat)
+                                      (merge {:where {:id id :device {:token token}}} query))]
+    (or seat (find-device context {:id id :token token}))))
 
 (defn find-all [^js context]
-  (-> (prisma/find-many
-       (.. context -prisma -seat)
-       {:where {:user {:id (.. context -user -id)}}
-        :orderBy {:location {:createdAt "desc"}}
-        :include {:location true}})
-      (.then (fn [res]
-               (sort-by #(some-> % .-location .-createdAt) > res)))))
+  (p/let [user (active-user context {:include
+                                     {:seats
+                                      {:orderBy {:location {:createdAt "desc"}}
+                                       :include {:location true}}}})]
+    (sort-by #(some-> % .-location .-createdAt) > (gobj/get user "seats"))))
 
-(defn find-unique [^js context {:keys [id filters]}]
-  (let [{:keys [start end status]} filters]
-    (prisma/find-unique
-     (.. context -prisma -seat)
-     {:where {:id id}
-      :include {:location true
-                :routes {:where {:stops (condp = status
-                                          "INCOMPLETE" {:some {:arrivedAt {:equals nil}}}
-                                          "COMPLETE" {:every {:arrivedAt {:not nil}}}
-                                          nil {})
-                                 :AND (if (and start end)
-                                        [{:startAt {:gte start}}
-                                         {:startAt {:lte end}}]
-                                        [])}
-                         :orderBy {:startAt "asc"}
-                         :include {:stops {:include {:address true}}}}}})))
+(defn find-unique [^js context {:keys [id token filters]}]
+  (if token
+    (active-seat
+     context
+     {:id id
+      :token token
+      :query {:include {:device true
+                        :location true
+                        :routes {:where (filters/route filters)
+                                 :orderBy {:startAt "asc"}
+                                 :include {:stops {:include {:address true}}}}}}})
+    (p/-> (active-user
+           context
+           {:include
+            {:seats
+             {:where {:id id}
+              :include {:device true
+                        :location true
+                        :routes {:where (filters/route filters)
+                                 :orderBy {:startAt "asc"}
+                                 :include {:stops {:include {:address true}}}}}}}})
+          (gobj/get "seats")
+          first)))

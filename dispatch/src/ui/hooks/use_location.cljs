@@ -12,7 +12,7 @@
      (fn []
        (when @!cleanup
          (@!cleanup)
-         (reset! @!cleanup nil))))
+         (reset! !cleanup nil))))
    #js[])
   (fn [cb]
     (p/let [cleanup (watch-position cb)]

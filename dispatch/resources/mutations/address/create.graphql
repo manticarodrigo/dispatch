@@ -7,10 +7,19 @@ mutation CreateAddress(
   $lng: Float!
 ) {
   createAddress(
-    name: $name, 
-    description: $description, 
-    phone: $phone,
-    email: $email,
-    lat: $lat, 
-    lng: $lng)
+    name: $name
+    description: $description
+    phone: $phone
+    email: $email
+    lat: $lat
+    lng: $lng
+  ) {
+    id
+    name
+    description
+    phone
+    email
+    lat
+    lng
+  }
 }

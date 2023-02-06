@@ -1,0 +1,3 @@
+mutation LinkDevice($seatId: ID!, $token: String!, $info: JSON!) {
+  linkDevice(seatId: $seatId, token: $token, info: $info)
+}

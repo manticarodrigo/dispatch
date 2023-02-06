@@ -1,5 +1,6 @@
 (ns ui.lib.location
-  (:require ["@capacitor/core" :refer (Capacitor registerPlugin)]))
+  (:require ["@capacitor/core" :refer (Capacitor registerPlugin)]
+            [promesa.core :as p]))
 
 (def BackgroundGeolocation (registerPlugin "BackgroundGeolocation"))
 
@@ -37,25 +38,32 @@
       (.then (fn [watcher-id]
                #(.removeWatcher BackgroundGeolocation #js{:id watcher-id})))))
 
+(defn watch-position-web [cb]
+  (p/resolved
+   (let [watch-id (-> js/navigator.geolocation
+                      (.watchPosition
+                       (fn [^js position]
+                         (let [coords (.-coords position)]
+                           (cb {:latitude (.-latitude coords)
+                                :longitude (.-longitude coords)
+                                :accuracy (.-accuracy coords)
+                                :altitude (.-altitude coords)
+                                :altitudeAccuracy (.-altitudeAccuracy coords)
+                                :bearing (.-heading coords)
+                                :speed (.-speed coords)
+                                :timestamp (.-timestamp position)})))
+                       (fn [error]
+                         (.error js/console error))
+                       #js{:enableHighAccuracy true
+                           :timeout 10000
+                           :maximumAge 0}))]
+
+     (fn [] (.clearWatch js/navigator.geolocation watch-id)))))
+
 (defn watch-position [cb]
   (let [platform (.getPlatform Capacitor)]
     (condp = platform
       "android" (watch-position-mobile cb)
       "ios" (watch-position-mobile cb)
+      "web" (watch-position-web cb)
       (.alert js/window "Location not supported on this platform."))))
-
-
-;; [react]
-;; [ui.lib.google.maps.overlay :refer (update-overlay)]
-;; [ui.hooks.use-location :refer (use-location)]
-;; (defn view []
-;;   (let [watch-location (use-location)]
-;;     (react/useEffect
-;;      (fn []
-;;        (watch-location
-;;         (fn [location]
-;;           (update-overlay {:lat (:latitude location)
-;;                            :lng (:longitude location)})))
-;;        #())
-;;      #js[])
-;;     [:<>]))

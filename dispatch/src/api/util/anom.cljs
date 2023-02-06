@@ -61,6 +61,7 @@
         meta (.-meta e)]
     (cond
       (= code "P2002") (conflict :unique-constraint (->clj meta))
+      (= code "P2025") (not-found :required-constraint (->clj meta))
       :else (fault :unknown))))
 
 (defn parse-anom [^js e]

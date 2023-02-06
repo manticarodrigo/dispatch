@@ -1,0 +1,32 @@
+query SeatByDevice($id: ID!, $token: String!, $filters: RouteFilters) {
+  seat(id: $id, token: $token, filters: $filters) {
+    id
+    name
+    device {
+      id
+      info
+    }
+    routes {
+      id
+      startAt
+      stops {
+        id
+        address {
+          id
+          name
+          description
+          lat
+          lng
+        }
+        arrivedAt
+      }
+      route
+    }
+    location {
+      id
+      lat
+      lng
+      createdAt
+    }
+  }
+}
