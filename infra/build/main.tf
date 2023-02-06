@@ -26,7 +26,7 @@ resource "null_resource" "build" {
     interpreter = ["/bin/bash", "-c"]
     command     = <<-EOT
                   set -e
-                  source local.env
+                  source profile/local.env
                   yarn
                   yarn db-gen
                   yarn test

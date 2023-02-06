@@ -21,7 +21,7 @@ terraform {
 }
 
 locals {
-  version_name = "0.0.1"
+  version_name = "0.0.2"
   domain_map = {
     prod = "ambito.app"
     dev  = "ambito.dev"
