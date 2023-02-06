@@ -11,6 +11,7 @@
             ["@apollo/client/link/error" :refer (onError)]
             ["@graphql-tools/schema" :refer (makeExecutableSchema)]
             [apollo-link-scalars :refer (withScalars)]
+            [re-frame.core :refer (dispatch)]
             [shadow.resource :refer (inline)]
             [cljs-bean.core :refer (->clj ->js)]
             [common.utils.date :refer (date-scalar-map)]
@@ -19,6 +20,9 @@
             [ui.utils.session :refer (get-session-request remove-session)]))
 
 (def gql apollo/gql)
+
+(defn parse-anoms [^js e]
+  (mapv #(-> % :extensions :anom) (some-> e .-graphQLErrors ->clj)))
 
 (defonce http-link
   (createHttpLink
@@ -31,7 +35,11 @@
   (onError
    (fn [^js res]
      (when (= (some-> res .-networkError .-statusCode) 401)
-       (remove-session)))))
+       (remove-session))
+     (condp (fn [reason anoms] (some #(= (:reason %) reason) anoms)) (parse-anoms res)
+       "device-not-linked" (dispatch [:device/error "device-not-linked"])
+       "invalid-token" (dispatch [:device/error "invalid-token"])
+       nil))))
 
 (def resolvers (->js {:Date date-scalar-map
                       :JSON json-scalar-map}))
@@ -52,9 +60,6 @@
 (defn apollo-provider [& children]
   [:> ApolloProvider {:client client}
    (into [:<>] children)])
-
-(defn parse-anoms [^js e]
-  (mapv #(-> % :extensions :anom) (some-> e .-graphQLErrors ->clj)))
 
 (defn use-query [query options]
   (let [q (useQuery query (->js options))]
