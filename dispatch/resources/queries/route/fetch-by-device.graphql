@@ -1,0 +1,30 @@
+query RouteByDevice($id: ID!, $seatId: ID!, $token: String!) {
+  route(id: $id, seatId: $seatId, token: $token) {
+    id
+    startAt
+    seat {
+      id
+      name
+      location {
+        id
+        lat
+        lng
+        createdAt
+      }
+    }
+    stops {
+      id
+      address {
+        id
+        name
+        description
+        lat
+        lng
+      }
+      order
+      note
+      arrivedAt
+    }
+    route
+  }
+}

@@ -1,4 +1,4 @@
-(ns ui.views.admin.route.detail
+(ns ui.views.seat.route.detail
   (:require [react]
             [react-feather :rename {Check CheckIcon
                                     Minus MinusIcon
@@ -7,17 +7,22 @@
             [date-fns :as d]
             [re-frame.core :refer (dispatch)]
             [shadow.resource :refer (inline)]
+            [ui.subs :refer (listen)]
             [ui.lib.apollo :refer (gql use-query)]
             [ui.lib.router :refer (use-params)]
             [ui.utils.string :refer (class-names)]
             [ui.utils.css :refer (padding)]
             [ui.components.link-card :refer (link-card)]))
 
-(def FETCH_ROUTE (gql (inline "queries/route/fetch.graphql")))
+(def FETCH_ROUTE (gql (inline "queries/route/fetch-by-device.graphql")))
 
 (defn view []
-  (let [params (use-params)
-        query (use-query FETCH_ROUTE {:variables {:id (:id params)}})
+  (let [{seat-id :id route-id :route} (use-params)
+        device (listen [:device])
+        device-id (:id device)
+        query (use-query FETCH_ROUTE {:variables {:id route-id
+                                                  :seatId seat-id
+                                                  :token device-id}})
         {:keys [data loading]} query
         {:keys [seat stops route]} (:route data)
         {:keys [path]} route
@@ -54,7 +59,7 @@
           ^{:key id}
           [:li {:class "mb-2"}
            [link-card
-            {:to (str "/admin/stops/" id)
+            {:to (str "/seat/" seat-id "/stops/" id)
              :icon (if arrivedAt CheckIcon MinusIcon)
              :title name
              :subtitle description

@@ -4,7 +4,8 @@
    [goog.object :as gobj]
    [api.util.prisma :as prisma]
    [api.filters.core :as filters]
-   [api.models.user :refer (active-user)]))
+   [api.models.user :refer (active-user)]
+   [api.models.seat :refer (active-seat)]))
 
 (defn create [^js context {:keys [seatId startAt addressIds route]}]
   (p/let [^js user (active-user context)]
@@ -34,17 +35,30 @@
                               :orderBy {:order "asc"}}}}}})
         (gobj/get "routes")))
 
-(defn find-unique [^js context {:keys [id]}]
-  (p/-> (active-user
-         context
-         {:include
-          {:routes
-           {:where {:id id}
-            :include {:seat {:include {:location true}}
-                      :stops {:include {:address true}
-                              :orderBy {:order "asc"}}}}}})
-        (gobj/get "routes")
-        first))
+(defn find-unique [^js context {:keys [id seatId token]}]
+  (if token
+    (p/-> (active-seat
+           context
+           {:id seatId
+            :token token
+            :query {:include
+                    {:routes
+                     {:where {:id id}
+                      :include {:seat {:include {:location true}}
+                                :stops {:include {:address true}
+                                        :orderBy {:order "asc"}}}}}}})
+          (gobj/get "routes")
+          first)
+    (p/-> (active-user
+           context
+           {:include
+            {:routes
+             {:where {:id id}
+              :include {:seat {:include {:location true}}
+                        :stops {:include {:address true}
+                                :orderBy {:order "asc"}}}}}})
+          (gobj/get "routes")
+          first)))
 
 (defn find-by-address [^js context {:keys [id filters]}]
   (let [{:keys [start end status]} filters]

@@ -8,7 +8,7 @@ type Query {
   addresses: [Address]
   address(id: ID!, filters: RouteFilters): Address
   routes(filters: RouteFilters): [Route]
-  route(id: ID!): Route
+  route(id: ID!, seatId: ID, token: String): Route
   stop(id: ID!): Stop
 }
 

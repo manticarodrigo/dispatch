@@ -5,4 +5,5 @@
 
 (def route {:path "seat/:id"
             :element [layout [router/outlet]]
-            :children [{:path "routes" :element [route/list-view]}]})
+            :children [{:path "routes" :element [route/list-view]}
+                       {:path "routes/:route" :element [route/detail-view]}]})
