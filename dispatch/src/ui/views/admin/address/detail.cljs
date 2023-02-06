@@ -31,8 +31,8 @@
 
     (react/useEffect
      (fn []
-       (dispatch [:map/set-paths (mapv #(-> % :route :path) routes)])
-       #(dispatch [:map/set-paths nil]))
+       (dispatch [:map {:paths (mapv #(-> % :route :path) routes)}])
+       #())
      #js[routes])
 
     [:div {:class (class-names padding)}
@@ -50,8 +50,8 @@
       [:div {:class "mt-2"}
        [radio-group {:sr-label "Select status"
                      :value (or (-> search-params :status) "ALL")
-                     :options [{:key "ALL" :label "All" }
-                               {:key "INCOMPLETE" :label "Incomplete" }
+                     :options [{:key "ALL" :label "All"}
+                               {:key "INCOMPLETE" :label "Incomplete"}
                                {:key "COMPLETE" :label "Complete"}]
                      :on-change #(set-search-params (if (= % "ALL")
                                                       (dissoc search-params :status)

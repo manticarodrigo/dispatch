@@ -25,7 +25,7 @@
               :sameSite (if secure? "none" "lax")}
         cookie-str (serialize cookie-name session-id (->js opts))]
     (set-cookie! cookie-str)
-    (dispatch-sync [:session/set (get-session)])))
+    (dispatch-sync [:session (get-session)])))
 
 (defn remove-session []
   (let [opts {:domain (.-hostname js/window.location)
@@ -33,7 +33,7 @@
               :path "/"}
         cookie-str (serialize cookie-name "" (->js opts))]
     (set-cookie! cookie-str)
-    (dispatch-sync [:session/set nil])))
+    (dispatch-sync [:session nil])))
 
 (defn get-session-request []
   {:headers

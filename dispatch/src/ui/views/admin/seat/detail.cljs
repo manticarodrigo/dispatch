@@ -31,8 +31,8 @@
 
     (react/useEffect
      (fn []
-       (dispatch [:map/set-paths (mapv #(-> % :route :path) routes)])
-       #(dispatch [:map/set-paths nil]))
+       (dispatch [:map {:paths (mapv #(-> % :route :path) routes)}])
+       #())
      #js[routes])
 
     [:div {:class (class-names padding)}

@@ -29,8 +29,8 @@
 
         (react/useEffect
          (fn []
-           (dispatch [:map/set-points (when address [{:position {:lat lat :lng lng} :title name}])])
-           #(dispatch [:map/set-points nil]))
+           (dispatch [:map {:points (when address [{:position {:lat lat :lng lng} :title name}])}])
+           #())
          #js[name lat lng])
 
         [:div {:class (class-names padding)}

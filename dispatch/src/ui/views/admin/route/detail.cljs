@@ -30,11 +30,9 @@
 
     (react/useEffect
      (fn []
-       (dispatch [:map/set-paths (when path [path])])
-       (dispatch [:map/set-points markers])
-       #(do
-          (dispatch [:map/set-paths nil])
-          (dispatch [:map/set-points nil])))
+       (dispatch [:map {:paths (when path [path])
+                        :points markers}])
+       #())
      #js[route])
 
     [:div {:class (class-names padding)}

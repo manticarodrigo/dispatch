@@ -14,7 +14,7 @@
        (fn []
          (-> (get-device-info)
              (.then (fn [device]
-                      (dispatch [:device/set device])
+                      (dispatch [:device device])
                       (reset! !loaded true))))
          #())
        #js[])

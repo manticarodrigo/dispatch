@@ -64,8 +64,8 @@
 
         (react/useEffect
          (fn []
-           (dispatch [:map/set-points markers])
-           #(dispatch [:map/set-points nil]))
+           (dispatch [:map {:points markers}])
+           #())
          #js[seats @!search])
 
         [:div {:class (class-names padding)}

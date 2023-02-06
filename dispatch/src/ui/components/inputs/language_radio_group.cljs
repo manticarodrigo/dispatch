@@ -13,4 +13,4 @@
    {:sr-label "Select language"
     :value (listen [:language])
     :options language-options
-    :on-change #(dispatch [:language/set %])}])
+    :on-change #(dispatch [:language %])}])

@@ -80,11 +80,9 @@
 
         (react/useEffect
          (fn []
-           (dispatch [:map/set-paths (when route [(:path route)])])
-           (dispatch [:map/set-points markers])
-           #(do
-              (dispatch [:map/set-paths nil])
-              (dispatch [:map/set-points nil])))
+           (dispatch [:map {:paths (when route [(:path route)])
+                            :points markers}])
+           #())
          #js[route])
 
         [:<>
