@@ -20,8 +20,8 @@
   (let [!state (r/atom {})
         !anoms (r/atom nil)]
     (fn []
-      (let [params (use-params)
-            query (use-query FETCH_STOP {:variables {:id (:id params)}})
+      (let [{stop-id :stop} (use-params)
+            query (use-query FETCH_STOP {:variables {:id stop-id}})
             [create-stop-arrival status] (use-mutation CREATE_STOP_ARRIVAL {})
             loading (or (:loading query) (:loading status))
             {:keys [id address note arrivedAt]} (-> query :data :stop)

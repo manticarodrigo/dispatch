@@ -11,7 +11,7 @@
 (def LINK_DEVICE (gql (inline "mutations/device/link.graphql")))
 
 (defn layout [& children]
-  (let [{seat-id :id} (use-params)
+  (let [{seat-id :seat} (use-params)
         device (listen [:device])
         device-id (:id device)
         device-info (:info device)

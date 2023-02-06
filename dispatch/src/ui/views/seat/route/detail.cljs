@@ -17,7 +17,7 @@
 (def FETCH_ROUTE (gql (inline "queries/route/fetch-by-device.graphql")))
 
 (defn view []
-  (let [{seat-id :id route-id :route} (use-params)
+  (let [{seat-id :seat route-id :route} (use-params)
         device (listen [:device])
         device-id (:id device)
         query (use-query FETCH_ROUTE {:variables {:id route-id

@@ -21,7 +21,7 @@
 (def FETCH_SEAT (gql (inline "queries/seat/fetch-by-device.graphql")))
 
 (defn view []
-  (let [{seat-id :id} (use-params)
+  (let [{seat-id :seat} (use-params)
         device (listen [:device])
         device-id (:id device)
         [{:keys [date text status] :as search-params} set-search-params] (use-search-params)

@@ -16,12 +16,12 @@
 (def FETCH_ADDRESS (gql (inline "queries/address/fetch.graphql")))
 
 (defn view []
-  (let [{:keys [id]} (use-params)
+  (let [{address-id :address} (use-params)
         [{:keys [date status] :as search-params} set-search-params] (use-search-params)
         query (use-query
                FETCH_ADDRESS
                {:variables
-                {:id id
+                {:id address-id
                  :filters {:start (-> date parse-date d/startOfDay)
                            :end  (-> date parse-date d/endOfDay)
                            :status status}}})

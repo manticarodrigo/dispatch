@@ -16,8 +16,8 @@
 (def FETCH_ROUTE (gql (inline "queries/route/fetch.graphql")))
 
 (defn view []
-  (let [params (use-params)
-        query (use-query FETCH_ROUTE {:variables {:id (:id params)}})
+  (let [{route-id :route} (use-params)
+        query (use-query FETCH_ROUTE {:variables {:id route-id}})
         {:keys [data loading]} query
         {:keys [seat stops route]} (:route data)
         {:keys [path]} route

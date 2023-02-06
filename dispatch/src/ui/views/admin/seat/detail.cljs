@@ -16,12 +16,12 @@
 (def FETCH_SEAT (gql (inline "queries/seat/fetch.graphql")))
 
 (defn view []
-  (let [{:keys [id]} (use-params)
+  (let [{seat-id :seat} (use-params)
         [{:keys [date status] :as search-params} set-search-params] (use-search-params)
         query (use-query
                FETCH_SEAT
                {:variables
-                {:id id
+                {:id seat-id
                  :filters {:start (-> date parse-date d/startOfDay)
                            :end  (-> date parse-date d/endOfDay)
                            :status status}}})
