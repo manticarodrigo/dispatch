@@ -1,0 +1,31 @@
+mutation CreateTask(
+  $seatId: ID!
+  $startAt: String!
+  $placeIds: [ID]!
+  $route: JSON!
+) {
+  createTask(
+    seatId: $seatId
+    startAt: $startAt
+    placeIds: $placeIds
+    route: $route
+  ) {
+    id
+    seat {
+      id
+      name
+    }
+    startAt
+    waypoints {
+      id
+      place {
+        id
+        name
+        lat
+        lng
+      }
+      order
+    }
+    route
+  }
+}

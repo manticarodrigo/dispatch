@@ -4,47 +4,47 @@ scalar JSON
 type Query {
   user: User
   seats: [Seat]
-  seat(id: ID!, token: String, filters: RouteFilters): Seat
-  addresses: [Address]
-  address(id: ID!, filters: RouteFilters): Address
-  routes(filters: RouteFilters): [Route]
-  route(id: ID!, seatId: ID, token: String): Route
-  stop(id: ID!): Stop
+  seat(seatId: ID!, deviceId: ID, filters: TaskFilters): Seat
+  places: [Place]
+  place(placeId: ID!, filters: TaskFilters): Place
+  tasks(filters: TaskFilters): [Task]
+  task(taskId: ID!, seatId: ID, deviceId: ID): Task
+  waypoint(waypointId: ID!): Waypoint
 }
 
 type Mutation {
   createUser(email: String!, password: String!): String!
   loginUser(email: String!, password: String!): String!
-  linkDevice(seatId: ID!, token: String!, info: JSON!): String!
+  linkDevice(seatId: ID!, deviceId: ID!, info: JSON!): String!
   createSeat(name: String!): Seat!
-  createAddress(
+  createPlace(
     name: String!
-    description: String!
     phone: String
     email: String
+    description: String!
     lat: Float!
     lng: Float!
-  ): Address!
-  createRoute(
+  ): Place!
+  createTask(
     seatId: ID!
     startAt: String!
-    addressIds: [ID]!
+    placeIds: [ID]!
     route: JSON!
-  ): Route!
+  ): Task!
   createLocation(
     seatId: ID!
     lat: Float!
     lng: Float!
     createdAt: String
   ): String!
-  createStopArrival(stopId: ID!, note: String): Stop
+  createArrival(waypointId: ID!, note: String): Waypoint
 }
 
 type User {
   id: ID!
   email: String!
   seats: [Seat]
-  addresses: [Address]
+  places: [Place]
 }
 
 type Device {
@@ -59,7 +59,7 @@ type Seat {
   name: String!
   device: Device
   location: Location
-  routes: [Route]
+  tasks: [Task]
 }
 
 type Location {
@@ -69,7 +69,7 @@ type Location {
   createdAt: String!
 }
 
-type Address {
+type Place {
   id: ID!
   name: String!
   phone: String
@@ -77,32 +77,32 @@ type Address {
   description: String!
   lat: Float!
   lng: Float!
-  routes(filters: RouteFilters): [Route]
+  tasks(filters: TaskFilters): [Task]
 }
 
-type Stop {
+type Waypoint {
   id: ID!
-  address: Address!
+  place: Place!
   order: Int!
   note: String
   arrivedAt: String
 }
 
-type Route {
+type Task {
   id: ID!
   seat: Seat!
   startAt: String!
-  stops: [Stop]!
+  waypoints: [Waypoint]!
   route: JSON!
 }
 
-input RouteFilters {
+input TaskFilters {
   start: Date
   end: Date
-  status: RouteStatus
+  status: TaskStatus
 }
 
-enum RouteStatus {
+enum TaskStatus {
   INCOMPLETE
   COMPLETE
 }

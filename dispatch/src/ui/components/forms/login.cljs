@@ -1,18 +1,16 @@
 (ns ui.components.forms.login
-  (:require
-   ["@apollo/client" :refer (gql)]
-   [shadow.resource :refer (inline)]
-   [reagent.core :as r]
-   [cljs-bean.core :refer (->clj)]
-   [ui.lib.apollo :refer (parse-anoms use-mutation)]
-   [ui.lib.router :refer (use-navigate)]
-   [ui.utils.session :refer (create-session)]
-   [ui.utils.i18n :refer (tr)]
-   [ui.utils.error :refer (tr-error)]
-   [ui.utils.string :refer (class-names)]
-   [ui.components.icons.spinner :refer (spinner)]
-   [ui.components.inputs.input :refer (input)]
-   [ui.components.inputs.button :refer (button)]))
+  (:require [shadow.resource :refer (inline)]
+            [reagent.core :as r]
+            [cljs-bean.core :refer (->clj)]
+            [ui.lib.apollo :refer (gql parse-anoms use-mutation)]
+            [ui.lib.router :refer (use-navigate)]
+            [ui.utils.session :refer (create-session)]
+            [ui.utils.i18n :refer (tr)]
+            [ui.utils.error :refer (tr-error)]
+            [ui.utils.string :refer (class-names)]
+            [ui.components.icons.spinner :refer (spinner)]
+            [ui.components.inputs.input :refer (input)]
+            [ui.components.inputs.button :refer (button)]))
 
 (def LOGIN_USER (gql (inline "mutations/user/login.graphql")))
 
@@ -20,7 +18,8 @@
   (let [!state (r/atom {})
         !anoms (r/atom nil)]
     (fn []
-      (let [[login status] (use-mutation LOGIN_USER {})
+      (let [{:keys [email password]} @!state
+            [login status] (use-mutation LOGIN_USER {})
             {:keys [loading ^js client]} status
             navigate (use-navigate)]
         [:form {:class "flex flex-col"
@@ -31,19 +30,19 @@
                       (.then (fn [res]
                                (create-session (-> res ->clj :data :loginUser))
                                (.resetStore client)
-                               (navigate "/admin/routes")))
+                               (navigate "/admin/tasks")))
                       (.catch #(reset! !anoms (parse-anoms %)))))}
          [input {:id "email"
                  :type "email"
                  :label (tr [:fields/email])
-                 :value (:email @!state)
+                 :value email
                  :required true
                  :class "pb-4"
                  :on-text #(swap! !state assoc :email %)}]
          [input {:id "password"
                  :type "password"
                  :label (tr [:fields/password])
-                 :value (:password @!state)
+                 :value password
                  :required true
                  :class "pb-4"
                  :on-text #(swap! !state assoc :password %)}]

@@ -1,0 +1,9 @@
+query Places {
+  places {
+    id
+    name
+    description
+    lat
+    lng
+  }
+}

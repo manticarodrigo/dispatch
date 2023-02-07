@@ -6,7 +6,7 @@ query User {
       id
       name
     }
-    addresses {
+    places {
       id
       name
       description

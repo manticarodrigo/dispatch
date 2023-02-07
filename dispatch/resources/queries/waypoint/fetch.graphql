@@ -1,0 +1,14 @@
+query Waypoint($waypointId: ID!) {
+  waypoint(waypointId: $waypointId) {
+    id
+    place {
+      id
+      name
+      description
+      lat
+      lng
+    }
+    note
+    arrivedAt
+  }
+}

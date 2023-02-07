@@ -21,19 +21,19 @@
         query (use-query
                FETCH_SEAT
                {:variables
-                {:id seat-id
+                {:seatId seat-id
                  :filters {:start (-> date parse-date d/startOfDay)
                            :end  (-> date parse-date d/endOfDay)
                            :status status}}})
         {:keys [data previousData loading]} query
-        {:keys [routes]} (:seat data)
+        {:keys [tasks]} (:seat data)
         {:keys [name location]} (or (:seat previousData) (:seat data))]
 
     (react/useEffect
      (fn []
-       (dispatch [:map {:paths (mapv #(-> % :route :path) routes)}])
+       (dispatch [:map {:paths (mapv #(-> % :route :path) tasks)}])
        #())
-     #js[routes])
+     #js[tasks])
 
     [:div {:class (class-names padding)}
      [:div {:class "mb-4"}
@@ -65,12 +65,12 @@
                                                       (dissoc search-params :status)
                                                       (assoc search-params :status %)))}]]]
      [:ul
-      (for [{:keys [id startAt]} routes]
+      (for [{:keys [id startAt]} tasks]
         (let [start-date (-> (js/parseInt startAt) js/Date.)
               started? (-> start-date (d/isBefore (js/Date.)))]
           ^{:key id}
           [:li {:class "mb-2"}
-           [link-card {:to (str "/admin/routes/" id)
+           [link-card {:to (str "/admin/tasks/" id)
                        :icon RouteIcon
                        :title (str (if started? "Started" "Starts in")
                                    " "
@@ -85,5 +85,5 @@
                                  "Status"]
                                 [:div {:class "flex items-center text-xs text-left text-neutral-200"}
                                  (if started? "Active" "Inactive")]]}]]))
-      (when (and (not loading) (empty? routes)) [:p {:class "text-center"} "No routes found."])
-      (when loading [:p {:class "text-center"} "Loading routes..."])]]))
+      (when (and (not loading) (empty? tasks)) [:p {:class "text-center"} "No tasks found."])
+      (when loading [:p {:class "text-center"} "Loading tasks..."])]]))

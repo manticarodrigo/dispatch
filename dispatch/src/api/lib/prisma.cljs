@@ -20,4 +20,3 @@
                    (- after before)
                    "ms"))
              result))))
-

@@ -5,7 +5,6 @@
             [graphql :refer (GraphQLScalarType)]
             [shadow.resource :refer (inline)]
             [cljs-bean.core :refer (->clj ->js)]
-            [promesa.core :as p]
             [common.utils.date :refer (date-scalar-map)]
             [common.utils.json :refer (json-scalar-map)]
             [api.lib.prisma :refer (prisma)]
@@ -13,10 +12,10 @@
             [api.resolvers.user :as user]
             [api.resolvers.device :as device]
             [api.resolvers.seat :as seat]
-            [api.resolvers.address :as address]
-            [api.resolvers.route :as route]
+            [api.resolvers.place :as place]
+            [api.resolvers.task :as task]
             [api.resolvers.location :as location]
-            [api.resolvers.stop :as stop]))
+            [api.resolvers.waypoint :as waypoint]))
 
 (def date-scalar
   (GraphQLScalarType.
@@ -33,31 +32,31 @@
 (def resolvers {:Date date-scalar
                 :JSON json-scalar
                 :Mutation
-                {:createUser user/create-user
-                 :loginUser user/login-user
-                 :linkDevice device/link-device
-                 :createSeat seat/create-seat
-                 :createAddress address/create-address
-                 :createRoute route/create-route
-                 :createLocation location/create-location
-                 :createStopArrival stop/create-stop-arrival}
+                {:createUser user/create
+                 :loginUser user/login
+                 :linkDevice device/create
+                 :createSeat seat/create
+                 :createPlace place/create
+                 :createTask task/create
+                 :createLocation location/create
+                 :createArrival waypoint/create-arrival}
                 :Query
                 {:user user/active-user
-                 :seats seat/fetch-seats
-                 :seat seat/fetch-seat
-                 :addresses address/fetch-addresses
-                 :address address/fetch-address
-                 :routes route/fetch-routes
-                 :route route/fetch-route
-                 :stop stop/fetch-stop}
+                 :seats seat/find-all
+                 :seat seat/find-unique
+                 :places place/find-all
+                 :place place/find-unique
+                 :tasks task/find-all
+                 :task task/find-unique
+                 :waypoint waypoint/find-unique}
                 :User
-                {:seats seat/fetch-seats
-                 :addresses address/fetch-addresses}
+                {:seats seat/find-all
+                 :places place/find-all}
                 :Seat {}
                 :Location {}
-                :Address {:routes route/fetch-routes-by-address}
-                :Stop {}
-                :Route {}})
+                :Place {:tasks task/find-by-place}
+                :Waypoint {}
+                :Task {}})
 
 (def options
   #js{:context

@@ -5,7 +5,7 @@
    [tests.util.api :refer (send)]
    [tests.util.location :refer (nearby)]))
 
-(defn create-location [seat-id created-at]
+(defn create [seat-id created-at]
   (p/let [query (inline "mutations/location/create.graphql")
           [lat lng] (nearby)
           variables {:seatId seat-id

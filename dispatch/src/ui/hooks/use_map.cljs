@@ -11,7 +11,7 @@
 (def ^:private !el (atom nil))
 (def ^:private !map (r/atom false))
 
-(defn- center-route []
+(defn- center []
   (let [paths (listen [:map/paths])
         points (listen [:map/points])
         coords (flatten (concat paths (map :position points)))
@@ -42,7 +42,7 @@
        (if @!map
          (let [polylines (when (seq paths) (set-polylines @!map paths))
                markers (when (seq points) (set-markers @!map points))]
-           (center-route)
+           (center)
            #(do
               (clear-polylines polylines)
               (clear-markers markers)))
@@ -51,4 +51,4 @@
 
     {:ref !el
      :map @!map
-     :center center-route}))
+     :center center}))

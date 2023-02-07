@@ -14,7 +14,7 @@
     {:request request
      :result result}))
 
-(defn register-user [variables]
+(defn register [variables]
   (p/let [query (inline "mutations/user/create.graphql")
           request  {:query query :variables variables}
           result (send request)]
@@ -23,7 +23,7 @@
      :request request
      :result result}))
 
-(defn login-user [variables]
+(defn login [variables]
   (p/let [query (inline "mutations/user/login.graphql")
           request  {:query query :variables variables}
           result (send request)]
@@ -32,23 +32,22 @@
      :request request
      :result result}))
 
-(defn with-submit-user [ctx f]
+(defn with-submit [ctx f]
   (let [{:keys [route mocks]} ctx
         [submit-res] mocks
-        {:keys [request result]} submit-res
-        {:keys [variables]} request]
+        {:keys [email password]} (some-> submit-res :request :variables)]
 
     (with-mounted-component
-      [test-app {:route route :mocks [{:request request :result result}]}]
+      [test-app {:route route :mocks mocks}]
       (fn [^js component]
         (p/do
-          (change (.getByLabelText component "Email") (:email variables))
-          (change (.getByLabelText component "Password") (:password variables))
+          (change (.getByLabelText component "Email") email)
+          (change (.getByLabelText component "Password") password)
           (submit (-> component (.-container) (.querySelector "form")))
           (f component))))))
 
 (defn with-submit-register [ctx f]
-  (with-submit-user (assoc ctx :route "/register") f))
+  (with-submit (assoc ctx :route "/register") f))
 
 (defn with-submit-login [ctx f]
-  (with-submit-user (assoc ctx :route "/login") f))
+  (with-submit (assoc ctx :route "/login") f))

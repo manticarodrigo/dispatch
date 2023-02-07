@@ -1,17 +1,17 @@
-query Seat($id: ID!, $filters: RouteFilters) {
-  seat(id: $id, filters: $filters) {
+query Seat($seatId: ID!, $filters: TaskFilters) {
+  seat(seatId: $seatId, filters: $filters) {
     id
     name
     device {
       id
       info
     }
-    routes {
+    tasks {
       id
       startAt
-      stops {
+      waypoints {
         id
-        address {
+        place {
           id
           name
           description

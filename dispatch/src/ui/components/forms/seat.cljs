@@ -1,8 +1,7 @@
 (ns ui.components.forms.seat
-  (:require ["@apollo/client" :refer (gql)]
-            [shadow.resource :refer (inline)]
+  (:require [shadow.resource :refer (inline)]
             [reagent.core :as r]
-            [ui.lib.apollo :refer (parse-anoms use-mutation)]
+            [ui.lib.apollo :refer (gql parse-anoms use-mutation)]
             [ui.lib.router :refer (use-navigate)]
             [ui.utils.error :refer (tr-error)]
             [ui.utils.string :refer (class-names)]
@@ -16,7 +15,8 @@
   (let [!state (r/atom {})
         !anoms (r/atom {})]
     (fn []
-      (let [[create status] (use-mutation CREATE_SEAT {})
+      (let [{:keys [name]} @!state
+            [create status] (use-mutation CREATE_SEAT {})
             {:keys [loading]} status
             navigate (use-navigate)]
         [:form {:class "flex flex-col"
@@ -28,7 +28,7 @@
                                  (.catch #(reset! !anoms (parse-anoms %)))))}
          [input {:id "name"
                  :label "Name"
-                 :value (:name @!state)
+                 :value name
                  :required true
                  :class "pb-4"
                  :on-text #(swap! !state assoc :name %)}]

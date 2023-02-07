@@ -1,17 +1,17 @@
-query SeatByDevice($id: ID!, $token: String!, $filters: RouteFilters) {
-  seat(id: $id, token: $token, filters: $filters) {
+query SeatByDevice($seatId: ID!, $deviceId: ID!, $filters: TaskFilters) {
+  seat(seatId: $seatId, deviceId: $deviceId, filters: $filters) {
     id
     name
     device {
       id
       info
     }
-    routes {
+    tasks {
       id
       startAt
-      stops {
+      waypoints {
         id
-        address {
+        place {
           id
           name
           description

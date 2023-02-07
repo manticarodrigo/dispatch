@@ -6,7 +6,7 @@
             [ui.components.inputs.button :refer (button)]))
 
 (defn gmap [class]
-  (let [{!el :ref center-route :center} (use-map)]
+  (let [{!el :ref center :center} (use-map)]
     [:aside {:class (class-names class "relative w-full h-full")}
      [:div {:ref #(reset! !el %) :class "w-full h-full"}]
      [button {:aria-label (tr [:map/center])
@@ -14,4 +14,4 @@
               :class (class-names "absolute"
                                   "right-3 sm:right-4 md:right-6 lg:right-8"
                                   "top-3 sm:top-4 md:top-6")
-              :on-click center-route}]]))
+              :on-click center}]]))

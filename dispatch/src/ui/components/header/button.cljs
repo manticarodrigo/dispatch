@@ -6,10 +6,10 @@
 (def index-paths ["register"
                   "login"
                   "logout"
-                  "admin/routes"
+                  "admin/tasks"
                   "admin/seats"
-                  "admin/addresses"
-                  "seat/:id/routes"])
+                  "admin/places"
+                  "seat/:id/tasks"])
 
 (def index-routes (mapv (fn [path] {:path path :element [dispatch-icon]}) index-paths))
 

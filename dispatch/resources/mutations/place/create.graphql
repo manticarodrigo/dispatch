@@ -1,0 +1,25 @@
+mutation CreatePlace(
+  $name: String!
+  $phone: String
+  $email: String
+  $description: String!
+  $lat: Float!
+  $lng: Float!
+) {
+  createPlace(
+    name: $name
+    phone: $phone
+    email: $email
+    description: $description
+    lat: $lat
+    lng: $lng
+  ) {
+    id
+    name
+    phone
+    email
+    description
+    lat
+    lng
+  }
+}

@@ -1,0 +1,27 @@
+query Place($placeId: ID!, $filters: TaskFilters) {
+  place(placeId: $placeId) {
+    id
+    name
+    phone
+    email
+    description
+    lat
+    lng
+    tasks(filters: $filters) {
+      id
+      startAt
+      waypoints {
+        id
+        place {
+          id
+          name
+          description
+          lat
+          lng
+        }
+        arrivedAt
+      }
+      route
+    }
+  }
+}

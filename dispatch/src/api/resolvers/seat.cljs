@@ -2,14 +2,14 @@
   (:require [cljs-bean.core :refer (->clj)]
             [api.models.seat :as seat]))
 
-(defn create-seat
+(defn create
   [_ args context _]
   (seat/create context (->clj args)))
 
-(defn fetch-seats
+(defn find-all
   [_ _ context _]
   (seat/find-all context))
 
-(defn fetch-seat
+(defn find-unique
   [_ args context _]
   (seat/find-unique context (->clj args)))

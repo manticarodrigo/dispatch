@@ -11,7 +11,7 @@
 (defn routes []
   (let [session-id (listen [:session])
         routes (router/use-routes
-                [{:index true :element [router/navigate (if session-id "/admin/routes" "/login")]}
+                [{:index true :element [router/navigate (if session-id "/admin/tasks" "/login")]}
                  {:path "register" :element [register/view]}
                  {:path "login" :element [login/view]}
                  {:path "logout" :element [router/remove-auth-route]}

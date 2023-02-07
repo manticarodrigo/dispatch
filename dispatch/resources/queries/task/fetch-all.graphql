@@ -1,0 +1,21 @@
+query Tasks($filters: TaskFilters) {
+  tasks(filters: $filters) {
+    id
+    seat {
+      id
+      name
+    }
+    startAt
+    waypoints {
+      id
+      place {
+        id
+        name
+        description
+        lat
+        lng
+      }
+    }
+    route
+  }
+}

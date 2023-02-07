@@ -6,9 +6,9 @@
   {:en
    {:view {:register {:title "Register"}
            :login {:title "Login"}
-           :route {:list {:title "Routes"}}
+           :task {:list {:title "Tasks"}}
            :seat {:list {:title "Seats"}}
-           :address {:list {:title "Addresses"}}}
+           :place {:list {:title "Places"}}}
     :fields {:email "Email"
              :password "Password"
              :submit "Submit"}
@@ -21,9 +21,9 @@
    :es
    {:view {:register {:title "Registrar"}
            :login {:title "Ingresar"}
-           :route {:list {:title "Rutas"}}
+           :task {:list {:title "Tareas"}}
            :seat {:list {:title "Asientos"}}
-           :address {:list {:title "Direcciones"}}}
+           :place {:list {:title "Places"}}}
     :fields {:email "Correo electrónico"
              :password "Contraseña"
              :submit "Enviar"}

@@ -1,0 +1,30 @@
+query Task($taskId: ID!) {
+  task(taskId: $taskId) {
+    id
+    startAt
+    seat {
+      id
+      name
+      location {
+        id
+        lat
+        lng
+        createdAt
+      }
+    }
+    waypoints {
+      id
+      place {
+        id
+        name
+        description
+        lat
+        lng
+      }
+      order
+      note
+      arrivedAt
+    }
+    route
+  }
+}

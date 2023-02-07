@@ -5,11 +5,11 @@
    [api.util.anom :as anom]
    [api.models.user :as user]))
 
-(defn create-user
+(defn create
   [_ args context _]
   (user/create context (->clj args)))
 
-(defn login-user
+(defn login
   [_ args context _]
   (p/let [{:keys [email password]} (->clj args)
           ^js user (when email (user/find-by-email context email))
