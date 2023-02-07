@@ -28,7 +28,7 @@
                   (.preventDefault e)
                   (-> (login {:variables @!state})
                       (.then (fn [res]
-                               (create-session (-> res ->clj :data :loginUser))
+                               (create-session (-> res ->clj :data :createSession))
                                (.resetStore client)
                                (navigate "/admin/tasks")))
                       (.catch #(reset! !anoms (parse-anoms %)))))}

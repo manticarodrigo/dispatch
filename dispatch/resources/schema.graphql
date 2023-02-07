@@ -14,8 +14,8 @@ type Query {
 
 type Mutation {
   createUser(email: String!, password: String!): String!
-  loginUser(email: String!, password: String!): String!
-  linkDevice(seatId: ID!, deviceId: ID!, info: JSON!): String!
+  createSession(email: String!, password: String!): String!
+  createDevice(seatId: ID!, deviceId: ID!, info: JSON!): String!
   createSeat(name: String!): Seat!
   createPlace(
     name: String!

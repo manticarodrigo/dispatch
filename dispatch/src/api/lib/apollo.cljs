@@ -33,8 +33,8 @@
                 :JSON json-scalar
                 :Mutation
                 {:createUser user/create
-                 :loginUser user/login
-                 :linkDevice device/create
+                 :createSession user/login
+                 :createDevice device/create
                  :createSeat seat/create
                  :createPlace place/create
                  :createTask task/create

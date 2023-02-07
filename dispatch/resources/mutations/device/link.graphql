@@ -1,3 +1,0 @@
-mutation LinkDevice($seatId: ID!, $deviceId: ID!, $info: JSON!) {
-  linkDevice(seatId: $seatId, deviceId: $deviceId, info: $info)
-}

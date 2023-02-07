@@ -10,7 +10,7 @@
             [ui.components.modal :refer (modal)]
             [ui.components.inputs.button :refer (button)]))
 
-(def LINK_DEVICE (gql (inline "mutations/device/link.graphql")))
+(def CREATE_DEVICE (gql (inline "mutations/device/create.graphql")))
 (def CREATE_LOCATION (gql (inline "mutations/location/create.graphql")))
 
 (defn layout [& children]
@@ -21,7 +21,7 @@
         device-error (:error device)
         unlinked? (= "device-not-linked" device-error)
         invalid? (= "invalid-token" device-error)
-        [link-device] (use-mutation LINK_DEVICE {:refetchQueries ["SeatByDevice"]})
+        [create-device] (use-mutation CREATE_DEVICE {:refetchQueries ["SeatByDevice"]})
         watch-location (use-location)
         [create-location] (use-mutation CREATE_LOCATION {})]
 
@@ -44,8 +44,9 @@
       [button {:label "Link Device"
                :class "bg-neutral-900 text-white px-4 py-2 rounded-md"
                :on-click (fn []
-                           (-> (link-device {:variables {:seatId seat-id
-                                                         :deviceId device-id
-                                                         :info device-info}})
+                           (-> (create-device {:variables
+                                               {:seatId seat-id
+                                                :deviceId device-id
+                                                :info device-info}})
                                (.then #(dispatch [:device/error nil]))))}]]
      (into [:<>] children)]))
