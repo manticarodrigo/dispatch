@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.ambito.dispatch",
+      "sha256_cert_fingerprints": [
+        "03:31:01:E3:A1:A9:F9:B9:84:A7:00:B8:59:8F:E6:CB:C0:AE:4E:60:29:F3:F7:30:A3:92:A5:70:4D:4E:8F:43"
+      ]
+    }
+  }
+]
