@@ -21,63 +21,46 @@ terraform {
 }
 
 locals {
-  version_name = "0.0.2"
   domain_map = {
     prod = "ambito.app"
     dev  = "ambito.dev"
   }
   domain_name = local.domain_map[terraform.workspace]
-  app_name    = "dispatch"
-}
-
-# modules
-
-module "vpc" {
-  source = "./vpc"
-}
-
-module "db" {
-  source   = "./db"
-  app_name = local.app_name
-  vpc_id   = module.vpc.vpc_id
-}
-
-module "build" {
-  source               = "./build"
-  version_name         = local.version_name
-  domain_name          = local.domain_name
-  app_name             = local.app_name
-  rum_monitor_id       = module.site.rum_monitor_id
-  rum_identity_pool_id = module.site.rum_identity_pool_id
-  rum_guest_role_arn   = module.site.rum_guest_role_arn
-}
-
-module "api" {
-  source           = "./api"
-  version_name     = local.version_name
-  sha1             = module.build.sha1
-  build            = module.build.build
-  domain_name      = local.domain_name
-  app_name         = local.app_name
-  db_host          = module.db.host
-  db_name          = module.db.name
-  db_port          = module.db.port
-  db_user          = module.db.username
-  db_pass          = module.db.password
-  site_bucket_name = module.site.site_bucket_name
-}
-
-module "site" {
-  source         = "./site"
-  sha1           = module.build.sha1
-  build          = module.build.build
-  domain_name    = local.domain_name
-  app_name       = local.app_name
-  api_invoke_url = module.api.api_invoke_url
-  api_stage_name = module.api.api_stage_name
 }
 
 module "ambito" {
   source      = "../ambito/infra"
   domain_name = local.domain_name
+}
+
+module "dispatch" {
+  source      = "../dispatch/infra"
+  domain_name = local.domain_name
+}
+
+# TODO: remove once environments are in sync
+
+moved {
+  from = module.api
+  to   = module.dispatch.module.api
+}
+
+moved {
+  from = module.build
+  to   = module.dispatch.module.build
+}
+
+moved {
+  from = module.db
+  to   = module.dispatch.module.db
+}
+
+moved {
+  from = module.site
+  to   = module.dispatch.module.site
+}
+
+moved {
+  from = module.vpc
+  to   = module.dispatch.module.vpc
 }
