@@ -13,6 +13,8 @@
             [ui.components.main :refer (main)]
             [ui.components.routes :refer (routes)]))
 
+(rtl/configure #js{:asyncUtilTimeout 5000})
+
 (defn before []
   (set! (. js/window -matchMedia)
         (fn []
@@ -36,7 +38,7 @@
                   (r/flush))]
     (-> (p/do (f mounted-component user))
         (.then cleanup)
-        (.catch cleanup))))
+        (.catch #(throw %)))))
 
 (defn click [el]
   (.click rtl/fireEvent el)

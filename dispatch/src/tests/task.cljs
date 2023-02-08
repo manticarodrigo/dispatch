@@ -82,7 +82,7 @@
             (.findByText component place-name))
 
           (.findByText component "Loading...")
-          (.findByText component "Create task" #js{} #js{:timeout 3000})
+          (.findByText component "Create task")
 
           (submit (-> component (.-container) (.querySelector "form")))
           (f component))))))

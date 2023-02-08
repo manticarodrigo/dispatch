@@ -17,7 +17,7 @@ locals {
   sha1       = sha1(join("", [local.dirs_sha1, local.files_sha1]))
 }
 
-resource "null_resource" "build" {
+resource "null_resource" "test" {
   triggers = {
     sha1 = local.sha1
   }
@@ -30,6 +30,20 @@ resource "null_resource" "build" {
                   yarn
                   yarn db-gen
                   yarn test
+                  EOT
+    working_dir = "../dispatch"
+  }
+}
+
+resource "null_resource" "build" {
+  triggers = {
+    sha1 = local.sha1
+  }
+
+  provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
+    command     = <<-EOT
+                  set -e
                   npx prisma generate --data-proxy
                   yarn release
                   EOT
@@ -45,4 +59,8 @@ resource "null_resource" "build" {
       RUM_GUEST_ROLE_ARN   = var.rum_guest_role_arn
     }
   }
+
+  depends_on = [
+    null_resource.test
+  ]
 }

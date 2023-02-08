@@ -38,7 +38,6 @@
            (user/with-submit-register
              {:mocks [create-mock]}
              (fn [^js component]
-               (prn "got here")
                (-> (.findByText component (tr [:view.task.list/title]))
                    (.then #(testing "ui submits and redirects" (is (some? %))))
                    (.then done)))))))
@@ -66,15 +65,15 @@
 
 (deftest login-success
   (async done
-         (p/let [{:keys [request result]} (user/login
-                                           {:email "test@test.test"
-                                            :password "test"})]
+         (p/let [create-mock (user/login
+                              {:email "test@test.test"
+                               :password "test"})]
 
            (testing "api returns data"
-             (is (-> result :data :createSession)))
+             (is (-> create-mock :result :data :createSession)))
 
            (user/with-submit-login
-             {:mocks [{:request request :result result}]}
+             {:mocks [create-mock]}
              (fn [^js component]
                (-> (.findByText component (tr [:view.task.list/title]))
                    (.then #(testing "ui submits and redirects" (is (some? %))))
@@ -82,10 +81,10 @@
 
 (deftest login-invalid-email
   (async done
-         (p/let [{:keys [request result]} (user/login
-                                           {:email "not@found.test"
-                                            :password "test"})
-                 anom (-> result :errors first :extensions :anom)]
+         (p/let [create-mock (user/login
+                              {:email "not@found.test"
+                               :password "test"})
+                 anom (-> create-mock :result :errors first :extensions :anom)]
 
            (testing "api returns anom"
              (is (and
@@ -93,7 +92,7 @@
                   (= "account-not-found" (-> anom :reason)))))
 
            (user/with-submit-login
-             {:mocks [{:request request :result result}]}
+             {:mocks [create-mock]}
              (fn [^js component]
                (-> (.findByText component (tr-error anom))
                    (.then #(testing "ui presents account not found anom" (is (some? %))))
@@ -101,10 +100,10 @@
 
 (deftest login-invalid-password
   (async done
-         (p/let [{:keys [request result]} (user/login
-                                           {:email "test@test.test"
-                                            :password "incorrect"})
-                 anom (-> result :errors first :extensions :anom)]
+         (p/let [create-mock (user/login
+                              {:email "test@test.test"
+                               :password "incorrect"})
+                 anom (-> create-mock :result :errors first :extensions :anom)]
 
            (testing "api returns anom"
              (is (and
@@ -112,7 +111,7 @@
                   (= "invalid-password" (-> anom :reason)))))
 
            (user/with-submit-login
-             {:mocks [{:request request :result result}]}
+             {:mocks [create-mock]}
              (fn [^js component]
                (-> (.findByText component (tr-error anom))
                    (.then #(testing "ui presents invalid password anom" (is (some? %))))
@@ -137,15 +136,16 @@
 
 (deftest fetch-seats
   (async done
-         (p/let [fetch-mock (seat/find-all)]
+         (p/let [fetch-mock (seat/find-all)
+                 seats (-> fetch-mock :result :data :seats)]
 
            (testing "api returns data"
-             (is (-> fetch-mock :result :data :seats first :id)))
+             (is (-> seats first :id)))
 
            (with-mounted-component
              [test-app {:route "/admin/seats" :mocks [fetch-mock]}]
              (fn [^js component]
-               (-> (p/all (map #(.findByText component (:name %)) (-> fetch-mock :result :data :seats)))
+               (-> (p/all (map #(.findByText component (:name %)) seats))
                    (.then #(testing "ui presents seat names" (is (every? some? %))))
                    (.then done)))))))
 
@@ -167,16 +167,16 @@
 
 (deftest fetch-places
   (async done
-         (p/let [fetch-mock (place/find-all)]
-           (testing "api returns data"
-             (is (-> fetch-mock :result :data :places first :id))
+         (p/let [fetch-mock (place/find-all)
+                 places (-> fetch-mock :result :data :places)]
+           (testing "api returns data" (is (-> places first :id)))
 
-             (with-mounted-component
-               [test-app {:route "/admin/places" :mocks [fetch-mock]}]
-               (fn [^js component]
-                 (-> (p/all (map #(.findByText component (:name %)) (-> fetch-mock :result :data :places)))
-                     (.then #(testing "ui presents place names" (is (every? some? %))))
-                     (.then done))))))))
+           (with-mounted-component
+             [test-app {:route "/admin/places" :mocks [fetch-mock]}]
+             (fn [^js component]
+               (-> (p/all (map #(.findByText component (:name %)) places))
+                   (.then #(testing "ui presents place names" (is (every? some? %))))
+                   (.then done)))))))
 
 (deftest create-task
   (async done
@@ -230,15 +230,14 @@
                                :end (-> (js/Date.) d/endOfDay)
                                :status nil}})
                  tasks (-> fetch-mock :result :data :tasks)]
-           (testing "api returns data"
-             (is (-> tasks first :id))
+           (testing "api returns data" (is (-> tasks first :id)))
 
-             (with-mounted-component
-               [test-app {:route "/admin/tasks" :mocks [fetch-mock]}]
-               (fn [^js component]
-                 (-> (p/all (map #(.findByText component (-> % :seat :name)) tasks))
-                     (.then #(testing "ui presents seat names" (is (every? some? %))))
-                     (.then done))))))))
+           (with-mounted-component
+             [test-app {:route "/admin/tasks" :mocks [fetch-mock]}]
+             (fn [^js component]
+               (-> (p/all (map #(.findByText component (-> % :seat :name)) tasks))
+                   (.then #(testing "ui presents seat names" (is (every? some? %))))
+                   (.then done)))))))
 
 (deftest create-location
   (async done
