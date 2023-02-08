@@ -2,8 +2,7 @@ locals {
   dirs = [
     "../ambito/src",
     "../ambito/public/fonts",
-    "../ambito/public/images",
-    "../ambito/public/.well-known"
+    "../ambito/public/images"
   ]
   files = [
     "../ambito/package.json",

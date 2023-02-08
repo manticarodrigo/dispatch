@@ -5,7 +5,8 @@ locals {
     "../dispatch/resources",
     "../dispatch/prisma",
     "../dispatch/public/fonts",
-    "../dispatch/public/images"
+    "../dispatch/public/images",
+    "../dispatch/public/.well-known"
   ]
   files = [
     "../dispatch/package.json",
