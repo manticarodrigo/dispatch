@@ -1,27 +1,19 @@
 (ns tests.place
-  (:require
-   ["@faker-js/faker" :refer (faker)]
-   [shadow.resource :refer (inline)]
-   [promesa.core :as p]
-   [tests.util.api :refer (send)]
-   [tests.util.ui :refer (with-mounted-component
-                           test-app
-                           change
-                           select
-                           get-combobox
-                           submit)]
-   [ui.lib.google.maps.autocomplete :refer (init-autocomplete)]
-   [ui.lib.google.maps.places :refer (init-places)]
-   [tests.mocks.google :refer (mock-google)]
-   [tests.util.location :refer (nearby)]))
+  (:require [shadow.resource :refer (inline)]
+            [promesa.core :as p]
+            [tests.util.api :refer (send)]
+            [tests.util.ui :refer (with-mounted-component
+                                    test-app
+                                    change
+                                    select
+                                    get-combobox
+                                    submit)]
+            [ui.lib.google.maps.autocomplete :refer (init-autocomplete)]
+            [ui.lib.google.maps.places :refer (init-places)]
+            [tests.mocks.google :refer (mock-google)]))
 
-(defn create []
+(defn create [variables]
   (p/let [query (inline "mutations/place/create.graphql")
-          [lat lng] (nearby)
-          variables {:name (.. faker -company name)
-                     :description (.. faker -address (streetAddress true))
-                     :lat lat
-                     :lng lng}
           request  {:query query :variables variables}
           result (send request)]
     {:request request

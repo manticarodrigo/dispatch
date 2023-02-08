@@ -1,20 +1,20 @@
 (ns tests.core
-  (:require
-   [date-fns :as d]
-   [cljs.test :as t :refer-macros [deftest async testing is use-fixtures]]
-   [promesa.core :as p]
-   [common.utils.date :refer (from-datetime-local)]
-   [common.utils.promise :refer (each)]
-   [ui.utils.error :refer (tr-error)]
-   [ui.utils.i18n :refer (tr)]
-   [tests.util.ui :as ui :refer (with-mounted-component test-app)]
-   [tests.util.location :refer (generate-polyline)]
-   [tests.user :as user]
-   [tests.seat :as seat]
-   [tests.place :as place]
-   [tests.task :as task]
-   [tests.waypoint :as waypoint]
-   [tests.location :as location]))
+  (:require ["@faker-js/faker" :refer (faker)]
+            [date-fns :as d]
+            [cljs.test :as t :refer-macros [deftest async testing is use-fixtures]]
+            [promesa.core :as p]
+            [common.utils.date :refer (from-datetime-local)]
+            [common.utils.promise :refer (each)]
+            [ui.utils.error :refer (tr-error)]
+            [ui.utils.i18n :refer (tr)]
+            [tests.util.ui :as ui :refer (with-mounted-component test-app)]
+            [tests.util.location :refer (nearby generate-polyline)]
+            [tests.user :as user]
+            [tests.seat :as seat]
+            [tests.place :as place]
+            [tests.task :as task]
+            [tests.waypoint :as waypoint]
+            [tests.location :as location]))
 
 (defmethod t/report [:cljs.test/default :begin-test-var] [m]
   (println "\n ◯" (-> m :var meta :name)))
@@ -151,19 +151,29 @@
 
 (deftest create-places
   (async done
-         (-> (p/all (map (fn [_] (place/create)) (range 50)))
-             (.then (fn [mocks]
-                      (testing "api returns data"
-                        (is (every? #(-> % :result :data :createPlace) mocks)))
+         (let [unique-names (->> (range 50)
+                                 (map (fn [_] (.. faker -company name)))
+                                 distinct)]
+           (-> (p/all (map
+                       (fn [name]
+                         (let [[lat lng] (nearby)]
+                           (place/create {:name name
+                                          :description (.. faker -address (streetAddress true))
+                                          :lat lat
+                                          :lng lng})))
+                       unique-names))
+               (.then (fn [mocks]
+                        (testing "api returns data"
+                          (is (every? #(-> % :result :data :createPlace) mocks)))
 
-                      (p/let [create-mock (last mocks)
-                              fetch-mock (place/find-all)]
-                        (place/with-submit
-                          {:mocks [create-mock fetch-mock]}
-                          (fn [^js component]
-                            (-> (.findByText component (-> create-mock :request :variables :name))
-                                (.then #(testing "ui presents place name" (is (some? %))))
-                                (.then done))))))))))
+                        (p/let [create-mock (last mocks)
+                                fetch-mock (place/find-all)]
+                          (place/with-submit
+                            {:mocks [create-mock fetch-mock]}
+                            (fn [^js component]
+                              (-> (.findByText component (-> create-mock :request :variables :name))
+                                  (.then #(testing "ui presents place name" (is (some? %))))
+                                  (.then done)))))))))))
 
 (deftest fetch-places
   (async done
