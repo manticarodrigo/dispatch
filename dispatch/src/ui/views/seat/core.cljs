@@ -6,6 +6,7 @@
 
 (def route {:path "seat/:seat"
             :element [layout [router/outlet]]
-            :children [{:path "tasks" :element [task/list-view]}
+            :children [{:index true :element [router/navigate "tasks"]}
+                       {:path "tasks" :element [task/list-view]}
                        {:path "tasks/:task" :element [task/detail-view]}
                        {:path "waypoints/:waypoint" :element [waypoint/detail-view]}]})
