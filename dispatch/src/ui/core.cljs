@@ -11,6 +11,7 @@
    [ui.lib.apollo :refer (apollo-provider)]
    [ui.lib.platform :refer (platform)]
    [ui.components.loader :refer (loader)]
+   [ui.components.listener :refer (listener)]
    [ui.components.main :refer (main)]
    [ui.components.routes :refer (routes)]))
 
@@ -24,8 +25,9 @@
   [browser-router
    [apollo-provider
     [loader
-     [main
-      [routes]]]]])
+     [listener
+      [main
+       [routes]]]]]])
 
 (defonce !root (atom nil))
 
