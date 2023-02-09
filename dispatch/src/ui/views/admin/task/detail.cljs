@@ -25,8 +25,8 @@
         markers (->> waypoints
                      (mapv :place)
                      (mapv (fn [{:keys [lat lng name]}]
-                             {:position {:lat lat :lng lng}
-                              :title name})))]
+                             {:title name
+                              :position {:lat lat :lng lng}})))]
 
     (react/useEffect
      (fn []

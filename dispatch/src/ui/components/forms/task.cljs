@@ -65,10 +65,13 @@
             draggable-item-ids (mapv first waypoint-tuples)
             draggable-item-map (into {} (for [[item-id place-id] waypoint-tuples]
                                           {item-id place-id}))
-            markers (->> route :legs (mapv
-                                      (fn [{:keys [location place]}]
-                                        {:position (select-keys location [:lat :lng])
-                                         :title place})))]
+            markers (->> route
+                         :legs
+                         (map-indexed
+                          (fn [idx {:keys [location]}]
+                            {:title (-> selected-places (get idx) :name)
+                             :position (select-keys location [:lat :lng])}))
+                         vec)]
 
         (react/useEffect
          (fn []

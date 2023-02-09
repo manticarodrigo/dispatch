@@ -11,4 +11,4 @@
   (prisma/find-unique
    (.. context -prisma -waypoint)
    {:where {:id waypointId}
-    :include {:Waypoint true}}))
+    :include {:place true}}))

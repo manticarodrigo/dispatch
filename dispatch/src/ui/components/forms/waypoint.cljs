@@ -21,7 +21,7 @@
         !anoms (r/atom nil)]
     (fn []
       (let [{waypoint-id :waypoint} (use-params)
-            query (use-query FETCH_WAYPOINT {:variables {:id waypoint-id}})
+            query (use-query FETCH_WAYPOINT {:variables {:waypointId waypoint-id}})
             [create-arrival status] (use-mutation CREATE_ARRIVAL {})
             loading (or (:loading query) (:loading status))
             {:keys [id place note arrivedAt]} (-> query :data :waypoint)
@@ -29,7 +29,12 @@
 
         (react/useEffect
          (fn []
-           (dispatch [:map {:points (when place [{:position {:lat lat :lng lng} :title name}])}])
+           (dispatch [:map
+                      {:points
+                       (when place
+                         [{:title name
+                           :position {:lat lat
+                                      :lng lng}}])}])
            #())
          #js[name lat lng])
 

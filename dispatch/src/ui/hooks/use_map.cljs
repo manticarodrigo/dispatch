@@ -27,7 +27,9 @@
         (doseq [{:keys [lat lng]} coords]
           (.extend bounds #js{:lat lat :lng lng}))
         (.fitBounds gmap bounds)
-        (.panToBounds gmap bounds))
+        (.panToBounds gmap bounds)
+        (when (> (.getZoom gmap) 15)
+          (.setZoom gmap 15)))
       (do (.setZoom gmap 2)
           (.setCenter gmap #js{:lat 0 :lng 0})))))
 
