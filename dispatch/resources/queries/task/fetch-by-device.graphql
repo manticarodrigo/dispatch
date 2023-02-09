@@ -7,8 +7,7 @@ query TaskByDevice($taskId: ID!, $seatId: ID!, $deviceId: ID!) {
       name
       location {
         id
-        lat
-        lng
+        position
         createdAt
       }
     }

@@ -32,7 +32,7 @@
                 :accuracy (.-accuracy location)
                 :altitude (.-altitude location)
                 :altitudeAccuracy (.-altitudeAccuracy location)
-                :bearing (.-bearing location)
+                :heading (.-bearing location)
                 :speed (.-speed location)
                 :timestamp (.-timestamp location)}))))
       (.then (fn [watcher-id]
@@ -49,7 +49,7 @@
                                 :accuracy (.-accuracy coords)
                                 :altitude (.-altitude coords)
                                 :altitudeAccuracy (.-altitudeAccuracy coords)
-                                :bearing (.-heading coords)
+                                :heading (.-heading coords)
                                 :speed (.-speed coords)
                                 :timestamp (.-timestamp position)})))
                        (fn [error]

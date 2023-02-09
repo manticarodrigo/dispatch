@@ -1,3 +1,6 @@
-mutation CreateDevice($seatId: ID!, $deviceId: ID!, $info: JSON!) {
-  createDevice(seatId: $seatId, deviceId: $deviceId, info: $info)
+mutation CreateDevice($seatId: ID!, $deviceId: ID, $info: JSON!) {
+  createDevice(seatId: $seatId, deviceId: $deviceId, info: $info) {
+    id
+    info
+  }
 }

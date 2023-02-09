@@ -51,8 +51,7 @@ model Seat {
 
 model Location {
   id         String   @id @unique @default(uuid())
-  lat        Float
-  lng        Float
+  position   Json
   currentFor Seat?    @relation("SeatLocation")
   seat       Seat     @relation("SeatLocations", fields: [seatId], references: [id])
   seatId     String
@@ -69,7 +68,7 @@ model Place {
   lng         Float
   user        User       @relation(fields: [userId], references: [id])
   userId      String
-  waypoint    Waypoint[]
+  waypoints   Waypoint[]
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 }

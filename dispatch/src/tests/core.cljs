@@ -11,10 +11,11 @@
             [tests.util.location :refer (nearby generate-polyline)]
             [tests.user :as user]
             [tests.seat :as seat]
+            [tests.device :as device]
+            [tests.location :as location]
             [tests.place :as place]
             [tests.task :as task]
-            [tests.waypoint :as waypoint]
-            [tests.location :as location]))
+            [tests.waypoint :as waypoint]))
 
 (defmethod t/report [:cljs.test/default :begin-test-var] [m]
   (println "\n ◯" (-> m :var meta :name)))
@@ -117,6 +118,13 @@
                    (.then #(testing "ui presents invalid password anom" (is (some? %))))
                    (.then done)))))))
 
+(deftest fetch-active-user
+  (async done
+         (p/let [{:keys [result]} (user/active-user)]
+           (testing "api returns data"
+             (is (-> result :data :user :id)))
+           (done))))
+
 (deftest create-seats
   (async done
          (->
@@ -148,6 +156,36 @@
                (-> (p/all (map #(.findByText component (:name %)) seats))
                    (.then #(testing "ui presents seat names" (is (every? some? %))))
                    (.then done)))))))
+
+(deftest create-devices
+  (async done
+         (p/let [seats-mock (seat/find-all)
+                 seat-ids (->> seats-mock :result :data :seats (map :id))
+                 create-mocks (p/all (map-indexed
+                                      (fn [idx seat-id]
+                                        (device/create
+                                         {:seatId seat-id
+                                          :deviceId idx
+                                          :info {}}))
+                                      seat-ids))]
+           (testing "api returns data"
+             (is (every? #(-> % :result :data :createDevice) create-mocks))
+             (done)))))
+
+(deftest create-locations
+  (async done
+         (p/let [seats-mock (seat/find-all)
+                 seats (->> seats-mock :result :data :seats (drop 1))
+                 create-mocks (p/all (map-indexed
+                                      (fn [idx {:keys [id device]}]
+                                        (let [created-at (-> (js/Date.)
+                                                             (d/subHours (* idx 10))
+                                                             from-datetime-local)]
+                                          (location/create id (:id device) created-at)))
+                                      seats))]
+           (testing "api returns data"
+             (is (every? #(-> % :result :data :createLocation) create-mocks))
+             (done)))))
 
 (deftest create-places
   (async done
@@ -188,7 +226,7 @@
                    (.then #(testing "ui presents place names" (is (every? some? %))))
                    (.then done)))))))
 
-(deftest create-task
+(deftest create-tasks
   (async done
          (p/let [fetch-user-mock (user/active-user)
                  {:keys [seats places]} (-> fetch-user-mock :result :data :user)
@@ -249,22 +287,17 @@
                    (.then #(testing "ui presents seat names" (is (every? some? %))))
                    (.then done)))))))
 
-(deftest create-location
+
+(deftest fetch-tasks-for-seat
   (async done
          (p/let [seats-mock (seat/find-all)
-                 seat-ids (->> seats-mock :result :data :seats (map :id) (drop 1))
-                 create-mocks (p/all (map-indexed
-                                      (fn [idx seat-id]
-                                        (let [created-at (-> (js/Date.)
-                                                             (d/subHours (* idx 10))
-                                                             from-datetime-local)]
-                                          (location/create seat-id created-at)))
-                                      seat-ids))]
+                 seat-id (-> seats-mock :result :data :seats first :id)
+                 {:keys [result]} (seat/find-unique {:seatId seat-id})]
            (testing "api returns data"
-             (is (every? #(-> % :result :data :createLocation) create-mocks))
+             (is (-> result :data :seat :tasks first :id))
              (done)))))
 
-(deftest create-arrival
+(deftest create-waypoint-arrivals
   (async done
          (p/let [fetch-mocks (task/find-all)
                  create-mocks (p/all (map
@@ -274,19 +307,3 @@
            (testing "api returns data"
              (is (every? #(-> % :result :data :createArrival :arrivedAt) create-mocks))
              (done)))))
-
-(deftest fetch-seat
-  (async done
-         (p/let [seats-mock (seat/find-all)
-                 seat-id (-> seats-mock :result :data :seats first :id)
-                 {:keys [result]} (seat/find-unique {:seatId seat-id})]
-           (testing "api returns data"
-             (is (-> result :data :seat :tasks first :id))
-             (done)))))
-
-(deftest active-user
-  (async done
-         (p/let [{:keys [result]} (user/active-user)]
-           (testing "api returns data"
-             (is (-> result :data :user :id)))
-           (done))))

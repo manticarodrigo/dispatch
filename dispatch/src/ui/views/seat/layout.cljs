@@ -1,5 +1,6 @@
 (ns ui.views.seat.layout
   (:require [react]
+            [clojure.set :refer (rename-keys)]
             [shadow.resource :refer (inline)]
             [re-frame.core :refer (dispatch)]
             [ui.subs :refer (listen)]
@@ -16,24 +17,22 @@
 
 (defn layout [& children]
   (let [{seat-id :seat} (use-params)
+        watch-location (use-location)
+        [create-device] (use-mutation CREATE_DEVICE {:refetchQueries ["SeatByDevice"]})
+        [create-location] (use-mutation CREATE_LOCATION {})
         device (listen [:device])
         device-id (:id device)
         device-info (:info device)
         device-error (:error device)
         unlinked? (= "device-not-linked" device-error)
-        invalid? (= "invalid-token" device-error)
-        [create-device] (use-mutation CREATE_DEVICE {:refetchQueries ["SeatByDevice"]})
-        watch-location (use-location)
-        [create-location] (use-mutation CREATE_LOCATION {})]
+        invalid? (= "invalid-token" device-error)]
 
     (react/useEffect
      (fn []
        (watch-location
         (fn [location]
-          (let [lat-lng {:lat (:latitude location)
-                         :lng (:longitude location)}]
-            (update-overlay lat-lng)
-            (create-location {:variables (merge {:seatId seat-id} lat-lng)}))))
+          (update-overlay (rename-keys {:latitude :lat :longitude :lng} location))
+          (create-location {:variables (merge {:seatId seat-id} location)})))
        #())
      #js[])
 

@@ -6,6 +6,11 @@ query Seat($seatId: ID!, $filters: TaskFilters) {
       id
       info
     }
+    location {
+      id
+      position
+      createdAt
+    }
     tasks {
       id
       startAt
@@ -21,12 +26,6 @@ query Seat($seatId: ID!, $filters: TaskFilters) {
         arrivedAt
       }
       route
-    }
-    location {
-      id
-      lat
-      lng
-      createdAt
     }
   }
 }

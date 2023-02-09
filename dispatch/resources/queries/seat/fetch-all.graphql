@@ -2,10 +2,13 @@ query Seats {
   seats {
     id
     name
+    device {
+      id
+      info
+    }
     location {
       id
-      lat
-      lng
+      position
       createdAt
     }
   }

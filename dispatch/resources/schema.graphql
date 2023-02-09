@@ -15,8 +15,14 @@ type Query {
 type Mutation {
   createUser(email: String!, password: String!): String!
   createSession(email: String!, password: String!): String!
-  createDevice(seatId: ID!, deviceId: ID!, info: JSON!): String!
   createSeat(name: String!): Seat!
+  createDevice(seatId: ID!, deviceId: ID, info: JSON!): Device!
+  createLocation(
+    seatId: ID!
+    deviceId: ID!
+    position: LocationPosition!
+    createdAt: String
+  ): Location!
   createPlace(
     name: String!
     phone: String
@@ -31,12 +37,6 @@ type Mutation {
     placeIds: [ID]!
     route: JSON!
   ): Task!
-  createLocation(
-    seatId: ID!
-    lat: Float!
-    lng: Float!
-    createdAt: String
-  ): String!
   createArrival(waypointId: ID!, note: String): Waypoint
 }
 
@@ -49,7 +49,6 @@ type User {
 
 type Device {
   id: ID!
-  token: String!
   info: JSON!
   seat: Seat!
 }
@@ -64,9 +63,20 @@ type Seat {
 
 type Location {
   id: ID!
-  lat: Float!
-  lng: Float!
+  position: JSON!
   createdAt: String!
+}
+
+input LocationPosition {
+  latitude: Float!
+  longitude: Float!
+  accuracy: Float
+  altitude: Int
+  altitudeAccuracy: Int
+  heading: Float
+  simulated: Boolean
+  speed: Float
+  timestamp: Date
 }
 
 type Place {

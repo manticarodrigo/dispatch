@@ -1,8 +1,17 @@
 mutation CreateLocation(
   $seatId: ID!
-  $lat: Float!
-  $lng: Float!
+  $deviceId: ID!
+  $position: LocationPosition!
   $createdAt: String
 ) {
-  createLocation(seatId: $seatId, lat: $lat, lng: $lng, createdAt: $createdAt)
+  createLocation(
+    seatId: $seatId
+    deviceId: $deviceId
+    position: $position
+    createdAt: $createdAt
+  ) {
+    id
+    position
+    createdAt
+  }
 }

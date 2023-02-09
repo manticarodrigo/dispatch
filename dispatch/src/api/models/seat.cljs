@@ -34,7 +34,8 @@
   (p/let [user (active-user context {:include
                                      {:seats
                                       {:orderBy {:location {:createdAt "desc"}}
-                                       :include {:location true}}}})]
+                                       :include {:device true
+                                                 :location true}}}})]
     (sort-by #(some-> % .-location .-createdAt) > (gobj/get user "seats"))))
 
 (defn find-unique [^js context {:keys [seatId deviceId filters]}]
