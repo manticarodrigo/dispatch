@@ -1,6 +1,7 @@
 (ns ui.hooks.use-map
   (:require
    [react :refer (useEffect)]
+   [clojure.set :refer (rename-keys)]
    [reagent.core :as r]
    [promesa.core :as p]
    [ui.subs :refer (listen)]
@@ -19,7 +20,11 @@
         coords (flatten (concat
                          paths
                          (map :position points)
-                         (map :position locations)))
+                         (map #(-> %
+                                   :position
+                                   (select-keys [:latitude :longitude])
+                                   (rename-keys {:latitude :lat :longitude :lng}))
+                              locations)))
         bounds (js/google.maps.LatLngBounds.)
         ^js gmap @!map]
     (if (seq coords)

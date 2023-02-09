@@ -30,19 +30,17 @@
                               #(s/includes?
                                 (-> % :name s/lower-case)
                                 (s/lower-case @!search))
-                              seats))
-            overlays (mapv
-                      (fn [{:keys [name location]}]
-                        {:title name
-                         :position (-> location
-                                       :position
-                                       (select-keys [:latitude :longitude])
-                                       (rename-keys {:latitude :lat :longitude :lng}))})
-                      (filter #(:location %) filtered-seats))]
+                              seats))]
 
         (react/useEffect
          (fn []
-           (dispatch [:map {:locations overlays}])
+           (dispatch [:map
+                      {:locations
+                       (mapv
+                        (fn [{:keys [name location]}]
+                          {:title name
+                           :position (:position location)})
+                        (filter #(:location %) filtered-seats))}])
            #())
          #js[seats @!search])
 

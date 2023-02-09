@@ -1,6 +1,5 @@
 (ns ui.views.seat.layout
   (:require [react]
-            [clojure.set :refer (rename-keys)]
             [shadow.resource :refer (inline)]
             [re-frame.core :refer (dispatch)]
             [ui.subs :refer (listen)]
@@ -29,10 +28,12 @@
     (react/useEffect
      (fn []
        (watch-location
-        (fn [location]
+        (fn [position]
           (dispatch [:map {:locations [{:title "Your device"
-                                        :position (rename-keys {:latitude :lat :longitude :lng} location)}]}])
-          (create-location {:variables (merge {:seatId seat-id} location)})))
+                                        :position position}]}])
+          (create-location {:variables {:seatId seat-id
+                                        :deviceId device-id
+                                        :position position}})))
        #())
      #js[])
 

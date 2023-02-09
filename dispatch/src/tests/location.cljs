@@ -10,7 +10,9 @@
           [lat lng] (nearby)
           variables {:seatId seat-id
                      :deviceId device-id
-                     :position {:latitude lat :longitude lng}
+                     :position {:latitude lat
+                                :longitude lng
+                                :heading (rand-int 360)}
                      :createdAt created-at}
           request  {:query query :variables variables}
           result (send request)]
