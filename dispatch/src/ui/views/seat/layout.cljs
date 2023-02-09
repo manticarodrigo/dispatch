@@ -7,7 +7,6 @@
             [ui.lib.apollo :refer (gql use-mutation)]
             [ui.lib.router :refer (use-params)]
             [ui.lib.platform :refer (platform)]
-            [ui.lib.google.maps.overlay :refer (update-overlay)]
             [ui.hooks.use-location :refer (use-location)]
             [ui.components.modal :refer (modal)]
             [ui.components.inputs.button :refer (button)]))
@@ -31,7 +30,8 @@
      (fn []
        (watch-location
         (fn [location]
-          (update-overlay (rename-keys {:latitude :lat :longitude :lng} location))
+          (dispatch [:map {:locations [{:title "Your device"
+                                        :position (rename-keys {:latitude :lat :longitude :lng} location)}]}])
           (create-location {:variables (merge {:seatId seat-id} location)})))
        #())
      #js[])

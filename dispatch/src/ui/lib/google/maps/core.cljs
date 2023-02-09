@@ -9,7 +9,6 @@
    [ui.lib.google.maps.styles :refer (styles)]
    [ui.lib.google.maps.autocomplete :refer (init-autocomplete)]
    [ui.lib.google.maps.places :refer (init-places)]
-   [ui.lib.google.maps.overlay :refer (init-overlay)]
    [ui.lib.google.maps.directions :refer (init-directions)]))
 
 (defonce ^:private !loader (atom nil))
@@ -45,7 +44,6 @@
      (go
        (reset! !map (<p! (init-map el)))
        (init-directions)
-       (init-overlay @!map)
        (init-autocomplete)
        (init-places @!map)
        (resolve @!map)))))

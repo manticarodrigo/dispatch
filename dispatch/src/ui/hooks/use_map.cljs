@@ -6,7 +6,8 @@
    [ui.subs :refer (listen)]
    [ui.lib.google.maps.core :refer (init-api)]
    [ui.lib.google.maps.polyline :refer (set-polylines clear-polylines)]
-   [ui.lib.google.maps.marker :refer (set-markers clear-markers)]))
+   [ui.lib.google.maps.marker :refer (set-markers clear-markers)]
+   [ui.lib.google.maps.overlay :refer (set-overlays clear-overlays)]))
 
 (def ^:private !el (atom nil))
 (def ^:private !map (r/atom false))
@@ -14,7 +15,11 @@
 (defn- center []
   (let [paths (listen [:map/paths])
         points (listen [:map/points])
-        coords (flatten (concat paths (map :position points)))
+        locations (listen [:map/locations])
+        coords (flatten (concat
+                         paths
+                         (map :position points)
+                         (map :position locations)))
         bounds (js/google.maps.LatLngBounds.)
         ^js gmap @!map]
     (if (seq coords)
@@ -28,7 +33,8 @@
 
 (defn use-map []
   (let [paths (listen [:map/paths])
-        points (listen [:map/points])]
+        points (listen [:map/points])
+        locations (listen [:map/locations])]
 
     (useEffect
      (fn []
@@ -41,13 +47,15 @@
      (fn []
        (if @!map
          (let [polylines (when (seq paths) (set-polylines @!map paths))
-               markers (when (seq points) (set-markers @!map points))]
+               markers (when (seq points) (set-markers @!map points))
+               overlays (when (seq locations) (set-overlays @!map locations))]
            (center)
            #(do
               (clear-polylines polylines)
-              (clear-markers markers)))
+              (clear-markers markers)
+              (clear-overlays overlays)))
          #()))
-     #js[@!map paths points])
+     #js[@!map paths points locations])
 
     {:ref !el
      :map @!map

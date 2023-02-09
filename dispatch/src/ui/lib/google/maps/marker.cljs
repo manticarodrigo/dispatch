@@ -14,11 +14,12 @@
                     {:map gmap
                      :zIndex idx
                      :position position
-                     :title title
-                     :label {:text (str (+ 1 idx))
-                             :color "white"}
+                     :label {:text title
+                             :fontSize "0.875rem"
+                             :className "font-sans text-base text-sm text-neutral-900"}
                      :icon {:url "/images/svg/pin.svg"
-                            :scaledSize (js/google.maps.Size. 30 30)}}))
+                            :scaledSize (js/google.maps.Size. 30 30)
+                            :labelOrigin (js/google.maps.Point. 15 -6)}}))
                  (map-indexed vector points))]
     (doseq [^js marker markers]
       (.setMap marker gmap))

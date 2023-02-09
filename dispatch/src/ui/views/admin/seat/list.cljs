@@ -5,6 +5,7 @@
             [date-fns :as d]
             [reagent.core :as r]
             [re-frame.core :refer (dispatch)]
+            [clojure.set :refer (rename-keys)]
             [clojure.string :as s]
             [shadow.resource :refer (inline)]
             [ui.lib.apollo :refer (gql use-query)]
@@ -30,16 +31,18 @@
                                 (-> % :name s/lower-case)
                                 (s/lower-case @!search))
                               seats))
-            filtered-markers (filter #(:location %) filtered-seats)
-            markers (mapv
-                     (fn [{:keys [location name]}]
-                       {:position (select-keys location [:lat :lng])
-                        :title name})
-                     filtered-markers)]
+            overlays (mapv
+                      (fn [{:keys [name location]}]
+                        {:title name
+                         :position (-> location
+                                       :position
+                                       (select-keys [:latitude :longitude])
+                                       (rename-keys {:latitude :lat :longitude :lng}))})
+                      (filter #(:location %) filtered-seats))]
 
         (react/useEffect
          (fn []
-           (dispatch [:map {:points markers}])
+           (dispatch [:map {:locations overlays}])
            #())
          #js[seats @!search])
 
