@@ -1,8 +1,8 @@
 (ns ui.lib.google.maps.overlay
-  (:require [clojure.set :refer (rename-keys)]
-            [cljs-bean.core :refer (->js)]
+  (:require [cljs-bean.core :refer (->js)]
             [reagent.dom.server :refer (render-to-string)]
-            [ui.utils.string :refer (class-names)]))
+            [ui.utils.string :refer (class-names)]
+            [ui.utils.location :refer (position-to-lat-lng)]))
 
 (defn content [{:keys [title heading]}]
   (render-to-string
@@ -52,8 +52,7 @@
                          (.fromLatLngToDivPixel
                           projection
                           (-> position
-                              (select-keys [:latitude :longitude])
-                              (rename-keys {:latitude :lat :longitude :lng})
+                              position-to-lat-lng
                               ->js)))]
                (when position
                  (set! (.. container -style -display) "block")

@@ -19,7 +19,11 @@
 (defn nav []
   (use-routes [{:path "admin/*"
                 :element [:nav [:ul {:class "flex justify-center"}
-                                [nav-item "/admin/tasks" CalendarIcon]
-                                [nav-item "/admin/seats" UsersIcon]
-                                [nav-item "/admin/places" PinIcon]]]}
+                                [nav-item "tasks" CalendarIcon]
+                                [nav-item "seats" UsersIcon]
+                                [nav-item "places" PinIcon]]]}
+               {:path "seat/:id/*"
+                :element [:nav [:ul {:class "flex justify-center"}
+                                [nav-item "tasks" CalendarIcon]
+                                [nav-item "places" PinIcon]]]}
                {:path "*" :element [:<>]}]))

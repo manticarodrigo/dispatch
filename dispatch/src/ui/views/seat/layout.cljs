@@ -6,12 +6,19 @@
             [ui.lib.apollo :refer (gql use-mutation)]
             [ui.lib.router :refer (use-params)]
             [ui.lib.platform :refer (platform)]
+            [ui.utils.input :refer (debounce)]
             [ui.hooks.use-location :refer (use-location)]
             [ui.components.modal :refer (modal)]
             [ui.components.inputs.button :refer (button)]))
 
 (def CREATE_DEVICE (gql (inline "mutations/device/create.graphql")))
 (def CREATE_LOCATION (gql (inline "mutations/location/create.graphql")))
+
+(def -debounce
+  (debounce
+   (fn [fn]
+     (fn))
+   500))
 
 (defn layout [& children]
   (let [{seat-id :seat} (use-params)
@@ -29,16 +36,19 @@
      (fn []
        (watch-location
         (fn [position]
-          (dispatch [:map {:locations [{:title "Your device"
-                                        :position position}]}])
-          (create-location {:variables {:seatId seat-id
-                                        :deviceId device-id
-                                        :position position}})))
+          (dispatch [:device/position
+                     {:title "Your device"
+                      :position position}])
+          (-debounce
+           #(create-location
+             {:variables {:seatId seat-id
+                          :deviceId device-id
+                          :position position}}))))
        #())
      #js[])
 
     [:<>
-     (if (= platform "web")
+     (if (= platform "")
        [modal {:show true :title "Unsupported platform" :on-close #()}
         [:p {:class "mb-4"} "Looks like you are trying to access a seat view from a web browser. Please use the mobile app to access this view."]
         [:a {:href "https://play.google.com/store/apps/details?id=app.ambito.dispatch"

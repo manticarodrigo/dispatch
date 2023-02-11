@@ -35,6 +35,13 @@
     db [:device :error] v)))
 
 (rf/reg-event-db
+ :device/position
+ [trim-v]
+ (fn [db [v]]
+   (assoc-in
+    db [:device :position] v)))
+
+(rf/reg-event-db
  :map
  [trim-v]
  (assoc-key :map))

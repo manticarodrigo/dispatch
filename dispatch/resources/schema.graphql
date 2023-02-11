@@ -71,12 +71,12 @@ input LocationPosition {
   latitude: Float!
   longitude: Float!
   accuracy: Float
-  altitude: Int
-  altitudeAccuracy: Int
+  altitude: Float
+  altitudeAccuracy: Float
   heading: Float
   simulated: Boolean
   speed: Float
-  timestamp: Date
+  timestamp: Float
 }
 
 type Place {

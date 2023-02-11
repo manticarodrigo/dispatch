@@ -9,7 +9,8 @@
                   "admin/tasks"
                   "admin/seats"
                   "admin/places"
-                  "seat/:id/tasks"])
+                  "seat/:id/tasks"
+                  "seat/:id/places"])
 
 (def index-routes (mapv (fn [path] {:path path :element [dispatch-icon]}) index-paths))
 
