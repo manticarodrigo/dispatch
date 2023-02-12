@@ -23,20 +23,37 @@
                 :waypoints {:include {:place true}
                             :orderBy {:order "asc"}}}})))
 
-(defn find-all [^js context {:keys [filters]}]
-  (p/-> (active-user
-         context
-         {:include
-          {:tasks
-           {:where (filters/task filters)
-            :orderBy {:startAt "asc"}
-            :include {:seat true
-                      :waypoints {:include {:place true}
-                                  :orderBy {:order "asc"}}}}}})
-        (gobj/get "tasks")))
+(defn find-all [^js context {:keys [seatId deviceId filters]}]
+  (if seatId
+    (p/-> (active-seat
+           context
+           {:seatId seatId
+            :deviceId deviceId
+            :query {:include
+                    {:user
+                     {:include
+                      {:tasks
+                       {:where (update-in (filters/task filters) [:AND] conj
+                                          {:seat {:id seatId}})
+                        :orderBy {:startAt "asc"}
+                        :include {:seat true
+                                  :waypoints {:include {:place true}
+                                              :orderBy {:order "asc"}}}}}}}}})
+          (gobj/get "user")
+          (gobj/get "tasks"))
+    (p/-> (active-user
+           context
+           {:include
+            {:tasks
+             {:where (filters/task filters)
+              :orderBy {:startAt "asc"}
+              :include {:seat true
+                        :waypoints {:include {:place true}
+                                    :orderBy {:order "asc"}}}}}})
+          (gobj/get "tasks"))))
 
 (defn find-unique [^js context {:keys [taskId seatId deviceId]}]
-  (if deviceId
+  (if seatId
     (p/-> (active-seat
            context
            {:seatId seatId
@@ -60,20 +77,30 @@
           (gobj/get "tasks")
           first)))
 
-(defn find-by-place [^js context {:keys [placeId filters]}]
-  (let [{:keys [start end status]} filters]
+(defn find-by-place [^js context {:keys [seatId deviceId placeId filters]}]
+  (if seatId
+    (p/-> (active-seat
+           context
+           {:seatId seatId
+            :deviceId deviceId
+            :query {:include
+                    {:user
+                     {:include
+                      {:tasks
+                       {:where (update-in (filters/task filters) [:AND] conj
+                                          {:waypoints {:some {:place {:id placeId}}}})
+                        :orderBy {:startAt "asc"}
+                        :include {:seat true
+                                  :waypoints {:include {:place true}
+                                              :orderBy {:order "asc"}}}}}}}}})
+          (gobj/get "user")
+          (gobj/get "tasks"))
     (p/-> (active-user
            context
-           ;; TODO: move to place model
            {:include
             {:tasks
-             {:where {:AND [{:waypoints {:some {:place {:id placeId}}}}
-                            {:waypoints (condp = status
-                                          "INCOMPLETE" {:some {:arrivedAt {:equals nil}}}
-                                          "COMPLETE" {:every {:arrivedAt {:not nil}}}
-                                          nil {})}
-                            (if (and start end) {:startAt {:gte start}} {})
-                            (if (and start end) {:startAt {:lte end}} {})]}
+             {:where (update-in (filters/task filters) [:AND] conj
+                                {:waypoints {:some {:place {:id placeId}}}})
               :orderBy {:startAt "asc"}
               :include {:seat true
                         :waypoints {:include {:place true}

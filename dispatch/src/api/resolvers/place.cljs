@@ -7,8 +7,8 @@
   (place/create context (->clj args)))
 
 (defn find-all
-  [_ _ context _]
-  (place/find-all context))
+  [_ args context _]
+  (place/find-all context (->clj args)))
 
 (defn find-unique
   [_ args context _]

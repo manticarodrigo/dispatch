@@ -1,5 +1,5 @@
-query TaskByDevice($taskId: ID!, $seatId: ID!, $deviceId: ID!) {
-  task(taskId: $taskId, seatId: $seatId, deviceId: $deviceId) {
+query TaskByDevice($seatId: ID!, $deviceId: ID!, $taskId: ID!) {
+  task(seatId: $seatId, deviceId: $deviceId, taskId: $taskId) {
     id
     startAt
     seat {

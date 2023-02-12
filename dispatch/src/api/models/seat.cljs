@@ -38,26 +38,16 @@
                                                  :location true}}}})]
     (sort-by #(some-> % .-location .-createdAt) > (gobj/get user "seats"))))
 
-(defn find-unique [^js context {:keys [seatId deviceId filters]}]
-  (if deviceId
-    (active-seat
-     context
-     {:seatId seatId
-      :deviceId deviceId
-      :query {:include {:device true
-                        :location true
-                        :tasks {:where (filters/task filters)
-                                :orderBy {:startAt "asc"}
-                                :include {:waypoints {:include {:place true}}}}}}})
-    (p/-> (active-user
-           context
-           {:include
-            {:seats
-             {:where {:id seatId}
-              :include {:device true
-                        :location true
-                        :tasks {:where (filters/task filters)
-                                :orderBy {:startAt "asc"}
-                                :include {:waypoints {:include {:place true}}}}}}}})
-          (gobj/get "seats")
-          first)))
+(defn find-unique [^js context {:keys [seatId filters]}]
+  (p/-> (active-user
+         context
+         {:include
+          {:seats
+           {:where {:id seatId}
+            :include {:device true
+                      :location true
+                      :tasks {:where (filters/task filters)
+                              :orderBy {:startAt "asc"}
+                              :include {:waypoints {:include {:place true}}}}}}}})
+        (gobj/get "seats")
+        first))

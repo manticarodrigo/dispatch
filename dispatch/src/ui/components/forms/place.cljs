@@ -1,10 +1,11 @@
 (ns ui.components.forms.place
   (:require [shadow.resource :refer (inline)]
             [reagent.core :as r]
+            [ui.subs :refer (listen)]
             [ui.utils.error :refer (tr-error)]
             [ui.utils.string :refer (class-names)]
             [ui.lib.apollo :refer (gql parse-anoms use-mutation)]
-            [ui.lib.router :refer (use-navigate)]
+            [ui.lib.router :refer (use-params use-navigate)]
             [ui.lib.google.maps.autocomplete :refer (search-places)]
             [ui.lib.google.maps.places :refer (find-place)]
             [ui.components.icons.spinner :refer (spinner)]
@@ -19,7 +20,10 @@
         !anoms (r/atom {})
         !options (r/atom [])]
     (fn []
-      (let [[create status] (use-mutation CREATE_PLACE {})
+      (let [{seat-id :seat} (use-params)
+            device (listen [:device])
+            device-id (:id device)
+            [create status] (use-mutation CREATE_PLACE {})
             {:keys [name phone email place_id]} @!state
             {:keys [loading]} status
             navigate (use-navigate)
@@ -39,9 +43,14 @@
          [:form {:class "flex flex-col"
                  :on-submit (fn [e]
                               (.preventDefault e)
-                              (-> (create {:variables (dissoc @!state :place_id)})
-                                  (.then (fn [] (navigate "../places")))
-                                  (.catch #(reset! !anoms (parse-anoms %)))))}
+                              (let [variables (dissoc @!state :place_id)]
+                                (-> (create {:variables (if seat-id
+                                                          (assoc variables
+                                                                 :seatId seat-id
+                                                                 :deviceId device-id)
+                                                          variables)})
+                                    (.then (fn [] (navigate "../places")))
+                                    (.catch #(reset! !anoms (parse-anoms %))))))}
           [input {:id "name"
                   :label "Name"
                   :value name

@@ -6,11 +6,12 @@
                      :createdAt {:gte (d/subDays (js/Date.) 7)}}}})
 
 (defn task [{:keys [start end status]}]
-  {:waypoints (condp = status
-                "INCOMPLETE" {:some {:arrivedAt {:equals nil}}}
-                "COMPLETE" {:every {:arrivedAt {:not nil}}}
-                nil {})
-   :AND (if (and start end)
-          [{:startAt {:gte start}}
-           {:startAt {:lte end}}]
-          [])})
+  {:AND (concat [{:waypoints
+                  (condp = status
+                    "INCOMPLETE" {:some {:arrivedAt {:equals nil}}}
+                    "COMPLETE" {:every {:arrivedAt {:not nil}}}
+                    nil {})}]
+                (if (and start end)
+                  [{:startAt {:gte start}}
+                   {:startAt {:lte end}}]
+                  []))})

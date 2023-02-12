@@ -4,11 +4,11 @@ scalar JSON
 type Query {
   user: User
   seats: [Seat]
-  seat(seatId: ID!, deviceId: ID, filters: TaskFilters): Seat
-  places: [Place]
-  place(placeId: ID!, filters: TaskFilters): Place
-  tasks(filters: TaskFilters): [Task]
-  task(taskId: ID!, seatId: ID, deviceId: ID): Task
+  seat(seatId: ID!, filters: TaskFilters): Seat
+  places(seatId: ID, deviceId: ID): [Place]
+  place(seatId: ID, deviceId: ID, placeId: ID!, filters: TaskFilters): Place
+  tasks(seatId: ID, deviceId: ID, filters: TaskFilters): [Task]
+  task(seatId: ID, deviceId: ID, taskId: ID!): Task
   waypoint(waypointId: ID!): Waypoint
 }
 
@@ -24,6 +24,8 @@ type Mutation {
     createdAt: String
   ): Location!
   createPlace(
+    seatId: ID
+    deviceId: ID
     name: String!
     phone: String
     email: String
@@ -87,7 +89,7 @@ type Place {
   description: String!
   lat: Float!
   lng: Float!
-  tasks(filters: TaskFilters): [Task]
+  tasks(seatId: ID, deviceId: ID, filters: TaskFilters): [Task]
 }
 
 type Waypoint {

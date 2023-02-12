@@ -45,6 +45,7 @@ model Seat {
   locationId String?    @unique
   locations  Location[] @relation("SeatLocations")
   tasks      Task[]
+  places     Place[]
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
 }
@@ -66,6 +67,8 @@ model Place {
   description String
   lat         Float
   lng         Float
+  seat        Seat?      @relation(fields: [seatId], references: [id])
+  seatId      String?
   user        User       @relation(fields: [userId], references: [id])
   userId      String
   waypoints   Waypoint[]

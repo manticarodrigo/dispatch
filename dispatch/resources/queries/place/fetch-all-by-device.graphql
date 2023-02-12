@@ -1,0 +1,9 @@
+query PlacesByDevice($seatId: ID!, $deviceId: ID!) {
+  places(seatId: $seatId, deviceId: $deviceId) {
+    id
+    name
+    description
+    lat
+    lng
+  }
+}
