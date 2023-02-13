@@ -2,16 +2,15 @@
   (:require [shadow.resource :refer (inline)]
             [reagent.core :as r]
             [ui.subs :refer (listen)]
-            [ui.utils.error :refer (tr-error)]
-            [ui.utils.string :refer (class-names)]
             [ui.lib.apollo :refer (gql parse-anoms use-mutation)]
             [ui.lib.router :refer (use-params use-navigate)]
             [ui.lib.google.maps.autocomplete :refer (search-places)]
             [ui.lib.google.maps.places :refer (find-place)]
-            [ui.components.icons.spinner :refer (spinner)]
+            [ui.utils.i18n :refer (tr)]
             [ui.components.inputs.input :refer (input)]
             [ui.components.inputs.combobox :refer (combobox)]
-            [ui.components.inputs.button :refer (button)]))
+            [ui.components.inputs.submit-button :refer (submit-button)]
+            [ui.components.errors :refer (errors)]))
 
 (def CREATE_PLACE (gql (inline "mutations/place/create.graphql")))
 
@@ -52,12 +51,12 @@
                                     (.then (fn [] (navigate "../places")))
                                     (.catch #(reset! !anoms (parse-anoms %))))))}
           [input {:id "name"
-                  :label "Name"
+                  :label (tr [:field/name])
                   :value name
                   :required true
                   :class "pb-4"
                   :on-text #(swap! !state assoc :name %)}]
-          [combobox {:label "Location"
+          [combobox {:label (tr [:field/location])
                      :class "pb-4"
                      :value place_id
                      :options place-options
@@ -77,28 +76,17 @@
                                       (.then #(swap! !state merge (select-keys % [:place_id :description :lat :lng])))))}]
           [input {:id "phone"
                   :type "tel"
-                  :label "Phone"
+                  :label (tr [:field/phone])
                   :value phone
                   :required false
                   :class "pb-4"
                   :on-text #(swap! !state assoc :phone %)}]
-
           [input {:id "email"
                   :type "email"
-                  :label "Email"
+                  :label (tr [:field/email])
                   :value email
                   :required false
                   :class "pb-4"
                   :on-text #(swap! !state assoc :email %)}]
-
-          [button
-           {:label (if loading
-                     [:span {:class "flex justify-center items-center"}
-                      [spinner {:class "mr-2 w-5 h-5"}] "Loading..."]
-                     "Submit")
-            :class (class-names "my-4 w-full" (when loading "cursor-progress"))
-            :disabled loading}]
-          (doall (for [anom @!anoms]
-                   [:span {:key (:reason anom)
-                           :class "my-2 p-2 rounded border border-red-300 text-sm text-red-100 bg-red-800"}
-                    (tr-error anom)]))]]))))
+          [submit-button {:loading loading}]
+          [errors @!anoms]]]))))

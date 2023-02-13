@@ -6,13 +6,27 @@
   {:en
    {:view {:register {:title "Register"}
            :login {:title "Login"}
-           :task {:list {:title "Tasks"}}
-           :seat {:list {:title "Seats"}}
-           :place {:list {:title "Places"}}}
-    :fields {:email "Email"
-             :password "Password"
-             :submit "Submit"}
-    :generic {:empty-search "No results found"}
+           :task {:list {:title "Tasks"}
+                  :create {:title "Create task"}}
+           :seat {:list {:title "Seats"}
+                  :create {:title "Create seat"}}
+           :place {:list {:title "Places"}
+                   :create {:title "Create place"}}}
+    :field {:email "Email"
+            :password "Password"
+            :name "Name"
+            :phone "Phone"
+            :location "Location"
+            :note "Note"
+            :seat "Seat"
+            :departure "Departure"
+            :origin "Origin"
+            :destination "Destination"
+            :stops "Stops"
+            :add-stop "Add stop"
+            :submit "Submit"}
+    :generic {:loading "Loading"
+              :empty-search "No results found"}
     :map {:center "Center map"}
     :error {:unknown "An unknown error occurred."
             :unique-constraint "The account already exists."
@@ -21,13 +35,27 @@
    :es
    {:view {:register {:title "Registrar"}
            :login {:title "Ingresar"}
-           :task {:list {:title "Tareas"}}
-           :seat {:list {:title "Asientos"}}
-           :place {:list {:title "Places"}}}
-    :fields {:email "Correo electrónico"
-             :password "Contraseña"
-             :submit "Enviar"}
-    :generic {:empty-search "No se han encontrado resultados"}
+           :task {:list {:title "Tareas"}
+                  :create {:title "Crear tarea"}}
+           :seat {:list {:title "Asientos"}
+                  :create {:title "Crear asiento"}}
+           :place {:list {:title "Places"}
+                   :create {:title "Crear lugar"}}}
+    :field {:email "Correo electrónico"
+            :password "Contraseña"
+            :name "Nombre"
+            :phone "Teléfono"
+            :location "Ubicación"
+            :note "Nota"
+            :seat "Asiento"
+            :departure "Salida"
+            :origin "Origen"
+            :destination "Destino"
+            :stops "Paradas"
+            :add-stop "Agregar parada"
+            :submit "Enviar"}
+    :generic {:loading "Cargando"
+              :empty-search "No se han encontrado resultados"}
     :map {:center "Centrar mapa"}
     :error {:unknown "Un error desconocido ocurrió."
             :unique-constraint "La cuenta ya existe."

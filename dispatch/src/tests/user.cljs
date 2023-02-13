@@ -5,7 +5,8 @@
             [tests.util.ui :refer (with-mounted-component
                                     test-app
                                     change
-                                    submit)]))
+                                    submit)]
+            [ui.utils.i18n :refer (tr)]))
 
 (defn active-user []
   (p/let [query (inline "queries/user/fetch.graphql")
@@ -41,8 +42,8 @@
       [test-app {:route route :mocks mocks}]
       (fn [^js component]
         (p/do
-          (change (.getByLabelText component "Email") email)
-          (change (.getByLabelText component "Password") password)
+          (change (.getByLabelText component (tr [:field/email])) email)
+          (change (.getByLabelText component (tr [:field/password])) password)
           (submit (-> component (.-container) (.querySelector "form")))
           (f component))))))
 

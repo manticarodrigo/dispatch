@@ -3,7 +3,8 @@
             [shadow.resource :refer (inline)]
             [promesa.core :as p]
             [tests.util.api :refer (send)]
-            [tests.util.ui :refer (with-mounted-component test-app change submit)]))
+            [tests.util.ui :refer (with-mounted-component test-app change submit)]
+            [ui.utils.i18n :refer (tr)]))
 
 (defn create []
   (p/let [query (inline "mutations/seat/create.graphql")
@@ -37,6 +38,6 @@
       [test-app {:route "/admin/seats/create" :mocks mocks}]
       (fn [^js component]
         (p/do
-          (change (.getByLabelText component "Name") (:name variables))
+          (change (.getByLabelText component (tr [:field/name])) (:name variables))
           (submit (-> component (.-container) (.querySelector "form")))
           (f component))))))

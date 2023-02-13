@@ -3,6 +3,7 @@
             [promesa.core :as p]
             [common.utils.date :refer (to-datetime-local)]
             [ui.lib.google.maps.directions :refer (init-directions)]
+            [ui.utils.i18n :refer (tr)]
             [tests.mocks.google :refer (mock-google mock-lat-lng)]
             [tests.util.api :refer (send)]
             [tests.util.ui :refer (with-mounted-component
@@ -58,15 +59,15 @@
         :mocks mocks}]
       (fn [^js component user]
         (p/do
-          (.findByText component "Create task")
-          (select-combobox user component "Assigned seat" (-> seat :name))
+          (.findByText component (tr [:field/submit]))
+          (select-combobox user component (tr [:field/seat]) (-> seat :name))
 
           (change
-           (.getByLabelText component "Departure time")
+           (.getByLabelText component (tr [:field/departure]))
            (to-datetime-local (js/Date. startAt)))
 
-          (select-combobox user component "Origin" (-> origin-place :name))
-          (select-combobox user component "Destination" (-> destination-place :name))
+          (select-combobox user component (tr [:field/origin]) (-> origin-place :name))
+          (select-combobox user component (tr [:field/destination]) (-> destination-place :name))
 
           (set! js/google (mock-google
                            {:routes
@@ -78,11 +79,11 @@
 
           #_{:clj-kondo/ignore [:unresolved-symbol]}
           (p/doseq [{place-name :name} stops]
-            (select-combobox user component "Add stop" place-name)
+            (select-combobox user component (tr [:field/add-stop]) place-name)
             (.findByText component place-name))
 
-          (.findByText component "Loading...")
-          (.findByText component "Create task")
+          (.findByText component (str (tr [:generic/loading]) "..."))
+          (.findByText component (tr [:field/submit]))
 
           (submit (-> component (.-container) (.querySelector "form")))
           (f component))))))

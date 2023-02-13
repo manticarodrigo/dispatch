@@ -12,14 +12,15 @@
             [ui.lib.apollo :refer (gql parse-anoms use-query use-mutation)]
             [ui.lib.router :refer (use-navigate)]
             [ui.lib.google.maps.directions :refer (calc-route)]
+            [ui.utils.i18n :refer (tr)]
             [ui.utils.string :refer (class-names)]
-            [ui.utils.error :refer (tr-error)]
             [ui.utils.vector :refer (vec-remove)]
             [ui.utils.input :refer (debounce)]
-            [ui.components.icons.spinner :refer (spinner)]
             [ui.components.inputs.combobox :refer (combobox)]
             [ui.components.inputs.input :refer (input)]
-            [ui.components.inputs.button :refer (button base-button-class)]))
+            [ui.components.inputs.button :refer (base-button-class)]
+            [ui.components.inputs.submit-button :refer (submit-button)]
+            [ui.components.errors :refer (errors)]))
 
 
 
@@ -87,97 +88,87 @@
            #())
          #js[route])
 
-        [:<>
-         [:form {:class "flex flex-col"
-                 :on-submit
-                 (fn [e]
-                   (.preventDefault e)
-                   (-> (create {:variables
-                                {:seatId seatId
-                                 :startAt startAt
-                                 :placeIds place-ids
-                                 :route route}})
-                       (.then #(navigate "/admin/tasks"))
-                       (.catch #(reset! !anoms (parse-anoms %)))))}
-          [combobox {:label "Assigned seat"
-                     :value (:seatId @!state)
-                     :required true
-                     :class "mb-4"
-                     :options seats
-                     :option-to-label #(:name %)
-                     :option-to-value #(:id %)
-                     :on-change #(swap! !state assoc :seatId %)}]
-          [input {:id "start"
-                  :label "Departure time"
-                  :type "datetime-local"
-                  :value (to-datetime-local
-                          (js/Date. (:startAt @!state)))
-                  :required true
-                  :class "mb-4"
-                  :on-text #(swap! !state assoc :startAt
-                                   (from-datetime-local (js/Date. %)))}]
-          [combobox {:label "Origin"
-                     :value (:origin-id @!state)
-                     :required true
-                     :class "mb-4"
-                     :options places
-                     :option-to-label #(:name %)
-                     :option-to-value #(:id %)
-                     :on-change (fn [id]
-                                  (swap! !state assoc :origin-id id)
-                                  (when-not (:destination-id @!state)
-                                    (swap! !state assoc :destination-id id)))}]
-          (when (and (:origin-id @!state) (:destination-id @!state))
-            [:div {:class "mb-4"}
-             [:label {:class "block mb-2 text-sm"} "Manage stops"]
-             [:div
-              [:> (. Reorder -Group)
-               {:axis "y"
-                :values draggable-item-ids
-                :on-reorder #(swap!
-                              !state
-                              assoc
-                              :stop-tuples
-                              (mapv (fn [id] [id (get draggable-item-map id)]) %))}
-               (for [[idx [draggable-item-id place-id]] (map-indexed vector stop-tuples)]
-                 (let [{:keys [name description]} (get place-map place-id)]
-                   ^{:key draggable-item-id}
-                   [:> (. Reorder -Item)
-                    {:value draggable-item-id
-                     :class (class-names
-                             base-button-class
-                             "cursor-grab flex items-center mb-2 rounded p-2")}
-                    [:> MenuIcon {:class "flex-shrink-0"}]
-                    [:div {:class "px-3 w-full"}
-                     [:div {:class "text-base"} name]
-                     [:div {:class "text-sm text-neutral-300"} description]]
-                    [:button
-                     {:type "button"
-                      :class "flex-shrink-0"
-                      :on-click #(swap! !state update :stop-tuples vec-remove idx)}
-                     [:> XIcon]]]))]
-              [combobox {:aria-label "Add stop"
-                         :placeholder "Add stop"
-                         :options places
-                         :option-to-label #(:name %)
-                         :option-to-value #(:id %)
-                         :on-change #(swap! !state update :stop-tuples conj [(uuid) %])}]]])
-          [combobox {:label "Destination"
-                     :value (:destination-id @!state)
-                     :required true
-                     :class "mb-4"
-                     :options places
-                     :option-to-label #(:name %)
-                     :option-to-value #(:id %)
-                     :on-change #(swap! !state assoc :destination-id %)}]
-          [button
-           {:label (if loading
-                     [:span {:class "flex justify-center items-center"}
-                      [spinner {:class "mr-2 w-5 h-5"}] "Loading..."]
-                     "Create task")
-            :class (class-names "my-4 w-full" (when loading "cursor-progress"))
-            :disabled loading}]
-          (doall (for [anom @!anoms]
-                   [:span {:key (:reason anom)
-                           :class "my-2 p-2 rounded border border-red-300 text-sm text-red-100 bg-red-800"}
-                    (tr-error anom)]))]]))))
+        [:form {:class "flex flex-col"
+                :on-submit
+                (fn [e]
+                  (.preventDefault e)
+                  (-> (create {:variables
+                               {:seatId seatId
+                                :startAt startAt
+                                :placeIds place-ids
+                                :route route}})
+                      (.then #(navigate "/admin/tasks"))
+                      (.catch #(reset! !anoms (parse-anoms %)))))}
+         [combobox {:label (tr [:field/seat])
+                    :value (:seatId @!state)
+                    :required true
+                    :class "mb-4"
+                    :options seats
+                    :option-to-label #(:name %)
+                    :option-to-value #(:id %)
+                    :on-change #(swap! !state assoc :seatId %)}]
+         [input {:id "start"
+                 :label (tr [:field/departure])
+                 :type "datetime-local"
+                 :value (to-datetime-local
+                         (js/Date. (:startAt @!state)))
+                 :required true
+                 :class "mb-4"
+                 :on-text #(swap! !state assoc :startAt
+                                  (from-datetime-local (js/Date. %)))}]
+         [combobox {:label (tr [:field/origin])
+                    :value (:origin-id @!state)
+                    :required true
+                    :class "mb-4"
+                    :options places
+                    :option-to-label #(:name %)
+                    :option-to-value #(:id %)
+                    :on-change (fn [id]
+                                 (swap! !state assoc :origin-id id)
+                                 (when-not (:destination-id @!state)
+                                   (swap! !state assoc :destination-id id)))}]
+         (when (and (:origin-id @!state) (:destination-id @!state))
+           [:div {:class "mb-4"}
+            [:label {:class "block mb-2 text-sm"} (tr [:field/stops])]
+            [:div
+             [:> (. Reorder -Group)
+              {:axis "y"
+               :values draggable-item-ids
+               :on-reorder #(swap!
+                             !state
+                             assoc
+                             :stop-tuples
+                             (mapv (fn [id] [id (get draggable-item-map id)]) %))}
+              (for [[idx [draggable-item-id place-id]] (map-indexed vector stop-tuples)]
+                (let [{:keys [name description]} (get place-map place-id)]
+                  ^{:key draggable-item-id}
+                  [:> (. Reorder -Item)
+                   {:value draggable-item-id
+                    :class (class-names
+                            base-button-class
+                            "cursor-grab flex items-center mb-2 rounded p-2")}
+                   [:> MenuIcon {:class "flex-shrink-0"}]
+                   [:div {:class "px-3 w-full"}
+                    [:div {:class "text-base"} name]
+                    [:div {:class "text-sm text-neutral-300"} description]]
+                   [:button
+                    {:type "button"
+                     :class "flex-shrink-0"
+                     :on-click #(swap! !state update :stop-tuples vec-remove idx)}
+                    [:> XIcon]]]))]
+             [combobox {:aria-label (tr [:field/add-stop])
+                        :placeholder (tr [:field/add-stop])
+                        :options places
+                        :option-to-label #(:name %)
+                        :option-to-value #(:id %)
+                        :on-change #(swap! !state update :stop-tuples conj [(uuid) %])}]]])
+         [combobox {:label (tr [:field/destination])
+                    :value (:destination-id @!state)
+                    :required true
+                    :class "mb-4"
+                    :options places
+                    :option-to-label #(:name %)
+                    :option-to-value #(:id %)
+                    :on-change #(swap! !state assoc :destination-id %)}]
+         [submit-button {:loading loading}]
+         [errors @!anoms]]))))

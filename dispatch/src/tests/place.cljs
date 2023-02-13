@@ -8,6 +8,7 @@
                                     select
                                     get-combobox
                                     submit)]
+            [ui.utils.i18n :refer (tr)]
             [ui.lib.google.maps.autocomplete :refer (init-autocomplete)]
             [ui.lib.google.maps.places :refer (init-places)]
             [tests.mocks.google :refer (mock-google)]))
@@ -35,12 +36,12 @@
       [test-app {:route "/admin/places/create" :mocks mocks}]
       (fn [^js component user]
         (p/do
-          (change (.getByLabelText component "Name") name)
+          (change (.getByLabelText component (tr [:field/name])) name)
 
           (set! js/google (mock-google [{:place_id "1" :description description}]))
           (init-autocomplete)
 
-          (change (get-combobox component "Location") description)
+          (change (get-combobox component (tr [:field/location])) description)
 
           (.findByText component description)
 
