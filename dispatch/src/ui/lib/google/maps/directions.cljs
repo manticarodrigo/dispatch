@@ -8,10 +8,10 @@
   (js/google.maps.DirectionsService.))
 
 (defn- create-route-request [places]
-  (let [waypoints (map (fn [%] {:location (->js %) :stopover true}) places)]
-    (->js {:origin (-> waypoints first :location ->js)
-           :destination (-> waypoints last :location ->js)
-           :waypoints (->> waypoints (drop-last 1) ->js)
+  (let [stops (map (fn [%] {:location (->js %) :stopover true}) places)]
+    (->js {:origin (-> stops first :location ->js)
+           :destination (-> stops last :location ->js)
+           :waypoints (->> stops (drop-last 1) ->js)
            ;; :optimizeWaypoints true
            :travelMode "DRIVING"})))
 

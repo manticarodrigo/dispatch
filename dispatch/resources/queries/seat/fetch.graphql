@@ -14,7 +14,7 @@ query Seat($seatId: ID!, $filters: TaskFilters) {
     tasks {
       id
       startAt
-      waypoints {
+      stops {
         id
         place {
           id

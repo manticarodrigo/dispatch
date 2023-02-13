@@ -10,7 +10,7 @@ query Place($placeId: ID!, $filters: TaskFilters) {
     tasks(filters: $filters) {
       id
       startAt
-      waypoints {
+      stops {
         id
         place {
           id

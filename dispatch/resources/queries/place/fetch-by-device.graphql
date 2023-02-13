@@ -15,7 +15,7 @@ query PlaceByDevice(
     tasks(seatId: $seatId, deviceId: $deviceId, filters: $filters) {
       id
       startAt
-      waypoints {
+      stops {
         id
         place {
           id

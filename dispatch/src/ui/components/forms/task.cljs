@@ -33,7 +33,7 @@
                         :origin-id nil
                         :destination-id nil
                         ;; tuples of [draggable-item-id place-id] to use for reorderable list 
-                        :waypoint-tuples []
+                        :stop-tuples []
                         ;; directions api payload
                         :route nil})
         !loading-route (r/atom false)
@@ -58,12 +58,12 @@
             {:keys [seats places]} (some-> query :data :user)
             place-map (into {} (for [place places]
                                  {(:id place) place}))
-            {:keys [seatId startAt origin-id destination-id waypoint-tuples route]} @!state
-            waypoint-ids (mapv second waypoint-tuples)
-            place-ids (filterv some? (concat [origin-id] waypoint-ids [destination-id]))
+            {:keys [seatId startAt origin-id destination-id stop-tuples route]} @!state
+            stop-ids (mapv second stop-tuples)
+            place-ids (filterv some? (concat [origin-id] stop-ids [destination-id]))
             selected-places (mapv #(get place-map %) place-ids)
-            draggable-item-ids (mapv first waypoint-tuples)
-            draggable-item-map (into {} (for [[item-id place-id] waypoint-tuples]
+            draggable-item-ids (mapv first stop-tuples)
+            draggable-item-map (into {} (for [[item-id place-id] stop-tuples]
                                           {item-id place-id}))
             markers (->> route
                          :legs
@@ -78,7 +78,7 @@
            (reset! !loading-route true)
            (-calc-route selected-places)
            #())
-         #js[origin-id destination-id waypoint-tuples])
+         #js[origin-id destination-id stop-tuples])
 
         (react/useEffect
          (fn []
@@ -129,7 +129,7 @@
                                     (swap! !state assoc :destination-id id)))}]
           (when (and (:origin-id @!state) (:destination-id @!state))
             [:div {:class "mb-4"}
-             [:label {:class "block mb-2 text-sm"} "Manage waypoints"]
+             [:label {:class "block mb-2 text-sm"} "Manage stops"]
              [:div
               [:> (. Reorder -Group)
                {:axis "y"
@@ -137,9 +137,9 @@
                 :on-reorder #(swap!
                               !state
                               assoc
-                              :waypoint-tuples
+                              :stop-tuples
                               (mapv (fn [id] [id (get draggable-item-map id)]) %))}
-               (for [[idx [draggable-item-id place-id]] (map-indexed vector waypoint-tuples)]
+               (for [[idx [draggable-item-id place-id]] (map-indexed vector stop-tuples)]
                  (let [{:keys [name description]} (get place-map place-id)]
                    ^{:key draggable-item-id}
                    [:> (. Reorder -Item)
@@ -154,14 +154,14 @@
                     [:button
                      {:type "button"
                       :class "flex-shrink-0"
-                      :on-click #(swap! !state update :waypoint-tuples vec-remove idx)}
+                      :on-click #(swap! !state update :stop-tuples vec-remove idx)}
                      [:> XIcon]]]))]
-              [combobox {:aria-label "Add waypoint"
-                         :placeholder "Add waypoint"
+              [combobox {:aria-label "Add stop"
+                         :placeholder "Add stop"
                          :options places
                          :option-to-label #(:name %)
                          :option-to-value #(:id %)
-                         :on-change #(swap! !state update :waypoint-tuples conj [(uuid) %])}]]])
+                         :on-change #(swap! !state update :stop-tuples conj [(uuid) %])}]]])
           [combobox {:label "Destination"
                      :value (:destination-id @!state)
                      :required true

@@ -60,36 +60,36 @@ model Location {
 }
 
 model Place {
-  id          String     @id @unique @default(uuid())
+  id          String   @id @unique @default(uuid())
   name        String
   phone       String?
   email       String?
   description String
   lat         Float
   lng         Float
-  seat        Seat?      @relation(fields: [seatId], references: [id])
+  seat        Seat?    @relation(fields: [seatId], references: [id])
   seatId      String?
-  user        User       @relation(fields: [userId], references: [id])
+  user        User     @relation(fields: [userId], references: [id])
   userId      String
-  waypoints   Waypoint[]
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  stops       Stop[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Task {
-  id        String     @id @unique @default(uuid())
-  user      User       @relation(fields: [userId], references: [id])
+  id        String   @id @unique @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
   userId    String
-  seat      Seat       @relation(fields: [seatId], references: [id])
+  seat      Seat     @relation(fields: [seatId], references: [id])
   seatId    String
-  waypoints Waypoint[]
+  stops     Stop[]
   route     Json
   startAt   DateTime
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-model Waypoint {
+model Stop {
   id        String    @id @unique @default(uuid())
   task      Task      @relation(fields: [taskId], references: [id])
   taskId    String

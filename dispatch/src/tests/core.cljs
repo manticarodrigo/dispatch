@@ -15,7 +15,7 @@
             [tests.location :as location]
             [tests.place :as place]
             [tests.task :as task]
-            [tests.waypoint :as waypoint]))
+            [tests.stop :as stop]))
 
 (defmethod t/report [:cljs.test/default :begin-test-var] [m]
   (println "\n ◯" (-> m :var meta :name)))
@@ -297,12 +297,12 @@
              (is (-> result :data :seat :tasks first :id))
              (done)))))
 
-(deftest create-waypoint-arrivals
+(deftest create-arrivals
   (async done
          (p/let [fetch-mocks (task/find-all)
                  create-mocks (p/all (map
-                                      (fn [{:keys [waypoints]}]
-                                        (waypoint/create-arrival (-> waypoints first :id)))
+                                      (fn [{:keys [stops]}]
+                                        (stop/create-arrival (-> stops first :id)))
                                       (-> fetch-mocks :result :data :tasks)))]
            (testing "api returns data"
              (is (every? #(-> % :result :data :createArrival :arrivedAt) create-mocks))

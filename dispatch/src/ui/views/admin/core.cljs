@@ -3,7 +3,7 @@
             [ui.views.admin.task.core :as task]
             [ui.views.admin.seat.core :as seat]
             [ui.views.admin.place.core :as place]
-            [ui.views.admin.waypoint.core :as waypoint]))
+            [ui.views.admin.stop.core :as stop]))
 
 (def route {:path "admin"
             :element [router/auth-route [router/outlet]]
@@ -16,4 +16,4 @@
                        {:path "places" :element [place/list-view]}
                        {:path "places/:place" :element [place/detail-view]}
                        {:path "places/create" :element [place/create-view]}
-                       {:path "waypoints/:waypoint" :element [waypoint/detail-view]}]})
+                       {:path "stops/:stop" :element [stop/detail-view]}]})

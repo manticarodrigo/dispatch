@@ -11,7 +11,7 @@ query TaskByDevice($seatId: ID!, $deviceId: ID!, $taskId: ID!) {
         createdAt
       }
     }
-    waypoints {
+    stops {
       id
       place {
         id

@@ -16,7 +16,7 @@ mutation CreateTask(
       name
     }
     startAt
-    waypoints {
+    stops {
       id
       place {
         id

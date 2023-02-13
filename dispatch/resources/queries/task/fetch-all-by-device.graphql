@@ -6,7 +6,7 @@ query TasksByDevice($seatId: ID!, $deviceId: ID!, $filters: TaskFilters) {
       name
     }
     startAt
-    waypoints {
+    stops {
       id
       place {
         id

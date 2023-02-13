@@ -50,7 +50,7 @@
         sorted-places (sort-by-id places placeIds)
         origin-place (first sorted-places)
         destination-place (last sorted-places)
-        waypoints (->> sorted-places (drop 1) (drop-last 1))]
+        stops (->> sorted-places (drop 1) (drop-last 1))]
 
     (with-mounted-component
       [test-app
@@ -77,8 +77,8 @@
           (init-directions)
 
           #_{:clj-kondo/ignore [:unresolved-symbol]}
-          (p/doseq [{place-name :name} waypoints]
-            (select-combobox user component "Add waypoint" place-name)
+          (p/doseq [{place-name :name} stops]
+            (select-combobox user component "Add stop" place-name)
             (.findByText component place-name))
 
           (.findByText component "Loading...")

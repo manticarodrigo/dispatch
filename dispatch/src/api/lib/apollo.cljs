@@ -15,7 +15,7 @@
             [api.resolvers.place :as place]
             [api.resolvers.task :as task]
             [api.resolvers.location :as location]
-            [api.resolvers.waypoint :as waypoint]))
+            [api.resolvers.stop :as stop]))
 
 (def date-scalar
   (GraphQLScalarType.
@@ -39,7 +39,7 @@
                  :createPlace place/create
                  :createTask task/create
                  :createLocation location/create
-                 :createArrival waypoint/create-arrival}
+                 :createArrival stop/create-arrival}
                 :Query
                 {:user user/active-user
                  :seats seat/find-all
@@ -48,14 +48,14 @@
                  :place place/find-unique
                  :tasks task/find-all
                  :task task/find-unique
-                 :waypoint waypoint/find-unique}
+                 :stop stop/find-unique}
                 :User
                 {:seats seat/find-all
                  :places place/find-all}
                 :Seat {}
                 :Location {}
                 :Place {:tasks task/find-by-place}
-                :Waypoint {}
+                :Stop {}
                 :Task {}})
 
 (def options

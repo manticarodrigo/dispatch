@@ -6,7 +6,7 @@ query Tasks($filters: TaskFilters) {
       name
     }
     startAt
-    waypoints {
+    stops {
       id
       place {
         id

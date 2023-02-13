@@ -1,0 +1,7 @@
+mutation CreateArrival($stopId: ID!, $note: String) {
+  createArrival(stopId: $stopId, note: $note) {
+    id
+    note
+    arrivedAt
+  }
+}

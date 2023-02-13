@@ -1,4 +1,4 @@
-(ns ui.components.forms.waypoint
+(ns ui.components.forms.stop
   (:require [react]
             [date-fns :as d]
             [shadow.resource :refer (inline)]
@@ -13,18 +13,18 @@
             [ui.components.inputs.button :refer (button)]
             [ui.components.inputs.input :refer (input)]))
 
-(def FETCH_WAYPOINT (gql (inline "queries/waypoint/fetch.graphql")))
-(def CREATE_ARRIVAL (gql (inline "mutations/waypoint/create-arrival.graphql")))
+(def FETCH_STOP (gql (inline "queries/stop/fetch.graphql")))
+(def CREATE_ARRIVAL (gql (inline "mutations/stop/create-arrival.graphql")))
 
-(defn waypoint-form []
+(defn stop-form []
   (let [!state (r/atom {})
         !anoms (r/atom nil)]
     (fn []
-      (let [{waypoint-id :waypoint} (use-params)
-            query (use-query FETCH_WAYPOINT {:variables {:waypointId waypoint-id}})
+      (let [{stop-id :stop} (use-params)
+            query (use-query FETCH_STOP {:variables {:stopId stop-id}})
             [create-arrival status] (use-mutation CREATE_ARRIVAL {})
             loading (or (:loading query) (:loading status))
-            {:keys [id place note arrivedAt]} (-> query :data :waypoint)
+            {:keys [id place note arrivedAt]} (-> query :data :stop)
             {:keys [name description lat lng]} place]
 
         (react/useEffect
@@ -50,7 +50,7 @@
                  :on-submit (fn [e]
                               (.preventDefault e)
                               (-> (create-arrival {:variables
-                                                   {:waypointId id
+                                                   {:stopId id
                                                     :note (:note @!state)}})
                                   (.catch #(reset! !anoms (parse-anoms %)))))}
           [input {:label "Note"

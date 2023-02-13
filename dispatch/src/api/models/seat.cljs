@@ -48,6 +48,6 @@
                       :location true
                       :tasks {:where (filters/task filters)
                               :orderBy {:startAt "asc"}
-                              :include {:waypoints {:include {:place true}}}}}}}})
+                              :include {:stops {:include {:place true}}}}}}}})
         (gobj/get "seats")
         first))

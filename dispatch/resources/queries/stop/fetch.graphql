@@ -1,5 +1,5 @@
-query Waypoint($waypointId: ID!) {
-  waypoint(waypointId: $waypointId) {
+query Stop($stopId: ID!) {
+  stop(stopId: $stopId) {
     id
     place {
       id

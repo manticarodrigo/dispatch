@@ -19,10 +19,10 @@
   (let [{task-id :task} (use-params)
         query (use-query FETCH_TASK {:variables {:taskId task-id}})
         {:keys [data loading]} query
-        {:keys [seat waypoints route]} (:task data)
+        {:keys [seat stops route]} (:task data)
         {:keys [path]} route
         {:keys [name location]} seat
-        markers (->> waypoints
+        markers (->> stops
                      (mapv :place)
                      (mapv (fn [{:keys [lat lng name]}]
                              {:title name
@@ -33,7 +33,7 @@
        (dispatch [:map {:paths (when path [path])
                         :points markers}])
        #())
-     #js[route waypoints])
+     #js[route stops])
 
     [:div {:class padding}
      [title {:title name :subtitle (str "Last seen "
@@ -45,11 +45,11 @@
                                            ")")
                                           "never"))}]
      [:ol
-      (for [{:keys [id place arrivedAt]} waypoints]
+      (for [{:keys [id place arrivedAt]} stops]
         (let [{:keys [name description]} place]
           ^{:key id}
           [:li {:class "mb-2"}
-           [link-card {:to (str "../waypoints/" id)
+           [link-card {:to (str "../stops/" id)
                        :icon (if arrivedAt CheckIcon MinusIcon)
                        :title name
                        :subtitle description

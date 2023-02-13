@@ -9,7 +9,7 @@ type Query {
   place(seatId: ID, deviceId: ID, placeId: ID!, filters: TaskFilters): Place
   tasks(seatId: ID, deviceId: ID, filters: TaskFilters): [Task]
   task(seatId: ID, deviceId: ID, taskId: ID!): Task
-  waypoint(waypointId: ID!): Waypoint
+  stop(stopId: ID!): Stop
 }
 
 type Mutation {
@@ -39,7 +39,7 @@ type Mutation {
     placeIds: [ID]!
     route: JSON!
   ): Task!
-  createArrival(waypointId: ID!, note: String): Waypoint
+  createArrival(stopId: ID!, note: String): Stop
 }
 
 type User {
@@ -92,7 +92,7 @@ type Place {
   tasks(seatId: ID, deviceId: ID, filters: TaskFilters): [Task]
 }
 
-type Waypoint {
+type Stop {
   id: ID!
   place: Place!
   order: Int!
@@ -104,7 +104,7 @@ type Task {
   id: ID!
   seat: Seat!
   startAt: String!
-  waypoints: [Waypoint]!
+  stops: [Stop]!
   route: JSON!
 }
 
