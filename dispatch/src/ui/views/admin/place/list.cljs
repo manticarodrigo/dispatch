@@ -1,73 +1,58 @@
 (ns ui.views.admin.place.list
   (:require [react]
-            [react-feather :rename {MapPin PinIcon
-                                    Plus PlusIcon}]
-            [reagent.core :as r]
+            [react-feather :rename {MapPin PinIcon}]
             [re-frame.core :refer (dispatch)]
-            [clojure.string :as s]
             [shadow.resource :refer (inline)]
             [ui.lib.apollo :refer (gql use-query)]
-            [ui.lib.router :refer (link)]
-            [ui.utils.string :refer (class-names)]
+            [ui.lib.router :refer (use-search-params)]
+            [ui.utils.string :refer (filter-text)]
             [ui.utils.css :refer (padding)]
             [ui.utils.i18n :refer (tr)]
-            [ui.components.inputs.input :refer (input)]
-            [ui.components.link-card :refer (link-card)]))
+            [ui.components.title :refer (title)]
+            [ui.components.filters :refer (filters)]
+            [ui.components.link-card :refer (link-card)]
+            [ui.components.status-detail :refer (status-detail)]))
 
 (def FETCH_PLACES (gql (inline "queries/place/fetch-all.graphql")))
 
 (defn view []
-  (let [!search (r/atom "")]
-    (fn []
-      (let [query (use-query FETCH_PLACES {})
-            {:keys [data loading]} query
-            places (some-> data :places)
-            filtered-places (if (empty? @!search)
-                              places
-                              (filter
-                               #(s/includes?
-                                 (-> % :name s/lower-case)
-                                 (s/lower-case @!search))
-                               places))
-            markers (mapv
-                     (fn [{:keys [lat lng name]}]
-                       {:title name
-                        :position {:lat lat
-                                   :lng lng}})
-                     filtered-places)]
+  (let [[{:keys [text] :as search-params} set-search-params] (use-search-params)
+        {:keys [data loading]} (use-query FETCH_PLACES {})
+        places (some-> data :places)
+        filtered-places (filter-text text :name places)]
 
-        (react/useEffect
-         (fn []
-           (dispatch [:map {:points markers}])
-           #())
-         #js[places @!search])
+    (react/useEffect
+     (fn []
+       (dispatch [:map
+                  {:points
+                   (mapv
+                    (fn [{:keys [lat lng name]}]
+                      {:title name
+                       :position {:lat lat :lng lng}})
+                    filtered-places)}])
+       #())
+     #js[places text])
 
-        [:div {:class (class-names padding)}
-         [:div {:class "mb-4 flex justify-between items-center"}
-          [:h1 {:class "text-lg"} (tr [:view.place.list/title])]
-          [link {:to "/admin/places/create" :class "underline text-sm"} [:> PlusIcon {:class "inline mr-1 w-3 h-3"}] "Create"]]
-         [:div {:class "mb-4"}
-          [input {:aria-label "Search"
-                  :value @!search
-                  :placeholder "Search places"
-                  :class "w-full mr-2"
-                  :on-text #(reset! !search %)}]]
-         [:ul
-          (for [{:keys [id name description]} filtered-places]
-            (let [active? false]
-              ^{:key id}
-              [:li {:class "mb-2"}
-               [link-card {:to (str "/admin/places/" id)
-                           :icon PinIcon
-                           :title name
-                           :subtitle description
-                           :detail [:<>
-                                    [:div {:class "flex items-center text-xs text-neutral-400"}
-                                     [:div {:class (class-names
-                                                    "mr-1 rounded-full w-2 h-2"
-                                                    (if active? "bg-green-500" "bg-amber-500"))}]
-                                     "Status"]
-                                    [:div {:class "flex items-center text-xs text-left text-neutral-200"}
-                                     (if active? "Active" "Inactive")]]}]]))
-          (when (and (not loading) (empty? filtered-places)) [:p {:class "text-center"} "No places found."])
-          (when loading [:p {:class "text-center"} "Loading places..."])]]))))
+    [:div {:class padding}
+     [title {:title (tr [:view.place.list/title])
+             :create-link "create"}]
+     [filters {:search text
+               :on-search-change #(set-search-params (if (empty? %)
+                                                       (dissoc search-params :text)
+                                                       (assoc search-params :text %)))}]
+     [:ul
+      (for [{:keys [id name description]} filtered-places]
+        (let [active? false]
+          ^{:key id}
+          [:li {:class "mb-2"}
+           [link-card {:to id
+                       :icon PinIcon
+                       :title name
+                       :subtitle description
+                       :detail [status-detail
+                                {:active? active?
+                                 :text (if active? "Active" "Inactive")}]}]]))
+      (if loading
+        [:p {:class "text-center"} "Loading places..."]
+        (when (empty? filtered-places)
+          [:p {:class "text-center"} "No places found."]))]]))

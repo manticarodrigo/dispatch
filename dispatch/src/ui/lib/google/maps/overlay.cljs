@@ -18,9 +18,9 @@
         [:div {:class (class-names
                        "w-0 h-0"
                        "absolute right-[50%] translate-x-[50%] scale-75 bottom-[calc(100%_+_0.1rem)]"
-                       "border-l-[0.5rem] border-l-solid border-l-transparent"
-                       "border-r-[0.5rem] border-r-solid border-r-transparent"
-                       "border-b-[0.5rem] border-b-solid border-b-blue-500")}]])]]))
+                       "border-l-8 border-l-solid border-l-transparent"
+                       "border-r-8 border-r-solid border-r-transparent"
+                       "border-b-8 border-b-solid border-b-blue-500")}]])]]))
 
 (defn- create-overlay [^js gmap]
   (let [^js OverlayClass (fn

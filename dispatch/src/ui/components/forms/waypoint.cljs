@@ -38,7 +38,7 @@
            #())
          #js[name lat lng])
 
-        [:div {:class (class-names padding)}
+        [:div {:class padding}
          [:div
           [:div name]
           [:div description]

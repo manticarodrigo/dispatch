@@ -8,7 +8,6 @@
             [ui.subs :refer (listen)]
             [ui.lib.apollo :refer (gql use-query)]
             [ui.lib.router :refer (use-params use-search-params)]
-            [ui.utils.string :refer (class-names)]
             [ui.utils.css :refer (padding)]
             [ui.utils.i18n :refer (tr)]
             [ui.components.title :refer (title)]
@@ -39,7 +38,7 @@
        #())
      #js[tasks text])
 
-    [:div {:class (class-names padding)}
+    [:div {:class padding}
      [title {:title (tr [:view.task.list/title])}]
      [filters {:date (-> date parse-date d/startOfDay)
                :on-date-change #(set-search-params
@@ -54,7 +53,7 @@
               started? (-> start-date (d/isBefore (js/Date.)))]
           ^{:key id}
           [:li {:class "mb-2"}
-           [link-card {:to (str "/seat/" seat-id "/tasks/" id)
+           [link-card {:to (str "../tasks/" id)
                        :icon RouteIcon
                        :title (str (if started? "Started" "Starts in")
                                    " "

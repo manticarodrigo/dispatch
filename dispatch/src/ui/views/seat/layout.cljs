@@ -48,7 +48,7 @@
      #js[])
 
     [:<>
-     (if (= platform "")
+     (if (= platform "web")
        [modal {:show true :title "Unsupported platform" :on-close #()}
         [:p {:class "mb-4"} "Looks like you are trying to access a seat view from a web browser. Please use the mobile app to access this view."]
         [:a {:href "https://play.google.com/store/apps/details?id=app.ambito.dispatch"

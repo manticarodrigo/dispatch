@@ -7,7 +7,7 @@
             [common.utils.date :refer (parse-date)]
             [ui.lib.apollo :refer (gql use-query)]
             [ui.lib.router :refer (use-search-params)]
-            [ui.utils.string :refer (filter-text class-names)]
+            [ui.utils.string :refer (filter-text)]
             [ui.utils.css :refer (padding)]
             [ui.utils.i18n :refer (tr)]
             [ui.components.title :refer (title)]
@@ -35,7 +35,7 @@
        #())
      #js[tasks text])
 
-    [:div {:class (class-names padding)}
+    [:div {:class padding}
      [title {:title (tr [:view.task.list/title])
              :create-link "/admin/tasks/create"}]
      [filters {:search text
@@ -56,7 +56,7 @@
               started? (-> start-date (d/isBefore (js/Date.)))]
           ^{:key id}
           [:li {:class "mb-2"}
-           [link-card {:to (str "/admin/tasks/" id)
+           [link-card {:to id
                        :icon RouteIcon
                        :title name
                        :subtitle (-> start-date (d/format "yyyy/MM/dd hh:mmaaa"))

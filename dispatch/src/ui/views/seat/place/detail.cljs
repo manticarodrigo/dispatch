@@ -8,7 +8,6 @@
             [ui.subs :refer (listen)]
             [ui.lib.apollo :refer (gql use-query)]
             [ui.lib.router :refer (use-params use-search-params)]
-            [ui.utils.string :refer (class-names)]
             [ui.utils.css :refer (padding)]
             [ui.components.title :refer (title)]
             [ui.components.filters :refer (filters)]
@@ -41,9 +40,8 @@
        #())
      #js[tasks])
 
-    [:div {:class (class-names padding)}
-     [title {:title (or name "Loading name...")
-             :description (or description "Loading description...")}]
+    [:div {:class padding}
+     [title {:title name :subtitle description}]
      [filters {:date (-> date parse-date d/startOfDay)
                :on-date-change #(set-search-params
                                  (assoc search-params :date (-> % .getTime)))
