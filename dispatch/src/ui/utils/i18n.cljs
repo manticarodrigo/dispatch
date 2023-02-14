@@ -73,7 +73,7 @@
             :invalid-password "The password is incorrect."
             :account-not-found "The account you're looking for does not exist."}}
    :es
-   {:noun {:status "estatus"
+   {:noun {:status "estado"
            :never "nunca"}
     :verb {:create "crear"}
     :view {:register {:title "Registrar"
