@@ -41,7 +41,7 @@
           (set! js/google (mock-google [{:place_id "1" :description description}]))
           (init-autocomplete)
 
-          (change (get-combobox component (tr [:field/location])) description)
+          (change (get-combobox component (tr [:field/location-search])) description)
 
           (.findByText component description)
 
@@ -53,7 +53,8 @@
 
           (select user (.getByRole component "listbox") description)
 
-          (.findByText component "found coordinates")
+          (.findByText component (str (tr [:misc/loading]) "..."))
+          (.findByText component (tr [:field/submit]))
 
           (submit (-> component (.-container) (.querySelector "form")))
           (f component))))))

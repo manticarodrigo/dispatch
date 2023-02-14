@@ -18,7 +18,7 @@
             [create-arrival status] (use-mutation CREATE_ARRIVAL {})
             {:keys [loading]} status
             {:keys [note]} @!state]
-        [:form {:class "my-4 flex flex-col"
+        [:form {:class "flex flex-col"
                 :on-submit (fn [e]
                              (.preventDefault e)
                              (-> (create-arrival {:variables

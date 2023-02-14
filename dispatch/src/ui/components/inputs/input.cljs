@@ -14,6 +14,7 @@
               value :value
               required :required
               class :class
+              on-validate :on-validate
               on-change :on-change
               on-text :on-text}]
   [:div {:class class}
@@ -26,5 +27,8 @@
             :required required
             :class input-class
             :on-change (fn [e]
-                         (when on-change (on-change e))
-                         (when on-text (on-text (-> e .-target .-value))))}]])
+                         (let [v (-> e .-target .-value)
+                               valid? (if on-validate (on-validate v) true)]
+                           (when valid?
+                             (when on-change (on-change e))
+                             (when on-text (on-text v)))))}]])

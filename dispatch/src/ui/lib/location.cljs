@@ -63,3 +63,17 @@
       "ios" (watch-position-mobile cb)
       "web" (watch-position-web cb)
       (.alert js/window (tr [:location/unsupported])))))
+
+(defn get-location []
+  (p/let [platform (.getPlatform Capacitor)
+          !last-location (atom nil)
+          cb #(reset! !last-location %)]
+    (-> (condp = platform
+          "android" (watch-position-mobile cb)
+          "ios" (watch-position-mobile cb)
+          "web" (watch-position-web cb)
+          (.alert js/window (tr [:location/unsupported])))
+        (.then (fn [clear-watch]
+                 (-> (p/delay 500)
+                     (p/then #(do (clear-watch)
+                                  @!last-location))))))))

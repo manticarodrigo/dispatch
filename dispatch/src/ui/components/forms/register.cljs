@@ -35,14 +35,14 @@
                  :label (tr [:field/email])
                  :value email
                  :required true
-                 :class "pb-4"
+                 :class "mb-4"
                  :on-text #(swap! !state assoc :email %)}]
          [input {:id "password"
                  :type "password"
                  :label (tr [:field/password])
                  :value password
                  :required true
-                 :class "pb-4"
+                 :class "mb-4"
                  :on-text #(swap! !state assoc :password %)}]
          [submit-button {:loading loading}]
          [errors @!anoms]]))))

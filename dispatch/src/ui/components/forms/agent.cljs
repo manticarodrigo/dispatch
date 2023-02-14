@@ -29,7 +29,7 @@
                  :label (tr [:field/name])
                  :value name
                  :required true
-                 :class "pb-4"
+                 :class "mb-4"
                  :on-text #(swap! !state assoc :name %)}]
          [submit-button {:loading loading}]
          [errors @!anoms]]))))

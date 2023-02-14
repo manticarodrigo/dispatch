@@ -17,7 +17,7 @@
            :task {:list {:title "Tasks"}
                   :create {:title "Create task"}}
            :agent {:list {:title "Agents"}
-                  :create {:title "Create agent"}}
+                   :create {:title "Create agent"}}
            :place {:list {:title "Places"}
                    :create {:title "Create place"}}
            :not-found "Page not found"}
@@ -25,7 +25,6 @@
             :password "Password"
             :name "Name"
             :phone "Phone"
-            :location "Location"
             :note "Note"
             :agent "Agent"
             :departure "Departure"
@@ -37,6 +36,10 @@
             :language "Select a language"
             :search "Type to search"
             :status "Select a status"
+            :location-search "Search location"
+            :description "Description"
+            :latitude "Latitude"
+            :longitude "Longitude"
             :submit "Submit"}
     :status {:all "All"
              :incomplete "Incomplete"
@@ -85,7 +88,7 @@
            :task {:list {:title "Tareas"}
                   :create {:title "Crear tarea"}}
            :agent {:list {:title "Agentes"}
-                  :create {:title "Crear agente"}}
+                   :create {:title "Crear agente"}}
            :place {:list {:title "Lugares"}
                    :create {:title "Crear lugar"}}
            :not-found "Página no encontrada"}
@@ -93,7 +96,6 @@
             :password "Contraseña"
             :name "Nombre"
             :phone "Teléfono"
-            :location "Ubicación"
             :note "Nota"
             :agent "Agente"
             :departure "Salida"
@@ -105,6 +107,10 @@
             :language "Selecciona un idioma"
             :search "Escribe para buscar"
             :status "Selecciona un estado"
+            :location "Buscar ubicación"
+            :description "Descripción"
+            :latitude "Latitud"
+            :longitude "Longitud"
             :submit "Enviar"}
     :status {:all "Todos"
              :incomplete "Incompleto"
