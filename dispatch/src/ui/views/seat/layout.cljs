@@ -61,7 +61,6 @@
         [modal {:show unlinked? :title (tr [:device.unlinked/title]) :on-close #()}
          [:p {:class "mb-4"} (tr [:device.unlinked/message])]
          [button {:label (tr [:device/link])
-                  :class "bg-neutral-900 text-white px-4 py-2 rounded-md"
                   :on-click (fn []
                               (-> (create-device {:variables
                                                   {:seatId seat-id
