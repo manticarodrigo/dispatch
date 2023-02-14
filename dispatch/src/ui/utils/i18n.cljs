@@ -61,7 +61,7 @@
                :permission "This app needs your location, but does not have permission.\n\nOpen settings now?"
                :unsupported "Location not supported on this platform."}
     :device {:unsupported {:title "Unsupported platform"
-                           :message "Looks like you are trying to access a agent view from a web browser. Please use the mobile app to access this view."
+                           :message "Looks like you are trying to access an agent view from a web browser. Please use the mobile app to access this view."
                            :download "Download from Google Play Store"}
              :linked {:title "Another device already linked"
                       :message "Looks like this agent has a device linked to it already. If you would like to link your device to this agent, please reach out to an admin and ask them to unlink the other device first."}
@@ -84,8 +84,8 @@
                               :link "Registrar aquí."}}
            :task {:list {:title "Tareas"}
                   :create {:title "Crear tarea"}}
-           :agent {:list {:title "Asientos"}
-                  :create {:title "Crear asiento"}}
+           :agent {:list {:title "Agentes"}
+                  :create {:title "Crear agente"}}
            :place {:list {:title "Lugares"}
                    :create {:title "Crear lugar"}}
            :not-found "Página no encontrada"}
@@ -95,7 +95,7 @@
             :phone "Teléfono"
             :location "Ubicación"
             :note "Nota"
-            :agent "Asiento"
+            :agent "Agente"
             :departure "Salida"
             :origin "Origen"
             :destination "Destino"
@@ -129,12 +129,12 @@
                :permission "Esta aplicación necesita tu ubicación, pero no tiene permiso.\n\n¿Abrir configuraciones ahora?"
                :unsupported "Ubicación no soportada en esta plataforma."}
     :device {:unsupported {:title "Plataforma no soportada"
-                           :message "Parece que estás tratando de acceder a una vista de asiento desde un navegador web. Por favor usa la aplicación móvil para acceder a esta vista."
+                           :message "Parece que estás tratando de acceder a una vista de agente desde un navegador web. Por favor usa la aplicación móvil para acceder a esta vista."
                            :download "Descargar desde Google Play Store"}
              :linked {:title "Otro dispositivo ya está vinculado"
-                      :message "Parece que este asiento ya tiene un dispositivo vinculado a él. Si quieres vincular tu dispositivo a este asiento, por favor contacta a un administrador y pídele que desvincule el otro dispositivo primero."}
+                      :message "Parece que este agente ya tiene un dispositivo vinculado a él. Si quieres vincular tu dispositivo a este agente, por favor contacta a un administrador y pídele que desvincule el otro dispositivo primero."}
              :unlinked {:title "No hay ningún dispositivo vinculado"
-                        :message "Parece que este asiento no tiene ningún dispositivo vinculado a él todavía. Por favor presiona el botón de abajo para vincular tu dispositivo y continuar."}
+                        :message "Parece que este agente no tiene ningún dispositivo vinculado a él todavía. Por favor presiona el botón de abajo para vincular tu dispositivo y continuar."}
              :link "Vincular Dispositivo"}
     :error {:unknown "Un error desconocido ocurrió."
             :unique-constraint "La cuenta ya existe."
