@@ -73,7 +73,7 @@
        [:<>
         (when (= (count filtered-options) 0)
           [:div {:class menu-item-class}
-           (tr [:generic/empty-search])])
+           (tr [:misc/empty-search])])
 
         (for [option filtered-options]
           ^{:key (option-to-value option)}

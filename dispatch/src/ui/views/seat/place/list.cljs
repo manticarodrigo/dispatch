@@ -1,6 +1,5 @@
 (ns ui.views.seat.place.list
   (:require [react]
-            [react-feather :rename {MapPin PinIcon}]
             [re-frame.core :refer (dispatch)]
             [shadow.resource :refer (inline)]
             [ui.subs :refer (listen)]
@@ -11,8 +10,7 @@
             [ui.utils.i18n :refer (tr)]
             [ui.components.title :refer (title)]
             [ui.components.filters :refer (filters)]
-            [ui.components.link-card :refer (link-card)]
-            [ui.components.status-detail :refer (status-detail)]))
+            [ui.components.lists.place :refer (place-list)]))
 
 (def FETCH_PLACES (gql (inline "queries/place/fetch-all-by-device.graphql")))
 
@@ -43,22 +41,8 @@
      [title {:title (tr [:view.place.list/title])
              :create-link "create"}]
      [filters {:search text
-               :on-search-change #(set-search-params (if (empty? %)
-                                                       (dissoc search-params :text)
-                                                       (assoc search-params :text %)))}]
-     [:ul
-      (for [{:keys [id name description]} filtered-places]
-        (let [active? false]
-          ^{:key id}
-          [:li {:class "mb-2"}
-           [link-card {:to id
-                       :icon PinIcon
-                       :title name
-                       :subtitle description
-                       :detail [status-detail
-                                {:active? active?
-                                 :text (if active? "Active" "Inactive")}]}]]))
-      (if loading
-        [:p {:class "text-center"} "Loading places..."]
-        (when (empty? filtered-places)
-          [:p {:class "text-center"} "No places found."]))]]))
+               :on-search-change #(set-search-params
+                                   (if (empty? %)
+                                     (dissoc search-params :text)
+                                     (assoc search-params :text %)))}]
+     [place-list {:places filtered-places :loading loading}]]))

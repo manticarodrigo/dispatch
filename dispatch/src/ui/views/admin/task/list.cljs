@@ -1,19 +1,17 @@
 (ns ui.views.admin.task.list
   (:require [react]
-            [react-feather :rename {GitPullRequest RouteIcon}]
-            [date-fns :as d]
             [re-frame.core :refer (dispatch)]
             [shadow.resource :refer (inline)]
             [common.utils.date :refer (parse-date)]
             [ui.lib.apollo :refer (gql use-query)]
             [ui.lib.router :refer (use-search-params)]
+            [ui.utils.date :as d]
             [ui.utils.string :refer (filter-text)]
             [ui.utils.css :refer (padding)]
             [ui.utils.i18n :refer (tr)]
             [ui.components.title :refer (title)]
             [ui.components.filters :refer (filters)]
-            [ui.components.link-card :refer (link-card)]
-            [ui.components.status-detail :refer (status-detail)]))
+            [ui.components.lists.task :refer (task-list)]))
 
 (def FETCH_TASKS (gql (inline "queries/task/fetch-all.graphql")))
 
@@ -37,35 +35,18 @@
 
     [:div {:class padding}
      [title {:title (tr [:view.task.list/title])
-             :create-link "/admin/tasks/create"}]
+             :create-link "create"}]
      [filters {:search text
-               :on-search-change #(set-search-params (if (empty? %)
-                                                       (dissoc search-params :text)
-                                                       (assoc search-params :text %)))
+               :on-search-change #(set-search-params
+                                   (if (empty? %)
+                                     (dissoc search-params :text)
+                                     (assoc search-params :text %)))
                :date (-> date parse-date d/startOfDay)
                :on-date-change #(set-search-params
                                  (assoc search-params :date (-> % .getTime)))
                :status (or status "ALL")
-               :on-status-change #(set-search-params (if (= % "ALL")
-                                                       (dissoc search-params :status)
-                                                       (assoc search-params :status %)))}]
-     [:ul
-      (for [{:keys [id seat startAt]} filtered-tasks]
-        (let [{:keys [name]} seat
-              start-date (-> (js/parseInt startAt) js/Date.)
-              started? (-> start-date (d/isBefore (js/Date.)))]
-          ^{:key id}
-          [:li {:class "mb-2"}
-           [link-card {:to id
-                       :icon RouteIcon
-                       :title name
-                       :subtitle (-> start-date (d/format "yyyy/MM/dd hh:mmaaa"))
-                       :detail [status-detail
-                                {:active? started?
-                                 :text (str (when-not started? "in ")
-                                            (-> start-date d/formatDistanceToNowStrict)
-                                            (when started? " ago"))}]}]]))
-      (if loading
-        [:p {:class "text-center"} "Loading tasks..."]
-        (when (empty? filtered-tasks)
-          [:p {:class "text-center"} "No tasks found."]))]]))
+               :on-status-change #(set-search-params
+                                   (if (= % "ALL")
+                                     (dissoc search-params :status)
+                                     (assoc search-params :status %)))}]
+     [task-list {:tasks filtered-tasks :loading loading}]]))

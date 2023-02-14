@@ -1,10 +1,14 @@
 (ns ui.utils.i18n
   (:require [taoensso.tempura :as tempura]
-            [ui.subs :refer (listen)]))
+            [ui.subs :refer (listen)]
+            [ui.utils.date :as d]))
 
 (def ^:private dict
   {:en
-   {:view {:register {:title "Register"}
+   {:noun {:status "status"
+           :never "never"}
+    :verb {:create "create"}
+    :view {:register {:title "Register"}
            :login {:title "Login"}
            :task {:list {:title "Tasks"}
                   :create {:title "Create task"}}
@@ -24,16 +28,38 @@
             :destination "Destination"
             :stops "Stops"
             :add-stop "Add stop"
+            :date "Select a date"
+            :language "Select a language"
+            :search "Type to search"
+            :status "Select a status"
             :submit "Submit"}
-    :generic {:loading "Loading"
-              :empty-search "No results found"}
+    :status {:all "All"
+             :incomplete "Incomplete"
+             :complete "Complete"
+             :active "Active"
+             :inactive "Inactive"
+             :starts "Starts"
+             :started "Started"
+             :last-seen (fn [[date]]
+                          (str "Last seen "
+                               (if date
+                                 (d/formatRelative date (js/Date.))
+                                 "never")))}
+    :calendar {:previous-month "Previous month"
+               :next-month "Next month"}
+    :misc {:sign-out "Sign out"
+           :loading "Loading"
+           :empty-search "No results found"}
     :map {:center "Center map"}
     :error {:unknown "An unknown error occurred."
             :unique-constraint "The account already exists."
             :invalid-password "The password is incorrect."
             :account-not-found "The account you're looking for does not exist."}}
    :es
-   {:view {:register {:title "Registrar"}
+   {:noun {:status "estatus"
+           :never "nunca"}
+    :verb {:create "crear"}
+    :view {:register {:title "Registrar"}
            :login {:title "Ingresar"}
            :task {:list {:title "Tareas"}
                   :create {:title "Crear tarea"}}
@@ -53,9 +79,28 @@
             :destination "Destino"
             :stops "Paradas"
             :add-stop "Agregar parada"
+            :date "Selecciona una fecha"
+            :language "Selecciona un idioma"
+            :search "Escribe para buscar"
+            :status "Selecciona un estado"
             :submit "Enviar"}
-    :generic {:loading "Cargando"
-              :empty-search "No se han encontrado resultados"}
+    :status {:all "Todos"
+             :incomplete "Incompleto"
+             :complete "Completo"
+             :active "Activo"
+             :inactive "Inactivo"
+             :starts "Empieza"
+             :started "Empezó"
+             :last-seen (fn [[date]]
+                          (str "Visto por última vez "
+                               (if date
+                                 (d/formatRelative date (js/Date.))
+                                 "nunca")))}
+    :calendar {:previous-month "Mes anterior"
+               :next-month "Mes siguiente"}
+    :misc {:sign-out "Cerrar sesión"
+           :loading "Cargando"
+           :empty-search "No se han encontrado resultados"}
     :map {:center "Centrar mapa"}
     :error {:unknown "Un error desconocido ocurrió."
             :unique-constraint "La cuenta ya existe."

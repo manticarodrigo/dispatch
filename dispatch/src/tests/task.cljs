@@ -82,7 +82,7 @@
             (select-combobox user component (tr [:field/add-stop]) place-name)
             (.findByText component place-name))
 
-          (.findByText component (str (tr [:generic/loading]) "..."))
+          (.findByText component (str (tr [:misc/loading]) "..."))
           (.findByText component (tr [:field/submit]))
 
           (submit (-> component (.-container) (.querySelector "form")))

@@ -8,7 +8,7 @@
   [button
    {:label (if loading
              [:span {:class "flex justify-center items-center"}
-              [spinner {:class "mr-2 w-5 h-5"}] (tr [:generic/loading]) "..."]
+              [spinner {:class "mr-2 w-5 h-5"}] (tr [:misc/loading]) "..."]
              (tr [:field/submit]))
     :class (class-names "my-4 w-full" (when loading "cursor-progress"))
     :disabled loading}])

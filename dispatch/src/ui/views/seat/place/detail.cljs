@@ -1,18 +1,16 @@
 (ns ui.views.seat.place.detail
   (:require [react]
-            [react-feather :rename {GitPullRequest RouteIcon}]
-            [date-fns :as d]
             [re-frame.core :refer (dispatch)]
             [shadow.resource :refer (inline)]
             [common.utils.date :refer (parse-date)]
             [ui.subs :refer (listen)]
             [ui.lib.apollo :refer (gql use-query)]
             [ui.lib.router :refer (use-params use-search-params)]
+            [ui.utils.date :as d]
             [ui.utils.css :refer (padding)]
             [ui.components.title :refer (title)]
             [ui.components.filters :refer (filters)]
-            [ui.components.link-card :refer (link-card)]
-            [ui.components.status-detail :refer (status-detail)]))
+            [ui.components.lists.task :refer (task-list)]))
 
 (def FETCH_PLACE (gql (inline "queries/place/fetch-by-device.graphql")))
 
@@ -49,23 +47,4 @@
                :on-status-change #(set-search-params (if (= % "ALL")
                                                        (dissoc search-params :status)
                                                        (assoc search-params :status %)))}]
-     [:ul
-      (for [{:keys [id startAt]} tasks]
-        (let [start-date (-> (js/parseInt startAt) js/Date.)
-              started? (-> start-date (d/isBefore (js/Date.)))]
-          ^{:key id}
-          [:li {:class "mb-2"}
-           [link-card {:to (str "../tasks/" id)
-                       :icon RouteIcon
-                       :title (str (if started? "Started" "Starts in")
-                                   " "
-                                   (-> start-date d/formatDistanceToNowStrict)
-                                   (when started? " ago"))
-                       :subtitle (-> start-date (d/format "yyyy/MM/dd hh:mmaaa"))
-                       :detail [status-detail
-                                {:active? started?
-                                 :text (if started? "Active" "Inactive")}]}]]))
-      (if loading
-        [:p {:class "text-center"} "Loading tasks..."]
-        (when (empty? tasks)
-          [:p {:class "text-center"} "No tasks found."]))]]))
+     [task-list {:tasks tasks :loading loading}]]))
