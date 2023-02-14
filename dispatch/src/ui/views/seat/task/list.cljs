@@ -42,7 +42,8 @@
                :on-date-change #(set-search-params
                                  (assoc search-params :date (-> % .getTime)))
                :status (or status "ALL")
-               :on-status-change #(set-search-params (if (= % "ALL")
-                                                       (dissoc search-params :status)
-                                                       (assoc search-params :status %)))}]
+               :on-status-change #(set-search-params
+                                   (if (= % "ALL")
+                                     (dissoc search-params :status)
+                                     (assoc search-params :status %)))}]
      [task-list {:tasks tasks :loading loading}]]))

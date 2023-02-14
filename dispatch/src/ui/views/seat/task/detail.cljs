@@ -16,9 +16,10 @@
   (let [{seat-id :seat task-id :task} (use-params)
         device (listen [:device])
         device-id (:id device)
-        query (use-query FETCH_TASK {:variables {:taskId task-id
-                                                 :seatId seat-id
-                                                 :deviceId device-id}})
+        query (use-query FETCH_TASK {:variables
+                                     {:taskId task-id
+                                      :seatId seat-id
+                                      :deviceId device-id}})
         {:keys [data loading]} query
         {:keys [seat stops route]} (:task data)
         {:keys [path]} route

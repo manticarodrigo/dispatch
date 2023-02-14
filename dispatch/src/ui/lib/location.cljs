@@ -1,6 +1,7 @@
 (ns ui.lib.location
   (:require ["@capacitor/core" :refer (Capacitor registerPlugin)]
-            [promesa.core :as p]))
+            [promesa.core :as p]
+            [ui.utils.i18n :refer [tr]]))
 
 (def BackgroundGeolocation (registerPlugin "BackgroundGeolocation"))
 
@@ -8,8 +9,8 @@
   (-> BackgroundGeolocation
       (.addWatcher
        #js
-        {:backgroundMessage "Cancel to prevent battery drain.",
-         :backgroundTitle "Tracking You.",
+        {:backgroundTitle (tr [:location/title]),
+         :backgroundMessage (tr [:location/message]),
          :requestPermissions true,
          :stale false,
          :distanceFilter 50}
@@ -19,12 +20,7 @@
            (do
              (when (= (.-code error) "NOT_AUTHORIZED")
                (when
-                (.confirm
-                 js/window
-                 (str
-                  "This app needs your location, "
-                  "but does not have permission.\n\n"
-                  "Open settings now?"))
+                (.confirm js/window (tr [:location/permission]))
                  (.openSettings BackgroundGeolocation)))
              (.error js/console error))
            (cb {:latitude (.-latitude location)
@@ -66,4 +62,4 @@
       "android" (watch-position-mobile cb)
       "ios" (watch-position-mobile cb)
       "web" (watch-position-web cb)
-      (.alert js/window "Location not supported on this platform."))))
+      (.alert js/window (tr [:location/unsupported])))))

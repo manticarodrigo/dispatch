@@ -6,6 +6,7 @@
             [ui.lib.apollo :refer (gql use-mutation)]
             [ui.lib.router :refer (use-params)]
             [ui.lib.platform :refer (platform)]
+            [ui.utils.i18n :refer (tr)]
             [ui.utils.input :refer (debounce)]
             [ui.hooks.use-location :refer (use-location)]
             [ui.components.modal :refer (modal)]
@@ -49,17 +50,17 @@
 
     [:<>
      (if (= platform "web")
-       [modal {:show true :title "Unsupported platform" :on-close #()}
-        [:p {:class "mb-4"} "Looks like you are trying to access a seat view from a web browser. Please use the mobile app to access this view."]
+       [modal {:show true :title (tr [:device.unsupported/title]) :on-close #()}
+        [:p {:class "mb-4"} (tr [:device.unsupported/message])]
         [:a {:href "https://play.google.com/store/apps/details?id=app.ambito.dispatch"
              :class "underline"}
-         "Download from Google Play Store"]]
+         (tr [:device.unsupported/download])]]
        [:<>
-        [modal {:show invalid? :title "Another device already linked" :on-close #()}
-         [:p {:class "mb-4"} "Looks like this seat has a device linked to it already. If you would like to link your device to this seat, please reach out to an admin and ask them to unlink the other device first."]]
-        [modal {:show unlinked? :title "No device linked" :on-close #()}
-         [:p {:class "mb-4"} "Looks like this seat has no device linked to it yet. Please press the button below to link your device and continue."]
-         [button {:label "Link Device"
+        [modal {:show invalid? :title (tr [:device.linked/title]) :on-close #()}
+         [:p {:class "mb-4"} (tr [:device.linked/message])]]
+        [modal {:show unlinked? :title (tr [:device.unlinked/title]) :on-close #()}
+         [:p {:class "mb-4"} (tr [:device.unlinked/message])]
+         [button {:label (tr [:device/link])
                   :class "bg-neutral-900 text-white px-4 py-2 rounded-md"
                   :on-click (fn []
                               (-> (create-device {:variables
