@@ -1,11 +1,11 @@
-(ns ui.views.seat.core
+(ns ui.views.agent.core
   (:require [ui.lib.router :as router]
-            [ui.views.seat.layout :refer (layout)]
-            [ui.views.seat.task.core :as task]
-            [ui.views.seat.place.core :as place]
-            [ui.views.seat.stop.core :as stop]))
+            [ui.views.agent.layout :refer (layout)]
+            [ui.views.agent.task.core :as task]
+            [ui.views.agent.place.core :as place]
+            [ui.views.agent.stop.core :as stop]))
 
-(def route {:path "seat/:seat"
+(def route {:path "agent/:agent"
             :element [layout [router/outlet]]
             :children [{:index true :element [router/navigate "tasks"]}
                        {:path "tasks" :element [task/list-view]}

@@ -16,8 +16,8 @@
                               :link "Register here."}}
            :task {:list {:title "Tasks"}
                   :create {:title "Create task"}}
-           :seat {:list {:title "Seats"}
-                  :create {:title "Create seat"}}
+           :agent {:list {:title "Agents"}
+                  :create {:title "Create agent"}}
            :place {:list {:title "Places"}
                    :create {:title "Create place"}}
            :not-found "Page not found"}
@@ -27,7 +27,7 @@
             :phone "Phone"
             :location "Location"
             :note "Note"
-            :seat "Seat"
+            :agent "Agent"
             :departure "Departure"
             :origin "Origin"
             :destination "Destination"
@@ -61,12 +61,12 @@
                :permission "This app needs your location, but does not have permission.\n\nOpen settings now?"
                :unsupported "Location not supported on this platform."}
     :device {:unsupported {:title "Unsupported platform"
-                           :message "Looks like you are trying to access a seat view from a web browser. Please use the mobile app to access this view."
+                           :message "Looks like you are trying to access a agent view from a web browser. Please use the mobile app to access this view."
                            :download "Download from Google Play Store"}
              :linked {:title "Another device already linked"
-                      :message "Looks like this seat has a device linked to it already. If you would like to link your device to this seat, please reach out to an admin and ask them to unlink the other device first."}
+                      :message "Looks like this agent has a device linked to it already. If you would like to link your device to this agent, please reach out to an admin and ask them to unlink the other device first."}
              :unlinked {:title "No device linked"
-                        :message "Looks like this seat has no device linked to it yet. Please press the button below to link your device and continue."}
+                        :message "Looks like this agent has no device linked to it yet. Please press the button below to link your device and continue."}
              :link "Link Device"}
     :error {:unknown "An unknown error occurred."
             :unique-constraint "The account already exists."
@@ -84,7 +84,7 @@
                               :link "Registrar aquí."}}
            :task {:list {:title "Tareas"}
                   :create {:title "Crear tarea"}}
-           :seat {:list {:title "Asientos"}
+           :agent {:list {:title "Asientos"}
                   :create {:title "Crear asiento"}}
            :place {:list {:title "Lugares"}
                    :create {:title "Crear lugar"}}
@@ -95,7 +95,7 @@
             :phone "Teléfono"
             :location "Ubicación"
             :note "Nota"
-            :seat "Asiento"
+            :agent "Asiento"
             :departure "Salida"
             :origin "Origen"
             :destination "Destino"

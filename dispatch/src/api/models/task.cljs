@@ -5,38 +5,38 @@
    [api.util.prisma :as prisma]
    [api.filters.core :as filters]
    [api.models.user :refer (active-user)]
-   [api.models.seat :refer (active-seat)]))
+   [api.models.agent :refer (active-agent)]))
 
-(defn create [^js context {:keys [seatId startAt placeIds route]}]
+(defn create [^js context {:keys [agentId startAt placeIds route]}]
   (p/let [^js user (active-user context)]
     (prisma/create!
      (.. context -prisma -task)
      {:data {:user {:connect {:id (.-id user)}}
-             :seat {:connect {:id seatId}}
+             :agent {:connect {:id agentId}}
              :stops {:create (mapv (fn [[idx id]]
                                      {:order idx
                                       :place {:connect {:id id}}})
                                    (map-indexed vector placeIds))}
              :route route
              :startAt startAt}
-      :include {:seat true
+      :include {:agent true
                 :stops {:include {:place true}
                         :orderBy {:order "asc"}}}})))
 
-(defn find-all [^js context {:keys [seatId deviceId filters]}]
-  (if seatId
-    (p/-> (active-seat
+(defn find-all [^js context {:keys [agentId deviceId filters]}]
+  (if agentId
+    (p/-> (active-agent
            context
-           {:seatId seatId
+           {:agentId agentId
             :deviceId deviceId
             :query {:include
                     {:user
                      {:include
                       {:tasks
                        {:where (update-in (filters/task filters) [:AND] conj
-                                          {:seat {:id seatId}})
+                                          {:agent {:id agentId}})
                         :orderBy {:startAt "asc"}
-                        :include {:seat true
+                        :include {:agent true
                                   :stops {:include {:place true}
                                           :orderBy {:order "asc"}}}}}}}}})
           (gobj/get "user")
@@ -47,21 +47,21 @@
             {:tasks
              {:where (filters/task filters)
               :orderBy {:startAt "asc"}
-              :include {:seat true
+              :include {:agent true
                         :stops {:include {:place true}
                                 :orderBy {:order "asc"}}}}}})
           (gobj/get "tasks"))))
 
-(defn find-unique [^js context {:keys [taskId seatId deviceId]}]
-  (if seatId
-    (p/-> (active-seat
+(defn find-unique [^js context {:keys [taskId agentId deviceId]}]
+  (if agentId
+    (p/-> (active-agent
            context
-           {:seatId seatId
+           {:agentId agentId
             :deviceId deviceId
             :query {:include
                     {:tasks
                      {:where {:id taskId}
-                      :include {:seat {:include {:location true}}
+                      :include {:agent {:include {:location true}}
                                 :stops {:include {:place true}
                                         :orderBy {:order "asc"}}}}}}})
           (gobj/get "tasks")
@@ -71,17 +71,17 @@
            {:include
             {:tasks
              {:where {:id taskId}
-              :include {:seat {:include {:location true}}
+              :include {:agent {:include {:location true}}
                         :stops {:include {:place true}
                                 :orderBy {:order "asc"}}}}}})
           (gobj/get "tasks")
           first)))
 
-(defn find-by-place [^js context {:keys [seatId deviceId placeId filters]}]
-  (if seatId
-    (p/-> (active-seat
+(defn find-by-place [^js context {:keys [agentId deviceId placeId filters]}]
+  (if agentId
+    (p/-> (active-agent
            context
-           {:seatId seatId
+           {:agentId agentId
             :deviceId deviceId
             :query {:include
                     {:user
@@ -90,7 +90,7 @@
                        {:where (update-in (filters/task filters) [:AND] conj
                                           {:stops {:some {:place {:id placeId}}}})
                         :orderBy {:startAt "asc"}
-                        :include {:seat true
+                        :include {:agent true
                                   :stops {:include {:place true}
                                           :orderBy {:order "asc"}}}}}}}}})
           (gobj/get "user")
@@ -102,7 +102,7 @@
              {:where (update-in (filters/task filters) [:AND] conj
                                 {:stops {:some {:place {:id placeId}}}})
               :orderBy {:startAt "asc"}
-              :include {:seat true
+              :include {:agent true
                         :stops {:include {:place true}
                                 :orderBy {:order "asc"}}}}}})
           (gobj/get "tasks"))))

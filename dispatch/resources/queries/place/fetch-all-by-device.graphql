@@ -1,5 +1,5 @@
-query PlacesByDevice($seatId: ID!, $deviceId: ID!) {
-  places(seatId: $seatId, deviceId: $deviceId) {
+query PlacesByDevice($agentId: ID!, $deviceId: ID!) {
+  places(agentId: $agentId, deviceId: $deviceId) {
     id
     name
     description

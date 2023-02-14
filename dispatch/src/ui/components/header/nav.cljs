@@ -20,9 +20,9 @@
   (use-routes [{:path "admin/*"
                 :element [:nav [:ul {:class "flex justify-center"}
                                 [nav-item "tasks" CalendarIcon]
-                                [nav-item "seats" UsersIcon]
+                                [nav-item "agents" UsersIcon]
                                 [nav-item "places" PinIcon]]]}
-               {:path "seat/:id/*"
+               {:path "agent/:id/*"
                 :element [:nav [:ul {:class "flex justify-center"}
                                 [nav-item "tasks" CalendarIcon]
                                 [nav-item "places" PinIcon]]]}

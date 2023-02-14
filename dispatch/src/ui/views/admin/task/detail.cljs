@@ -15,9 +15,9 @@
   (let [{task-id :task} (use-params)
         query (use-query FETCH_TASK {:variables {:taskId task-id}})
         {:keys [data loading]} query
-        {:keys [seat stops route]} (:task data)
+        {:keys [agent stops route]} (:task data)
         {:keys [path]} route
-        {:keys [name location]} seat
+        {:keys [name location]} agent
         location-date (some-> location :createdAt js/parseInt js/Date.)]
 
     (react/useEffect

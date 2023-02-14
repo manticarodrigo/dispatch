@@ -1,10 +1,10 @@
 query PlaceByDevice(
-  $seatId: ID!
+  $agentId: ID!
   $deviceId: ID!
   $placeId: ID!
   $filters: TaskFilters
 ) {
-  place(seatId: $seatId, deviceId: $deviceId, placeId: $placeId) {
+  place(agentId: $agentId, deviceId: $deviceId, placeId: $placeId) {
     id
     name
     phone
@@ -12,7 +12,7 @@ query PlaceByDevice(
     description
     lat
     lng
-    tasks(seatId: $seatId, deviceId: $deviceId, filters: $filters) {
+    tasks(agentId: $agentId, deviceId: $deviceId, filters: $filters) {
       id
       startAt
       stops {

@@ -1,11 +1,11 @@
 mutation CreateLocation(
-  $seatId: ID!
+  $agentId: ID!
   $deviceId: ID!
   $position: LocationPosition!
   $createdAt: String
 ) {
   createLocation(
-    seatId: $seatId
+    agentId: $agentId
     deviceId: $deviceId
     position: $position
     createdAt: $createdAt

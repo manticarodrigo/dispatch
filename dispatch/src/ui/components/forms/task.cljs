@@ -29,7 +29,7 @@
 
 (defn task-form []
   (let [!anoms (r/atom {})
-        !state (r/atom {:seatId nil
+        !state (r/atom {:agentId nil
                         :startAt (from-datetime-local (js/Date.))
                         :origin-id nil
                         :destination-id nil
@@ -56,10 +56,10 @@
                      (:loading query)
                      (:loading status)
                      @!loading-route)
-            {:keys [seats places]} (some-> query :data :user)
+            {:keys [agents places]} (some-> query :data :user)
             place-map (into {} (for [place places]
                                  {(:id place) place}))
-            {:keys [seatId startAt origin-id destination-id stop-tuples route]} @!state
+            {:keys [agentId startAt origin-id destination-id stop-tuples route]} @!state
             stop-ids (mapv second stop-tuples)
             place-ids (filterv some? (concat [origin-id] stop-ids [destination-id]))
             selected-places (mapv #(get place-map %) place-ids)
@@ -93,20 +93,20 @@
                 (fn [e]
                   (.preventDefault e)
                   (-> (create {:variables
-                               {:seatId seatId
+                               {:agentId agentId
                                 :startAt startAt
                                 :placeIds place-ids
                                 :route route}})
                       (.then #(navigate "/admin/tasks"))
                       (.catch #(reset! !anoms (parse-anoms %)))))}
-         [combobox {:label (tr [:field/seat])
-                    :value (:seatId @!state)
+         [combobox {:label (tr [:field/agent])
+                    :value (:agentId @!state)
                     :required true
                     :class "mb-4"
-                    :options seats
+                    :options agents
                     :option-to-label #(:name %)
                     :option-to-value #(:id %)
-                    :on-change #(swap! !state assoc :seatId %)}]
+                    :on-change #(swap! !state assoc :agentId %)}]
          [input {:id "start"
                  :label (tr [:field/departure])
                  :type "datetime-local"

@@ -1,4 +1,4 @@
-(ns ui.components.forms.seat
+(ns ui.components.forms.agent
   (:require [shadow.resource :refer (inline)]
             [reagent.core :as r]
             [ui.lib.apollo :refer (gql parse-anoms use-mutation)]
@@ -8,14 +8,14 @@
             [ui.components.inputs.submit-button :refer (submit-button)]
             [ui.components.errors :refer (errors)]))
 
-(def CREATE_SEAT (gql (inline "mutations/seat/create.graphql")))
+(def CREATE_AGENT (gql (inline "mutations/agent/create.graphql")))
 
-(defn seat-form []
+(defn agent-form []
   (let [!state (r/atom {})
         !anoms (r/atom {})]
     (fn []
       (let [{:keys [name]} @!state
-            [create status] (use-mutation CREATE_SEAT {})
+            [create status] (use-mutation CREATE_AGENT {})
             {:keys [loading]} status
             navigate (use-navigate)]
         [:form {:class "flex flex-col"
@@ -23,7 +23,7 @@
                              (.preventDefault e)
                              (-> (create {:variables @!state})
                                  (.then (fn []
-                                          (navigate "/admin/seats")))
+                                          (navigate "/admin/agents")))
                                  (.catch #(reset! !anoms (parse-anoms %)))))}
          [input {:id "name"
                  :label (tr [:field/name])

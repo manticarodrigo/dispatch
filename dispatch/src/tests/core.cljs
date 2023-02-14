@@ -10,7 +10,7 @@
             [tests.util.ui :as ui :refer (with-mounted-component test-app)]
             [tests.util.location :refer (nearby generate-polyline)]
             [tests.user :as user]
-            [tests.seat :as seat]
+            [tests.agent :as agent]
             [tests.device :as device]
             [tests.location :as location]
             [tests.place :as place]
@@ -125,64 +125,64 @@
              (is (-> result :data :user :id)))
            (done))))
 
-(deftest create-seats
+(deftest create-agents
   (async done
          (->
-          (p/all (map (fn [_] (seat/create)) (range 50)))
+          (p/all (map (fn [_] (agent/create)) (range 50)))
           (.then (fn [mocks]
                    (testing "api returns data"
-                     (is (every? #(-> % :result :data :createSeat) mocks)))
+                     (is (every? #(-> % :result :data :createAgent) mocks)))
 
                    (p/let [create-mock (last mocks)
-                           fetch-mock (seat/find-all)]
-                     (seat/with-submit
+                           fetch-mock (agent/find-all)]
+                     (agent/with-submit
                        {:mocks [create-mock fetch-mock]}
                        (fn [^js component]
                          (-> (.findByText component (-> create-mock :request :variables :name))
-                             (.then #(testing "ui presents seat name" (is (some? %))))
+                             (.then #(testing "ui presents agent name" (is (some? %))))
                              (.then done))))))))))
 
-(deftest fetch-seats
+(deftest fetch-agents
   (async done
-         (p/let [fetch-mock (seat/find-all)
-                 seats (-> fetch-mock :result :data :seats)]
+         (p/let [fetch-mock (agent/find-all)
+                 agents (-> fetch-mock :result :data :agents)]
 
            (testing "api returns data"
-             (is (-> seats first :id)))
+             (is (-> agents first :id)))
 
            (with-mounted-component
-             [test-app {:route "/admin/seats" :mocks [fetch-mock]}]
+             [test-app {:route "/admin/agents" :mocks [fetch-mock]}]
              (fn [^js component]
-               (-> (p/all (map #(.findByText component (:name %)) seats))
-                   (.then #(testing "ui presents seat names" (is (every? some? %))))
+               (-> (p/all (map #(.findByText component (:name %)) agents))
+                   (.then #(testing "ui presents agent names" (is (every? some? %))))
                    (.then done)))))))
 
 (deftest create-devices
   (async done
-         (p/let [seats-mock (seat/find-all)
-                 seat-ids (->> seats-mock :result :data :seats (map :id))
+         (p/let [agents-mock (agent/find-all)
+                 agent-ids (->> agents-mock :result :data :agents (map :id))
                  create-mocks (p/all (map-indexed
-                                      (fn [idx seat-id]
+                                      (fn [idx agent-id]
                                         (device/create
-                                         {:seatId seat-id
+                                         {:agentId agent-id
                                           :deviceId idx
                                           :info {}}))
-                                      seat-ids))]
+                                      agent-ids))]
            (testing "api returns data"
              (is (every? #(-> % :result :data :createDevice) create-mocks))
              (done)))))
 
 (deftest create-locations
   (async done
-         (p/let [seats-mock (seat/find-all)
-                 seats (->> seats-mock :result :data :seats (drop 1))
+         (p/let [agents-mock (agent/find-all)
+                 agents (->> agents-mock :result :data :agents (drop 1))
                  create-mocks (p/all (map-indexed
                                       (fn [idx {:keys [id device]}]
                                         (let [created-at (-> (js/Date.)
                                                              (d/subHours (* idx 10))
                                                              from-datetime-local)]
                                           (location/create id (:id device) created-at)))
-                                      seats))]
+                                      agents))]
            (testing "api returns data"
              (is (every? #(-> % :result :data :createLocation) create-mocks))
              (done)))))
@@ -229,12 +229,12 @@
 (deftest create-tasks
   (async done
          (p/let [fetch-user-mock (user/active-user)
-                 {:keys [seats places]} (-> fetch-user-mock :result :data :user)
-                 promise-fn (fn [idx seat]
+                 {:keys [agents places]} (-> fetch-user-mock :result :data :user)
+                 promise-fn (fn [idx agent]
                               (let [shuffled-places (->> places shuffle (take (+ 2 (rand-int 8))))]
                                 (fn []
                                   (task/create
-                                   {:seatId (:id seat)
+                                   {:agentId (:id agent)
                                     :startAt (from-datetime-local (d/addDays (js/Date.) idx))
                                     :placeIds (mapv :id shuffled-places)
                                     :route {:legs []
@@ -246,14 +246,14 @@
                               (map
                                (fn [idx]
                                  (map
-                                  (fn [seat]
-                                    (promise-fn idx seat))
-                                  (take 10 seats)))
+                                  (fn [agent]
+                                    (promise-fn idx agent))
+                                  (take 10 agents)))
                                (range 3)))
                  create-mocks (each promise-fns)
                  create-mock (first create-mocks)
-                 seat-id (-> create-mock :request :variables :seatId)
-                 seat-name (->> seats (filter #(= seat-id (:id %))) first :name)
+                 agent-id (-> create-mock :request :variables :agentId)
+                 agent-name (->> agents (filter #(= agent-id (:id %))) first :name)
                  fetch-mock (task/find-all
                              {:filters
                               {:start (-> (js/Date.) d/startOfDay)
@@ -266,8 +266,8 @@
            (task/with-submit
              {:mocks [fetch-user-mock create-mock fetch-mock]}
              (fn [^js component]
-               (-> (.findByText component seat-name)
-                   (.then #(testing "ui presents seat name" (is (some? %))))
+               (-> (.findByText component agent-name)
+                   (.then #(testing "ui presents agent name" (is (some? %))))
                    (.then done)))))))
 
 (deftest fetch-tasks
@@ -283,18 +283,18 @@
            (with-mounted-component
              [test-app {:route "/admin/tasks" :mocks [fetch-mock]}]
              (fn [^js component]
-               (-> (p/all (map #(.findByText component (-> % :seat :name)) tasks))
-                   (.then #(testing "ui presents seat names" (is (every? some? %))))
+               (-> (p/all (map #(.findByText component (-> % :agent :name)) tasks))
+                   (.then #(testing "ui presents agent names" (is (every? some? %))))
                    (.then done)))))))
 
 
-(deftest fetch-tasks-for-seat
+(deftest fetch-tasks-for-agent
   (async done
-         (p/let [seats-mock (seat/find-all)
-                 seat-id (-> seats-mock :result :data :seats first :id)
-                 {:keys [result]} (seat/find-unique {:seatId seat-id})]
+         (p/let [agents-mock (agent/find-all)
+                 agent-id (-> agents-mock :result :data :agents first :id)
+                 {:keys [result]} (agent/find-unique {:agentId agent-id})]
            (testing "api returns data"
-             (is (-> result :data :seat :tasks first :id))
+             (is (-> result :data :agent :tasks first :id))
              (done)))))
 
 (deftest create-arrivals

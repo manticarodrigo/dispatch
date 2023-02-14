@@ -14,7 +14,7 @@ model User {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   sessions  Session[]
-  seats     Seat[]
+  agents    Agent[]
   places    Place[]
   tasks     Task[]
 }
@@ -29,21 +29,21 @@ model Session {
 model Device {
   id        String   @id @unique @default(uuid())
   info      Json
-  seat      Seat     @relation(fields: [seatId], references: [id])
-  seatId    String   @unique
+  agent     Agent    @relation(fields: [agentId], references: [id])
+  agentId   String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model Seat {
+model Agent {
   id         String     @id @unique @default(uuid())
   name       String
   device     Device?
   user       User       @relation(fields: [userId], references: [id])
   userId     String
-  location   Location?  @relation("SeatLocation", fields: [locationId], references: [id])
+  location   Location?  @relation("AgentLocation", fields: [locationId], references: [id])
   locationId String?    @unique
-  locations  Location[] @relation("SeatLocations")
+  locations  Location[] @relation("AgentLocations")
   tasks      Task[]
   places     Place[]
   createdAt  DateTime   @default(now())
@@ -53,9 +53,9 @@ model Seat {
 model Location {
   id         String   @id @unique @default(uuid())
   position   Json
-  currentFor Seat?    @relation("SeatLocation")
-  seat       Seat     @relation("SeatLocations", fields: [seatId], references: [id])
-  seatId     String
+  currentFor Agent?   @relation("AgentLocation")
+  agent      Agent    @relation("AgentLocations", fields: [agentId], references: [id])
+  agentId    String
   createdAt  DateTime @default(now())
 }
 
@@ -67,8 +67,8 @@ model Place {
   description String
   lat         Float
   lng         Float
-  seat        Seat?    @relation(fields: [seatId], references: [id])
-  seatId      String?
+  agent       Agent?   @relation(fields: [agentId], references: [id])
+  agentId     String?
   user        User     @relation(fields: [userId], references: [id])
   userId      String
   stops       Stop[]
@@ -80,8 +80,8 @@ model Task {
   id        String   @id @unique @default(uuid())
   user      User     @relation(fields: [userId], references: [id])
   userId    String
-  seat      Seat     @relation(fields: [seatId], references: [id])
-  seatId    String
+  agent     Agent    @relation(fields: [agentId], references: [id])
+  agentId   String
   stops     Stop[]
   route     Json
   startAt   DateTime

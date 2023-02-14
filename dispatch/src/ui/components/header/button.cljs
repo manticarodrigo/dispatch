@@ -7,10 +7,10 @@
                   "login"
                   "logout"
                   "admin/tasks"
-                  "admin/seats"
+                  "admin/agents"
                   "admin/places"
-                  "seat/:id/tasks"
-                  "seat/:id/places"])
+                  "agent/:id/tasks"
+                  "agent/:id/places"])
 
 (def index-routes (mapv (fn [path] {:path path :element [dispatch-icon]}) index-paths))
 

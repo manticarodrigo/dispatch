@@ -14,7 +14,7 @@
                                       :class-map {:button! "h-full"
                                                   :item "min-w-[12rem]"}}
                           [language-radio-group]]}
-               {:path "seat/*"
+               {:path "agent/*"
                 :element [menu-input {:label [:> SettingsIcon]
                                       :class-map {:button! "h-full"
                                                   :item "min-w-[12rem]"}}

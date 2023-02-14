@@ -1,6 +1,0 @@
-mutation CreateSeat($name: String!) {
-  createSeat(name: $name) {
-    id
-    name
-  }
-}

@@ -1,7 +1,7 @@
 query Tasks($filters: TaskFilters) {
   tasks(filters: $filters) {
     id
-    seat {
+    agent {
       id
       name
     }

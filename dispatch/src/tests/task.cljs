@@ -40,9 +40,9 @@
 (defn with-submit [ctx f]
   (let [{:keys [mocks]} ctx
         [fetch-mock create-mock] mocks
-        {:keys [seats places]} (-> fetch-mock :result :data :user)
-        {:keys [seatId startAt placeIds route]} (-> create-mock :request :variables)
-        seat (some #(when (= (:id %) seatId) %) seats)
+        {:keys [agents places]} (-> fetch-mock :result :data :user)
+        {:keys [agentId startAt placeIds route]} (-> create-mock :request :variables)
+        agent (some #(when (= (:id %) agentId) %) agents)
         {:keys [path]} route
         overview-path (mapv (fn [{:keys [lat lng]}]
                               #js{:lat (fn [] lat)
@@ -60,7 +60,7 @@
       (fn [^js component user]
         (p/do
           (.findByText component (tr [:field/submit]))
-          (select-combobox user component (tr [:field/seat]) (-> seat :name))
+          (select-combobox user component (tr [:field/agent]) (-> agent :name))
 
           (change
            (.getByLabelText component (tr [:field/departure]))

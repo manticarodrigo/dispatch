@@ -11,7 +11,7 @@
             [api.util.anom :as anom]
             [api.resolvers.user :as user]
             [api.resolvers.device :as device]
-            [api.resolvers.seat :as seat]
+            [api.resolvers.agent :as agent]
             [api.resolvers.place :as place]
             [api.resolvers.task :as task]
             [api.resolvers.location :as location]
@@ -35,24 +35,24 @@
                 {:createUser user/create
                  :createSession user/login
                  :createDevice device/create
-                 :createSeat seat/create
+                 :createAgent agent/create
                  :createPlace place/create
                  :createTask task/create
                  :createLocation location/create
                  :createArrival stop/create-arrival}
                 :Query
                 {:user user/active-user
-                 :seats seat/find-all
-                 :seat seat/find-unique
+                 :agents agent/find-all
+                 :agent agent/find-unique
                  :places place/find-all
                  :place place/find-unique
                  :tasks task/find-all
                  :task task/find-unique
                  :stop stop/find-unique}
                 :User
-                {:seats seat/find-all
+                {:agents agent/find-all
                  :places place/find-all}
-                :Seat {}
+                :Agent {}
                 :Location {}
                 :Place {:tasks task/find-by-place}
                 :Stop {}

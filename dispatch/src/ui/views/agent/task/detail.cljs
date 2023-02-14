@@ -1,4 +1,4 @@
-(ns ui.views.seat.task.detail
+(ns ui.views.agent.task.detail
   (:require [react]
             [re-frame.core :refer (dispatch)]
             [shadow.resource :refer (inline)]
@@ -13,17 +13,17 @@
 (def FETCH_TASK (gql (inline "queries/task/fetch-by-device.graphql")))
 
 (defn view []
-  (let [{seat-id :seat task-id :task} (use-params)
+  (let [{agent-id :agent task-id :task} (use-params)
         device (listen [:device])
         device-id (:id device)
         query (use-query FETCH_TASK {:variables
                                      {:taskId task-id
-                                      :seatId seat-id
+                                      :agentId agent-id
                                       :deviceId device-id}})
         {:keys [data loading]} query
-        {:keys [seat stops route]} (:task data)
+        {:keys [agent stops route]} (:task data)
         {:keys [path]} route
-        {:keys [name location]} seat
+        {:keys [name location]} agent
         location-date (some-> location :createdAt js/parseInt js/Date.)]
 
     (react/useEffect

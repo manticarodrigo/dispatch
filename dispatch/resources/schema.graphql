@@ -3,28 +3,28 @@ scalar JSON
 
 type Query {
   user: User
-  seats: [Seat]
-  seat(seatId: ID!, filters: TaskFilters): Seat
-  places(seatId: ID, deviceId: ID): [Place]
-  place(seatId: ID, deviceId: ID, placeId: ID!, filters: TaskFilters): Place
-  tasks(seatId: ID, deviceId: ID, filters: TaskFilters): [Task]
-  task(seatId: ID, deviceId: ID, taskId: ID!): Task
+  agents: [Agent]
+  agent(agentId: ID!, filters: TaskFilters): Agent
+  places(agentId: ID, deviceId: ID): [Place]
+  place(agentId: ID, deviceId: ID, placeId: ID!, filters: TaskFilters): Place
+  tasks(agentId: ID, deviceId: ID, filters: TaskFilters): [Task]
+  task(agentId: ID, deviceId: ID, taskId: ID!): Task
   stop(stopId: ID!): Stop
 }
 
 type Mutation {
   createUser(email: String!, password: String!): String!
   createSession(email: String!, password: String!): String!
-  createSeat(name: String!): Seat!
-  createDevice(seatId: ID!, deviceId: ID, info: JSON!): Device!
+  createAgent(name: String!): Agent!
+  createDevice(agentId: ID!, deviceId: ID, info: JSON!): Device!
   createLocation(
-    seatId: ID!
+    agentId: ID!
     deviceId: ID!
     position: LocationPosition!
     createdAt: String
   ): Location!
   createPlace(
-    seatId: ID
+    agentId: ID
     deviceId: ID
     name: String!
     phone: String
@@ -34,7 +34,7 @@ type Mutation {
     lng: Float!
   ): Place!
   createTask(
-    seatId: ID!
+    agentId: ID!
     startAt: String!
     placeIds: [ID]!
     route: JSON!
@@ -45,17 +45,17 @@ type Mutation {
 type User {
   id: ID!
   email: String!
-  seats: [Seat]
+  agents: [Agent]
   places: [Place]
 }
 
 type Device {
   id: ID!
   info: JSON!
-  seat: Seat!
+  agent: Agent!
 }
 
-type Seat {
+type Agent {
   id: ID!
   name: String!
   device: Device
@@ -89,7 +89,7 @@ type Place {
   description: String!
   lat: Float!
   lng: Float!
-  tasks(seatId: ID, deviceId: ID, filters: TaskFilters): [Task]
+  tasks(agentId: ID, deviceId: ID, filters: TaskFilters): [Task]
 }
 
 type Stop {
@@ -102,7 +102,7 @@ type Stop {
 
 type Task {
   id: ID!
-  seat: Seat!
+  agent: Agent!
   startAt: String!
   stops: [Stop]!
   route: JSON!

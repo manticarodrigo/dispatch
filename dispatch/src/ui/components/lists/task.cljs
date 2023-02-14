@@ -10,8 +10,8 @@
   [:<>
    [:ul
     (doall
-     (for [{:keys [id seat startAt]} tasks]
-       (let [{:keys [name]} seat
+     (for [{:keys [id agent startAt]} tasks]
+       (let [{:keys [name]} agent
              start-date (some-> startAt js/parseInt js/Date.)
              started? (and start-date (d/isBefore start-date (js/Date.)))]
          ^{:key id}

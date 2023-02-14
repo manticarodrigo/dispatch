@@ -1,17 +1,17 @@
 mutation CreateTask(
-  $seatId: ID!
+  $agentId: ID!
   $startAt: String!
   $placeIds: [ID]!
   $route: JSON!
 ) {
   createTask(
-    seatId: $seatId
+    agentId: $agentId
     startAt: $startAt
     placeIds: $placeIds
     route: $route
   ) {
     id
-    seat {
+    agent {
       id
       name
     }

@@ -1,5 +1,5 @@
-query Seats {
-  seats {
+query Agents {
+  agents {
     id
     name
     device {

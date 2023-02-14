@@ -3,37 +3,37 @@
             [goog.object :as gobj]
             [api.util.prisma :as prisma]
             [api.models.user :refer (active-user)]
-            [api.models.seat :refer (active-seat)]))
+            [api.models.agent :refer (active-agent)]))
 
-(defn create [^js context {:keys [seatId deviceId name phone email description lat lng]}]
+(defn create [^js context {:keys [agentId deviceId name phone email description lat lng]}]
   (let [payload {:data {:name name
                         :phone phone
                         :email email
                         :description description
                         :lat lat
                         :lng lng}}]
-    (if seatId
-      (p/let [^js seat (active-seat
+    (if agentId
+      (p/let [^js agent (active-agent
                         context
-                        {:seatId seatId
+                        {:agentId agentId
                          :deviceId deviceId
                          :query {:include {:user true}}})]
         (prisma/create!
          (.. context -prisma -place)
          (update-in payload [:data] merge
-                    {:seat {:connect {:id seatId}}
-                     :user {:connect {:id (.. seat -user -id)}}})))
+                    {:agent {:connect {:id agentId}}
+                     :user {:connect {:id (.. agent -user -id)}}})))
       (p/let [^js user (active-user context)]
         (prisma/create!
          (.. context -prisma -place)
          (update-in payload [:data] merge
                     {:user {:connect {:id (.. user -id)}}}))))))
 
-(defn find-all [^js context {:keys [seatId deviceId]}]
-  (if seatId
-    (p/-> (active-seat
+(defn find-all [^js context {:keys [agentId deviceId]}]
+  (if agentId
+    (p/-> (active-agent
            context
-           {:seatId seatId
+           {:agentId agentId
             :deviceId deviceId
             :query {:include
                     {:user
@@ -43,11 +43,11 @@
     (p/-> (active-user context {:include {:places {:orderBy {:name "asc"}}}})
           (gobj/get "places"))))
 
-(defn find-unique [^js context {:keys [seatId deviceId placeId]}]
-  (if seatId
-    (p/-> (active-seat
+(defn find-unique [^js context {:keys [agentId deviceId placeId]}]
+  (if agentId
+    (p/-> (active-agent
            context
-           {:seatId seatId
+           {:agentId agentId
             :deviceId deviceId
             :query {:include
                     {:user

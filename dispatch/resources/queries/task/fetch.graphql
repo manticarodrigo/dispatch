@@ -2,7 +2,7 @@ query Task($taskId: ID!) {
   task(taskId: $taskId) {
     id
     startAt
-    seat {
+    agent {
       id
       name
       location {

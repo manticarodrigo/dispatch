@@ -5,7 +5,7 @@
    [ui.views.register :as register]
    [ui.views.login :as login]
    [ui.views.admin.core :as admin]
-   [ui.views.seat.core :as seat]
+   [ui.views.agent.core :as agent]
    [ui.views.not-found :as not-found]))
 
 (defn routes []
@@ -16,6 +16,6 @@
                  {:path "login" :element [login/view]}
                  {:path "logout" :element [router/remove-auth-route]}
                  admin/route
-                 seat/route
+                 agent/route
                  {:path "*" :element [not-found/view]}])]
     routes))

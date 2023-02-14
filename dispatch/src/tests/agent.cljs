@@ -1,4 +1,4 @@
-(ns tests.seat
+(ns tests.agent
   (:require ["@faker-js/faker" :refer (faker)]
             [shadow.resource :refer (inline)]
             [promesa.core :as p]
@@ -7,7 +7,7 @@
             [ui.utils.i18n :refer (tr)]))
 
 (defn create []
-  (p/let [query (inline "mutations/seat/create.graphql")
+  (p/let [query (inline "mutations/agent/create.graphql")
           variables {:name (.. faker -name fullName)}
           request  {:query query :variables variables}
           result (send request)]
@@ -15,14 +15,14 @@
      :result result}))
 
 (defn find-all []
-  (p/let [query (inline "queries/seat/fetch-all.graphql")
+  (p/let [query (inline "queries/agent/fetch-all.graphql")
           request  {:query query}
           result (send request)]
     {:request request
      :result result}))
 
 (defn find-unique [variables]
-  (p/let [query (inline "queries/seat/fetch.graphql")
+  (p/let [query (inline "queries/agent/fetch.graphql")
           request  {:query query :variables variables}
           result (send request)]
     {:request request
@@ -35,7 +35,7 @@
         {:keys [variables]} request]
 
     (with-mounted-component
-      [test-app {:route "/admin/seats/create" :mocks mocks}]
+      [test-app {:route "/admin/agents/create" :mocks mocks}]
       (fn [^js component]
         (p/do
           (change (.getByLabelText component (tr [:field/name])) (:name variables))

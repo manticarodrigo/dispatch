@@ -1,5 +1,5 @@
-query Seat($seatId: ID!, $filters: TaskFilters) {
-  seat(seatId: $seatId, filters: $filters) {
+query Agent($agentId: ID!, $filters: TaskFilters) {
+  agent(agentId: $agentId, filters: $filters) {
     id
     name
     device {

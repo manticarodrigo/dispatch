@@ -2,7 +2,7 @@ query User {
   user {
     id
     email
-    seats {
+    agents {
       id
       name
     }

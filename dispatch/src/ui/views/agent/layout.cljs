@@ -1,4 +1,4 @@
-(ns ui.views.seat.layout
+(ns ui.views.agent.layout
   (:require [react]
             [shadow.resource :refer (inline)]
             [re-frame.core :refer (dispatch)]
@@ -22,9 +22,9 @@
    500))
 
 (defn layout [& children]
-  (let [{seat-id :seat} (use-params)
+  (let [{agent-id :agent} (use-params)
         watch-location (use-location)
-        [create-device] (use-mutation CREATE_DEVICE {:refetchQueries ["SeatByDevice"]})
+        [create-device] (use-mutation CREATE_DEVICE {})
         [create-location] (use-mutation CREATE_LOCATION {})
         device (listen [:device])
         device-id (:id device)
@@ -42,7 +42,7 @@
                       :position position}])
           (-debounce
            #(create-location
-             {:variables {:seatId seat-id
+             {:variables {:agentId agent-id
                           :deviceId device-id
                           :position position}}))))
        #())
@@ -63,7 +63,7 @@
          [button {:label (tr [:device/link])
                   :on-click (fn []
                               (-> (create-device {:variables
-                                                  {:seatId seat-id
+                                                  {:agentId agent-id
                                                    :deviceId device-id
                                                    :info device-info}})
                                   (.then #(dispatch [:device/error nil]))))}]]])

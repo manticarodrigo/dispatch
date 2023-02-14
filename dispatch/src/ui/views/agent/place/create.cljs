@@ -1,4 +1,4 @@
-(ns ui.views.seat.place.create
+(ns ui.views.agent.place.create
   (:require [ui.utils.css :refer (padding)]
             [ui.utils.i18n :refer (tr)]
             [ui.components.title :refer (title)]

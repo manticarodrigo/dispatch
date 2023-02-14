@@ -1,4 +1,4 @@
-(ns ui.views.seat.place.list
+(ns ui.views.agent.place.list
   (:require [react]
             [re-frame.core :refer (dispatch)]
             [shadow.resource :refer (inline)]
@@ -15,12 +15,12 @@
 (def FETCH_PLACES (gql (inline "queries/place/fetch-all-by-device.graphql")))
 
 (defn view []
-  (let [{seat-id :seat} (use-params)
+  (let [{agent-id :agent} (use-params)
         device (listen [:device])
         device-id (:id device)
         [{:keys [text] :as search-params} set-search-params] (use-search-params)
         {:keys [data loading]} (use-query FETCH_PLACES {:variables
-                                                        {:seatId seat-id
+                                                        {:agentId agent-id
                                                          :deviceId device-id}})
         places (some-> data :places)
         filtered-places (filter-text text :name places)]

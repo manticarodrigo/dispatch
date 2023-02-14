@@ -1,4 +1,4 @@
-(ns ui.views.admin.seat.list
+(ns ui.views.admin.agent.list
   (:require [react]
             [re-frame.core :refer (dispatch)]
             [shadow.resource :refer (inline)]
@@ -9,15 +9,15 @@
             [ui.utils.i18n :refer (tr)]
             [ui.components.title :refer (title)]
             [ui.components.filters :refer (filters)]
-            [ui.components.lists.seat :refer (seat-list)]))
+            [ui.components.lists.agent :refer (agent-list)]))
 
-(def FETCH_SEATS (gql (inline "queries/seat/fetch-all.graphql")))
+(def FETCH_AGENTS (gql (inline "queries/agent/fetch-all.graphql")))
 
 (defn view []
   (let [[{:keys [text] :as search-params} set-search-params] (use-search-params)
-        {:keys [data loading]} (use-query FETCH_SEATS {})
-        seats (some-> data :seats)
-        filtered-seats (filter-text text :name seats)]
+        {:keys [data loading]} (use-query FETCH_AGENTS {})
+        agents (some-> data :agents)
+        filtered-agents (filter-text text :name agents)]
 
     (react/useEffect
      (fn []
@@ -27,16 +27,16 @@
                     (fn [{:keys [name location]}]
                       {:title name
                        :position (:position location)})
-                    (filter #(:location %) filtered-seats))}])
+                    (filter #(:location %) filtered-agents))}])
        #())
-     #js[seats text])
+     #js[agents text])
 
     [:div {:class padding}
-     [title {:title (tr [:view.seat.list/title])
+     [title {:title (tr [:view.agent.list/title])
              :create-link "create"}]
      [filters {:search text
                :on-search-change #(set-search-params
                                    (if (empty? %)
                                      (dissoc search-params :text)
                                      (assoc search-params :text %)))}]
-     [seat-list {:seats filtered-seats :loading loading}]]))
+     [agent-list {:agents filtered-agents :loading loading}]]))

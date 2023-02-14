@@ -19,7 +19,7 @@
         !anoms (r/atom {})
         !options (r/atom [])]
     (fn []
-      (let [{seat-id :seat} (use-params)
+      (let [{agent-id :agent} (use-params)
             device (listen [:device])
             device-id (:id device)
             [create status] (use-mutation CREATE_PLACE {})
@@ -43,9 +43,9 @@
                  :on-submit (fn [e]
                               (.preventDefault e)
                               (let [variables (dissoc @!state :place_id)]
-                                (-> (create {:variables (if seat-id
+                                (-> (create {:variables (if agent-id
                                                           (assoc variables
-                                                                 :seatId seat-id
+                                                                 :agentId agent-id
                                                                  :deviceId device-id)
                                                           variables)})
                                     (.then (fn [] (navigate "../places")))

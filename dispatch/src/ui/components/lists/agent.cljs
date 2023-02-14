@@ -1,4 +1,4 @@
-(ns ui.components.lists.seat
+(ns ui.components.lists.agent
   (:require [react-feather :rename {User UserIcon}]
             [ui.utils.date :as d]
             [ui.utils.i18n :refer (tr)]
@@ -6,11 +6,11 @@
             [ui.components.status-detail :refer (status-detail)]))
 
 
-(defn seat-list [{:keys [seats loading]}]
+(defn agent-list [{:keys [agents loading]}]
   [:<>
    [:ul
     (doall
-     (for [{:keys [id name location]} seats]
+     (for [{:keys [id name location]} agents]
        (let [{:keys [createdAt]} location
              location-date (some-> createdAt js/parseInt js/Date.)
              active? (and location-date (d/isAfter location-date (d/subHours (js/Date.) 26)))]
@@ -27,5 +27,5 @@
                                         (tr [:status/inactive]))}]}]])))]
    (if loading
      [:p {:class "text-center"} (tr [:misc/loading]) "..."]
-     (when (empty? seats)
+     (when (empty? agents)
        [:p {:class "text-center"} (tr [:misc/empty-search])]))])

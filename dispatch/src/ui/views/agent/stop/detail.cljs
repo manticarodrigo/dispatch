@@ -1,4 +1,4 @@
-(ns ui.views.seat.stop.detail
+(ns ui.views.agent.stop.detail
   (:require [react]
             [shadow.resource :refer (inline)]
             [re-frame.core :refer (dispatch)]

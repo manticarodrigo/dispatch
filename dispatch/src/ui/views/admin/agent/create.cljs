@@ -1,10 +1,10 @@
-(ns ui.views.admin.seat.create
+(ns ui.views.admin.agent.create
   (:require [ui.utils.css :refer (padding)]
             [ui.utils.i18n :refer (tr)]
             [ui.components.title :refer (title)]
-            [ui.components.forms.seat :refer (seat-form)]))
+            [ui.components.forms.agent :refer (agent-form)]))
 
 (defn view []
   [:div {:class padding}
-   [title {:title (tr [:view.seat.create/title])}]
-   [seat-form]])
+   [title {:title (tr [:view.agent.create/title])}]
+   [agent-form]])

@@ -1,8 +1,8 @@
-query TaskByDevice($seatId: ID!, $deviceId: ID!, $taskId: ID!) {
-  task(seatId: $seatId, deviceId: $deviceId, taskId: $taskId) {
+query TaskByDevice($agentId: ID!, $deviceId: ID!, $taskId: ID!) {
+  task(agentId: $agentId, deviceId: $deviceId, taskId: $taskId) {
     id
     startAt
-    seat {
+    agent {
       id
       name
       location {
