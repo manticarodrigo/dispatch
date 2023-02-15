@@ -69,8 +69,7 @@
                                                          variables)})
                                    (.then (fn [] (navigate "../places")))
                                    (.catch #(reset! !anoms (parse-anoms %))))))}
-         [input {:id "name"
-                 :label (tr [:field/name])
+         [input {:label (tr [:field/name])
                  :value name
                  :required true
                  :class "mb-4"
@@ -95,11 +94,10 @@
                                      (.then #(swap! !state merge %))
                                      (.then #(reset! !loading-place false))
                                      (.catch #(reset! !loading-place false))))}]
-         [:p {:class "mb-4 w-full text-center"} "or"]
          [loading-button
           {:loading @!loading-location
            :type "button"
-           :label "Get current location"
+           :label (tr [:field/location-get])
            :class "mb-4"
            :on-click (fn []
                        (reset! !loading-location true)
@@ -114,35 +112,30 @@
                                           (.then #(swap! !state merge %))
                                           (.then #(reset! !loading-location false))))))
                            (.catch #(reset! !loading-location false))))}]
-         [input {:id "description"
-                 :label (tr [:field/description])
+         [input {:label (tr [:field/description])
                  :value description
                  :required true
                  :class "mb-4"
                  :on-text #(swap! !state assoc :description %)}]
-         [input {:id "latitude"
-                 :label (tr [:field/latitude])
+         [input {:label (tr [:field/latitude])
                  :value lat
                  :required true
                  :class "mb-4"
                  :on-validate latitude?
                  :on-text #(swap! !state assoc :lat %)}]
-         [input {:id "longitude"
-                 :label (tr [:field/longitude])
+         [input {:label (tr [:field/longitude])
                  :value lng
                  :required true
                  :class "mb-4"
                  :on-validate longitude?
                  :on-text #(swap! !state assoc :lng %)}]
-         [input {:id "phone"
-                 :type "tel"
+         [input {:type "tel"
                  :label (tr [:field/phone])
                  :value phone
                  :required false
                  :class "mb-4"
                  :on-text #(swap! !state assoc :phone %)}]
-         [input {:id "email"
-                 :type "email"
+         [input {:type "email"
                  :label (tr [:field/email])
                  :value email
                  :required false

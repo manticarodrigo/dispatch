@@ -6,8 +6,7 @@
 
 (def input-class (class-names button-class "appearance-none w-full text-left"))
 
-(defn input [{id :id
-              type :type
+(defn input [{type :type
               aria-label :aria-label
               label :label
               placeholder :placeholder
@@ -17,11 +16,16 @@
               on-validate :on-validate
               on-change :on-change
               on-text :on-text}]
-  [:div {:class class}
-   [:label {:for id :class (if aria-label "sr-only" label-class)}
+  [:label {:class (class-names class "block")}
+   [:span
+    {:class (if aria-label
+              "sr-only"
+              (class-names
+               label-class
+               (when required
+                 "after:content-['*'] after:ml-0.5 after:text-red-500")))}
     (or aria-label label)]
-   [:input {:id id
-            :type (or type "text")
+   [:input {:type (or type "text")
             :placeholder placeholder
             :value value
             :required required

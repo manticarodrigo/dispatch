@@ -25,8 +25,7 @@
                                                   {:stopId stop-id
                                                    :note (:note @!state)}})
                                  (.catch #(reset! !anoms (parse-anoms %)))))}
-         [input {:id "note"
-                 :label (tr [:field/note])
+         [input {:label (tr [:field/note])
                  :value note
                  :on-text #(swap! !state assoc :note %)}]
          [submit-button {:loading loading}]

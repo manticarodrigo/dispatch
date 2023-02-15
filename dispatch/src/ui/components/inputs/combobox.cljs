@@ -7,8 +7,8 @@
             [ui.utils.string :refer (class-names)]
             [ui.components.inputs.input :refer (label-class input-class)]
             [ui.components.inputs.menu :refer (menu-class
-                                                       menu-item-class
-                                                       menu-item-active-class)]))
+                                               menu-item-class
+                                               menu-item-active-class)]))
 
 (defn combobox [{aria-label :aria-label
                  label :label
@@ -46,7 +46,12 @@
                                  options))))}
 
      [ui/combobox-label
-      {:class (if aria-label "sr-only" label-class)}
+      {:class (if aria-label
+                "sr-only"
+                (class-names
+                 label-class
+                 (when required
+                   "after:content-['*'] after:ml-0.5 after:text-red-500")))}
       (or aria-label label)]
 
      [ui/combobox-button {:as "div" :class "relative"}

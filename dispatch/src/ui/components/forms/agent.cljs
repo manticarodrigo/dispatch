@@ -25,8 +25,7 @@
                                  (.then (fn []
                                           (navigate "/admin/agents")))
                                  (.catch #(reset! !anoms (parse-anoms %)))))}
-         [input {:id "name"
-                 :label (tr [:field/name])
+         [input {:label (tr [:field/name])
                  :value name
                  :required true
                  :class "mb-4"

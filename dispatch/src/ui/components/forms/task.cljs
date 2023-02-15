@@ -107,8 +107,7 @@
                     :option-to-label #(:name %)
                     :option-to-value #(:id %)
                     :on-change #(swap! !state assoc :agentId %)}]
-         [input {:id "start"
-                 :label (tr [:field/departure])
+         [input {:label (tr [:field/departure])
                  :type "datetime-local"
                  :value (to-datetime-local
                          (js/Date. (:startAt @!state)))
