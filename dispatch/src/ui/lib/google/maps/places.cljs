@@ -12,8 +12,8 @@
      (let [^js service @!places-service]
        (.getDetails
         service
-        (clj->js {:placeId place-id,
-                  :fields ["geometry"]})
+        #js{:placeId place-id,
+            :fields #js["geometry"]}
         (fn [place status]
           (if (= status "OK")
             (resolve (parse-place place))

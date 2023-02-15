@@ -56,7 +56,7 @@
                          [{:title (or name "???")
                            :position {:lat lat :lng lng}}])}])
            #())
-         #js[lat lng])
+         #js[name lat lng])
 
         [:form {:class "flex flex-col"
                 :on-submit (fn [e]

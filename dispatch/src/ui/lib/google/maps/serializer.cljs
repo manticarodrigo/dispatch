@@ -1,4 +1,5 @@
-(ns ui.lib.google.maps.serializer)
+(ns ui.lib.google.maps.serializer
+  (:require [cljs-bean.core :refer (->clj)]))
 
 (defn parse-lat-lng [^js lat-lng]
   (let [lat (.lat lat-lng)
@@ -17,7 +18,7 @@
   (let [{:keys [distance
                 duration
                 end_address
-                end_location]} (js->clj leg :keywordize-keys true)]
+                end_location]} (->clj leg)]
     {:distance (:value distance)
      :duration (:value duration)
      :address end_address

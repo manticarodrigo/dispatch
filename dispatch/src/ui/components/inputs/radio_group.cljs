@@ -1,5 +1,6 @@
 (ns ui.components.inputs.radio-group
   (:require ["@headlessui/react" :refer (RadioGroup)]
+            [cljs-bean.core :refer (->clj)]
             [ui.utils.string :refer (class-names)]))
 
 (def ^:private Label (.-Label RadioGroup))
@@ -27,7 +28,7 @@
            {:key (:key option)
             :value (:key option)
             :class (fn [props]
-                     (let [{active :active checked :checked} (js->clj props :keywordize-keys true)]
+                     (let [{active :active checked :checked} (->clj props)]
                        (class-names
                         "cursor-pointer"
                         "border-y border-neutral-800 py-1 px-2"

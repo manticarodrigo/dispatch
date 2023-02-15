@@ -25,10 +25,10 @@
   (p/do
     (load-map)
     (js/google.maps.Map.
-     el (clj->js {:center {:lat 0 :lng 0}
-                  :zoom 2
-                  :disableDefaultUI true
-                  :styles (:caen styles)}))))
+     el (->js {:center {:lat 0 :lng 0}
+               :zoom 2
+               :disableDefaultUI true
+               :styles (:caen styles)}))))
 
 (defn init-api [el]
   (p/let [gmap (init-map el)]
