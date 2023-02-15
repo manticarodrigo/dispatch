@@ -21,10 +21,10 @@
                                       :agentId agent-id
                                       :deviceId device-id}})
         {:keys [data loading]} query
-        {:keys [agent stops route]} (:task data)
+        {:keys [task]} data
+        {:keys [agent stops route startAt]} task
         {:keys [path]} route
-        {:keys [name location]} agent
-        location-date (some-> location :createdAt js/parseInt js/Date.)]
+        {:keys [name]} agent]
 
     (react/useEffect
      (fn []
@@ -39,5 +39,5 @@
      #js[route stops])
 
     [:div {:class padding}
-     [title {:title name :subtitle (tr [:status/last-seen] [location-date])}]
-     [stop-list {:stops stops :loading loading}]]))
+     [title {:title name :subtitle (tr [:status/start-at] [startAt])}]
+     [stop-list {:task task :loading loading}]]))

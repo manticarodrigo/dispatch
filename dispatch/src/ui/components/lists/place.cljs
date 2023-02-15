@@ -17,11 +17,12 @@
                       :icon PinIcon
                       :title name
                       :subtitle description
-                      :detail [status-detail
-                               {:active? active?
-                                :text (if active?
-                                        (tr [:status/active])
-                                        (tr [:status/inactive]))}]}]])))]
+                      ;; :detail [status-detail
+                      ;;          {:active? active?
+                      ;;           :text (if active?
+                      ;;                   (tr [:status/active])
+                      ;;                   (tr [:status/inactive]))}]
+                      }]])))]
    (if loading
      [:p {:class "text-center"} (tr [:misc/loading]) "..."]
      (when (empty? places)

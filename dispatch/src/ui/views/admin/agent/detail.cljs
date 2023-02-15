@@ -27,7 +27,7 @@
         {:keys [data previousData loading]} query
         {:keys [tasks]} (:agent data)
         {:keys [name location]} (or (:agent previousData) (:agent data))
-        location-date (some-> location :createdAt js/parseInt js/Date.)]
+        {:keys [createdAt]} location]
 
     (react/useEffect
      (fn []
@@ -37,7 +37,7 @@
 
     [:div {:class padding}
      [title {:title name
-             :subtitle (tr [:status/last-seen] [location-date])}]
+             :subtitle (tr [:status/last-seen] [createdAt])}]
      [filters {:date (-> date parse-date d/startOfDay)
                :on-date-change #(set-search-params
                                  (assoc search-params :date (-> % .getTime)))

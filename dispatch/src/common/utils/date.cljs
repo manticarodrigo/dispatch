@@ -1,5 +1,6 @@
 (ns common.utils.date
-  (:require [clojure.string :as s]))
+  ;; (:require [clojure.string :as s])
+  )
 
 (defn ten [i]
   (str (if (< i 10) "0" "") i))
@@ -13,10 +14,10 @@
         SS (-> date .getSeconds ten)]
     (str YYYY "-" MM "-" DD "T" HH ":" II ":" SS)))
 
-(defn from-datetime-local [date]
-  (let [full-iso (-> date .toISOString)
-        [part-iso] (s/split full-iso ".")]
-    (str part-iso "." "000Z")))
+;; (defn from-datetime-local [date]
+;;   (let [full-iso (-> date .toISOString)
+;;         [part-iso] (s/split full-iso ".")]
+;;     (str part-iso "." "000Z")))
 
 (def date-scalar-map
   {:serialize #(.getTime %)

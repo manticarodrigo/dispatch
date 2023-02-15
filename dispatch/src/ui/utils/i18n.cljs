@@ -47,13 +47,18 @@
              :complete "Complete"
              :active "Active"
              :inactive "Inactive"
-             :starts "Starts"
-             :started "Started"
              :last-seen (fn [[date]]
-                          (str "Last seen "
+                          (str "Seen "
                                (if date
                                  (d/formatRelative date (js/Date.))
-                                 "never")))}
+                                 "never")))
+             :start-at (fn [[date]]
+                         (if date
+                           (let [started? (d/isBefore date (js/Date.))]
+                             (str (if started? "Started" "Starts")
+                                  " "
+                                  (d/formatDistanceToNowStrict date)))
+                           "Loading..."))}
     :calendar {:previous-month "Previous month"
                :next-month "Next month"}
     :misc {:sign-out "Sign out"
@@ -119,13 +124,18 @@
              :complete "Completo"
              :active "Activo"
              :inactive "Inactivo"
-             :starts "Empieza"
-             :started "Empezó"
              :last-seen (fn [[date]]
-                          (str "Visto por última vez "
+                          (str "Visto "
                                (if date
                                  (d/formatRelative date (js/Date.))
-                                 "nunca")))}
+                                 "nunca")))
+             :start-at (fn [[date]]
+                         (if date
+                           (let [started? (d/isBefore date (js/Date.))]
+                             (str (if started? "Empezó" "Empieza")
+                                  " "
+                                  (d/formatDistanceToNowStrict date)))
+                           "Cargando..."))}
     :calendar {:previous-month "Mes anterior"
                :next-month "Mes siguiente"}
     :misc {:sign-out "Cerrar sesión"

@@ -2,8 +2,8 @@
   (:require [cljs-bean.core :refer (->clj)]))
 
 (defn parse-lat-lng [^js lat-lng]
-  (let [lat (.lat lat-lng)
-        lng (.lng lat-lng)]
+  (let [lat (or (:lat lat-lng) (.lat lat-lng))
+        lng (or (:lng lat-lng) (.lng lat-lng))]
     {:lat lat :lng lng}))
 
 (defn- parse-bounds [^js bounds]

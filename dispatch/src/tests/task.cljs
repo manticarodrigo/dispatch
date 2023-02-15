@@ -43,11 +43,7 @@
         {:keys [agents places]} (-> fetch-mock :result :data :user)
         {:keys [agentId startAt placeIds route]} (-> create-mock :request :variables)
         agent (some #(when (= (:id %) agentId) %) agents)
-        {:keys [path]} route
-        overview-path (mapv (fn [{:keys [lat lng]}]
-                              #js{:lat (fn [] lat)
-                                  :lng (fn [] lng)})
-                            path)
+        {:keys [legs path]} route
         sorted-places (sort-by-id places placeIds)
         origin-place (first sorted-places)
         destination-place (last sorted-places)
@@ -71,8 +67,16 @@
 
           (set! js/google (mock-google
                            {:routes
-                            [{:legs []
-                              :overview_path overview-path
+                            [{:legs (mapv (fn [{:keys [distance duration address location]}]
+                                            {:distance {:value distance}
+                                             :duration {:value duration}
+                                             :end_address address
+                                             :end_location location})
+                                          legs)
+                              :overview_path (mapv (fn [{:keys [lat lng]}]
+                                                     {:lat (fn [] lat)
+                                                      :lng (fn [] lng)})
+                                                   path)
                               :bounds {:getNorthEast mock-lat-lng
                                        :getSouthWest mock-lat-lng}}]}))
           (init-directions)

@@ -21,7 +21,7 @@ type Mutation {
     agentId: ID!
     deviceId: ID!
     position: LocationPosition!
-    createdAt: String
+    createdAt: Date
   ): Location!
   createPlace(
     agentId: ID
@@ -33,12 +33,7 @@ type Mutation {
     lat: Float!
     lng: Float!
   ): Place!
-  createTask(
-    agentId: ID!
-    startAt: String!
-    placeIds: [ID]!
-    route: JSON!
-  ): Task!
+  createTask(agentId: ID!, startAt: Date!, placeIds: [ID]!, route: JSON!): Task!
   createArrival(stopId: ID!, note: String): Stop
 }
 
@@ -66,7 +61,7 @@ type Agent {
 type Location {
   id: ID!
   position: JSON!
-  createdAt: String!
+  createdAt: Date!
 }
 
 input LocationPosition {
@@ -97,13 +92,13 @@ type Stop {
   place: Place!
   order: Int!
   note: String
-  arrivedAt: String
+  arrivedAt: Date
 }
 
 type Task {
   id: ID!
   agent: Agent!
-  startAt: String!
+  startAt: Date!
   stops: [Stop]!
   route: JSON!
 }

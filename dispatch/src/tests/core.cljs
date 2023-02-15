@@ -3,7 +3,6 @@
             [date-fns :as d]
             [cljs.test :as t :refer-macros [deftest async testing is use-fixtures]]
             [promesa.core :as p]
-            [common.utils.date :refer (from-datetime-local)]
             [common.utils.promise :refer (each)]
             [ui.utils.error :refer (tr-error)]
             [ui.utils.i18n :refer (tr)]
@@ -178,9 +177,7 @@
                  agents (->> agents-mock :result :data :agents (drop 1))
                  create-mocks (p/all (map-indexed
                                       (fn [idx {:keys [id device]}]
-                                        (let [created-at (-> (js/Date.)
-                                                             (d/subHours (* idx 10))
-                                                             from-datetime-local)]
+                                        (let [created-at (-> (js/Date.) (d/subHours (* idx 10)))]
                                           (location/create id (:id device) created-at)))
                                       agents))]
            (testing "api returns data"
@@ -235,9 +232,21 @@
                                 (fn []
                                   (task/create
                                    {:agentId (:id agent)
-                                    :startAt (from-datetime-local (d/addDays (js/Date.) idx))
+                                    :startAt (-> (js/Date.)
+                                                 (d/set
+                                                  #js{:hours 8
+                                                      :minutes 0
+                                                      :seconds 0
+                                                      :milliseconds 0})
+                                                 (d/addDays idx))
                                     :placeIds (mapv :id shuffled-places)
-                                    :route {:legs []
+                                    :route {:legs (->> shuffled-places
+                                                       (map-indexed
+                                                        (fn [idx place]
+                                                          {:duration (if (> idx 0) 1800 0)
+                                                           :distance (if (> idx 0) 1000 0)
+                                                           :address (:description place)
+                                                           :location (select-keys place [:lat :lng])})))
                                             :path (->> shuffled-places
                                                        (map #(select-keys % [:lat :lng]))
                                                        (generate-polyline))

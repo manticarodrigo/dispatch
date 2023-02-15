@@ -8,10 +8,11 @@
             [reagent.core :as r]
             [re-frame.core :refer (dispatch)]
             [shadow.resource :refer (inline)]
-            [common.utils.date :refer (to-datetime-local from-datetime-local)]
+            [common.utils.date :refer (to-datetime-local)]
             [ui.lib.apollo :refer (gql parse-anoms use-query use-mutation)]
             [ui.lib.router :refer (use-navigate)]
             [ui.lib.google.maps.directions :refer (calc-route)]
+            [ui.utils.date :as d]
             [ui.utils.i18n :refer (tr)]
             [ui.utils.string :refer (class-names)]
             [ui.utils.vector :refer (vec-remove)]
@@ -30,7 +31,12 @@
 (defn task-form []
   (let [!anoms (r/atom {})
         !state (r/atom {:agentId nil
-                        :startAt (from-datetime-local (js/Date.))
+                        :startAt (d/set
+                                  (js/Date.)
+                                  #js{:hours 8
+                                      :minutes 0
+                                      :seconds 0
+                                      :milliseconds 0})
                         :origin-id nil
                         :destination-id nil
                         ;; tuples of [draggable-item-id place-id] to use for reorderable list 
@@ -113,8 +119,7 @@
                          (js/Date. (:startAt @!state)))
                  :required true
                  :class "mb-4"
-                 :on-text #(swap! !state assoc :startAt
-                                  (from-datetime-local (js/Date. %)))}]
+                 :on-text #(swap! !state assoc :startAt (js/Date. %))}]
          [combobox {:label (tr [:field/origin])
                     :value (:origin-id @!state)
                     :required true

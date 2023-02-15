@@ -12,17 +12,13 @@
     (doall
      (for [{:keys [id agent startAt]} tasks]
        (let [{:keys [name]} agent
-             start-date (some-> startAt js/parseInt js/Date.)
-             started? (and start-date (d/isBefore start-date (js/Date.)))]
+             started? (d/isBefore startAt (js/Date.))]
          ^{:key id}
          [:li {:class "mb-2"}
           [link-card {:to (str "../tasks/" id)
                       :icon RouteIcon
-                      :title (or name
-                                 (str (if started? (tr [:status/started]) (tr [:status/starts]))
-                                      " "
-                                      (d/formatDistanceToNowStrict start-date)))
-                      :subtitle (-> start-date (d/format "yyyy/MM/dd hh:mmaaa"))
+                      :title (or name (tr [:status/start-at] [startAt]))
+                      :subtitle (d/format startAt "yyyy/MM/dd hh:mmaaa")
                       :detail [status-detail {:active? started?
                                               :text (if started?
                                                       (tr [:status/active])

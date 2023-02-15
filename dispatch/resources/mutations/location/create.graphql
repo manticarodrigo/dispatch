@@ -2,7 +2,7 @@ mutation CreateLocation(
   $agentId: ID!
   $deviceId: ID!
   $position: LocationPosition!
-  $createdAt: String
+  $createdAt: Date
 ) {
   createLocation(
     agentId: $agentId

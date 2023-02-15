@@ -12,14 +12,13 @@
     (doall
      (for [{:keys [id name location]} agents]
        (let [{:keys [createdAt]} location
-             location-date (some-> createdAt js/parseInt js/Date.)
-             active? (and location-date (d/isAfter location-date (d/subHours (js/Date.) 26)))]
+             active? (and createdAt (d/isAfter createdAt (d/subHours (js/Date.) 26)))]
          ^{:key id}
          [:li {:class "mb-2"}
           [link-card {:to id
                       :icon UserIcon
                       :title name
-                      :subtitle (tr [:status/last-seen] [location-date])
+                      :subtitle (tr [:status/last-seen] [createdAt])
                       :detail [status-detail
                                {:active? active?
                                 :text (if active?

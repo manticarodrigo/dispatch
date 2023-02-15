@@ -1,6 +1,6 @@
 mutation CreateTask(
   $agentId: ID!
-  $startAt: String!
+  $startAt: Date!
   $placeIds: [ID]!
   $route: JSON!
 ) {
