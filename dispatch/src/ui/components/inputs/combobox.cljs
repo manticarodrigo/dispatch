@@ -45,26 +45,26 @@
                                  #(when (= option (option-to-value %)) %)
                                  options))))}
 
-     [ui/combobox-label
-      {:class (if aria-label
-                "sr-only"
-                (class-names
-                 label-class
-                 (when required
-                   "after:content-['*'] after:ml-0.5 after:text-red-500")))}
-      (or aria-label label)]
-
-     [ui/combobox-button {:as "div" :class "relative"}
-      [ui/combobox-input {:placeholder placeholder
-                          :required required
-                          :class input-class
-                          :style {:padding-right "3rem"}
-                          :display-value (fn [v]
-                                           (option-to-label
-                                            (first (filter #(= v (option-to-value %)) options))))
-                          :on-change on-query}]
-      [:div {:class "cursor-text absolute top-[50%] translate-y-[-50%] right-0 pr-2 lg:pr-4"}
-       [:> ChevronDownIcon {:class "w-4 h-4"}]]]
+     [ui/combobox-label {:class "block"}
+      [:span
+       {:class (if aria-label
+                 "sr-only"
+                 (class-names
+                  label-class
+                  (when required
+                    "after:content-['*'] after:ml-0.5 after:text-red-500")))}
+       (or aria-label label)]
+      [ui/combobox-button {:as "div" :class "relative"}
+       [ui/combobox-input {:placeholder placeholder
+                           :required required
+                           :class input-class
+                           :style {:padding-right "3rem"}
+                           :display-value (fn [v]
+                                            (option-to-label
+                                             (first (filter #(= v (option-to-value %)) options))))
+                           :on-change on-query}]
+       [:div {:class "cursor-text absolute top-[50%] translate-y-[-50%] right-0 pr-2 lg:pr-4"}
+        [:> ChevronDownIcon {:class "w-4 h-4"}]]]]
 
      [ui/transition
       {:leave "transition ease-in duration-100"
