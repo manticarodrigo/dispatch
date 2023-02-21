@@ -42,6 +42,7 @@
                  :createArrival stop/create-arrival}
                 :Query
                 {:user user/active-user
+                 :paymentSetupIntent user/find-setup-intent
                  :agents agent/find-all
                  :agent agent/find-unique
                  :places place/find-all
@@ -52,6 +53,7 @@
                 :User
                 {:agents agent/find-all
                  :places place/find-all}
+                :Organization {}
                 :Agent {}
                 :Location {}
                 :Place {:tasks task/find-by-place}

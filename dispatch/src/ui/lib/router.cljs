@@ -61,6 +61,17 @@
 (defn use-navigate []
   (useNavigate))
 
+(defn use-window-location []
+  (let [location (some-> js/window .-location)]
+    {:protocol (.-protocol location)
+     :host (.-host location)
+     :hostname (.-hostname location)
+     :port (.-port location)
+     :pathname (.-pathname location)
+     :search (.-search location)
+     :hash (.-hash location)
+     :origin (.-origin location)}))
+
 (defn use-params []
   (let [params (useParams)]
     (->clj params)))

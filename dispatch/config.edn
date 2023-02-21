@@ -6,4 +6,5 @@
   ui.config/RUM_MONITOR_ID #shadow/env "RUM_MONITOR_ID"
   ui.config/RUM_IDENTITY_POOL_ID #shadow/env "RUM_IDENTITY_POOL_ID"
   ui.config/RUM_GUEST_ROLE_ARN #shadow/env "RUM_GUEST_ROLE_ARN"
-  ui.config/GOOGLE_MAPS_API_KEY #shadow/env "GOOGLE_MAPS_API_KEY"}}
+  ui.config/GOOGLE_MAPS_API_KEY #shadow/env "GOOGLE_MAPS_API_KEY"
+  ui.config/STRIPE_PUBLIC_KEY #shadow/env "STRIPE_PUBLIC_KEY"}}

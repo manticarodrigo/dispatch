@@ -22,7 +22,9 @@
 (def gql apollo/gql)
 
 (defn parse-anoms [^js e]
-  (mapv #(-> % :extensions :anom) (some-> e .-graphQLErrors ->clj)))
+  (if-let [anoms (mapv #(-> % :extensions :anom) (some-> e .-graphQLErrors ->clj))]
+    anoms
+    (throw e)))
 
 (defonce http-link
   (createHttpLink

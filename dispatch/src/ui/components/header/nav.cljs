@@ -10,7 +10,7 @@
    [nav-link {:to to
               :class (fn [{:keys [isActive]}]
                        (class-names
-                        "block p-2"
+                        "block p-2 transition"
                         (if isActive
                           "border-b border-neutral-300"
                           "text-neutral-600 hover:text-neutral-300 focus:text-neutral-300")))}

@@ -3,6 +3,7 @@ scalar JSON
 
 type Query {
   user: User
+  paymentSetupIntent: String!
   agents: [Agent]
   agent(agentId: ID!, filters: TaskFilters): Agent
   places(agentId: ID, deviceId: ID): [Place]
@@ -13,7 +14,7 @@ type Query {
 }
 
 type Mutation {
-  createUser(email: String!, password: String!): String!
+  createUser(email: String!, password: String!, organization: String!): String!
   createSession(email: String!, password: String!): String!
   createAgent(name: String!): Agent!
   createDevice(agentId: ID!, deviceId: ID, info: JSON!): Device!
@@ -42,6 +43,12 @@ type User {
   email: String!
   agents: [Agent]
   places: [Place]
+  organization: Organization
+}
+
+type Organization {
+  id: ID!
+  name: String!
 }
 
 type Device {

@@ -30,7 +30,8 @@
   (async done
          (p/let [create-mock (user/register
                               {:email "test@test.test"
-                               :password "test"})]
+                               :password "test"
+                               :organization "test"})]
 
            (testing "api returns data"
              (is (-> create-mock :result :data :createUser)))
@@ -46,7 +47,8 @@
   (async done
          (p/let [create-mock (user/register
                               {:email "test@test.test"
-                               :password "test"})
+                               :password "test"
+                               :organization "test"})
                  error (-> create-mock :result :errors first)
                  anom (-> error :extensions :anom)]
 

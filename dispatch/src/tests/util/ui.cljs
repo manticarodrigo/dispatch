@@ -37,8 +37,7 @@
                   (.unmount mounted-component)
                   (r/flush))]
     (-> (p/do (f mounted-component user))
-        (.then cleanup)
-        (.catch #(throw %)))))
+        (.then cleanup))))
 
 (defn click [el]
   (.click rtl/fireEvent el)

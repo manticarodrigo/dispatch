@@ -8,10 +8,12 @@
 (def box-padding-class "p-2.5 lg:py-2.5 lg:px-4")
 
 (def box-interact-class (class-names
+                         "transition"
                          "hover:border-neutral-500 focus:border-neutral-600"
                          "hover:bg-neutral-800 focus:bg-neutral-800 active:bg-neutral-800"))
 
 (def box-peer-interact-class (class-names
+                              "transition"
                               "peer-hover:border-neutral-500 peer-focus:border-neutral-600"
                               "peer-hover:bg-neutral-800 peer-focus:bg-neutral-800 peer-active:bg-neutral-800"))
 

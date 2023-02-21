@@ -9,7 +9,7 @@
 (defn localize [f]
   (fn [& args]
     (let [language (listen [:language])
-          locale ((keyword (or language "en")) dict)
+          locale ((keyword language) dict)
           options #js{:locale locale :addSuffix true}]
       (apply f (conj (vec args) options)))))
 

@@ -33,22 +33,31 @@
      :request request
      :result result}))
 
-(defn with-submit [ctx f]
-  (let [{:keys [route mocks]} ctx
+(defn with-submit-register [ctx f]
+  (let [{:keys [mocks]} ctx
+        [submit-res] mocks
+        {:keys [email password organization]} (some-> submit-res :request :variables)]
+
+    (with-mounted-component
+      [test-app {:route "/register" :mocks mocks}]
+      (fn [^js component]
+        (p/do
+          (change (.getByLabelText component (tr [:field/email])) email)
+          (change (.getByLabelText component (tr [:field/password])) password)
+          (change (.getByLabelText component (tr [:field/organization])) organization)
+          (submit (-> component (.-container) (.querySelector "form")))
+          (f component))))))
+
+(defn with-submit-login [ctx f]
+  (let [{:keys [mocks]} ctx
         [submit-res] mocks
         {:keys [email password]} (some-> submit-res :request :variables)]
 
     (with-mounted-component
-      [test-app {:route route :mocks mocks}]
+      [test-app {:route "/login" :mocks mocks}]
       (fn [^js component]
         (p/do
           (change (.getByLabelText component (tr [:field/email])) email)
           (change (.getByLabelText component (tr [:field/password])) password)
           (submit (-> component (.-container) (.querySelector "form")))
           (f component))))))
-
-(defn with-submit-register [ctx f]
-  (with-submit (assoc ctx :route "/register") f))
-
-(defn with-submit-login [ctx f]
-  (with-submit (assoc ctx :route "/login") f))

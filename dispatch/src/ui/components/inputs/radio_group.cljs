@@ -38,6 +38,7 @@
                         (if (or checked active)
                           (class-names
                            "text-neutral-50"
+                           "transition"
                            "hover:border-neutral-500 focus:border-neutral-600"
                            (when checked "border rounded bg-neutral-700"))
                           "text-neutral-400 bg-neutral-900"))))}

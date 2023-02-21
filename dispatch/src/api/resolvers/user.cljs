@@ -26,3 +26,7 @@
 (defn active-user
   [_ _ context _]
   (user/active-user context))
+
+(defn find-setup-intent
+  [_ _ context _]
+  (user/find-setup-intent context))

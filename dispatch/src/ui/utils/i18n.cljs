@@ -11,6 +11,8 @@
     :view {:register {:title "Register"
                       :login {:title "Already have an account?"
                               :link "Login here."}}
+           :payment {:title "Payments"
+                     :subtitle "Please enter your payment information for future use."}
            :login {:title "Login"
                    :register {:title "Need an account?"
                               :link "Register here."}}
@@ -23,6 +25,7 @@
            :not-found "Page not found"}
     :field {:email "Email"
             :password "Password"
+            :organization "Organization"
             :name "Name"
             :phone "Phone"
             :note "Note"
@@ -88,6 +91,8 @@
     :view {:register {:title "Registrar"
                       :login {:title "¿Ya tienes una cuenta?"
                               :link "Ingresar aquí."}}
+           :payment {:title "Pagos"
+                     :subtitle "Por favor ingresa tu información de pago para futuros usos."}
            :login {:title "Ingresar"
                    :register {:title "¿Necesitas una cuenta?"
                               :link "Registrar aquí."}}
@@ -100,6 +105,7 @@
            :not-found "Página no encontrada"}
     :field {:email "Correo electrónico"
             :password "Contraseña"
+            :organization "Organización"
             :name "Nombre"
             :phone "Teléfono"
             :note "Nota"
@@ -163,8 +169,5 @@
 
 (defn tr [& args]
   (apply
-   (partial tempura/tr opts [(keyword (condp = (listen [:language])
-                                        "en" "en"
-                                        "es" "es"
-                                        "en"))])
+   (partial tempura/tr opts [(keyword (listen [:language]))])
    args))

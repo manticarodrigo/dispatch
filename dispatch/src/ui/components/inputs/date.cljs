@@ -69,6 +69,7 @@
                                 "flex justify-center items-center"
                                 "border rounded"
                                 "w-10 h-10 text-sm"
+                                "transition"
                                 "hover:bg-neutral-600 focus:border-neutral-200 focus:outline-none"
                                 (when (isSelected day) "font-bold bg-neutral-700")
                                 (if (-> day d/isToday) "border-dashed border-neutral-300" "border-transparent"))

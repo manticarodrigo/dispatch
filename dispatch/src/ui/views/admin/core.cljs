@@ -1,5 +1,6 @@
 (ns ui.views.admin.core
   (:require [ui.lib.router :as router]
+            [ui.views.admin.payment.core :as payment]
             [ui.views.admin.task.core :as task]
             [ui.views.admin.agent.core :as agent]
             [ui.views.admin.place.core :as place]
@@ -7,7 +8,8 @@
 
 (def route {:path "admin"
             :element [router/auth-route [router/outlet]]
-            :children [{:path "tasks" :element [task/list-view]}
+            :children [{:path "payments/setup" :element [payment/setup-view]}
+                       {:path "tasks" :element [task/list-view]}
                        {:path "tasks/:task" :element [task/detail-view]}
                        {:path "tasks/create" :element [task/create-view]}
                        {:path "agents" :element [agent/list-view]}

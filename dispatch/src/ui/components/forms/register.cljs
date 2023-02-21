@@ -16,7 +16,7 @@
   (let [!state (r/atom {})
         !anoms (r/atom nil)]
     (fn []
-      (let [{:keys [email password]} @!state
+      (let [{:keys [email password organization]} @!state
             [register status] (use-mutation CREATE_USER {})
             {:keys [loading ^js client]} status
             navigate (use-navigate)]
@@ -42,5 +42,10 @@
                  :required true
                  :class "mb-4"
                  :on-text #(swap! !state assoc :password %)}]
+         [input {:label (tr [:field/organization])
+                 :value organization
+                 :required true
+                 :class "mb-4"
+                 :on-text #(swap! !state assoc :organization %)}]
          [submit-button {:loading loading}]
          [errors @!anoms]]))))

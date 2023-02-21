@@ -6,7 +6,11 @@
 
 
 (rf/reg-sub :session #(:session %))
-(rf/reg-sub :language #(or (some-> % :language)
-                           (some-> % :device :language)))
+(rf/reg-sub :language #(-> (or (some-> % :language)
+                               (some-> % :device :language)
+                               (condp = %
+                                 "en" "en"
+                                 "es" "es"
+                                 "en"))))
 (rf/reg-sub :device #(some-> % :device))
 (rf/reg-sub :map #(some-> % :map))
