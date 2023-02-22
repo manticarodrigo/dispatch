@@ -8,9 +8,7 @@
 (defn menu []
   (use-routes [{:path "admin/*"
                 :element [menu-input {:label [:> SettingsIcon]
-                                      :items [[{:label  (tr [:view.payment/title]) :to "payments/setup"}
-                                               {:label  (tr [:view.register/title]) :to "/register"}
-                                               {:label (tr [:view.login/title]) :to "/login"}]
+                                      :items [[{:label  (tr [:view.subscription/title]) :to "subscription/payment"}]
                                               {:label (str (tr [:misc/sign-out]) "...") :to "/logout"}]
                                       :class-map {:button! "h-full"
                                                   :item "min-w-[12rem]"}}

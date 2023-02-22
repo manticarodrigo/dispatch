@@ -12,6 +12,10 @@
   (-> stripe .-setupIntents
       (.create #js{:customer customer-id})))
 
-(defn find-setup-intent [intent-id]
+(defn list-setup-intents [customer-id]
   (-> stripe .-setupIntents
-      (.retrieve intent-id)))
+      (.list #js{:customer customer-id})))
+
+(defn list-payment-methods [customer-id]
+  (-> stripe .-customers
+      (.listPaymentMethods customer-id)))

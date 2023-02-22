@@ -1,5 +1,6 @@
 (ns ui.lib.stripe
-  (:require ["@stripe/stripe-js" :refer (loadStripe)]
+  (:require [react]
+            ["@stripe/stripe-js" :refer (loadStripe)]
             ["@stripe/react-stripe-js" :refer (Elements PaymentElement useStripe useElements)]
             [cljs-bean.core :refer (->js ->clj)]
             [ui.subs :refer (listen)]
@@ -27,6 +28,9 @@
 (defn stripe-payment-element []
   [:> PaymentElement])
 
+(defn use-elements []
+  (useElements))
+
 (defn use-confirm-setup []
   (let [^js stripe (useStripe)
         f (some-> stripe .-confirmSetup)]
@@ -35,5 +39,15 @@
         (-> (f (->js params))
             (.then ->clj))))))
 
-(defn use-elements []
-  (useElements))
+(defn use-setup-intent-status [secret]
+  (let [^js stripe (useStripe)
+        [intent set-intent] (react/useState nil)]
+    (react/useEffect
+     (fn []
+       (when stripe
+         (-> stripe
+             (.retrieveSetupIntent secret)
+             (.then set-intent)))
+       #())
+     #js[stripe])
+    (some-> intent .-setupIntent .-status)))

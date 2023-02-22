@@ -1,23 +1,21 @@
 (ns api.models.user
   (:require
    [promesa.core :as p]
+   [api.lib.stripe :as stripe]
    [api.util.prisma :as prisma]
    [api.util.crypto :refer (encrypt-string)]
    [api.util.anom :as anom]
-   [api.filters.core :as filters]
-   [api.models.payment :as payment]))
+   [api.filters.core :as filters]))
 
 (defn create [^js context {:keys [email password organization]}]
   (p/let [encrypted-password (when password (encrypt-string password))
-          ^js customer (payment/create-customer email)
-          ^js setup-intent (payment/create-setup-intent (.-id customer))
+          ^js customer (stripe/create-customer email)
           ^js organization (prisma/create!
                             (.. context -prisma -organization)
                             {:data {:name organization
-                                    :stripeCustomer
+                                    :stripe
                                     {:create
-                                     {:customerId (.-id customer)
-                                      :setupIntentId (.-id setup-intent)}}
+                                     {:customerId (.-id customer)}}
                                     :admin
                                     {:create
                                      {:email email
@@ -51,17 +49,3 @@
                              {:where (filters/session (.. context -session))}
                              query))
          (or (throw (anom/gql (anom/forbidden :invalid-session)))))))
-
-(defn find-setup-intent [^js context]
-  (p/let [^js user (active-user
-                    context
-                    {:include
-                     {:organization
-                      {:include
-                       {:stripeCustomer true}}}})
-          intent-id (some-> user
-                            .-organization
-                            .-stripeCustomer
-                            .-setupIntentId)
-          ^js setup-intent (payment/find-setup-intent intent-id)]
-    (some-> setup-intent .-client_secret)))

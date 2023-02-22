@@ -10,5 +10,5 @@
    [title {:title (tr [:view.register/title])}]
    [register-form]
    [:div {:class "pt-2 text-center"}
-    [:p (tr [:view.register.login/title]) " "
-     [link {:to "/login" :class "underline"} (tr [:view.register.login/link])]]]])
+    [:p (tr [:view.register.login-link/title]) " "
+     [link {:to "/login" :class "underline"} (tr [:view.register.login-link/link])]]]])

@@ -15,7 +15,8 @@
             [api.resolvers.place :as place]
             [api.resolvers.task :as task]
             [api.resolvers.location :as location]
-            [api.resolvers.stop :as stop]))
+            [api.resolvers.stop :as stop]
+            [api.resolvers.stripe :as stripe]))
 
 (def date-scalar
   (GraphQLScalarType.
@@ -42,23 +43,22 @@
                  :createArrival stop/create-arrival}
                 :Query
                 {:user user/active-user
-                 :paymentSetupIntent user/find-setup-intent
                  :agents agent/find-all
                  :agent agent/find-unique
                  :places place/find-all
                  :place place/find-unique
                  :tasks task/find-all
                  :task task/find-unique
-                 :stop stop/find-unique}
+                 :stop stop/find-unique
+                 :stripe #()}
                 :User
                 {:agents agent/find-all
                  :places place/find-all}
-                :Organization {}
-                :Agent {}
-                :Location {}
-                :Place {:tasks task/find-by-place}
-                :Stop {}
-                :Task {}})
+                :Place
+                {:tasks task/find-by-place}
+                :Stripe
+                {:setupIntent stripe/create-setup-intent
+                 :paymentMethods stripe/find-payment-methods}})
 
 (def options
   #js{:context

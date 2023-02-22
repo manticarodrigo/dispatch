@@ -21,23 +21,22 @@ model User {
 }
 
 model Organization {
-  id               String         @id @unique @default(uuid())
-  name             String
-  admin            User           @relation(fields: [adminId], references: [id])
-  adminId          String         @unique
-  stripeCustomer   StripeCustomer @relation(fields: [stripeCustomerId], references: [id])
-  stripeCustomerId String         @unique
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
+  id        String   @id @unique @default(uuid())
+  name      String
+  admin     User     @relation(fields: [adminId], references: [id])
+  adminId   String   @unique
+  stripe    Stripe   @relation(fields: [stripeId], references: [id])
+  stripeId  String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-model StripeCustomer {
-  id            String        @id @unique @default(uuid())
-  customerId    String        @unique
-  setupIntentId String        @unique
-  organization  Organization?
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+model Stripe {
+  id           String        @id @unique @default(uuid())
+  customerId   String        @unique
+  organization Organization?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 }
 
 model Session {

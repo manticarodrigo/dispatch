@@ -3,7 +3,7 @@ scalar JSON
 
 type Query {
   user: User
-  paymentSetupIntent: String!
+  stripe: Stripe
   agents: [Agent]
   agent(agentId: ID!, filters: TaskFilters): Agent
   places(agentId: ID, deviceId: ID): [Place]
@@ -43,12 +43,17 @@ type User {
   email: String!
   agents: [Agent]
   places: [Place]
-  organization: Organization
+  organization: Organization!
 }
 
 type Organization {
   id: ID!
   name: String!
+}
+
+type Stripe {
+  setupIntent: JSON
+  paymentMethods: JSON
 }
 
 type Device {

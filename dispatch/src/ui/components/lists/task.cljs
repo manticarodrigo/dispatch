@@ -18,7 +18,7 @@
           [link-card {:to (str "../tasks/" id)
                       :icon RouteIcon
                       :title (or name (tr [:status/start-at] [startAt]))
-                      :subtitle (d/format startAt "yyyy/MM/dd hh:mmaaa")
+                      :subtitle (d/format startAt "dd/MM/yyyy hh:mmaaa")
                       :detail [status-detail {:active? started?
                                               :text (if started?
                                                       (tr [:status/active])

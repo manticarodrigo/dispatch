@@ -1,6 +1,7 @@
 (ns ui.views.admin.core
   (:require [ui.lib.router :as router]
-            [ui.views.admin.payment.core :as payment]
+            [ui.lib.platform :refer (platform)]
+            [ui.views.admin.subscription.core :as subscription]
             [ui.views.admin.task.core :as task]
             [ui.views.admin.agent.core :as agent]
             [ui.views.admin.place.core :as place]
@@ -8,8 +9,7 @@
 
 (def route {:path "admin"
             :element [router/auth-route [router/outlet]]
-            :children [{:path "payments/setup" :element [payment/setup-view]}
-                       {:path "tasks" :element [task/list-view]}
+            :children [{:path "tasks" :element [task/list-view]}
                        {:path "tasks/:task" :element [task/detail-view]}
                        {:path "tasks/create" :element [task/create-view]}
                        {:path "agents" :element [agent/list-view]}
@@ -18,4 +18,7 @@
                        {:path "places" :element [place/list-view]}
                        {:path "places/:place" :element [place/detail-view]}
                        {:path "places/create" :element [place/create-view]}
-                       {:path "stops/:stop" :element [stop/detail-view]}]})
+                       {:path "stops/:stop" :element [stop/detail-view]}
+                       (when
+                        (= platform "web")
+                         {:path "subscription/payment" :element [subscription/payment-view]})]})

@@ -6,6 +6,7 @@
             ["react-router-dom" :refer (MemoryRouter)]
             ["@apollo/client" :refer (gql)]
             ["@apollo/client/testing" :refer (MockedProvider)]
+            ["@faker-js/faker" :refer (faker)]
             [cljs-bean.core :refer (->js)]
             [promesa.core :as p]
             [reagent.core :as r]
@@ -16,6 +17,7 @@
 (rtl/configure #js{:asyncUtilTimeout 5000})
 
 (defn before []
+  (.setLocale faker "es")
   (set! (. js/window -matchMedia)
         (fn []
           (->js {:matches false

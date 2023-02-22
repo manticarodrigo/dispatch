@@ -8,21 +8,26 @@
    {:noun {:status "status"
            :never "never"}
     :verb {:create "create"}
-    :view {:register {:title "Register"
-                      :login {:title "Already have an account?"
-                              :link "Login here."}}
-           :payment {:title "Payments"
-                     :subtitle "Please enter your payment information for future use."}
+    :view {:not-found "Page not found"
+           :register {:title "Register"
+                      :login-link {:title "Already have an account?"
+                                   :link "Login here."}}
            :login {:title "Login"
-                   :register {:title "Need an account?"
-                              :link "Register here."}}
+                   :register-link {:title "Need an account?"
+                                   :link "Register here."}}
            :task {:list {:title "Tasks"}
                   :create {:title "Create task"}}
            :agent {:list {:title "Agents"}
                    :create {:title "Create agent"}}
            :place {:list {:title "Places"}
                    :create {:title "Create place"}}
-           :not-found "Page not found"}
+           :subscription {:title "Manage subscription"
+                          :payment {:title "Payments"
+                                    :subtitle "Manage your payment methods."
+                                    :succeeded "Your payment method has been saved."
+                                    :processing "Your payment method is being processed."
+                                    :failed "Unable to save your payment method."
+                                    :add-payment-method "Add payment method"}}}
     :field {:email "Email"
             :password "Password"
             :organization "Organization"
@@ -89,20 +94,25 @@
            :never "nunca"}
     :verb {:create "crear"}
     :view {:register {:title "Registrar"
-                      :login {:title "¿Ya tienes una cuenta?"
-                              :link "Ingresar aquí."}}
-           :payment {:title "Pagos"
-                     :subtitle "Por favor ingresa tu información de pago para futuros usos."}
+                      :login-link {:title "¿Ya tienes una cuenta?"
+                                   :link "Ingresar aquí."}}
            :login {:title "Ingresar"
-                   :register {:title "¿Necesitas una cuenta?"
-                              :link "Registrar aquí."}}
+                   :register-link {:title "¿Necesitas una cuenta?"
+                                   :link "Registrar aquí."}}
            :task {:list {:title "Tareas"}
                   :create {:title "Crear tarea"}}
            :agent {:list {:title "Agentes"}
                    :create {:title "Crear agente"}}
            :place {:list {:title "Lugares"}
                    :create {:title "Crear lugar"}}
-           :not-found "Página no encontrada"}
+           :not-found "Página no encontrada"
+           :subscription {:title "Administrar suscripción"
+                          :payment {:title "Pagos"
+                                    :subtitle "Administra tus métodos de pago."
+                                    :succeeded "Tu método de pago ha sido guardado."
+                                    :processing "Tu método de pago está siendo procesado."
+                                    :failed "No se pudo guardar tu método de pago."
+                                    :add-payment-method "Agregar método de pago"}}}
     :field {:email "Correo electrónico"
             :password "Contraseña"
             :organization "Organización"

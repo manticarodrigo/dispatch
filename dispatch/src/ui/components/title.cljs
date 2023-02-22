@@ -8,7 +8,7 @@
    [:div
     [:h1 {:class "text-lg font-medium"} title]
     (when subtitle
-      [:h2 {:class "text-xs font-light"} subtitle])]
+      [:h2 {:class "text-sm font-light"} subtitle])]
    (when create-link
      [link {:to create-link :class "text-sm underline capitalize"}
       [:> PlusIcon {:class "inline mr-1 w-3 h-3"}] (tr [:verb/create])])])
