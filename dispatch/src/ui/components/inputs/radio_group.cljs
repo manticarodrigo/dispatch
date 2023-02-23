@@ -30,9 +30,10 @@
             :class (fn [props]
                      (let [{active :active checked :checked} (->clj props)]
                        (class-names
+                        "py-1 px-2"
                         "cursor-pointer"
-                        "border-y border-neutral-700 p-2"
-                        "w-full text-center text-sm font-medium"
+                        "border-y border-neutral-700"
+                        "w-full text-center text-sm"
                         "transition"
                         "hover:text-neutral-50 hover:bg-neutral-700 focus:bg-neutral-700"
                         (when first? "rounded-l border-l")

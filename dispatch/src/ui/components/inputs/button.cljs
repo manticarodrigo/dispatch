@@ -5,7 +5,7 @@
                 "rounded border border-neutral-700"
                 "bg-neutral-800 shadow"))
 
-(def box-padding-class "p-2.5 lg:py-2.5 lg:px-4")
+(def box-padding-class "py-1 px-2")
 
 (def box-interact-class (class-names
                          "transition"
@@ -20,7 +20,7 @@
 (def base-button-class (class-names
                         box-class
                         box-padding-class
-                        "outline-0 focus:outline-none"
+                        "outline-0 outline-none"
                         "text-base text-neutral-100"))
 
 (def button-class (class-names

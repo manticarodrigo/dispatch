@@ -27,7 +27,8 @@
                                     :succeeded "Your payment method has been saved."
                                     :processing "Your payment method is being processed."
                                     :failed "Unable to save your payment method."
-                                    :add-payment-method "Add payment method"}}}
+                                    :add-payment-method "Add payment method"
+                                    :delete-payment-method "Delete payment method"}}}
     :field {:email "Email"
             :password "Password"
             :organization "Organization"
@@ -112,7 +113,8 @@
                                     :succeeded "Tu método de pago ha sido guardado."
                                     :processing "Tu método de pago está siendo procesado."
                                     :failed "No se pudo guardar tu método de pago."
-                                    :add-payment-method "Agregar método de pago"}}}
+                                    :add-payment-method "Agregar método de pago"
+                                    :delete-payment-method "Eliminar método de pago"}}}
     :field {:email "Correo electrónico"
             :password "Contraseña"
             :organization "Organización"

@@ -4,12 +4,13 @@
 
 (def label-class (class-names "block mb-2 text-sm text-neutral-50"))
 
-(def input-class (class-names button-class "appearance-none w-full text-left"))
+(def input-class (class-names button-class "appearance-none w-full text-left font-light placeholder:text-base placeholder:text-neutral-400"))
 
 (defn input [{type :type
               aria-label :aria-label
               label :label
               placeholder :placeholder
+              icon :icon
               value :value
               required :required
               class :class
@@ -25,14 +26,18 @@
                (when required
                  "after:content-['*'] after:ml-0.5 after:text-red-500")))}
     (or aria-label label)]
-   [:input {:type (or type "text")
-            :placeholder placeholder
-            :value value
-            :required required
-            :class input-class
-            :on-change (fn [e]
-                         (let [v (-> e .-target .-value)
-                               valid? (if on-validate (on-validate v) true)]
-                           (when valid?
-                             (when on-change (on-change e))
-                             (when on-text (on-text v)))))}]])
+   [:div {:class "relative"}
+    (when icon
+      [:div {:class "absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none"}
+       [:> icon {:class "w-4 h-4 text-neutral-50"}]])
+    [:input {:type (or type "text")
+             :placeholder placeholder
+             :value value
+             :required required
+             :class (class-names input-class (when icon "pl-8"))
+             :on-change (fn [e]
+                          (let [v (-> e .-target .-value)
+                                valid? (if on-validate (on-validate v) true)]
+                            (when valid?
+                              (when on-change (on-change e))
+                              (when on-text (on-text v)))))}]]])

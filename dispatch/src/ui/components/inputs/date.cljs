@@ -1,7 +1,8 @@
 (ns ui.components.inputs.date
   (:require ["@floating-ui/react-dom" :refer (useFloating offset flip shift)]
             [react-feather :rename {ChevronLeft ChevronLeftIcon
-                                    ChevronRight ChevronRightIcon}]
+                                    ChevronRight ChevronRightIcon
+                                    Calendar CalendarIcon}]
             [use-lilius :refer (useLilius)]
             [cljs-bean.core :refer (->clj)]
             [headlessui-reagent.core :as ui]
@@ -30,7 +31,8 @@
     [ui/popover {:class (class-names class "relative")}
      [ui/popover-button {:ref reference
                          :aria-label label
-                         :class (class-names button-class "w-full")}
+                         :class (class-names button-class "w-full !text-left flex items-center")}
+      [:> CalendarIcon {:class "inline mr-2 w-4 h-4"}]
       (if value
         (d/format value "dd/MM/yyyy")
         (or label (tr [:field/date])))]

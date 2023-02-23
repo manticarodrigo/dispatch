@@ -48,6 +48,7 @@
                        [button
                         {:type "button"
                          :class "ml-2"
+                         :aria-label (tr [:view.subscription.payment/delete-payment-method])
                          :label (if loading [spinner {:class "w-4 h-4"}] [:> TrashIcon {:class "w-4 h-4"}])
                          :on-click #(detach {:variables {:paymentMethodId id}})}]]}]))
 

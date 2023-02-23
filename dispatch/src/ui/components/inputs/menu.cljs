@@ -35,12 +35,12 @@
             & children]
   (let [{button-class! :button!
          item-class :item} class-map]
-    [ui/menu {:as "div" :class (class-names "z-10 relative inline-flex")}
+    [ui/menu {:as "div" :class (class-names "relative inline-flex")}
      [ui/menu-button {:class (or button-class! button-class)} label]
      [ui/menu-items {:as "div"
                      :class (class-names
                              menu-class
-                             "absolute right-0 top-[100%] origin-top-right"
+                             "z-10 absolute right-0 top-[100%] origin-top-right"
                              "mt-2"
                              "divide-y divide-neutral-700"
                              "overflow-y-auto")}

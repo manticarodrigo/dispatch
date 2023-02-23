@@ -1,5 +1,6 @@
 (ns ui.components.filters
-  (:require [ui.utils.i18n :refer (tr)]
+  (:require [react-feather :rename {Search SearchIcon}]
+            [ui.utils.i18n :refer (tr)]
             [ui.components.inputs.input :refer (input)]
             [ui.components.inputs.date :refer (date-select)]
             [ui.components.inputs.radio-group :refer (radio-group)]))
@@ -13,6 +14,7 @@
       [input {:aria-label (tr [:field/search])
               :value search
               :placeholder (tr [:field/search])
+              :icon SearchIcon
               :class "w-full"
               :on-text on-search-change}])
     (when (and on-search-change
@@ -21,7 +23,7 @@
     (when on-date-change
       [date-select {:label (tr [:field/date])
                     :value date
-                    :class "w-full"
+                    :class "flex-shrink-0 w-36"
                     :on-select on-date-change}])]
    (when on-status-change
      [:div {:class "pt-2"}
