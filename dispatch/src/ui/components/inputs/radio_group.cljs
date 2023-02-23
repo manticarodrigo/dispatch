@@ -31,15 +31,15 @@
                      (let [{active :active checked :checked} (->clj props)]
                        (class-names
                         "cursor-pointer"
-                        "border-y border-neutral-800 py-1 px-2"
-                        "w-full text-center text-sm"
+                        "border-y border-neutral-700 p-2"
+                        "w-full text-center text-sm font-medium"
+                        "transition"
+                        "hover:text-neutral-50 hover:bg-neutral-700 focus:bg-neutral-700"
                         (when first? "rounded-l border-l")
                         (when last? "rounded-r border-r")
                         (if (or checked active)
                           (class-names
                            "text-neutral-50"
-                           "transition"
-                           "hover:border-neutral-500 focus:border-neutral-600"
-                           (when checked "border rounded bg-neutral-700"))
-                          "text-neutral-400 bg-neutral-900"))))}
+                           (when checked "border rounded border-neutral-500 bg-neutral-600 focus:bg-neutral-600"))
+                          "text-neutral-400 bg-neutral-800"))))}
            [:> Label {:as "p"} (:label option)]])))]]])

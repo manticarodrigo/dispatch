@@ -1,10 +1,11 @@
 (ns ui.views.admin.subscription.payment
   (:require [react-feather :rename {CreditCard CreditCardIcon
-                                    CheckCircle CheckIcon}]
+                                    CheckCircle CheckIcon
+                                    Trash TrashIcon}]
             [reagent.core :as r]
             [shadow.resource :refer (inline)]
             [common.utils.date :refer (parse-date)]
-            [ui.lib.apollo :refer (gql use-query)]
+            [ui.lib.apollo :refer (gql use-query use-mutation)]
             [ui.lib.router :refer (use-search-params)]
             [ui.lib.stripe :refer (stripe-elements use-setup-intent-status)]
             [ui.utils.date :as d]
@@ -15,14 +16,15 @@
             [ui.components.article :refer (article)]
             [ui.components.modal :refer (modal)]
             [ui.components.inputs.button :refer (button)]
+            [ui.components.icons.spinner :refer (spinner)]
             [ui.components.forms.payment :refer (payment-form)]))
 
-(def FETCH_PAYMENT_METHODS (gql (inline "queries/stripe/payment-methods.graphql")))
 (def FETCH_SETUP_INTENT (gql (inline "queries/stripe/setup-intent.graphql")))
+(def FETCH_PAYMENT_METHODS (gql (inline "queries/stripe/payment-methods.graphql")))
+(def DETACH_PAYMENT_METHOD (gql (inline "mutations/stripe/detach-payment-method.graphql")))
 
 (defn return-url-status [secret]
   (let [status (use-setup-intent-status secret)]
-    (prn "intent" status)
     (if status
       (case status
         "succeeded" (tr [:view.subscription.payment/succeeded])
@@ -30,23 +32,31 @@
         (tr [:view.subscription.payment/failed]))
       (str (tr [:misc/loading]) "..."))))
 
-(defn card-detail [{:keys [brand exp_month exp_year last4 created]}]
-  [article {:icon CreditCardIcon
-            :title [:<> [:span {:class "capitalize"} brand] " ending in " last4]
-            :subtitle (str "Expires " exp_month "/" exp_year)
-            :detail [:div {:class "flex flex-col items-end h-full"}
-                     [:div {:class "flex items-center text-xs text-neutral-400 capitalize"}
-                      [:> CheckIcon {:class "mr-1 w-3 h-3 text-green-500"}]
-                      "Added"]
-                     [:div {:class "flex items-center text-xs text-left text-neutral-200"}
-                      (-> created parse-date (d/format "dd/MM/yyyy"))]]}])
+(defn card-detail [id {:keys [brand exp_month exp_year last4 created]}]
+  (let [[detach status] (use-mutation DETACH_PAYMENT_METHOD {:refetchQueries [{:query FETCH_PAYMENT_METHODS}]})
+        {:keys [loading]} status]
+    [article {:icon CreditCardIcon
+              :title [:<> [:span {:class "capitalize"} brand] " ending in " last4]
+              :subtitle (str "Expires " exp_month "/" exp_year)
+              :detail [:div {:class "flex items-center h-full"}
+                       [:div {:class "flex flex-col items-end"}
+                        [:div {:class "flex items-center text-xs text-neutral-400 capitalize"}
+                         [:> CheckIcon {:class "mr-1 w-3 h-3 text-green-500"}]
+                         "Added"]
+                        [:div {:class "flex items-center text-xs text-left text-neutral-200"}
+                         (-> created parse-date (d/format "dd/MM/yyyy"))]]
+                       [button
+                        {:type "button"
+                         :class "ml-2"
+                         :label (if loading [spinner {:class "w-4 h-4"}] [:> TrashIcon {:class "w-4 h-4"}])
+                         :on-click #(detach {:variables {:paymentMethodId id}})}]]}]))
 
 (defn payment-methods-list [payment-methods]
   (if (seq payment-methods)
     [:ul
      (for [{:keys [id card]} payment-methods]
        ^{:key id}
-       [:li {:class "mb-2"} [card-detail card]])]
+       [:li {:class "mb-2"} [card-detail id card]])]
     (tr [:misc/empty-search])))
 
 (defn setup-intent []
@@ -74,7 +84,6 @@
         secret (:setup_intent_client_secret search-params)
         {:keys [data loading]} (use-query FETCH_PAYMENT_METHODS {})
         payment-methods (some-> data :stripe :paymentMethods :data)]
-    (prn secret)
     [:div {:class padding}
      [title {:title (tr [:view.subscription.payment/title])
              :subtitle (tr [:view.subscription.payment/subtitle])}]

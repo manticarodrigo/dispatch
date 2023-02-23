@@ -2,20 +2,20 @@
   (:require [ui.utils.string :refer (class-names)]))
 
 (def box-class (class-names
-                "rounded border border-neutral-800"
-                "bg-neutral-900 shadow"))
+                "rounded border border-neutral-700"
+                "bg-neutral-800 shadow"))
 
 (def box-padding-class "p-2.5 lg:py-2.5 lg:px-4")
 
 (def box-interact-class (class-names
                          "transition"
-                         "hover:border-neutral-500 focus:border-neutral-600"
-                         "hover:bg-neutral-800 focus:bg-neutral-800 active:bg-neutral-800"))
+                         "hover:border-neutral-500 focus:border-neutral-500"
+                         "hover:bg-neutral-700 focus:bg-neutral-700 active:bg-neutral-700"))
 
 (def box-peer-interact-class (class-names
                               "transition"
-                              "peer-hover:border-neutral-500 peer-focus:border-neutral-600"
-                              "peer-hover:bg-neutral-800 peer-focus:bg-neutral-800 peer-active:bg-neutral-800"))
+                              "peer-hover:border-neutral-500 peer-focus:border-neutral-500"
+                              "peer-hover:bg-neutral-700 peer-focus:bg-neutral-700 peer-active:bg-neutral-700"))
 
 (def base-button-class (class-names
                         box-class

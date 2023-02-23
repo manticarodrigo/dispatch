@@ -40,7 +40,8 @@
                  :createPlace place/create
                  :createTask task/create
                  :createLocation location/create
-                 :createArrival stop/create-arrival}
+                 :createArrival stop/create-arrival
+                 :detachPaymentMethod stripe/detach-payment-method}
                 :Query
                 {:user user/active-user
                  :agents agent/find-all

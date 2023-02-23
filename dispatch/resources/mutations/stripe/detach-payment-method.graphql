@@ -1,0 +1,3 @@
+mutation DetachPaymentMethod($paymentMethodId: ID!) {
+    detachPaymentMethod(paymentMethodId: $paymentMethodId)
+}

@@ -19,3 +19,7 @@
 (defn list-payment-methods [customer-id]
   (-> stripe .-customers
       (.listPaymentMethods customer-id)))
+
+(defn detach-payment-method [payment-method-id]
+  (-> stripe .-paymentMethods
+      (.detach payment-method-id)))
