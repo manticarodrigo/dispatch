@@ -12,10 +12,10 @@
      "flex items-center"
      "my-2 p-2 rounded border text-sm"
      (case type
-       "success" "border-green-600 text-green-100 bg-green-900"
-       "warning" "border-amber-600 text-amber-100 bg-amber-900"
-       "error" "border-red-600 text-red-100 bg-red-900"
-       "border-blue-600 text-blue-100 bg-blue-900"))}
+       "success" "border-green-700 text-green-50 bg-green-900"
+       "warning" "border-amber-700 text-amber-50 bg-amber-900"
+       "error" "border-red-700 text-red-50 bg-red-900"
+       "border-blue-700 text-blue-50 bg-blue-900"))}
    [:> (case type
          "success" SuccessIcon
          "warning" WarningIcon

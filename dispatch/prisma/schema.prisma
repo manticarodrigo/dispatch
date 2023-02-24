@@ -13,9 +13,6 @@ model User {
   password     String
   organization Organization?
   sessions     Session[]
-  agents       Agent[]
-  places       Place[]
-  tasks        Task[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
 }
@@ -27,6 +24,9 @@ model Organization {
   adminId   String   @unique
   stripe    Stripe   @relation(fields: [stripeId], references: [id])
   stripeId  String   @unique
+  agents    Agent[]
+  places    Place[]
+  tasks     Task[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -56,18 +56,18 @@ model Device {
 }
 
 model Agent {
-  id         String     @id @unique @default(uuid())
-  name       String
-  device     Device?
-  user       User       @relation(fields: [userId], references: [id])
-  userId     String
-  location   Location?  @relation("AgentLocation", fields: [locationId], references: [id])
-  locationId String?    @unique
-  locations  Location[] @relation("AgentLocations")
-  tasks      Task[]
-  places     Place[]
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
+  id             String       @id @unique @default(uuid())
+  name           String
+  device         Device?
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+  location       Location?    @relation("AgentLocation", fields: [locationId], references: [id])
+  locationId     String?      @unique
+  locations      Location[]   @relation("AgentLocations")
+  tasks          Task[]
+  places         Place[]
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 }
 
 model Location {
@@ -80,33 +80,33 @@ model Location {
 }
 
 model Place {
-  id          String   @id @unique @default(uuid())
-  name        String
-  phone       String?
-  email       String?
-  description String
-  lat         Float
-  lng         Float
-  agent       Agent?   @relation(fields: [agentId], references: [id])
-  agentId     String?
-  user        User     @relation(fields: [userId], references: [id])
-  userId      String
-  stops       Stop[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id             String       @id @unique @default(uuid())
+  name           String
+  phone          String?
+  email          String?
+  description    String
+  lat            Float
+  lng            Float
+  agent          Agent?       @relation(fields: [agentId], references: [id])
+  agentId        String?
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+  stops          Stop[]
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 }
 
 model Task {
-  id        String   @id @unique @default(uuid())
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String
-  agent     Agent    @relation(fields: [agentId], references: [id])
-  agentId   String
-  stops     Stop[]
-  route     Json
-  startAt   DateTime
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id             String       @id @unique @default(uuid())
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+  agent          Agent        @relation(fields: [agentId], references: [id])
+  agentId        String
+  stops          Stop[]
+  route          Json
+  startAt        DateTime
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 }
 
 model Stop {

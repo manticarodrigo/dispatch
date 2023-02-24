@@ -1,6 +1,5 @@
 (ns api.models.place
   (:require [promesa.core :as p]
-            [goog.object :as gobj]
             [api.util.prisma :as prisma]
             [api.models.user :refer (active-user)]
             [api.models.agent :refer (active-agent)]))
@@ -14,47 +13,41 @@
                         :lng lng}}]
     (if agentId
       (p/let [^js agent (active-agent
-                        context
-                        {:agentId agentId
-                         :deviceId deviceId
-                         :query {:include {:user true}}})]
+                         context
+                         {:agentId agentId
+                          :deviceId deviceId
+                          :query {:include {:organization true}}})]
         (prisma/create!
          (.. context -prisma -place)
          (update-in payload [:data] merge
                     {:agent {:connect {:id agentId}}
-                     :user {:connect {:id (.. agent -user -id)}}})))
-      (p/let [^js user (active-user context)]
+                     :organization {:connect {:id (.. agent -organization -id)}}})))
+      (p/let [^js user (active-user context {:include {:organization true}})]
         (prisma/create!
          (.. context -prisma -place)
          (update-in payload [:data] merge
-                    {:user {:connect {:id (.. user -id)}}}))))))
+                    {:organization {:connect {:id (.. user -organization -id)}}}))))))
 
 (defn find-all [^js context {:keys [agentId deviceId]}]
-  (if agentId
-    (p/-> (active-agent
-           context
-           {:agentId agentId
-            :deviceId deviceId
-            :query {:include
-                    {:user
-                     {:include {:places {:orderBy {:name "asc"}}}}}}})
-          (gobj/get "user")
-          (gobj/get "places"))
-    (p/-> (active-user context {:include {:places {:orderBy {:name "asc"}}}})
-          (gobj/get "places"))))
+  (p/let [query {:include
+                 {:organization
+                  {:include
+                   {:places {:orderBy {:name "asc"}}}}}}
+          ^js result (if agentId
+                       (active-agent context {:agentId agentId
+                                              :deviceId deviceId
+                                              :query query})
+                       (active-user context query))]
+    (some-> result .-organization .-places)))
 
 (defn find-unique [^js context {:keys [agentId deviceId placeId]}]
-  (if agentId
-    (p/-> (active-agent
-           context
-           {:agentId agentId
-            :deviceId deviceId
-            :query {:include
-                    {:user
-                     {:include {:places {:where {:id placeId}}}}}}})
-          (gobj/get "user")
-          (gobj/get "places")
-          first)
-    (p/-> (active-user context {:include {:places {:where {:id placeId}}}})
-          (gobj/get "places")
-          first)))
+  (p/let [query {:include
+                 {:organization
+                  {:include
+                   {:places {:where {:id placeId}}}}}}
+          ^js result (if agentId
+                       (active-agent context {:agentId agentId
+                                              :deviceId deviceId
+                                              :query query})
+                       (active-user context query))]
+    (some-> result .-organization .-places first)))

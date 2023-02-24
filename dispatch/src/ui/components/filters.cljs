@@ -23,7 +23,7 @@
     (when on-date-change
       [date-select {:label (tr [:field/date])
                     :value date
-                    :class "flex-shrink-0 w-36"
+                    :class (if on-search-change "w-32" "w-full")
                     :on-select on-date-change}])]
    (when on-status-change
      [:div {:class "pt-2"}
