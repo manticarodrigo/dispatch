@@ -29,9 +29,7 @@
         device (listen [:device])
         device-id (:id device)
         device-info (:info device)
-        device-error (:error device)
-        unlinked? (= "device-not-linked" device-error)
-        invalid? (= "invalid-token" device-error)]
+        device-error (:error device)]
 
     (react/useEffect
      (fn []
@@ -56,10 +54,14 @@
              :class "underline"}
          (tr [:device.unsupported/download])]]
        [:<>
-        [modal {:show invalid? :title (tr [:device.linked/title]) :on-close #()}
-         [:p {:class "mb-4"} (tr [:device.linked/message])]]
-        [modal {:show unlinked? :title (tr [:device.unlinked/title]) :on-close #()}
-         [:p {:class "mb-4"} (tr [:device.unlinked/message])]
+        [modal {:show (= "agent-not-found" device-error) :title (tr [:device.agent-not-found/title]) :on-close #()}
+         [:p {:class "mb-4"} (tr [:device.agent-not-found/message])]]
+        [modal {:show (= "device-token-invalid" device-error) :title (tr [:device.device-token-invalid/title]) :on-close #()}
+         [:p {:class "mb-4"} (tr [:device.device-token-invalid/message])]]
+        [modal {:show (= "device-already-linked" device-error) :title (tr [:device.device-already-linked/title]) :on-close #()}
+         [:p {:class "mb-4"} (tr [:device.device-already-linked/message])]]
+        [modal {:show (= "device-not-linked" device-error) :title (tr [:device.device-not-linked/title]) :on-close #()}
+         [:p {:class "mb-4"} (tr [:device.device-not-linked/message])]
          [button {:label (tr [:device/link])
                   :on-click (fn []
                               (-> (create-device {:variables

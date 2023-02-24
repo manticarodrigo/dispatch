@@ -13,14 +13,21 @@
              :organization {:connect {:id (.. user -organization -id)}}}})))
 
 (defn find-device [^js context {:keys [agentId deviceId]}]
-  (p/let [^js agent (prisma/find-unique-or-throw
+  (p/let [^js agent (prisma/find-unique
                      (.. context -prisma -agent)
                      {:where {:id agentId}
                       :include {:device true}})
-          device-id (some-> agent .-device .-id)]
+          ^js device (prisma/find-unique
+                      (.. context -prisma -device)
+                      {:where {:id deviceId}
+                       :include {:agent true}})
+          agent-device-id (some-> agent .-device .-id)
+          id-mismatch? (not= agent-device-id deviceId)]
     (cond
-      (not device-id) (throw (anom/gql (anom/not-found :device-not-linked)))
-      (not= device-id deviceId) (throw (anom/gql (anom/incorrect :invalid-token)))
+      (not agent) (throw (anom/gql (anom/not-found :agent-not-found)))
+      (and device id-mismatch?) (throw (anom/gql (anom/incorrect :device-already-linked)))
+      (not agent-device-id) (throw (anom/gql (anom/not-found :device-not-linked)))
+      id-mismatch? (throw (anom/gql (anom/incorrect :device-token-invalid)))
       :else agent)))
 
 (defn active-agent

@@ -39,8 +39,10 @@
      (when (= (some-> res .-networkError .-statusCode) 401)
        (remove-session))
      (condp (fn [reason anoms] (some #(= (:reason %) reason) anoms)) (parse-anoms res)
+       "agent-not-found" (dispatch [:device/error "agent-not-found"])
+       "device-token-invalid" (dispatch [:device/error "device-token-invalid"])
+       "device-already-linked" (dispatch [:device/error "device-already-linked"])
        "device-not-linked" (dispatch [:device/error "device-not-linked"])
-       "invalid-token" (dispatch [:device/error "invalid-token"])
        nil))))
 
 (def resolvers (->js {:Date date-scalar-map

@@ -46,7 +46,9 @@
 
                :devtools {:after-load ui.core/refresh
                           :http-root   "public/"
-                          :http-port   8000}
+                          :http-port   8000
+                        ;;   :devtools-url "http://0.0.0.0/shadow-cljs"
+                          }
 
 
                :dev {:build-hooks
