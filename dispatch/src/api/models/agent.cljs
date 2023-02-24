@@ -57,4 +57,4 @@
                                      :tasks {:where (filters/task filters)
                                              :orderBy {:startAt "asc"}
                                              :include {:stops {:include {:place true}}}}}}}}}})]
-    (some-> result .-organization .-agents first)))
+    (first (.. result -organization -agents))))

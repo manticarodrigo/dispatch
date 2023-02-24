@@ -60,7 +60,7 @@
                                               :deviceId deviceId
                                               :query query})
                        (active-user context query))]
-    (some-> result .-organization .-tasks first)))
+    (first (.. result -organization -tasks))))
 
 (defn find-by-place [^js context {:keys [agentId deviceId placeId filters]}]
   (p/let [query {:include
@@ -82,4 +82,4 @@
                                               :deviceId deviceId
                                               :query query})
                        (active-user context query))]
-    (some-> result .-organization .-tasks)))
+    (.. result -organization -tasks)))

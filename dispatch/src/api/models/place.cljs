@@ -38,7 +38,7 @@
                                               :deviceId deviceId
                                               :query query})
                        (active-user context query))]
-    (some-> result .-organization .-places)))
+    (.. result -organization -places)))
 
 (defn find-unique [^js context {:keys [agentId deviceId placeId]}]
   (p/let [query {:include
@@ -50,4 +50,4 @@
                                               :deviceId deviceId
                                               :query query})
                        (active-user context query))]
-    (some-> result .-organization .-places first)))
+    (first (.. result -organization -places))))
