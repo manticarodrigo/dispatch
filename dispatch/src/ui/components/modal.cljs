@@ -22,7 +22,7 @@
       :leave "ease-in duration-200"
       :leave-from "opacity-100"
       :leave-to "opacity-0"}
-     [:div {:class "fixed inset-0 bg-black bg-opacity-50"}]]
+     [:div {:class "fixed inset-0 bg-black/75 backdrop-blur"}]]
     [:div {:class "fixed inset-0 overflow-y-auto"}
      [:div {:class "flex min-h-full items-center justify-center p-4 text-center"}
       [:> (. Transition -Child)
