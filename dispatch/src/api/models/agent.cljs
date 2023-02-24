@@ -1,5 +1,6 @@
 (ns api.models.agent
   (:require [promesa.core :as p]
+            [api.config :as config]
             [api.lib.notification :as notification]
             [api.util.prisma :as prisma]
             [api.util.anom :as anom]
@@ -13,7 +14,7 @@
                      {:data {:name name
                              :phone phone
                              :organization {:connect {:id (.. user -organization -id)}}}})]
-    (notification/send-sms phone "Probando")
+    (notification/send-sms phone (str "Login to your account at " config/SITE_URL "/agent/" (.. agent -id)))
     agent))
 
 (defn find-device [^js context {:keys [agentId deviceId]}]

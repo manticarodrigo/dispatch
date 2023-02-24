@@ -1,2 +1,2 @@
 -- AlterTable
-ALTER TABLE "Agent" ADD COLUMN     "phone" TEXT;
+ALTER TABLE "Agent" ADD COLUMN "phone" TEXT;

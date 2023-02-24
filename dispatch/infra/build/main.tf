@@ -54,6 +54,7 @@ resource "null_resource" "build" {
       STAGE                = terraform.workspace
       VERSION              = var.version_name
       API_URL              = "https://api.${var.app_name}.${var.domain_name}"
+      SITE_URL             = "https://${var.app_name}.${var.domain_name}"
       SECURE_COOKIE        = true
       RUM_MONITOR_ID       = var.rum_monitor_id
       RUM_IDENTITY_POOL_ID = var.rum_identity_pool_id
