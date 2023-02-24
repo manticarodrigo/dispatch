@@ -14,7 +14,7 @@
   (let [!state (r/atom {})
         !anoms (r/atom {})]
     (fn []
-      (let [{:keys [name]} @!state
+      (let [{:keys [name phone]} @!state
             [create status] (use-mutation CREATE_AGENT {})
             {:keys [loading]} status
             navigate (use-navigate)]
@@ -30,5 +30,9 @@
                  :required true
                  :class "mb-4"
                  :on-text #(swap! !state assoc :name %)}]
+         [input {:label (tr [:field/phone])
+                 :value phone
+                 :required true
+                 :on-text #(swap! !state assoc :phone %)}]
          [submit-button {:loading loading}]
          [errors @!anoms]]))))

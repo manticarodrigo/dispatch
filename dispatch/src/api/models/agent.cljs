@@ -1,16 +1,20 @@
 (ns api.models.agent
   (:require [promesa.core :as p]
+            [api.lib.notification :as notification]
             [api.util.prisma :as prisma]
             [api.util.anom :as anom]
             [api.filters.core :as filters]
             [api.models.user :refer (active-user)]))
 
-(defn create [^js context {:keys [name]}]
-  (p/let [^js user (active-user context {:include {:organization true}})]
-    (prisma/create!
-     (.. context -prisma -agent)
-     {:data {:name name
-             :organization {:connect {:id (.. user -organization -id)}}}})))
+(defn create [^js context {:keys [name phone]}]
+  (p/let [^js user (active-user context {:include {:organization true}})
+          ^js agent (prisma/create!
+                     (.. context -prisma -agent)
+                     {:data {:name name
+                             :phone phone
+                             :organization {:connect {:id (.. user -organization -id)}}}})]
+    (notification/send-sms phone "Probando")
+    agent))
 
 (defn find-device [^js context {:keys [agentId deviceId]}]
   (p/let [^js agent (prisma/find-unique

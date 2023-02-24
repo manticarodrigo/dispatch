@@ -16,7 +16,7 @@ type Query {
 type Mutation {
   createUser(email: String!, password: String!, organization: String!): String!
   createSession(email: String!, password: String!): String!
-  createAgent(name: String!): Agent!
+  createAgent(name: String!, phone: String!): Agent!
   createDevice(agentId: ID!, deviceId: ID, info: JSON!): Device!
   createLocation(
     agentId: ID!
@@ -66,6 +66,7 @@ type Device {
 type Agent {
   id: ID!
   name: String!
+  phone: String!
   device: Device
   location: Location
   tasks: [Task]

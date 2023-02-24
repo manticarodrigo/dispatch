@@ -8,7 +8,8 @@
 
 (defn create []
   (p/let [query (inline "mutations/agent/create.graphql")
-          variables {:name (.. faker -name fullName)}
+          variables {:name (.. faker -name fullName)
+                     :phone (.. faker -phone (number "+505########"))}
           request  {:query query :variables variables}
           result (send request)]
     {:request request
@@ -39,5 +40,6 @@
       (fn [^js component]
         (p/do
           (change (.getByLabelText component (tr [:field/name])) (:name variables))
+          (change (.getByLabelText component (tr [:field/phone])) (:phone variables))
           (submit (-> component (.-container) (.querySelector "form")))
           (f component))))))

@@ -58,6 +58,7 @@ model Device {
 model Agent {
   id             String       @id @unique @default(uuid())
   name           String
+  phone          String?
   device         Device?
   organization   Organization @relation(fields: [organizationId], references: [id])
   organizationId String

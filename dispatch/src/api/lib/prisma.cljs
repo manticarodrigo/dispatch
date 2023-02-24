@@ -5,7 +5,8 @@
 
 (def prisma (PrismaClient.))
 
-(when (not= config/STAGE "local")
+(when (and (not= config/STAGE "test")
+           (not= config/STAGE "local"))
   (.$use prisma
          (fn [^js params next]
            (p/let [before (js/Date.now)

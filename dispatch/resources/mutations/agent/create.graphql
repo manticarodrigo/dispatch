@@ -1,6 +1,7 @@
-mutation CreateAgent($name: String!) {
-  createAgent(name: $name) {
+mutation CreateAgent($name: String!, $phone: String!) {
+  createAgent(name: $name, phone: $phone) {
     id
     name
+    phone
   }
 }
