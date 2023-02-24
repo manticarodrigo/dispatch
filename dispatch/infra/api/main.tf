@@ -136,7 +136,7 @@ resource "null_resource" "api_db_sync" {
   provisioner "local-exec" {
     command     = <<-EOT
                   export DATABASE_URL=${nonsensitive(local.db_migrate_url)}
-                  yarn migrate
+                  yarn db-migrate
                 EOT
     working_dir = "../dispatch"
   }
