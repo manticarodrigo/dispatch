@@ -32,7 +32,7 @@
      [ui/popover-button {:ref reference
                          :aria-label label
                          :class (class-names button-class "w-full !text-left flex items-center")}
-      [:> CalendarIcon {:class "inline mr-2 w-4 h-4"}]
+      [:> CalendarIcon {:class "flex-shrink-0 inline mr-2 w-4 h-4"}]
       (if value
         (d/format value "dd/MM/yyyy")
         (or label (tr [:field/date])))]
