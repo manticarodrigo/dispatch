@@ -30,16 +30,8 @@
 
 (defn send-mail [options]
   (p/let [^js gmail (get-service)
-          raw-msg (create-mail options)
-          res (-> gmail .-users .-messages
-                  (.send (->js {:userId "me"
-                                :resource {:raw raw-msg}})))]
+          raw-msg (create-mail (->js options))
+          ^js res (-> gmail .-users .-messages
+                      (.send (->js {:userId "me"
+                                    :resource {:raw raw-msg}})))]
     (.. res -data -id)))
-
-
-(comment
-  (send-mail (->js {:to "rodrigo@ambito.app"
-                    :subject "hello world"
-                    :text "hello"
-                    :html "<p>hello world!</p>"
-                    :textEncoding "base64"})))

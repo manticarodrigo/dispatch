@@ -2,6 +2,7 @@
   (:require
    [promesa.core :as p]
    [api.lib.stripe :as stripe]
+   [api.lib.gmail :as gmail]
    [api.util.prisma :as prisma]
    [api.util.crypto :refer (encrypt-string)]
    [api.util.anom :as anom]
@@ -21,7 +22,12 @@
                                      {:email email
                                       :password encrypted-password
                                       :sessions {:create [{}]}}}}
-                             :include {:admin {:include {:sessions true}}}})]
+                             :include {:admin {:include {:sessions true}}}})
+          _ (gmail/send-mail {:to "manticarodrigo@gmail.com"
+                              :subject "hello world"
+                              :text "hello"
+                              :html "<p>hello world!</p>"
+                              :textEncoding "base64"})]
     (some-> organization .-admin .-sessions last .-id)))
 
 (defn create-session [^js context {:keys [user-id user-password password]}]
