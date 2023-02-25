@@ -1,4 +1,4 @@
-(ns ui.views.admin.subscription.payment
+(ns ui.views.organization.subscription.payment
   (:require [react-feather :rename {CreditCard CreditCardIcon
                                     CheckCircle CheckIcon
                                     Trash TrashIcon}]

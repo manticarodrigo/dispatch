@@ -1,4 +1,4 @@
-(ns ui.views.admin.task.detail
+(ns ui.views.organization.task.detail
   (:require [react]
             [re-frame.core :refer (dispatch)]
             [shadow.resource :refer (inline)]

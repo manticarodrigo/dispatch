@@ -6,9 +6,9 @@
 (def index-paths ["register"
                   "login"
                   "logout"
-                  "admin/tasks"
-                  "admin/agents"
-                  "admin/places"
+                  "organization/tasks"
+                  "organization/agents"
+                  "organization/places"
                   "agent/:id/tasks"
                   "agent/:id/places"])
 

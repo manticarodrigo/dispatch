@@ -1,4 +1,4 @@
-(ns ui.views.admin.agent.list
+(ns ui.views.organization.place.list
   (:require [react]
             [re-frame.core :refer (dispatch)]
             [shadow.resource :refer (inline)]
@@ -9,34 +9,34 @@
             [ui.utils.i18n :refer (tr)]
             [ui.components.title :refer (title)]
             [ui.components.filters :refer (filters)]
-            [ui.components.lists.agent :refer (agent-list)]))
+            [ui.components.lists.place :refer (place-list)]))
 
-(def FETCH_AGENTS (gql (inline "queries/agent/fetch-all.graphql")))
+(def FETCH_PLACES (gql (inline "queries/place/fetch-all.graphql")))
 
 (defn view []
   (let [[{:keys [text] :as search-params} set-search-params] (use-search-params)
-        {:keys [data loading]} (use-query FETCH_AGENTS {})
-        agents (some-> data :agents)
-        filtered-agents (filter-text text :name agents)]
+        {:keys [data loading]} (use-query FETCH_PLACES {})
+        places (some-> data :places)
+        filtered-places (filter-text text :name places)]
 
     (react/useEffect
      (fn []
        (dispatch [:map
-                  {:locations
+                  {:points
                    (mapv
-                    (fn [{:keys [name location]}]
+                    (fn [{:keys [lat lng name]}]
                       {:title name
-                       :position (:position location)})
-                    (filter #(:location %) filtered-agents))}])
+                       :position {:lat lat :lng lng}})
+                    filtered-places)}])
        #())
-     #js[agents text])
+     #js[places text])
 
     [:div {:class padding}
-     [title {:title (tr [:view.agent.list/title])
+     [title {:title (tr [:view.place.list/title])
              :create-link "create"}]
      [filters {:search text
                :on-search-change #(set-search-params
                                    (if (empty? %)
                                      (dissoc search-params :text)
                                      (assoc search-params :text %)))}]
-     [agent-list {:agents filtered-agents :loading loading}]]))
+     [place-list {:places filtered-places :loading loading}]]))

@@ -103,7 +103,7 @@
                                 :startAt startAt
                                 :placeIds place-ids
                                 :route route}})
-                      (.then #(navigate "/admin/tasks"))
+                      (.then #(navigate "/organization/tasks"))
                       (.catch #(reset! !anoms (parse-anoms %)))))}
          [combobox {:label (tr [:field/agent])
                     :value (:agentId @!state)

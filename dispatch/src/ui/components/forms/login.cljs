@@ -28,7 +28,7 @@
                       (.then (fn [res]
                                (create-session (-> res ->clj :data :createSession))
                                (.resetStore client)
-                               (navigate "/admin/tasks")))
+                               (navigate "/organization/tasks")))
                       (.catch #(reset! !anoms (parse-anoms %)))))}
          [input {:type "email"
                  :label (tr [:field/email])

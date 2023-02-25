@@ -1,4 +1,4 @@
-(ns ui.views.admin.agent.create
+(ns ui.views.organization.agent.create
   (:require [ui.utils.css :refer (padding)]
             [ui.utils.i18n :refer (tr)]
             [ui.components.title :refer (title)]

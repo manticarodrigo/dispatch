@@ -4,7 +4,7 @@
    [ui.subs :refer (listen)]
    [ui.views.register :as register]
    [ui.views.login :as login]
-   [ui.views.admin.core :as admin]
+   [ui.views.organization.core :as organization]
    [ui.views.agent.core :as agent]
    [ui.views.not-found :as not-found]))
 
@@ -15,7 +15,7 @@
                  {:path "register" :element [register/view]}
                  {:path "login" :element [login/view]}
                  {:path "logout" :element [router/remove-auth-route]}
-                 admin/route
+                 organization/route
                  agent/route
                  {:path "*" :element [not-found/view]}])]
     routes))

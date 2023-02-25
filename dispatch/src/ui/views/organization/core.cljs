@@ -1,15 +1,16 @@
-(ns ui.views.admin.core
+(ns ui.views.organization.core
   (:require [ui.lib.router :as router]
             [ui.lib.platform :refer (platform)]
-            [ui.views.admin.subscription.core :as subscription]
-            [ui.views.admin.task.core :as task]
-            [ui.views.admin.agent.core :as agent]
-            [ui.views.admin.place.core :as place]
-            [ui.views.admin.stop.core :as stop]))
+            [ui.views.organization.subscription.core :as subscription]
+            [ui.views.organization.task.core :as task]
+            [ui.views.organization.agent.core :as agent]
+            [ui.views.organization.place.core :as place]
+            [ui.views.organization.stop.core :as stop]))
 
-(def route {:path "admin"
+(def route {:path "organization"
             :element [router/auth-route [router/outlet]]
-            :children [{:path "tasks" :element [task/list-view]}
+            :children [{:index true :element [router/navigate "tasks"]}
+                       {:path "tasks" :element [task/list-view]}
                        {:path "tasks/:task" :element [task/detail-view]}
                        {:path "tasks/create" :element [task/create-view]}
                        {:path "agents" :element [agent/list-view]}

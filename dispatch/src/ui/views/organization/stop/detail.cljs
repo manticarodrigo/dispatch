@@ -1,4 +1,4 @@
-(ns ui.views.admin.stop.detail
+(ns ui.views.organization.stop.detail
   (:require [react]
             [shadow.resource :refer (inline)]
             [re-frame.core :refer (dispatch)]
