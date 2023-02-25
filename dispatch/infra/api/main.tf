@@ -220,7 +220,7 @@ resource "aws_iam_role_policy_attachment" "insights_policy" {
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy"
 }
 
-resource "aws_iam_role_policy_attachment" "insights_policy" {
+resource "aws_iam_role_policy_attachment" "sns_policy" {
   role       = aws_iam_role.api.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSNSFullAccess"
 }
