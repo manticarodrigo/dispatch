@@ -1,9 +1,0 @@
-query PlacesByDevice($agentId: ID!, $deviceId: ID!) {
-  places(agentId: $agentId, deviceId: $deviceId) {
-    id
-    name
-    description
-    lat
-    lng
-  }
-}

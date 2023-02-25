@@ -1,5 +1,5 @@
-query TaskByDevice($agentId: ID!, $deviceId: ID!, $taskId: ID!) {
-  task(agentId: $agentId, deviceId: $deviceId, taskId: $taskId) {
+query OrganizationTask($taskId: ID!) {
+  organizationTask(taskId: $taskId) {
     id
     startAt
     agent {

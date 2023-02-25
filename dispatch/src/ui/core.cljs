@@ -10,7 +10,7 @@
    [ui.lib.router :refer [browser-router]]
    [ui.lib.apollo :refer (apollo-provider)]
    [ui.lib.platform :refer (platform)]
-   [ui.components.loader :refer (loader)]
+   [ui.components.loaders.device :rename {loader device-loader}]
    [ui.components.listener :refer (listener)]
    [ui.components.main :refer (main)]
    [ui.components.routes :refer (routes)]))
@@ -24,7 +24,7 @@
 (defn app []
   [browser-router
    [apollo-provider
-    [loader
+    [device-loader
      [listener
       [main
        [routes]]]]]])

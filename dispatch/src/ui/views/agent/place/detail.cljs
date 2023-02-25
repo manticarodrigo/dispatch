@@ -3,7 +3,6 @@
             [re-frame.core :refer (dispatch)]
             [shadow.resource :refer (inline)]
             [common.utils.date :refer (parse-date)]
-            [ui.subs :refer (listen)]
             [ui.lib.apollo :refer (gql use-query)]
             [ui.lib.router :refer (use-params use-search-params)]
             [ui.utils.date :as d]
@@ -12,19 +11,15 @@
             [ui.components.filters :refer (filters)]
             [ui.components.lists.task :refer (task-list)]))
 
-(def FETCH_PLACE (gql (inline "queries/place/fetch-by-device.graphql")))
+(def FETCH_PLACE (gql (inline "queries/place/fetch.graphql")))
 
 (defn view []
-  (let [{agent-id :agent place-id :place} (use-params)
-        device (listen [:device])
-        device-id (:id device)
+  (let [{place-id :place} (use-params)
         [{:keys [date status] :as search-params} set-search-params] (use-search-params)
         query (use-query
                FETCH_PLACE
                {:variables
-                {:agentId agent-id
-                 :deviceId device-id
-                 :placeId place-id
+                {:placeId place-id
                  :filters {:start (-> date parse-date d/startOfDay)
                            :end  (-> date parse-date d/endOfDay)
                            :status status}}})

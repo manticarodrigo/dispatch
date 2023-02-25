@@ -4,9 +4,8 @@
             [shadow.resource :refer (inline)]
             [reagent.core :as r]
             [re-frame.core :refer (dispatch)]
-            [ui.subs :refer (listen)]
             [ui.lib.apollo :refer (gql parse-anoms use-mutation)]
-            [ui.lib.router :refer (use-params use-navigate)]
+            [ui.lib.router :refer (use-navigate)]
             [ui.lib.location :refer (get-location)]
             [ui.lib.google.maps.autocomplete :refer (search-places)]
             [ui.lib.google.maps.places :refer (find-place)]
@@ -29,10 +28,7 @@
         !loading-place (r/atom false)
         !loading-location (r/atom false)]
     (fn []
-      (let [{agent-id :agent} (use-params)
-            device (listen [:device])
-            device-id (:id device)
-            [create status] (use-mutation CREATE_PLACE {})
+      (let [[create status] (use-mutation CREATE_PLACE {})
             {:keys [name description lat lng place_id phone email]} @!state
             loading (or
                      (:loading status)
@@ -62,11 +58,7 @@
                 :on-submit (fn [e]
                              (.preventDefault e)
                              (let [variables (dissoc @!state :place_id)]
-                               (-> (create {:variables (if agent-id
-                                                         (assoc variables
-                                                                :agentId agent-id
-                                                                :deviceId device-id)
-                                                         variables)})
+                               (-> (create {:variables variables})
                                    (.then (fn [] (navigate "../places")))
                                    (.catch #(reset! !anoms (parse-anoms %))))))}
          [input {:label (tr [:field/name])

@@ -3,11 +3,10 @@
    [promesa.core :as p]
    [api.util.prisma :as prisma]
    [api.filters.core :as filters]
-   [api.models.user :refer (active-user)]
-   [api.models.agent :refer (active-agent)]))
+   [api.models.user :as user]))
 
-(defn create [^js context {:keys [agentId startAt placeIds route]}]
-  (p/let [^js user (active-user context {:include {:organization true}})]
+(defn create-task [^js context {:keys [agentId startAt placeIds route]}]
+  (p/let [^js user (user/active-user context {:include {:organization true}})]
     (prisma/create!
      (.. context -prisma -task)
      {:data {:organization {:connect {:id (.. user -organization -id)}}
@@ -22,64 +21,56 @@
                 :stops {:include {:place true}
                         :orderBy {:order "asc"}}}})))
 
-(defn find-all [^js context {:keys [agentId deviceId filters]}]
-  (p/let [query {:include
-                 {:organization
-                  {:include
-                   {:tasks
-                    {:where (if agentId
-                              (update-in (filters/task filters) [:AND] conj
-                                         {:agent {:id agentId}})
-                              (filters/task filters))
-                     :orderBy {:startAt "asc"}
-                     :include
-                     {:agent true
-                      :stops {:orderBy {:order "asc"}
-                              :include
-                              {:place true}}}}}}}}
-          ^js result (if agentId
-                       (active-agent context {:agentId agentId
-                                              :deviceId deviceId
-                                              :query query})
-                       (active-user context query))]
-    (.. result -organization -tasks)))
+(def tasks-include
+  {:agent true
+   :stops {:orderBy {:order "asc"}
+           :include
+           {:place true}}})
 
-(defn find-unique [^js context {:keys [taskId agentId deviceId]}]
-  (p/let [query {:include
-                 {:organization
-                  {:include
-                   {:tasks
-                    {:where {:id taskId}
-                     :include
-                     {:agent true
-                      :stops {:orderBy {:order "asc"}
-                              :include
-                              {:place true}}}}}}}}
-          ^js result (if agentId
-                       (active-agent context {:agentId agentId
-                                              :deviceId deviceId
-                                              :query query})
-                       (active-user context query))]
-    (first (.. result -organization -tasks))))
+(defn tasks-query [filters]
+  {:tasks
+   {:where (filters/task filters)
+    :orderBy {:startAt "asc"}
+    :include tasks-include}})
 
-(defn find-by-place [^js context {:keys [agentId deviceId placeId filters]}]
-  (p/let [query {:include
-                 {:organization
-                  {:include
-                   {:tasks
-                    {:where (if agentId
-                              (update-in (filters/task filters) [:AND] conj
-                                         {:stops {:some {:place {:id placeId}}}})
-                              (filters/task filters))
-                     :orderBy {:startAt "asc"}
-                     :include
-                     {:agent true
-                      :stops {:orderBy {:order "asc"}
-                              :include
-                              {:place true}}}}}}}}
-          ^js result (if agentId
-                       (active-agent context {:agentId agentId
-                                              :deviceId deviceId
-                                              :query query})
-                       (active-user context query))]
-    (.. result -organization -tasks)))
+(defn task-query [taskId]
+  {:tasks
+   {:where {:id taskId}
+    :include tasks-include}})
+
+(defn fetch-organization-tasks [^js context {:keys [filters]}]
+  (p/let [^js user (user/active-user context {:include
+                                              {:organization
+                                               {:include (tasks-query filters)}}})]
+    (.. user -organization -tasks)))
+
+(defn fetch-agent-tasks [^js context {:keys [filters]}]
+  (p/let [^js user (user/active-user context {:include
+                                              {:agent
+                                               {:include (tasks-query filters)}}})]
+    (.. user -agent -tasks)))
+
+(defn fetch-place-tasks [^js context {:keys [placeId filters]}]
+  (p/let [^js user (user/active-user context {:include
+                                              {:organization
+                                               {:include
+                                                (update-in
+                                                 (tasks-query filters)
+                                                 [:include :tasks :where :AND]
+                                                 conj
+                                                 {:stops {:some {:place {:id placeId}}}})}}})]
+    (.. user -organization -tasks)))
+
+(defn fetch-organization-task [^js context {:keys [taskId]}]
+  (p/let [^js user (user/active-user context {:include
+                                              {:organization
+                                               {:include
+                                                (task-query taskId)}}})]
+    (first (.. user -organization -tasks))))
+
+(defn fetch-agent-task [^js context {:keys [taskId]}]
+  (p/let [^js user (user/active-user context {:include
+                                              {:agent
+                                               {:include
+                                                (task-query taskId)}}})]
+    (first (.. user -agent -tasks))))

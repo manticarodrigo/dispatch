@@ -5,8 +5,8 @@
             [ui.views.agent.place.core :as place]
             [ui.views.agent.stop.core :as stop]))
 
-(def route {:path "agent/:agent"
-            :element [layout [router/outlet]]
+(def route {:path "agent"
+            :element [router/auth-route [layout [router/outlet]]]
             :children [{:index true :element [router/navigate "tasks"]}
                        {:path "tasks" :element [task/list-view]}
                        {:path "tasks/:task" :element [task/detail-view]}

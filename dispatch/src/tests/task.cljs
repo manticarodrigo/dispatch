@@ -17,7 +17,7 @@
     (map #(id-map %) order)))
 
 (defn create [variables]
-  (p/let [query (inline "mutations/task/create.graphql")
+  (p/let [query (inline "mutations/task/create-task.graphql")
           request  {:query query :variables variables}
           result (send request)]
     {:request request
@@ -25,13 +25,13 @@
 
 (defn find-all
   ([]
-   (p/let [query (inline "queries/task/fetch-all.graphql")
+   (p/let [query (inline "queries/task/fetch-organization-tasks.graphql")
            request  {:query query}
            result (send request)]
      {:request request
       :result result}))
   ([variables]
-   (p/let [query (inline "queries/task/fetch-all.graphql")
+   (p/let [query (inline "queries/task/fetch-organization-tasks.graphql")
            request  {:query query :variables variables}
            result (send request)]
      {:request request
@@ -51,7 +51,7 @@
 
     (with-mounted-component
       [test-app
-       {:route "/admin/tasks/create"
+       {:route "/organization/tasks/create"
         :mocks mocks}]
       (fn [^js component user]
         (p/do

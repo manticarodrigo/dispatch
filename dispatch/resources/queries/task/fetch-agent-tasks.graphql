@@ -1,16 +1,11 @@
-query Task($taskId: ID!) {
-  task(taskId: $taskId) {
+query AgentTasks($filters: TaskFilters) {
+  agentTasks(filters: $filters) {
     id
-    startAt
     agent {
       id
       name
-      location {
-        id
-        position
-        createdAt
-      }
     }
+    startAt
     stops {
       id
       place {
@@ -20,9 +15,6 @@ query Task($taskId: ID!) {
         lat
         lng
       }
-      order
-      note
-      arrivedAt
     }
     route
   }

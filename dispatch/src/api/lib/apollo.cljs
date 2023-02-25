@@ -10,7 +10,6 @@
             [api.lib.prisma :refer (prisma)]
             [api.util.anom :as anom]
             [api.resolvers.user :as user]
-            [api.resolvers.device :as device]
             [api.resolvers.agent :as agent]
             [api.resolvers.place :as place]
             [api.resolvers.task :as task]
@@ -33,30 +32,34 @@
 (def resolvers {:Date date-scalar
                 :JSON json-scalar
                 :Mutation
-                {:createUser user/create
+                {:loginPhone user/login-phone
+                 :loginConfirm user/login-confirm
+                 :createUser user/create
                  :createSession user/login
-                 :createDevice device/create
                  :createAgent agent/create
                  :createPlace place/create
-                 :createTask task/create
+                 :createTask task/create-task
                  :createLocation location/create
                  :createArrival stop/create-arrival
                  :detachPaymentMethod stripe/detach-payment-method}
                 :Query
                 {:user user/active-user
+                 :scope user/find-scope
                  :agents agent/find-all
                  :agent agent/find-unique
                  :places place/find-all
                  :place place/find-unique
-                 :tasks task/find-all
-                 :task task/find-unique
+                 :organizationTasks task/fetch-organization-tasks
+                 :organizationTask task/fetch-organization-task
+                 :agentTasks task/fetch-agent-tasks
+                 :agentTask task/fetch-agent-task
                  :stop stop/find-unique
                  :stripe #()}
                 :User
                 {:agents agent/find-all
                  :places place/find-all}
                 :Place
-                {:tasks task/find-by-place}
+                {:tasks task/fetch-place-tasks}
                 :Stripe
                 {:setupIntent stripe/create-setup-intent
                  :paymentMethods stripe/find-payment-methods}})

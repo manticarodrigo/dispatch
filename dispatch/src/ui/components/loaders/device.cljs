@@ -1,10 +1,10 @@
-(ns ui.components.loader
+(ns ui.components.loaders.device
   (:require
    [react]
    [reagent.core :as r]
    [re-frame.core :refer (dispatch)]
    [ui.lib.device :refer (get-device-info)]
-   [ui.components.icons.dispatch :rename {dispatch dispatch-icon}]))
+   [ui.components.loaders.base :rename {loader base-loader}]))
 
 (defn loader [& children]
   (let [!loaded (r/atom false)]
@@ -21,6 +21,4 @@
 
       (if @!loaded
         (into [:<>] children)
-        [:div {:class "flex justify-center items-center h-full w-full"}
-         [:div {:class "animate-pulse"}
-          [dispatch-icon {:width 36 :height 36}]]]))))
+        [base-loader]))))

@@ -1,53 +1,49 @@
 (ns api.models.place
   (:require [promesa.core :as p]
             [api.util.prisma :as prisma]
-            [api.models.user :refer (active-user)]
-            [api.models.agent :refer (active-agent)]))
+            [api.models.user :as user]))
 
-(defn create [^js context {:keys [agentId deviceId name phone email description lat lng]}]
-  (let [payload {:data {:name name
-                        :phone phone
-                        :email email
-                        :description description
-                        :lat lat
-                        :lng lng}}]
-    (if agentId
-      (p/let [^js agent (active-agent
-                         context
-                         {:agentId agentId
-                          :deviceId deviceId
-                          :query {:include {:organization true}}})]
-        (prisma/create!
-         (.. context -prisma -place)
-         (update-in payload [:data] merge
-                    {:agent {:connect {:id agentId}}
-                     :organization {:connect {:id (.. agent -organization -id)}}})))
-      (p/let [^js user (active-user context {:include {:organization true}})]
-        (prisma/create!
-         (.. context -prisma -place)
-         (update-in payload [:data] merge
-                    {:organization {:connect {:id (.. user -organization -id)}}}))))))
+(defn create [^js context {:keys [name phone email description lat lng]}]
+  (p/let [^js user (user/active-user context {:include
+                                              {:agent
+                                               {:include
+                                                {:organization true}}
+                                               :organization true}})
+          ^js organization (or (.. user -organization)
+                               (.. user -agent -organization))
+          payload {:data {:name name
+                          :phone phone
+                          :email email
+                          :description description
+                          :lat lat
+                          :lng lng
+                          :organization {:connect {:id (.. organization -id)}}}}]
+    (prisma/create!
+     (.. context -prisma -place)
+     (if (.. user -agent)
+       (assoc-in payload [:data :agent] {:connect {:id (.. user -agent -id)}})
+       payload))))
 
-(defn find-all [^js context {:keys [agentId deviceId]}]
+(defn find-all [^js context]
   (p/let [query {:include
-                 {:organization
-                  {:include
-                   {:places {:orderBy {:name "asc"}}}}}}
-          ^js result (if agentId
-                       (active-agent context {:agentId agentId
-                                              :deviceId deviceId
-                                              :query query})
-                       (active-user context query))]
-    (.. result -organization -places)))
+                 {:places {:orderBy {:name "asc"}}}}
+          ^js user (user/active-user context {:include
+                                              {:agent
+                                               {:include
+                                                {:organization query}}
+                                               :organization query}})
+          ^js organization (or (.. user -organization)
+                               (.. user -agent -organization))]
+    (.. organization -places)))
 
-(defn find-unique [^js context {:keys [agentId deviceId placeId]}]
+(defn find-unique [^js context {:keys [placeId]}]
   (p/let [query {:include
-                 {:organization
-                  {:include
-                   {:places {:where {:id placeId}}}}}}
-          ^js result (if agentId
-                       (active-agent context {:agentId agentId
-                                              :deviceId deviceId
-                                              :query query})
-                       (active-user context query))]
-    (first (.. result -organization -places))))
+                 {:places {:where {:id placeId}}}}
+          ^js user (user/active-user context {:include
+                                              {:agent
+                                               {:include
+                                                {:organization query}}
+                                               :organization query}})
+          ^js organization (or (.. user -organization)
+                               (.. user -agent -organization))]
+    (first (.. organization -places))))

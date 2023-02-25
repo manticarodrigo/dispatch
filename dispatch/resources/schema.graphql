@@ -3,30 +3,27 @@ scalar JSON
 
 type Query {
   user: User
+  scope: String!
   stripe: Stripe
   agents: [Agent]
   agent(agentId: ID!, filters: TaskFilters): Agent
-  places(agentId: ID, deviceId: ID): [Place]
-  place(agentId: ID, deviceId: ID, placeId: ID!, filters: TaskFilters): Place
-  tasks(agentId: ID, deviceId: ID, filters: TaskFilters): [Task]
-  task(agentId: ID, deviceId: ID, taskId: ID!): Task
+  places: [Place]
+  place(placeId: ID!, filters: TaskFilters): Place
+  organizationTasks(filters: TaskFilters): [Task]
+  organizationTask(taskId: ID!): Task
+  agentTasks(filters: TaskFilters): [Task]
+  agentTask(taskId: ID!): Task
   stop(stopId: ID!): Stop
 }
 
 type Mutation {
+  loginPhone(phone: String!): Boolean!
+  loginConfirm(code: Int!): String!
   createUser(email: String!, password: String!, organization: String!): String!
   createSession(email: String!, password: String!): String!
   createAgent(name: String!, phone: String!): Agent!
-  createDevice(agentId: ID!, deviceId: ID, info: JSON!): Device!
-  createLocation(
-    agentId: ID!
-    deviceId: ID!
-    position: LocationPosition!
-    createdAt: Date
-  ): Location!
+  createLocation(position: LocationPosition!, createdAt: Date): Location!
   createPlace(
-    agentId: ID
-    deviceId: ID
     name: String!
     phone: String
     email: String
@@ -41,10 +38,11 @@ type Mutation {
 
 type User {
   id: ID!
-  email: String!
+  email: String
+  phone: String
   agents: [Agent]
   places: [Place]
-  organization: Organization!
+  organization: Organization
 }
 
 type Organization {
@@ -57,17 +55,9 @@ type Stripe {
   paymentMethods: JSON
 }
 
-type Device {
-  id: ID!
-  info: JSON!
-  agent: Agent!
-}
-
 type Agent {
   id: ID!
   name: String!
-  phone: String!
-  device: Device
   location: Location
   tasks: [Task]
 }
@@ -98,7 +88,7 @@ type Place {
   description: String!
   lat: Float!
   lng: Float!
-  tasks(agentId: ID, deviceId: ID, filters: TaskFilters): [Task]
+  tasks(filters: TaskFilters): [Task]
 }
 
 type Stop {

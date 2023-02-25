@@ -2,14 +2,15 @@
   (:require
    [promesa.core :as p]
    [api.util.prisma :as prisma]
-   [api.models.agent :as agent]))
+   [api.models.user :as user]))
 
-(defn create [^js context {:keys [agentId deviceId position createdAt]}]
-  (p/let [^js agent (agent/active-agent context {:agentId agentId :deviceId deviceId})
+(defn create [^js context {:keys [position createdAt]}]
+  (p/let [^js user (user/active-user context {:include {:agent true}})
+          agent-id (.. user -agent -id)
           params {:data {:position position
-                         :currentFor {:connect {:id agentId}}
-                         :agent {:connect {:id agentId}}}}]
-    (when agent
+                         :currentFor {:connect {:id agent-id}}
+                         :agent {:connect {:id agent-id}}}}]
+    (when agent-id
       (prisma/create!
        (.. context -prisma -location)
        (if createdAt

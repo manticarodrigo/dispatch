@@ -23,6 +23,18 @@
       (not session-id) (anom/gql (anom/incorrect :invalid-password))
       :else session-id)))
 
+(defn login-phone
+  [_ args context _]
+  (user/login-phone context (->clj args)))
+
+(defn login-confirm
+  [_ args context _]
+  (user/login-confirm context (->clj args)))
+
 (defn active-user
   [_ _ context _]
   (user/active-user context))
+
+(defn find-scope
+  [_ _ context _]
+  (user/find-scope context))

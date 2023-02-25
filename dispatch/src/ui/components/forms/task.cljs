@@ -26,7 +26,7 @@
 
 
 (def FETCH_USER (gql (inline "queries/user/fetch.graphql")))
-(def CREATE_TASK (gql (inline "mutations/task/create.graphql")))
+(def CREATE_TASK (gql (inline "mutations/task/create-task.graphql")))
 
 (defn task-form []
   (let [!anoms (r/atom {})

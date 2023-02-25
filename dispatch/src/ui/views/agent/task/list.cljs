@@ -3,9 +3,8 @@
             [re-frame.core :refer (dispatch)]
             [shadow.resource :refer (inline)]
             [common.utils.date :refer (parse-date)]
-            [ui.subs :refer (listen)]
             [ui.lib.apollo :refer (gql use-query)]
-            [ui.lib.router :refer (use-params use-search-params)]
+            [ui.lib.router :refer (use-search-params)]
             [ui.utils.date :as d]
             [ui.utils.css :refer (padding)]
             [ui.utils.i18n :refer (tr)]
@@ -13,23 +12,18 @@
             [ui.components.filters :refer (filters)]
             [ui.components.lists.task :refer (task-list)]))
 
-(def FETCH_TASKS (gql (inline "queries/task/fetch-all-by-device.graphql")))
+(def FETCH_AGENT_TASKS (gql (inline "queries/task/fetch-agent-tasks.graphql")))
 
 (defn view []
-  (let [{agent-id :agent} (use-params)
-        device (listen [:device])
-        device-id (:id device)
-        [{:keys [date text status] :as search-params} set-search-params] (use-search-params)
+  (let [[{:keys [date text status] :as search-params} set-search-params] (use-search-params)
         {:keys [data loading]} (use-query
-                                FETCH_TASKS
+                                FETCH_AGENT_TASKS
                                 {:variables
-                                 {:agentId agent-id
-                                  :deviceId device-id
-                                  :filters
+                                 {:filters
                                   {:start (-> date parse-date d/startOfDay)
                                    :end  (-> date parse-date d/endOfDay)
                                    :status status}}})
-        {:keys [tasks]} data]
+        {tasks :agentTasks} data]
     (react/useEffect
      (fn []
        (dispatch [:map {:paths (mapv #(-> % :route :path) tasks)}])

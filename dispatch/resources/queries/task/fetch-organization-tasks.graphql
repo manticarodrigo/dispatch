@@ -1,5 +1,5 @@
-query Tasks($filters: TaskFilters) {
-  tasks(filters: $filters) {
+query OrganizationTasks($filters: TaskFilters) {
+  organizationTasks(filters: $filters) {
     id
     agent {
       id

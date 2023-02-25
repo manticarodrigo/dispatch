@@ -1,6 +1,4 @@
 mutation CreatePlace(
-  $agentId: ID
-  $deviceId: ID
   $name: String!
   $phone: String
   $email: String
@@ -9,8 +7,6 @@ mutation CreatePlace(
   $lng: Float!
 ) {
   createPlace(
-    agentId: $agentId
-    deviceId: $deviceId
     name: $name
     phone: $phone
     email: $email

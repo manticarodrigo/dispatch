@@ -2,10 +2,6 @@ query Agents {
   agents {
     id
     name
-    device {
-      id
-      info
-    }
     location {
       id
       position

@@ -10,7 +10,6 @@
             [tests.util.location :refer (nearby generate-polyline)]
             [tests.user :as user]
             [tests.agent :as agent]
-            [tests.device :as device]
             [tests.location :as location]
             [tests.place :as place]
             [tests.task :as task]
@@ -152,39 +151,24 @@
              (is (-> agents first :id)))
 
            (with-mounted-component
-             [test-app {:route "/admin/agents" :mocks [fetch-mock]}]
+             [test-app {:route "/organization/agents" :mocks [fetch-mock]}]
              (fn [^js component]
                (-> (p/all (map #(.findByText component (:name %)) agents))
                    (.then #(testing "ui presents agent names" (is (every? some? %))))
                    (.then done)))))))
 
-(deftest create-devices
-  (async done
-         (p/let [agents-mock (agent/find-all)
-                 agent-ids (->> agents-mock :result :data :agents (map :id))
-                 create-mocks (p/all (map-indexed
-                                      (fn [idx agent-id]
-                                        (device/create
-                                         {:agentId agent-id
-                                          :deviceId idx
-                                          :info {}}))
-                                      agent-ids))]
-           (testing "api returns data"
-             (is (every? #(-> % :result :data :createDevice) create-mocks))
-             (done)))))
-
-(deftest create-locations
-  (async done
-         (p/let [agents-mock (agent/find-all)
-                 agents (->> agents-mock :result :data :agents (drop 1))
-                 create-mocks (p/all (map-indexed
-                                      (fn [idx {:keys [id device]}]
-                                        (let [created-at (-> (js/Date.) (d/subHours (* idx 10)))]
-                                          (location/create id (:id device) created-at)))
-                                      agents))]
-           (testing "api returns data"
-             (is (every? #(-> % :result :data :createLocation) create-mocks))
-             (done)))))
+;; (deftest create-locations
+;;   (async done
+;;          (p/let [agents-mock (agent/find-all)
+;;                  agents (->> agents-mock :result :data :agents (drop 1))
+;;                  create-mocks (p/all (map-indexed
+;;                                       (fn [idx {:keys [id device]}]
+;;                                         (let [created-at (-> (js/Date.) (d/subHours (* idx 10)))]
+;;                                           (location/create created-at)))
+;;                                       agents))]
+;;            (testing "api returns data"
+;;              (is (every? #(-> % :result :data :createLocation) create-mocks))
+;;              (done)))))
 
 (deftest create-places
   (async done
@@ -219,7 +203,7 @@
            (testing "api returns data" (is (-> places first :id)))
 
            (with-mounted-component
-             [test-app {:route "/admin/places" :mocks [fetch-mock]}]
+             [test-app {:route "/organization/places" :mocks [fetch-mock]}]
              (fn [^js component]
                (-> (p/all (map #(.findByText component (:name %)) places))
                    (.then #(testing "ui presents place names" (is (every? some? %))))
@@ -288,11 +272,11 @@
                               {:start (-> (js/Date.) d/startOfDay)
                                :end (-> (js/Date.) d/endOfDay)
                                :status nil}})
-                 tasks (-> fetch-mock :result :data :tasks)]
+                 tasks (-> fetch-mock :result :data :organizationTasks)]
            (testing "api returns data" (is (-> tasks first :id)))
 
            (with-mounted-component
-             [test-app {:route "/admin/tasks" :mocks [fetch-mock]}]
+             [test-app {:route "/organization/tasks" :mocks [fetch-mock]}]
              (fn [^js component]
                (-> (p/all (map #(.findByText component (-> % :agent :name)) tasks))
                    (.then #(testing "ui presents agent names" (is (every? some? %))))

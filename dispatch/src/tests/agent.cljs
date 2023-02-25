@@ -36,7 +36,7 @@
         {:keys [variables]} request]
 
     (with-mounted-component
-      [test-app {:route "/admin/agents/create" :mocks mocks}]
+      [test-app {:route "/organization/agents/create" :mocks mocks}]
       (fn [^js component]
         (p/do
           (change (.getByLabelText component (tr [:field/name])) (:name variables))

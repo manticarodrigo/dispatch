@@ -2,18 +2,26 @@
   (:require [cljs-bean.core :refer (->clj)]
             [api.models.task :as task]))
 
-(defn create
+(defn create-task
   [_ args context _]
-  (task/create context (->clj args)))
+  (task/create-task context (->clj args)))
 
-(defn find-all
+(defn fetch-organization-tasks
   [_ args context _]
-  (task/find-all context (->clj args)))
+  (task/fetch-organization-tasks context (->clj args)))
 
-(defn find-unique
+(defn fetch-agent-tasks
   [_ args context _]
-  (task/find-unique context (->clj args)))
+  (task/fetch-agent-tasks context (->clj args)))
 
-(defn find-by-place
+(defn fetch-place-tasks
   [parent args context _]
-  (task/find-by-place context (merge {:placeId (.-id parent)} (->clj args))))
+  (task/fetch-place-tasks context (merge {:placeId (.-id parent)} (->clj args))))
+
+(defn fetch-organization-task
+  [_ args context _]
+  (task/fetch-organization-task context (->clj args)))
+
+(defn fetch-agent-task
+  [_ args context _]
+  (task/fetch-agent-task context (->clj args)))
