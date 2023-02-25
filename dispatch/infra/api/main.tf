@@ -216,8 +216,13 @@ resource "aws_iam_role_policy_attachment" "execution_policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "insights_policy" {
-  role       = aws_iam_role.api.id
+  role       = aws_iam_role.api.name
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy"
+}
+
+resource "aws_iam_role_policy_attachment" "insights_policy" {
+  role       = aws_iam_role.api.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSNSFullAccess"
 }
 
 data "aws_iam_policy" "lambda_xray" {
