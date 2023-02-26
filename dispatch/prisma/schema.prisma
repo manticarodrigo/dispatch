@@ -60,8 +60,8 @@ model Session {
 model Agent {
   id             String       @id @unique @default(uuid())
   name           String
-  user           User         @relation(fields: [userId], references: [id])
-  userId         String       @unique
+  user           User?        @relation(fields: [userId], references: [id])
+  userId         String?      @unique
   organization   Organization @relation(fields: [organizationId], references: [id])
   organizationId String
   location       Location?    @relation("AgentLocation", fields: [locationId], references: [id])
