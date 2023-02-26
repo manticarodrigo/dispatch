@@ -1,0 +1,18 @@
+query AgentStop($stopId: ID!) {
+  user {
+    agent {
+      stop(stopId: $stopId) {
+        id
+        place {
+          id
+          name
+          description
+          lat
+          lng
+        }
+        note
+        arrivedAt
+      }
+    }
+  }
+}

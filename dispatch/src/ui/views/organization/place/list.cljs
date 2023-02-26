@@ -11,12 +11,12 @@
             [ui.components.filters :refer (filters)]
             [ui.components.lists.place :refer (place-list)]))
 
-(def FETCH_PLACES (gql (inline "queries/place/fetch-all.graphql")))
+(def FETCH_ORGANIZATION_PLACES (gql (inline "queries/user/organization/fetch-places.graphql")))
 
 (defn view []
   (let [[{:keys [text] :as search-params} set-search-params] (use-search-params)
-        {:keys [data loading]} (use-query FETCH_PLACES {})
-        places (some-> data :places)
+        {:keys [data loading]} (use-query FETCH_ORGANIZATION_PLACES {})
+        places (some-> data :user :organization :places)
         filtered-places (filter-text text :name places)]
 
     (react/useEffect

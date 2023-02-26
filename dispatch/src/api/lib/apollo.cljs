@@ -34,35 +34,38 @@
                 :Mutation
                 {:loginPhone user/login-phone
                  :loginConfirm user/login-confirm
-                 :createUser user/create
+                 :createUser user/create-user
                  :createSession user/login
-                 :createAgent agent/create
-                 :createPlace place/create
+                 :createAgent agent/create-agent
+                 :createPlace place/create-place
                  :createTask task/create-task
-                 :createLocation location/create
+                 :createLocation location/create-location
                  :createArrival stop/create-arrival
                  :detachPaymentMethod stripe/detach-payment-method}
                 :Query
-                {:user user/active-user
-                 :scope user/find-scope
-                 :agents agent/find-all
-                 :agent agent/find-unique
-                 :places place/find-all
-                 :place place/find-unique
-                 :organizationTasks task/fetch-organization-tasks
-                 :organizationTask task/fetch-organization-task
-                 :agentTasks task/fetch-agent-tasks
-                 :agentTask task/fetch-agent-task
-                 :stop stop/find-unique
+                {:user #()
                  :stripe #()}
                 :User
-                {:agents agent/find-all
-                 :places place/find-all}
-                :Place
-                {:tasks task/fetch-place-tasks}
+                {:scope user/fetch-scope
+                 :organization #()
+                 :agent #()}
+                :Organization
+                {:agents agent/fetch-organization-agents
+                 :agent agent/fetch-organization-agent
+                 :places place/fetch-organization-places
+                 :place place/fetch-organization-place
+                 :tasks task/fetch-organization-tasks
+                 :task task/fetch-organization-task
+                 :stop stop/fetch-organization-stop}
+                :Agent
+                {:places place/fetch-agent-places
+                 :place place/fetch-agent-place
+                 :tasks task/fetch-agent-tasks
+                 :task task/fetch-agent-task
+                 :stop stop/fetch-agent-stop}
                 :Stripe
                 {:setupIntent stripe/create-setup-intent
-                 :paymentMethods stripe/find-payment-methods}})
+                 :paymentMethods stripe/fetch-payment-methods}})
 
 (def options
   #js{:context

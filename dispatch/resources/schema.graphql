@@ -3,17 +3,7 @@ scalar JSON
 
 type Query {
   user: User
-  scope: String!
   stripe: Stripe
-  agents: [Agent]
-  agent(agentId: ID!, filters: TaskFilters): Agent
-  places: [Place]
-  place(placeId: ID!, filters: TaskFilters): Place
-  organizationTasks(filters: TaskFilters): [Task]
-  organizationTask(taskId: ID!): Task
-  agentTasks(filters: TaskFilters): [Task]
-  agentTask(taskId: ID!): Task
-  stop(stopId: ID!): Stop
 }
 
 type Mutation {
@@ -40,26 +30,32 @@ type User {
   id: ID!
   email: String
   phone: String
-  agents: [Agent]
-  places: [Place]
+  scope: String!
   organization: Organization
+  agent: Agent
 }
 
 type Organization {
   id: ID!
   name: String!
-}
-
-type Stripe {
-  setupIntent: JSON
-  paymentMethods: JSON
+  agents: [Agent]
+  agent(agentId: ID!, filters: TaskFilters): Agent
+  places: [Place]
+  place(placeId: ID!, filters: TaskFilters): Place
+  tasks(filters: TaskFilters): [Task]
+  task(taskId: ID!): Task
+  stop(stopId: ID!): Stop
 }
 
 type Agent {
   id: ID!
   name: String!
   location: Location
-  tasks: [Task]
+  places: [Place]
+  place(placeId: ID!, filters: TaskFilters): Place
+  tasks(filters: TaskFilters): [Task]
+  task(taskId: ID!): Task
+  stop(stopId: ID!): Stop
 }
 
 type Location {
@@ -88,7 +84,7 @@ type Place {
   description: String!
   lat: Float!
   lng: Float!
-  tasks(filters: TaskFilters): [Task]
+  tasks: [Task]
 }
 
 type Stop {
@@ -116,4 +112,9 @@ input TaskFilters {
 enum TaskStatus {
   INCOMPLETE
   COMPLETE
+}
+
+type Stripe {
+  setupIntent: JSON
+  paymentMethods: JSON
 }

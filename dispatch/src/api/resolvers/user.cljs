@@ -5,9 +5,9 @@
    [api.util.anom :as anom]
    [api.models.user :as user]))
 
-(defn create
+(defn create-user
   [_ args context _]
-  (user/create context (->clj args)))
+  (user/create-user context (->clj args)))
 
 (defn login
   [_ args context _]
@@ -35,6 +35,6 @@
   [_ _ context _]
   (user/active-user context))
 
-(defn find-scope
+(defn fetch-scope
   [_ _ context _]
-  (user/find-scope context))
+  (user/fetch-scope context))

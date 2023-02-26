@@ -4,7 +4,7 @@
    [api.util.prisma :as prisma]
    [api.models.user :as user]))
 
-(defn create [^js context {:keys [position createdAt]}]
+(defn create-location [^js context {:keys [position createdAt]}]
   (p/let [^js user (user/active-user context {:include {:agent true}})
           agent-id (.. user -agent -id)
           params {:data {:position position

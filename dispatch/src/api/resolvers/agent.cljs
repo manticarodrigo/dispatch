@@ -2,14 +2,14 @@
   (:require [cljs-bean.core :refer (->clj)]
             [api.models.agent :as agent]))
 
-(defn create
+(defn create-agent
   [_ args context _]
-  (agent/create context (->clj args)))
+  (agent/create-agent context (->clj args)))
 
-(defn find-all
+(defn fetch-organization-agents
   [_ _ context _]
-  (agent/find-all context))
+  (agent/fetch-organization-agents context))
 
-(defn find-unique
+(defn fetch-organization-agent
   [_ args context _]
-  (agent/find-unique context (->clj args)))
+  (agent/fetch-organization-agent context (->clj args)))

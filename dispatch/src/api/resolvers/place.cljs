@@ -2,14 +2,22 @@
   (:require [cljs-bean.core :refer (->clj)]
             [api.models.place :as place]))
 
-(defn create
+(defn create-place
   [_ args context _]
-  (place/create context (->clj args)))
+  (place/create-place context (->clj args)))
 
-(defn find-all
+(defn fetch-organization-places
   [_ _ context _]
-  (place/find-all context))
+  (place/fetch-organization-places context))
 
-(defn find-unique
+(defn fetch-organization-place
   [_ args context _]
-  (place/find-unique context (->clj args)))
+  (place/fetch-organization-place context (->clj args)))
+
+(defn fetch-agent-places
+  [_ _ context _]
+  (place/fetch-agent-places context))
+
+(defn fetch-agent-place
+  [_ args context _]
+  (place/fetch-agent-place context (->clj args)))

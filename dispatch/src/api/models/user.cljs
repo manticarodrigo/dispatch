@@ -8,7 +8,7 @@
    [api.util.anom :as anom]
    [api.filters.core :as filters]))
 
-(defn create [^js context {:keys [email password organization]}]
+(defn create-user [^js context {:keys [email password organization]}]
   (p/let [encrypted-password (when password (crypto/encrypt-string password))
           ^js customer (stripe/create-customer email)
           ^js organization (prisma/create!
@@ -82,7 +82,7 @@
                            query))
        (.then #(or % (throw (anom/gql (anom/forbidden :invalid-session))))))))
 
-(defn find-scope [^js context]
+(defn fetch-scope [^js context]
   (-> (active-user context {:include {:organization true
                                       :agent true}})
       (.then #(cond

@@ -1,0 +1,15 @@
+query OrganizationAgents {
+  user {
+    organization {
+      agents {
+        id
+        name
+        location {
+          id
+          position
+          createdAt
+        }
+      }
+    }
+  }
+}

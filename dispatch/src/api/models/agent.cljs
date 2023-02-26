@@ -4,18 +4,20 @@
             [api.filters.core :as filters]
             [api.models.user :refer (active-user)]))
 
-(defn create [^js context {:keys [name phone]}]
+(defn create-agent [^js context {:keys [name phone]}]
   (p/let [^js user (active-user context {:include {:organization true}})
           ^js agent-user (prisma/create!
                           (.. context -prisma -user)
                           {:data {:phone phone
-                                  :agent {:create
-                                          {:name name
-                                           :organization {:connect {:id (.. user -organization -id)}}}}}
+                                  :agent
+                                  {:create
+                                   {:name name
+                                    :organization
+                                    {:connect {:id (.. user -organization -id)}}}}}
                            :include {:agent true}})]
     (.. agent-user -agent)))
 
-(defn find-all [^js context]
+(defn fetch-organization-agents [^js context]
   (p/let [^js user (active-user
                     context
                     {:include
@@ -29,7 +31,7 @@
     ;; this moves null values to the end of the list
     (sort-by #(some-> % .-location .-createdAt) > agents)))
 
-(defn find-unique [^js context {:keys [agentId filters]}]
+(defn fetch-organization-agent [^js context {:keys [agentId filters]}]
   (p/let [^js result (active-user
                       context
                       {:include
@@ -37,8 +39,9 @@
                         {:include
                          {:agents
                           {:where {:id agentId}
-                           :include {:location true
-                                     :tasks {:where (filters/task filters)
-                                             :orderBy {:startAt "asc"}
-                                             :include {:stops {:include {:place true}}}}}}}}}})]
+                           :include
+                           {:location true
+                            :tasks {:where (filters/task filters)
+                                    :orderBy {:startAt "asc"}
+                                    :include {:stops {:include {:place true}}}}}}}}}})]
     (first (.. result -organization -agents))))

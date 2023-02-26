@@ -50,17 +50,6 @@
                                                {:include (tasks-query filters)}}})]
     (.. user -agent -tasks)))
 
-(defn fetch-place-tasks [^js context {:keys [placeId filters]}]
-  (p/let [^js user (user/active-user context {:include
-                                              {:organization
-                                               {:include
-                                                (update-in
-                                                 (tasks-query filters)
-                                                 [:include :tasks :where :AND]
-                                                 conj
-                                                 {:stops {:some {:place {:id placeId}}}})}}})]
-    (.. user -organization -tasks)))
-
 (defn fetch-organization-task [^js context {:keys [taskId]}]
   (p/let [^js user (user/active-user context {:include
                                               {:organization

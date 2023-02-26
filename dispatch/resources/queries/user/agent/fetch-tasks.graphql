@@ -1,0 +1,33 @@
+query AgentTasks($filters: TaskFilters) {
+  user {
+    agent {
+      tasks(filters: $filters) {
+        id
+        startAt
+        agent {
+          id
+          name
+          location {
+            id
+            position
+            createdAt
+          }
+        }
+        stops {
+          id
+          place {
+            id
+            name
+            description
+            lat
+            lng
+          }
+          order
+          note
+          arrivedAt
+        }
+        route
+      }
+    }
+  }
+}

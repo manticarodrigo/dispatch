@@ -9,13 +9,13 @@
             [ui.components.title :refer (title)]
             [ui.components.lists.stop :refer (stop-list)]))
 
-(def FETCH_ORGANIZATION_TASK (gql (inline "queries/task/fetch-organization-task.graphql")))
+(def FETCH_ORGANIZATION_TASK (gql (inline "queries/user/organization/fetch-task.graphql")))
 
 (defn view []
   (let [{task-id :task} (use-params)
         query (use-query FETCH_ORGANIZATION_TASK {:variables {:taskId task-id}})
         {:keys [data loading]} query
-        {task :organizationTask} data
+        {:keys [task]} (some-> data :user :organization)
         {:keys [agent stops route startAt]} task
         {:keys [path]} route
         {:keys [name]} agent]

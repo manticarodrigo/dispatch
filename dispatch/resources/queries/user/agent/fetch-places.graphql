@@ -1,0 +1,15 @@
+query AgentPlaces {
+  user {
+    agent {
+      places {
+        id
+        name
+        phone
+        email
+        description
+        lat
+        lng
+      }
+    }
+  }
+}

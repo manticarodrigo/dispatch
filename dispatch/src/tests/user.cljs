@@ -8,13 +8,6 @@
                                     submit)]
             [ui.utils.i18n :refer (tr)]))
 
-(defn active-user []
-  (p/let [query (inline "queries/user/fetch.graphql")
-          request  {:query query}
-          result (send request)]
-    {:request request
-     :result result}))
-
 (defn register [variables]
   (p/let [query (inline "mutations/user/create.graphql")
           request  {:query query :variables variables}

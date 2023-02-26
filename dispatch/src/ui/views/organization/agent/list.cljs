@@ -11,12 +11,12 @@
             [ui.components.filters :refer (filters)]
             [ui.components.lists.agent :refer (agent-list)]))
 
-(def FETCH_AGENTS (gql (inline "queries/agent/fetch-all.graphql")))
+(def FETCH_ORGANIZATION_AGENTS (gql (inline "queries/user/organization/fetch-agents.graphql")))
 
 (defn view []
   (let [[{:keys [text] :as search-params} set-search-params] (use-search-params)
-        {:keys [data loading]} (use-query FETCH_AGENTS {})
-        agents (some-> data :agents)
+        {:keys [data loading]} (use-query FETCH_ORGANIZATION_AGENTS {})
+        agents (some-> data :user :organization :agents)
         filtered-agents (filter-text text :name agents)]
 
     (react/useEffect

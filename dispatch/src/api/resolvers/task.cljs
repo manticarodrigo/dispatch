@@ -10,17 +10,14 @@
   [_ args context _]
   (task/fetch-organization-tasks context (->clj args)))
 
-(defn fetch-agent-tasks
-  [_ args context _]
-  (task/fetch-agent-tasks context (->clj args)))
-
-(defn fetch-place-tasks
-  [parent args context _]
-  (task/fetch-place-tasks context (merge {:placeId (.-id parent)} (->clj args))))
-
 (defn fetch-organization-task
   [_ args context _]
   (task/fetch-organization-task context (->clj args)))
+
+(defn fetch-agent-tasks
+  [^js parent args context _]
+  (or (.. parent -tasks)
+      (task/fetch-agent-tasks context (->clj args))))
 
 (defn fetch-agent-task
   [_ args context _]

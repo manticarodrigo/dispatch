@@ -12,21 +12,21 @@
             [ui.components.filters :refer (filters)]
             [ui.components.lists.task :refer (task-list)]))
 
-(def FETCH_AGENT (gql (inline "queries/agent/fetch.graphql")))
+(def FETCH_ORGANIZATION_AGENT (gql (inline "queries/user/organization/fetch-agent.graphql")))
 
 (defn view []
   (let [{agent-id :agent} (use-params)
         [{:keys [date status] :as search-params} set-search-params] (use-search-params)
         query (use-query
-               FETCH_AGENT
+               FETCH_ORGANIZATION_AGENT
                {:variables
                 {:agentId agent-id
                  :filters {:start (-> date parse-date d/startOfDay)
                            :end  (-> date parse-date d/endOfDay)
                            :status status}}})
         {:keys [data previousData loading]} query
-        {:keys [tasks]} (:agent data)
-        {:keys [name location]} (or (:agent previousData) (:agent data))
+        {:keys [tasks]} (some-> data :user :organization :agent)
+        {:keys [name location]} (some-> (or data previousData) :user :organization :agent)
         {:keys [createdAt]} location]
 
     (react/useEffect

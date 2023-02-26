@@ -1,0 +1,31 @@
+query OrganizationPlace($placeId: ID!, $filters: TaskFilters) {
+  user {
+    organization {
+      place(placeId: $placeId, filters: $filters) {
+        id
+        name
+        phone
+        email
+        description
+        lat
+        lng
+        tasks {
+          id
+          startAt
+          stops {
+            id
+            place {
+              id
+              name
+              description
+              lat
+              lng
+            }
+            arrivedAt
+          }
+          route
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,31 @@
+query OrganizationAgent($agentId: ID!, $filters: TaskFilters) {
+  user {
+    organization {
+      agent(agentId: $agentId, filters: $filters) {
+        id
+        name
+        location {
+          id
+          position
+          createdAt
+        }
+        tasks {
+          id
+          startAt
+          stops {
+            id
+            place {
+              id
+              name
+              description
+              lat
+              lng
+            }
+            arrivedAt
+          }
+          route
+        }
+      }
+    }
+  }
+}

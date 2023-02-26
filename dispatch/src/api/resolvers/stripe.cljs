@@ -2,9 +2,9 @@
   (:require [cljs-bean.core :refer (->clj)]
             [api.models.stripe :as stripe]))
 
-(defn find-payment-methods
+(defn fetch-payment-methods
   [_ _ context _]
-  (stripe/find-payment-methods context))
+  (stripe/fetch-payment-methods context))
 
 (defn create-setup-intent
   [_ _ context _]

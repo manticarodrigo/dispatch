@@ -25,7 +25,7 @@
 
 
 
-(def FETCH_USER (gql (inline "queries/user/fetch.graphql")))
+(def FETCH_ORGANIZATION_TASK_OPTIONS (gql (inline "queries/user/organization/fetch-task-options.graphql")))
 (def CREATE_TASK (gql (inline "mutations/task/create-task.graphql")))
 
 (defn task-form []
@@ -56,13 +56,13 @@
                      500)]
     (fn []
       (let [navigate (use-navigate)
-            query (use-query FETCH_USER {})
+            query (use-query FETCH_ORGANIZATION_TASK_OPTIONS {})
             [create status] (use-mutation CREATE_TASK {})
             loading (or
                      (:loading query)
                      (:loading status)
                      @!loading-route)
-            {:keys [agents places]} (some-> query :data :user)
+            {:keys [agents places]} (some-> query :data :user :organization)
             place-map (into {} (for [place places]
                                  {(:id place) place}))
             {:keys [agentId startAt origin-id destination-id stop-tuples route]} @!state
