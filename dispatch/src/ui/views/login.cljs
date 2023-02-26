@@ -3,14 +3,12 @@
             [ui.utils.css :refer (padding)]
             [ui.utils.i18n :refer (tr)]
             [ui.components.title :refer (title)]
-            [ui.components.forms.login :refer (login-form)]
-            [ui.components.forms.login-phone :refer (login-phone-form)]))
+            [ui.components.forms.login :refer (login-form)]))
 
 (defn view []
   [:div {:class padding}
    [title {:title (tr [:view.login/title])}]
    [login-form]
-   [login-phone-form]
    [:div {:class "pt-2 text-center"}
     [:p (tr [:view.login.register-link/title]) " "
      [link {:to "/register" :class "underline"} (tr [:view.login.register-link/link])]]]])

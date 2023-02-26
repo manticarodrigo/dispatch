@@ -3,7 +3,7 @@
    [ui.lib.router :as router]
    [ui.views.register :as register]
    [ui.views.login :as login]
-   [ui.views.confirm :as confirm]
+   [ui.views.login-confirm :as login-confirm]
    [ui.views.organization.core :as organization]
    [ui.views.agent.core :as agent]
    [ui.views.not-found :as not-found]
@@ -14,7 +14,7 @@
    [{:index true :element [scope-loader]}
     {:path "register" :element [register/view]}
     {:path "login" :element [login/view]}
-    {:path "confirm" :element [confirm/view]}
+    {:path "login/confirm" :element [login-confirm/view]}
     {:path "logout" :element [router/remove-auth-route]}
     organization/route
     agent/route

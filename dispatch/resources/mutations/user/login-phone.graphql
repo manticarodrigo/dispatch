@@ -1,3 +1,0 @@
-mutation LoginPhone($phone: String!) {
-  loginPhone(phone: $phone)
-}

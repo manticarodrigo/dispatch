@@ -51,6 +51,7 @@
       (fn [^js component]
         (p/do
           (change (.getByLabelText component (tr [:field/email])) email)
+          (.findByLabelText component (tr [:field/password]))
           (change (.getByLabelText component (tr [:field/password])) password)
           (submit (-> component (.-container) (.querySelector "form")))
           (f component))))))

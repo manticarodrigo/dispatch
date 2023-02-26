@@ -1,4 +1,4 @@
-(ns ui.views.confirm
+(ns ui.views.login-confirm
   (:require [ui.utils.css :refer (padding)]
             [ui.utils.i18n :refer (tr)]
             [ui.components.title :refer (title)]

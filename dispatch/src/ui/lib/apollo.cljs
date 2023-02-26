@@ -11,7 +11,6 @@
             ["@apollo/client/link/error" :refer (onError)]
             ["@graphql-tools/schema" :refer (makeExecutableSchema)]
             [apollo-link-scalars :refer (withScalars)]
-            [re-frame.core :refer (dispatch)]
             [shadow.resource :refer (inline)]
             [cljs-bean.core :refer (->clj ->js)]
             [common.utils.date :refer (date-scalar-map)]

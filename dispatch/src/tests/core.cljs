@@ -71,7 +71,7 @@
                                :password "test"})]
 
            (testing "api returns data"
-             (is (-> create-mock :result :data :createSession)))
+             (is (-> create-mock :result :data :login)))
 
            (user/with-submit-login
              {:mocks [create-mock]}

@@ -25,19 +25,50 @@
                              :include {:admin {:include {:sessions true}}}})]
     (some-> organization .-admin .-sessions last .-id)))
 
+(defn find-by-email [^js context email]
+  (prisma/find-unique (.. context -prisma -user)
+                      {:where {:email email}}))
+
+(defn create-session [^js context {:keys [user-id user-password password]}]
+  (p/let [encrypted-password (when password (crypto/encrypt-string password))
+          password-matches? (= user-password encrypted-password)
+          ^js user (when password-matches?
+                     (prisma/update! (.. context -prisma -user)
+                                     {:where {:id user-id}
+                                      :data {:sessions {:create [{}]}}
+                                      :include {:sessions true}}))]
+    (some-> user .-sessions last .-id)))
+
+(defn login-email [^js context {:keys [email password]}]
+  (p/let [^js user (when email (find-by-email context email))
+          session-id (when user (create-session
+                                 context
+                                 {:user-id (some-> user .-id)
+                                  :user-password (some-> user .-password)
+                                  :password password}))]
+    (cond
+      (not user) (anom/gql (anom/not-found :account-not-found))
+      (not session-id) (anom/gql (anom/incorrect :invalid-password))
+      :else session-id)))
 
 (defn login-phone [^js context {:keys [phone]}]
   (p/let [^js user (prisma/find-unique
                     (.. context -prisma -user)
                     {:where {:phone phone}})
-          ^js verification (prisma/create!
-                            (.. context -prisma -verification)
-                            {:data {:code (crypto/short-code)
-                                    :user {:connect {:id (.. user -id)}}}})]
+          ^js verification (when user
+                             (prisma/create!
+                              (.. context -prisma -verification)
+                              {:data {:code (crypto/short-code)
+                                      :user {:connect {:id (.. user -id)}}}}))]
     (when-not user
       (throw (anom/gql (anom/not-found :account-not-found))))
     (notification/send-sms phone (str "Your verification code is " (.-code verification)))
     true))
+
+(defn login [^js context {:keys [email] :as args}]
+  (if email
+    (login-email context args)
+    (login-phone context args)))
 
 (defn login-confirm [^js context {:keys [code]}]
   (p/let [^js verification (prisma/find-unique
@@ -55,21 +86,6 @@
                           {:data {:user {:connect {:id user-id}}}})
           (.then (fn [^js session]
                    (.. session -id)))))))
-
-(defn create-session [^js context {:keys [user-id user-password password]}]
-  (p/let [encrypted-password (when password (crypto/encrypt-string password))
-          password-matches? (= user-password encrypted-password)
-          ^js user (when password-matches?
-                     (prisma/update! (.. context -prisma -user)
-                                     {:where {:id user-id}
-                                      :data {:sessions {:create [{}]}}
-                                      :include {:sessions true}}))]
-    (some-> user .-sessions last .-id)))
-
-(defn find-by-email [^js context email]
-  (prisma/find-unique (.. context -prisma -user)
-                      {:where {:email email}}))
-
 (defn active-user
   ([^js context]
    (-> (prisma/find-first (.. context -prisma -user)

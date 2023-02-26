@@ -32,10 +32,9 @@
 (def resolvers {:Date date-scalar
                 :JSON json-scalar
                 :Mutation
-                {:loginPhone user/login-phone
+                {:login user/login
                  :loginConfirm user/login-confirm
                  :createUser user/create-user
-                 :createSession user/login
                  :createAgent agent/create-agent
                  :createPlace place/create-place
                  :createTask task/create-task
