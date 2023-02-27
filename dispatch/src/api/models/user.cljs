@@ -1,15 +1,15 @@
 (ns api.models.user
-  (:require
-   [promesa.core :as p]
-   [api.lib.stripe :as stripe]
-   [api.lib.gmail :as gmail]
-   [api.lib.notification :as notification]
-   [api.util.prisma :as prisma]
-   [api.util.crypto :as crypto]
-   [api.util.anom :as anom]
-   [api.filters.core :as filters]))
+  (:require [reagent.dom.server :refer (render-to-string)]
+            [promesa.core :as p]
+            [api.lib.stripe :as stripe]
+            [api.lib.gmail :as gmail]
+            [api.lib.notification :as notification]
+            [api.util.prisma :as prisma]
+            [api.util.crypto :as crypto]
+            [api.util.anom :as anom]
+            [api.filters.core :as filters]))
 
-(defn create-user [^js context {:keys [email password organization]}]
+(defn register-user [^js context {:keys [email password organization]}]
   (p/let [encrypted-password (when password (crypto/encrypt-string password))
           ^js customer (stripe/create-customer email)
           ^js organization (prisma/create!
@@ -24,38 +24,57 @@
                                       :password encrypted-password
                                       :sessions {:create [{}]}}}}
                              :include {:admin {:include {:sessions true}}}})
-          _ (gmail/send-mail {:to "manticarodrigo@gmail.com"
-                              :subject "hello world"
-                              :text "hello"
-                              :html "<p>hello world!</p>"
-                              :textEncoding "base64"})]
-    (some-> organization .-admin .-sessions last .-id)))
+          ^js admin (.. organization -admin)
+          ^js verification (when admin
+                             (prisma/create!
+                              (.. context -prisma -verification)
+                              {:data {:code (crypto/short-code)
+                                      :user {:connect {:id (.. admin -id)}}}}))
+          text (str "Your verification code is " (.-code verification))]
+    (gmail/send-mail {:to email
+                      :subject "Verification code"
+                      :text text
+                      :html (render-to-string [:p {:style {:color "red"}} text])
+                      :textEncoding "base64"})
+    true))
 
-(defn find-by-email [^js context email]
-  (prisma/find-unique (.. context -prisma -user)
-                      {:where {:email email}}))
-
-(defn create-session [^js context {:keys [user-id user-password password]}]
-  (p/let [encrypted-password (when password (crypto/encrypt-string password))
+(defn login-password [^js context {:keys [email password]}]
+  (p/let [^js user (when email (prisma/find-unique
+                                (.. context -prisma -user)
+                                {:where {:email email}}))
+          user-id (some-> user .-id)
+          user-password (some-> user .-password)
+          encrypted-password (when password (crypto/encrypt-string password))
           password-matches? (= user-password encrypted-password)
-          ^js user (when password-matches?
-                     (prisma/update! (.. context -prisma -user)
-                                     {:where {:id user-id}
-                                      :data {:sessions {:create [{}]}}
-                                      :include {:sessions true}}))]
-    (some-> user .-sessions last .-id)))
-
-(defn login-email [^js context {:keys [email password]}]
-  (p/let [^js user (when email (find-by-email context email))
-          session-id (when user (create-session
-                                 context
-                                 {:user-id (some-> user .-id)
-                                  :user-password (some-> user .-password)
-                                  :password password}))]
+          ^js updated-user (when password-matches?
+                             (prisma/update! (.. context -prisma -user)
+                                             {:where {:id user-id}
+                                              :data {:sessions {:create [{}]}}
+                                              :include {:sessions true}}))
+          session-id (some-> updated-user .-sessions last .-id)]
     (cond
       (not user) (anom/gql (anom/not-found :account-not-found))
       (not session-id) (anom/gql (anom/incorrect :invalid-password))
       :else session-id)))
+
+(defn login-email [^js context {:keys [email]}]
+  (p/let [^js user (prisma/find-unique
+                    (.. context -prisma -user)
+                    {:where {:email email}})
+          ^js verification (when user
+                             (prisma/create!
+                              (.. context -prisma -verification)
+                              {:data {:code (crypto/short-code)
+                                      :user {:connect {:id (.. user -id)}}}}))
+          text (str "Your verification code is " (.-code verification))]
+    (when-not user
+      (throw (anom/gql (anom/not-found :account-not-found))))
+    (gmail/send-mail {:to email
+                      :subject "Verification code"
+                      :text text
+                      :html (render-to-string [:p {:style {:color "red"}} text])
+                      :textEncoding "base64"})
+    true))
 
 (defn login-phone [^js context {:keys [phone]}]
   (p/let [^js user (prisma/find-unique
@@ -65,13 +84,14 @@
                              (prisma/create!
                               (.. context -prisma -verification)
                               {:data {:code (crypto/short-code)
-                                      :user {:connect {:id (.. user -id)}}}}))]
+                                      :user {:connect {:id (.. user -id)}}}}))
+          text (str "Your verification code is " (.-code verification))]
     (when-not user
       (throw (anom/gql (anom/not-found :account-not-found))))
-    (notification/send-sms phone (str "Your verification code is " (.-code verification)))
+    (notification/send-sms phone text)
     true))
 
-(defn login [^js context {:keys [email] :as args}]
+(defn login-user [^js context {:keys [email] :as args}]
   (if email
     (login-email context args)
     (login-phone context args)))

@@ -1,7 +1,0 @@
-mutation CreateUser(
-  $email: String!
-  $password: String!
-  $organization: String!
-) {
-  createUser(email: $email, password: $password, organization: $organization)
-}

@@ -1,0 +1,3 @@
+mutation RegisterUser($email: String!, $organization: String!) {
+  register(email: $email, organization: $organization)
+}

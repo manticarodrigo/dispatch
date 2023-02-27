@@ -2,13 +2,13 @@
   (:require [cljs-bean.core :refer (->clj)]
             [api.models.user :as user]))
 
-(defn create-user
+(defn register-user
   [_ args context _]
-  (user/create-user context (->clj args)))
+  (user/register-user context (->clj args)))
 
-(defn login
+(defn login-user
   [_ args context _]
-  (user/login context (->clj args)))
+  (user/login-user context (->clj args)))
 
 (defn login-confirm
   [_ args context _]
