@@ -2,7 +2,6 @@
   (:require [react]
             [re-frame.core :refer (dispatch)]
             [shadow.resource :refer (inline)]
-            [ui.subs :refer (listen)]
             [ui.lib.apollo :refer (gql use-query)]
             [ui.lib.router :refer (use-params)]
             [ui.utils.i18n :refer (tr)]
@@ -10,18 +9,13 @@
             [ui.components.title :refer (title)]
             [ui.components.lists.stop :refer (stop-list)]))
 
-(def FETCH_TASK (gql (inline "queries/task/fetch-by-device.graphql")))
+(def FETCH_AGENT_TASK (gql (inline "queries/user/agent/fetch-task.graphql")))
 
 (defn view []
-  (let [{agent-id :agent task-id :task} (use-params)
-        device (listen [:device])
-        device-id (:id device)
-        query (use-query FETCH_TASK {:variables
-                                     {:taskId task-id
-                                      :agentId agent-id
-                                      :deviceId device-id}})
+  (let [{task-id :task} (use-params)
+        query (use-query FETCH_AGENT_TASK {:variables {:taskId task-id}})
         {:keys [data loading]} query
-        {:keys [task]} data
+        {:keys [task]} (some-> data :user :agent)
         {:keys [agent stops route startAt]} task
         {:keys [path]} route
         {:keys [name]} agent]

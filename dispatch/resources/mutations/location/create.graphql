@@ -1,15 +1,5 @@
-mutation CreateLocation(
-  $agentId: ID!
-  $deviceId: ID!
-  $position: LocationPosition!
-  $createdAt: Date
-) {
-  createLocation(
-    agentId: $agentId
-    deviceId: $deviceId
-    position: $position
-    createdAt: $createdAt
-  ) {
+mutation CreateLocation($position: LocationPosition!, $createdAt: Date) {
+  createLocation(position: $position, createdAt: $createdAt) {
     id
     position
     createdAt

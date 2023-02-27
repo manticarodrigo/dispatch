@@ -1,10 +1,9 @@
 (ns api.util.crypto
-  (:require ["crypto" :as crypto]
-            ["bcryptjs" :as bcrypt]
+  (:require ["bcryptjs" :as bcrypt]
             [api.config :as config]))
 
-(defn random-hex []
-  (-> crypto (.randomBytes 32) (.toString "hex")))
+(defn short-code []
+  (+ (rand-int 900000) 100000))
 
 (defn encrypt-string [string]
   (.hash bcrypt string config/SALT))

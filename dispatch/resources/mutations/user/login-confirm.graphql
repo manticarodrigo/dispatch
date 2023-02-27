@@ -1,0 +1,3 @@
+mutation LoginConfirm($code: Int!) {
+  loginConfirm(code: $code)
+}

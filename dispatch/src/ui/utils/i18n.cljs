@@ -15,6 +15,7 @@
            :login {:title "Login"
                    :register-link {:title "Need an account?"
                                    :link "Register here."}}
+           :confirm {:title "Confirm"}
            :task {:list {:title "Tasks"}
                   :create {:title "Create task"}}
            :agent {:list {:title "Agents"}
@@ -30,10 +31,11 @@
                                     :add-payment-method "Add payment method"
                                     :delete-payment-method "Delete payment method"}}}
     :field {:email "Email"
+            :phone "Phone"
+            :code "Code"
             :password "Password"
             :organization "Organization"
             :name "Name"
-            :phone "Phone"
             :note "Note"
             :agent "Agent"
             :departure "Departure"
@@ -81,24 +83,12 @@
     :device {:unsupported
              {:title "Unsupported platform"
               :message "Looks like you are trying to access an agent view from a web browser. Please use the mobile app to access this view."
-              :download "Download from Google Play Store"}
-             :agent-not-found
-             {:title "Agent not found"
-              :message "Looks like the agent you are trying to access does not exist. Please use a valid url or reach out to an administrator."}
-             :device-token-invalid
-             {:title "Another device already linked"
-              :message "Looks like this agent has a device linked to it already. If you would like to link your device to this agent, please reach out to an admin and ask them to unlink the other device first."}
-             :device-already-linked
-             {:title "Device linked to another agent"
-              :message "Looks like this device is associated with a different agent. Please use a valid url or reach out to an administrator."}
-             :device-not-linked
-             {:title "No device linked"
-              :message "Looks like this agent has no device linked to it yet. Please press the button below to link your device and continue."}
-             :link "Link Device"}
+              :download "Download from Google Play Store"}}
     :error {:unknown "An unknown error occurred."
             :unique-constraint "The account already exists."
             :invalid-password "The password is incorrect."
-            :account-not-found "The account you're looking for does not exist."}}
+            :account-not-found "The account you're looking for does not exist."
+            :verification-not-found "The verification code you entered is invalid."}}
    :es
    {:noun {:status "estado"
            :never "nunca"}
@@ -109,6 +99,7 @@
            :login {:title "Ingresar"
                    :register-link {:title "¿Necesitas una cuenta?"
                                    :link "Registrar aquí."}}
+           :confirm {:title "Confirmar"}
            :task {:list {:title "Tareas"}
                   :create {:title "Crear tarea"}}
            :agent {:list {:title "Agentes"}
@@ -125,10 +116,11 @@
                                     :add-payment-method "Agregar método de pago"
                                     :delete-payment-method "Eliminar método de pago"}}}
     :field {:email "Correo electrónico"
+            :phone "Teléfono"
+            :code "Código"
             :password "Contraseña"
             :organization "Organización"
             :name "Nombre"
-            :phone "Teléfono"
             :note "Nota"
             :agent "Agente"
             :departure "Salida"
@@ -176,24 +168,12 @@
     :device {:unsupported
              {:title "Plataforma no soportada"
               :message "Parece que estás tratando de acceder a una vista de agente desde un navegador web. Por favor usa la aplicación móvil para acceder a esta vista."
-              :download "Descargar desde Google Play Store"}
-             :agent-not-found
-             {:title "Agente no encontrado"
-              :message "Parece que el agente que estás tratando de acceder no existe. Por favor usa una url válida o contacta a un administrador."}
-             :device-token-invalid
-             {:title "Otro dispositivo ya está vinculado"
-              :message "Parece que este agente ya tiene un dispositivo vinculado a él. Si quieres vincular tu dispositivo a este agente, por favor contacta a un administrador y pídele que desvincule el otro dispositivo primero."}
-             :device-already-linked
-             {:title "Dispositivo vinculado a otro agente"
-              :message "Parece que este dispositivo está asociado a un agente diferente. Por favor usa una url válida o contacta a un administrador."}
-             :device-not-linked
-             {:title "No hay ningún dispositivo vinculado"
-              :message "Parece que este agente no tiene ningún dispositivo vinculado a él todavía. Por favor presiona el botón de abajo para vincular tu dispositivo y continuar."}
-             :link "Vincular Dispositivo"}
+              :download "Descargar desde Google Play Store"}}
     :error {:unknown "Un error desconocido ocurrió."
             :unique-constraint "La cuenta ya existe."
             :invalid-password "La contraseña es incorrecta."
-            :account-not-found "La cuenta que busca no existe."}}})
+            :account-not-found "La cuenta que busca no existe."
+            :verification-not-found "El código de verificación que ingresaste es inválido."}}})
 
 (def ^:private opts {:dict dict})
 

@@ -28,13 +28,6 @@
  (assoc-key :device))
 
 (rf/reg-event-db
- :device/error
- [trim-v]
- (fn [db [v]]
-   (assoc-in
-    db [:device :error] v)))
-
-(rf/reg-event-db
  :device/position
  [trim-v]
  (fn [db [v]]

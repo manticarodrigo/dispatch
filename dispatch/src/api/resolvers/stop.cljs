@@ -6,6 +6,10 @@
   [_ args context _]
   (stop/create-arrival context (->clj args)))
 
-(defn find-unique
+(defn fetch-organization-stop
   [_ args context _]
-  (stop/find-unique context (->clj args)))
+  (stop/fetch-organization-stop context (->clj args)))
+
+(defn fetch-agent-stop
+  [_ args context _]
+  (stop/fetch-agent-stop context (->clj args)))

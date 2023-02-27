@@ -1,0 +1,17 @@
+query OrganizationTaskOptions {
+  user {
+    organization {
+      agents {
+        id
+        name
+      }
+      places {
+        id
+        name
+        description
+        lat
+        lng
+      }
+    }
+  }
+}

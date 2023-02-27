@@ -6,7 +6,7 @@
             [ui.components.inputs.language-radio-group :refer (language-radio-group)]))
 
 (defn menu []
-  (use-routes [{:path "admin/*"
+  (use-routes [{:path "organization/*"
                 :element [menu-input {:label [:> SettingsIcon]
                                       :items [[{:label  (tr [:view.subscription/title]) :to "subscription/payment"}]
                                               {:label (str (tr [:misc/sign-out]) "...") :to "/logout"}]

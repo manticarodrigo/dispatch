@@ -8,12 +8,12 @@
             [ui.components.title :refer (title)]
             [ui.components.forms.stop :refer (stop-form)]))
 
-(def FETCH_STOP (gql (inline "queries/stop/fetch.graphql")))
+(def FETCH_AGENT_STOP (gql (inline "queries/user/agent/fetch-stop.graphql")))
 
 (defn view []
   (let [{stop-id :stop} (use-params)
-        query (use-query FETCH_STOP {:variables {:stopId stop-id}})
-        {:keys [place]} (-> query :data :stop)
+        query (use-query FETCH_AGENT_STOP {:variables {:stopId stop-id}})
+        {:keys [place]} (some-> query :data :user :agent :stop)
         {:keys [name description lat lng]} place]
 
     (react/useEffect

@@ -13,15 +13,15 @@
             [ui.lib.google.maps.places :refer (init-places)]
             [tests.mocks.google :refer (mock-google)]))
 
-(defn create [variables]
+(defn create-place [variables]
   (p/let [query (inline "mutations/place/create.graphql")
           request  {:query query :variables variables}
           result (send request)]
     {:request request
      :result result}))
 
-(defn find-all []
-  (p/let [query (inline "queries/place/fetch-all.graphql")
+(defn fetch-organization-places []
+  (p/let [query (inline "queries/user/organization/fetch-places.graphql")
           request  {:query query}
           result (send request)]
     {:query query
@@ -33,7 +33,7 @@
         {:keys [name description lat lng]} (-> mocks first :request :variables)]
 
     (with-mounted-component
-      [test-app {:route "/admin/places/create" :mocks mocks}]
+      [test-app {:route "/organization/places/create" :mocks mocks}]
       (fn [^js component user]
         (p/do
           (change (.getByLabelText component (tr [:field/name])) name)

@@ -3,7 +3,7 @@
             [api.lib.stripe :as stripe]
             [api.models.user :refer (active-user)]))
 
-(defn find-customer-id [^js context]
+(defn fetch-customer-id [^js context]
   (p/let [^js user (active-user
                     context
                     {:include
@@ -13,16 +13,16 @@
     (some-> user .-organization .-stripe .-customerId)))
 
 
-(defn find-payment-methods [^js context]
-  (p/let [customer-id (find-customer-id context)]
+(defn fetch-payment-methods [^js context]
+  (p/let [customer-id (fetch-customer-id context)]
     (stripe/list-payment-methods customer-id)))
 
 (defn create-setup-intent [^js context]
-  (p/let [customer-id (find-customer-id context)]
+  (p/let [customer-id (fetch-customer-id context)]
     (stripe/create-setup-intent customer-id)))
 
 (defn detach-payment-method [^js context {:keys [paymentMethodId]}]
-  (p/let [customer-id (find-customer-id context)
+  (p/let [customer-id (fetch-customer-id context)
           payment-method-id (-> (stripe/list-payment-methods customer-id)
                                 (.then (fn [^js methods]
                                          (->> methods

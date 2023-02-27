@@ -17,12 +17,12 @@
     [:> icon]]])
 
 (defn nav []
-  (use-routes [{:path "admin/*"
+  (use-routes [{:path "organization/*"
                 :element [:nav [:ul {:class "flex justify-center"}
                                 [nav-item "tasks" CalendarIcon]
                                 [nav-item "agents" UsersIcon]
                                 [nav-item "places" PinIcon]]]}
-               {:path "agent/:id/*"
+               {:path "agent/*"
                 :element [:nav [:ul {:class "flex justify-center"}
                                 [nav-item "tasks" CalendarIcon]
                                 [nav-item "places" PinIcon]]]}

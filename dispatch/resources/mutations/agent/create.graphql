@@ -2,6 +2,5 @@ mutation CreateAgent($name: String!, $phone: String!) {
   createAgent(name: $name, phone: $phone) {
     id
     name
-    phone
   }
 }

@@ -8,13 +8,6 @@
                                     submit)]
             [ui.utils.i18n :refer (tr)]))
 
-(defn active-user []
-  (p/let [query (inline "queries/user/fetch.graphql")
-          request  {:query query}
-          result (send request)]
-    {:request request
-     :result result}))
-
 (defn register [variables]
   (p/let [query (inline "mutations/user/create.graphql")
           request  {:query query :variables variables}
@@ -58,6 +51,7 @@
       (fn [^js component]
         (p/do
           (change (.getByLabelText component (tr [:field/email])) email)
+          (.findByLabelText component (tr [:field/password]))
           (change (.getByLabelText component (tr [:field/password])) password)
           (submit (-> component (.-container) (.querySelector "form")))
           (f component))))))

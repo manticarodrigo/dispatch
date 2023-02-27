@@ -2,7 +2,7 @@
   (:require ["cookie" :refer (serialize parse)]
             [goog.object :as gobj]
             [cljs-bean.core :refer (->js)]
-            [re-frame.core :refer (dispatch-sync)]
+            [re-frame.core :refer (dispatch-sync dispatch)]
             [ui.config :as config]
             [ui.lib.platform :refer (platform)]))
 
@@ -33,7 +33,8 @@
               :path "/"}
         cookie-str (serialize cookie-name "" (->js opts))]
     (set-cookie! cookie-str)
-    (dispatch-sync [:session nil])))
+    (dispatch-sync [:session nil])
+    (dispatch [:map nil])))
 
 (defn get-session-request []
   {:headers

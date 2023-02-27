@@ -1,0 +1,31 @@
+query AgentPlace($placeId: ID!, $filters: TaskFilters) {
+  user {
+    agent {
+      place(placeId: $placeId, filters: $filters) {
+        id
+        name
+        phone
+        email
+        description
+        lat
+        lng
+        tasks {
+          id
+          startAt
+          stops {
+            id
+            place {
+              id
+              name
+              description
+              lat
+              lng
+            }
+            arrivedAt
+          }
+          route
+        }
+      }
+    }
+  }
+}

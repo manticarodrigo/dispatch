@@ -23,7 +23,7 @@
                              (.preventDefault e)
                              (-> (create {:variables @!state})
                                  (.then (fn []
-                                          (navigate "/admin/agents")))
+                                          (navigate "/organization/agents")))
                                  (.catch #(reset! !anoms (parse-anoms %)))))}
          [input {:label (tr [:field/name])
                  :value name

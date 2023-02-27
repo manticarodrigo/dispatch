@@ -11,7 +11,6 @@
             ["@apollo/client/link/error" :refer (onError)]
             ["@graphql-tools/schema" :refer (makeExecutableSchema)]
             [apollo-link-scalars :refer (withScalars)]
-            [re-frame.core :refer (dispatch)]
             [shadow.resource :refer (inline)]
             [cljs-bean.core :refer (->clj ->js)]
             [common.utils.date :refer (date-scalar-map)]
@@ -37,13 +36,7 @@
   (onError
    (fn [^js res]
      (when (= (some-> res .-networkError .-statusCode) 401)
-       (remove-session))
-     (condp (fn [reason anoms] (some #(= (:reason %) reason) anoms)) (parse-anoms res)
-       "agent-not-found" (dispatch [:device/error "agent-not-found"])
-       "device-token-invalid" (dispatch [:device/error "device-token-invalid"])
-       "device-already-linked" (dispatch [:device/error "device-already-linked"])
-       "device-not-linked" (dispatch [:device/error "device-not-linked"])
-       nil))))
+       (remove-session)))))
 
 (def resolvers (->js {:Date date-scalar-map
                       :JSON json-scalar-map}))

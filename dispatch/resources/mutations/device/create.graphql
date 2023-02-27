@@ -1,6 +1,0 @@
-mutation CreateDevice($agentId: ID!, $deviceId: ID, $info: JSON!) {
-  createDevice(agentId: $agentId, deviceId: $deviceId, info: $info) {
-    id
-    info
-  }
-}

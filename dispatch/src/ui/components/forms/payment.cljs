@@ -14,7 +14,7 @@
       (let [confirm (use-confirm-setup)
             elements (use-elements)
             location (use-window-location)
-            return-path "/admin/subscription/payment"
+            return-path "/organization/subscription/payment"
             return-url (str (:protocol location) "//" (:host location) return-path)]
         [:form {:class "flex flex-col"
                 :on-submit

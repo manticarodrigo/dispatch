@@ -6,7 +6,7 @@
             [tests.util.ui :refer (with-mounted-component test-app change submit)]
             [ui.utils.i18n :refer (tr)]))
 
-(defn create []
+(defn create-agent []
   (p/let [query (inline "mutations/agent/create.graphql")
           variables {:name (.. faker -name fullName)
                      :phone (.. faker -phone (number "+505########"))}
@@ -15,15 +15,15 @@
     {:request request
      :result result}))
 
-(defn find-all []
-  (p/let [query (inline "queries/agent/fetch-all.graphql")
+(defn fetch-organization-agents []
+  (p/let [query (inline "queries/user/organization/fetch-agents.graphql")
           request  {:query query}
           result (send request)]
     {:request request
      :result result}))
 
-(defn find-unique [variables]
-  (p/let [query (inline "queries/agent/fetch.graphql")
+(defn fetch-organization-agent [variables]
+  (p/let [query (inline "queries/user/organization/fetch-agent.graphql")
           request  {:query query :variables variables}
           result (send request)]
     {:request request
@@ -36,7 +36,7 @@
         {:keys [variables]} request]
 
     (with-mounted-component
-      [test-app {:route "/admin/agents/create" :mocks mocks}]
+      [test-app {:route "/organization/agents/create" :mocks mocks}]
       (fn [^js component]
         (p/do
           (change (.getByLabelText component (tr [:field/name])) (:name variables))

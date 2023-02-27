@@ -1,53 +1,81 @@
 (ns api.models.place
   (:require [promesa.core :as p]
             [api.util.prisma :as prisma]
-            [api.models.user :refer (active-user)]
-            [api.models.agent :refer (active-agent)]))
+            [api.filters.core :as filters]
+            [api.models.user :as user]))
 
-(defn create [^js context {:keys [agentId deviceId name phone email description lat lng]}]
-  (let [payload {:data {:name name
-                        :phone phone
-                        :email email
-                        :description description
-                        :lat lat
-                        :lng lng}}]
-    (if agentId
-      (p/let [^js agent (active-agent
-                         context
-                         {:agentId agentId
-                          :deviceId deviceId
-                          :query {:include {:organization true}}})]
-        (prisma/create!
-         (.. context -prisma -place)
-         (update-in payload [:data] merge
-                    {:agent {:connect {:id agentId}}
-                     :organization {:connect {:id (.. agent -organization -id)}}})))
-      (p/let [^js user (active-user context {:include {:organization true}})]
-        (prisma/create!
-         (.. context -prisma -place)
-         (update-in payload [:data] merge
-                    {:organization {:connect {:id (.. user -organization -id)}}}))))))
+(defn create-place [^js context {:keys [name phone email description lat lng]}]
+  (p/let [^js user (user/active-user context {:include
+                                              {:agent
+                                               {:include
+                                                {:organization true}}
+                                               :organization true}})
+          ^js organization (or (.. user -organization)
+                               (.. user -agent -organization))
+          payload {:data {:name name
+                          :phone phone
+                          :email email
+                          :description description
+                          :lat lat
+                          :lng lng
+                          :organization {:connect {:id (.. organization -id)}}}}]
+    (prisma/create!
+     (.. context -prisma -place)
+     (if (.. user -agent)
+       (assoc-in payload [:data :agent] {:connect {:id (.. user -agent -id)}})
+       payload))))
 
-(defn find-all [^js context {:keys [agentId deviceId]}]
-  (p/let [query {:include
-                 {:organization
-                  {:include
-                   {:places {:orderBy {:name "asc"}}}}}}
-          ^js result (if agentId
-                       (active-agent context {:agentId agentId
-                                              :deviceId deviceId
-                                              :query query})
-                       (active-user context query))]
-    (.. result -organization -places)))
+(def places-query
+  {:places {:orderBy {:name "asc"}}})
 
-(defn find-unique [^js context {:keys [agentId deviceId placeId]}]
-  (p/let [query {:include
-                 {:organization
-                  {:include
-                   {:places {:where {:id placeId}}}}}}
-          ^js result (if agentId
-                       (active-agent context {:agentId agentId
-                                              :deviceId deviceId
-                                              :query query})
-                       (active-user context query))]
-    (first (.. result -organization -places))))
+(defn place-query [place-id filters]
+  {:places {:where {:id place-id}
+            :include
+            {:organization
+             {:include
+              {:tasks
+               {:where
+                (update-in
+                 (filters/task filters)
+                 [:AND]
+                 conj
+                 {:stops {:some {:place {:id place-id}}}})
+                :orderBy {:startAt "asc"}
+                :include {:agent true
+                          :stops {:orderBy {:order "asc"}
+                                  :include
+                                  {:place true}}}}}}}}})
+
+(defn fetch-organization-places [^js context]
+  (p/let [^js user (user/active-user context {:include
+                                              {:organization
+                                               {:include places-query}}})]
+    (.. user -organization -places)))
+
+(defn fetch-agent-places [^js context]
+  (p/let [^js user (user/active-user context {:include
+                                              {:agent
+                                               {:include
+                                                {:organization
+                                                 {:include places-query}}}}})]
+    (.. user -agent -organization -places)))
+
+(defn fetch-organization-place [^js context {:keys [placeId filters]}]
+  (p/let [^js user (user/active-user context {:include
+                                              {:organization
+                                               {:include (place-query placeId filters)}}})
+          ^js place (first (.. user -organization -places))
+          ^js tasks (.. place -organization -tasks)]
+    (set! (.. place -tasks) tasks)
+    place))
+
+(defn fetch-agent-place [^js context {:keys [placeId filters]}]
+  (p/let [^js user (user/active-user context {:include
+                                              {:agent
+                                               {:include
+                                                {:organization
+                                                 {:include (place-query placeId filters)}}}}})
+          ^js place (first (.. user -agent -organization -places))
+          ^js tasks (.. place -organization -tasks)]
+    (set! (.. place -tasks) tasks)
+    place))

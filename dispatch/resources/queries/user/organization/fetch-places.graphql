@@ -1,0 +1,15 @@
+query OrganizationPlaces {
+  user {
+    organization {
+      places {
+        id
+        name
+        phone
+        email
+        description
+        lat
+        lng
+      }
+    }
+  }
+}

@@ -4,29 +4,15 @@ scalar JSON
 type Query {
   user: User
   stripe: Stripe
-  agents: [Agent]
-  agent(agentId: ID!, filters: TaskFilters): Agent
-  places(agentId: ID, deviceId: ID): [Place]
-  place(agentId: ID, deviceId: ID, placeId: ID!, filters: TaskFilters): Place
-  tasks(agentId: ID, deviceId: ID, filters: TaskFilters): [Task]
-  task(agentId: ID, deviceId: ID, taskId: ID!): Task
-  stop(stopId: ID!): Stop
 }
 
 type Mutation {
+  login(email: String, password: String, phone: String): String!
+  loginConfirm(code: Int!): String!
   createUser(email: String!, password: String!, organization: String!): String!
-  createSession(email: String!, password: String!): String!
   createAgent(name: String!, phone: String!): Agent!
-  createDevice(agentId: ID!, deviceId: ID, info: JSON!): Device!
-  createLocation(
-    agentId: ID!
-    deviceId: ID!
-    position: LocationPosition!
-    createdAt: Date
-  ): Location!
+  createLocation(position: LocationPosition!, createdAt: Date): Location!
   createPlace(
-    agentId: ID
-    deviceId: ID
     name: String!
     phone: String
     email: String
@@ -41,35 +27,34 @@ type Mutation {
 
 type User {
   id: ID!
-  email: String!
-  agents: [Agent]
-  places: [Place]
-  organization: Organization!
+  email: String
+  phone: String
+  scope: String!
+  organization: Organization
+  agent: Agent
 }
 
 type Organization {
   id: ID!
   name: String!
-}
-
-type Stripe {
-  setupIntent: JSON
-  paymentMethods: JSON
-}
-
-type Device {
-  id: ID!
-  info: JSON!
-  agent: Agent!
+  agents: [Agent]
+  agent(agentId: ID!, filters: TaskFilters): Agent
+  places: [Place]
+  place(placeId: ID!, filters: TaskFilters): Place
+  tasks(filters: TaskFilters): [Task]
+  task(taskId: ID!): Task
+  stop(stopId: ID!): Stop
 }
 
 type Agent {
   id: ID!
   name: String!
-  phone: String!
-  device: Device
   location: Location
-  tasks: [Task]
+  places: [Place]
+  place(placeId: ID!, filters: TaskFilters): Place
+  tasks(filters: TaskFilters): [Task]
+  task(taskId: ID!): Task
+  stop(stopId: ID!): Stop
 }
 
 type Location {
@@ -98,7 +83,7 @@ type Place {
   description: String!
   lat: Float!
   lng: Float!
-  tasks(agentId: ID, deviceId: ID, filters: TaskFilters): [Task]
+  tasks: [Task]
 }
 
 type Stop {
@@ -126,4 +111,9 @@ input TaskFilters {
 enum TaskStatus {
   INCOMPLETE
   COMPLETE
+}
+
+type Stripe {
+  setupIntent: JSON
+  paymentMethods: JSON
 }

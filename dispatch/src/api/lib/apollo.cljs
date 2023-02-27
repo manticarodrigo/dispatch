@@ -10,7 +10,6 @@
             [api.lib.prisma :refer (prisma)]
             [api.util.anom :as anom]
             [api.resolvers.user :as user]
-            [api.resolvers.device :as device]
             [api.resolvers.agent :as agent]
             [api.resolvers.place :as place]
             [api.resolvers.task :as task]
@@ -33,33 +32,39 @@
 (def resolvers {:Date date-scalar
                 :JSON json-scalar
                 :Mutation
-                {:createUser user/create
-                 :createSession user/login
-                 :createDevice device/create
-                 :createAgent agent/create
-                 :createPlace place/create
-                 :createTask task/create
-                 :createLocation location/create
+                {:login user/login
+                 :loginConfirm user/login-confirm
+                 :createUser user/create-user
+                 :createAgent agent/create-agent
+                 :createPlace place/create-place
+                 :createTask task/create-task
+                 :createLocation location/create-location
                  :createArrival stop/create-arrival
                  :detachPaymentMethod stripe/detach-payment-method}
                 :Query
-                {:user user/active-user
-                 :agents agent/find-all
-                 :agent agent/find-unique
-                 :places place/find-all
-                 :place place/find-unique
-                 :tasks task/find-all
-                 :task task/find-unique
-                 :stop stop/find-unique
+                {:user #()
                  :stripe #()}
                 :User
-                {:agents agent/find-all
-                 :places place/find-all}
-                :Place
-                {:tasks task/find-by-place}
+                {:scope user/fetch-scope
+                 :organization #()
+                 :agent #()}
+                :Organization
+                {:agents agent/fetch-organization-agents
+                 :agent agent/fetch-organization-agent
+                 :places place/fetch-organization-places
+                 :place place/fetch-organization-place
+                 :tasks task/fetch-organization-tasks
+                 :task task/fetch-organization-task
+                 :stop stop/fetch-organization-stop}
+                :Agent
+                {:places place/fetch-agent-places
+                 :place place/fetch-agent-place
+                 :tasks task/fetch-agent-tasks
+                 :task task/fetch-agent-task
+                 :stop stop/fetch-agent-stop}
                 :Stripe
                 {:setupIntent stripe/create-setup-intent
-                 :paymentMethods stripe/find-payment-methods}})
+                 :paymentMethods stripe/fetch-payment-methods}})
 
 (def options
   #js{:context
