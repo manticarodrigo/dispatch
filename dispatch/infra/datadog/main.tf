@@ -134,7 +134,7 @@ resource "aws_iam_policy" "datadog_aws_integration" {
 }
 
 resource "aws_iam_role" "datadog_aws_integration" {
-  name               = "DatadogAWSIntegrationRole-${terraform.workspace}"
+  name               = "DatadogAWSIntegrationRole"
   assume_role_policy = data.aws_iam_policy_document.datadog_aws_integration_assume_role.json
 }
 
