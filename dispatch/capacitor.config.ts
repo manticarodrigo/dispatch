@@ -23,7 +23,6 @@ const config: CapacitorConfig = {
   plugins: {
     CapacitorUpdater: {
       updateUrl: process.env.API_URL && `${process.env.API_URL}/update`,
-      autoUpdate: Boolean(process.env.API_URL),
     },
   },
 };
