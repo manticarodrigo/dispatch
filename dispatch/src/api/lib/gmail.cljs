@@ -5,8 +5,8 @@
             [cljs-bean.core :refer (->clj ->js)]
             [promesa.core :as p]))
 
-(def credentials (->> (inline "gmail/credentials.json") (.parse js/JSON)) ->clj)
-(def token (->> (inline "gmail/token.json") (.parse js/JSON)) ->clj)
+(def credentials (->> (inline "gmail/credentials.json") (.parse js/JSON) ->clj))
+(def token (->> (inline "gmail/token.json") (.parse js/JSON) ->clj))
 
 (def auth
   {:type "OAuth2"
@@ -15,7 +15,7 @@
    :clientSecret (-> credentials :web :client_secret)
    :refreshToken (-> token :refresh_token)})
 
-(def auth-client
+(def ^js auth-client
   (-> (-> google .-auth .-OAuth2)
       (new
        (-> credentials :web :client_id)
@@ -26,7 +26,7 @@
 
 (defn send-mail [options]
   (p/let [access-token (.getAccessToken auth-client)
-          transport (.createTransport
+          ^js transport (.createTransport
                      nodemailer
                      (->js {:service "gmail"
                             :auth (merge auth {:accessToken access-token})}))

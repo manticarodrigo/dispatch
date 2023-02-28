@@ -9,6 +9,18 @@
             [api.util.anom :as anom]
             [api.filters.core :as filters]))
 
+(defn send-verification-mail [email ^js verification]
+  (let [text (str "Your verification code is " (.-code verification))]
+    (gmail/send-mail {:to email
+                      :subject "Verification code"
+                      :text text
+                      :html (render-to-string [:p {:style {:color "red"}} text])
+                      :textEncoding "base64"})))
+
+(defn send-verification-sms [phone ^js verification]
+  (let [text (str "Your verification code is " (.-code verification))]
+    (notification/send-sms phone text)))
+
 (defn register-user [^js context {:keys [email password organization]}]
   (p/let [encrypted-password (when password (crypto/encrypt-string password))
           ^js customer (stripe/create-customer email)
@@ -29,13 +41,8 @@
                              (prisma/create!
                               (.. context -prisma -verification)
                               {:data {:code (crypto/short-code)
-                                      :user {:connect {:id (.. admin -id)}}}}))
-          text (str "Your verification code is " (.-code verification))]
-    (gmail/send-mail {:to email
-                      :subject "Verification code"
-                      :text text
-                      :html (render-to-string [:p {:style {:color "red"}} text])
-                      :textEncoding "base64"})
+                                      :user {:connect {:id (.. admin -id)}}}}))]
+    (send-verification-mail email verification)
     true))
 
 (defn login-password [^js context {:keys [email password]}]
@@ -65,15 +72,10 @@
                              (prisma/create!
                               (.. context -prisma -verification)
                               {:data {:code (crypto/short-code)
-                                      :user {:connect {:id (.. user -id)}}}}))
-          text (str "Your verification code is " (.-code verification))]
+                                      :user {:connect {:id (.. user -id)}}}}))]
     (when-not user
       (throw (anom/gql (anom/not-found :account-not-found))))
-    (gmail/send-mail {:to email
-                      :subject "Verification code"
-                      :text text
-                      :html (render-to-string [:p {:style {:color "red"}} text])
-                      :textEncoding "base64"})
+    (send-verification-mail email verification)
     true))
 
 (defn login-phone [^js context {:keys [phone]}]
@@ -84,11 +86,10 @@
                              (prisma/create!
                               (.. context -prisma -verification)
                               {:data {:code (crypto/short-code)
-                                      :user {:connect {:id (.. user -id)}}}}))
-          text (str "Your verification code is " (.-code verification))]
+                                      :user {:connect {:id (.. user -id)}}}}))]
     (when-not user
       (throw (anom/gql (anom/not-found :account-not-found))))
-    (notification/send-sms phone text)
+    (send-verification-sms phone verification)
     true))
 
 (defn login-user [^js context {:keys [email] :as args}]
@@ -112,6 +113,7 @@
                           {:data {:user {:connect {:id user-id}}}})
           (.then (fn [^js session]
                    (.. session -id)))))))
+
 (defn active-user
   ([^js context]
    (-> (prisma/find-first (.. context -prisma -user)
