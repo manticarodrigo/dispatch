@@ -38,6 +38,7 @@ module "api" {
   db_user          = module.db.username
   db_pass          = module.db.password
   site_bucket_name = module.site.site_bucket_name
+  datadog_api_key  = module.datadog.datadog_api_key
 }
 
 module "site" {
@@ -48,4 +49,9 @@ module "site" {
   build          = module.build.build
   api_invoke_url = module.api.api_invoke_url
   api_stage_name = module.api.api_stage_name
+}
+
+module "datadog" {
+  source   = "./datadog"
+  app_name = local.app_name
 }
