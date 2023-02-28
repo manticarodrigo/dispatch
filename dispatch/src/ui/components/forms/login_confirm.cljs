@@ -24,7 +24,7 @@
                 :on-submit
                 (fn [e]
                   (.preventDefault e)
-                  (-> (login {:variables @!state})
+                  (-> (login {:variables {:code (-> @!state :code js/parseInt)}})
                       (.then (fn [res]
                                (create-session (-> res ->clj :data :loginConfirm))
                                (.resetStore client)

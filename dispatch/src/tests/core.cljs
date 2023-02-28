@@ -29,16 +29,15 @@
   (async done
          (p/let [create-mock (user/register
                               {:email "test@test.test"
-                               :password "test"
-                               :organization "test"})]
+                               :organization "Test LLC"})]
 
            (testing "api returns data"
-             (is (-> create-mock :result :data :createUser)))
+             (is (-> create-mock :result :data :register)))
 
            (user/with-submit-register
              {:mocks [create-mock]}
              (fn [^js component]
-               (-> (.findByText component (tr [:view.task.list/title]))
+               (-> (.findByText component (tr [:view.confirm/title]))
                    (.then #(testing "ui submits and redirects" (is (some? %))))
                    (.then done)))))))
 
@@ -46,8 +45,7 @@
   (async done
          (p/let [create-mock (user/register
                               {:email "test@test.test"
-                               :password "test"
-                               :organization "test"})
+                               :organization "Test LLC"})
                  error (-> create-mock :result :errors first)
                  anom (-> error :extensions :anom)]
 
@@ -66,9 +64,7 @@
 
 (deftest login-success
   (async done
-         (p/let [create-mock (user/login
-                              {:email "test@test.test"
-                               :password "test"})]
+         (p/let [create-mock (user/login {:email "test@test.test"})]
 
            (testing "api returns data"
              (is (-> create-mock :result :data :login)))
@@ -76,15 +72,13 @@
            (user/with-submit-login
              {:mocks [create-mock]}
              (fn [^js component]
-               (-> (.findByText component (tr [:view.task.list/title]))
+               (-> (.findByText component (tr [:view.confirm/title]))
                    (.then #(testing "ui submits and redirects" (is (some? %))))
                    (.then done)))))))
 
 (deftest login-invalid-email
   (async done
-         (p/let [create-mock (user/login
-                              {:email "not@found.test"
-                               :password "test"})
+         (p/let [create-mock (user/login {:email "not@found.test"})
                  anom (-> create-mock :result :errors first :extensions :anom)]
 
            (testing "api returns anom"
@@ -99,23 +93,33 @@
                    (.then #(testing "ui presents account not found anom" (is (some? %))))
                    (.then done)))))))
 
-(deftest login-invalid-password
+(deftest login-confirm
   (async done
-         (p/let [create-mock (user/login
-                              {:email "test@test.test"
-                               :password "incorrect"})
-                 anom (-> create-mock :result :errors first :extensions :anom)]
+         (p/let [login-mock (user/login {:email "test@test.test"})
+                 confirm-mock (user/login-confirm {:code (-> login-mock :result :data :login js/parseInt)})]
 
-           (testing "api returns anom"
-             (is (and
-                  (= "incorrect" (-> anom :category))
-                  (= "invalid-password" (-> anom :reason)))))
+           (testing "api returns data"
+             (is (-> confirm-mock :result :data :loginConfirm)))
 
-           (user/with-submit-login
-             {:mocks [create-mock]}
+           (user/with-submit-confirm
+             {:mocks [confirm-mock]}
              (fn [^js component]
-               (-> (.findByText component (tr-error anom))
-                   (.then #(testing "ui presents invalid password anom" (is (some? %))))
+               (-> (.findByText component (tr [:view.login/title]))
+                   (.then #(testing "ui submits and redirects" (is (some? %))))
+                   (.then done)))))))
+
+(deftest scope-loader
+  (async done
+         (p/let [scope-mock (user/scope)]
+
+           (testing "api returns data"
+             (is (-> scope-mock :result :data :user :scope)))
+
+           (user/with-scope-loader
+             {:mocks [scope-mock]}
+             (fn [^js component]
+               (-> (.findByText component (tr [:view.task.list/title]))
+                   (.then #(testing "ui redirects" (is (some? %))))
                    (.then done)))))))
 
 (deftest create-agents

@@ -8,7 +8,7 @@
    [api.config :as config]
    [api.lib.apollo :as apollo]))
 
-(def dev? (= config/STAGE "dev"))
+(def dev? (= config/STAGE "local"))
 
 (def headers {"Access-Control-Allow-Origin" "*"
               "Access-Control-Allow-Methods" "OPTIONS,POST,GET"

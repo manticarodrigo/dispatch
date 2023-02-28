@@ -1,6 +1,7 @@
 (ns api.models.user
   (:require [reagent.dom.server :refer (render-to-string)]
             [promesa.core :as p]
+            [api.config :as config]
             [api.lib.stripe :as stripe]
             [api.lib.gmail :as gmail]
             [api.lib.notification :as notification]
@@ -10,16 +11,27 @@
             [api.filters.core :as filters]))
 
 (defn send-verification-mail [email ^js verification]
-  (let [text (str "Your verification code is " (.-code verification))]
-    (gmail/send-mail {:to email
-                      :subject "Verification code"
-                      :text text
-                      :html (render-to-string [:p {:style {:color "red"}} text])
-                      :textEncoding "base64"})))
+  (let [code (.-code verification)
+        text (str "Your Ambito Dispatch verification code is: " code)]
+    (if (= config/STAGE "test")
+      code
+      (p/do
+        (gmail/send-mail
+         {:to email
+          :subject "Verification code"
+          :text text
+          :html (render-to-string [:p text])
+          :textEncoding "base64"})
+        nil))))
 
 (defn send-verification-sms [phone ^js verification]
-  (let [text (str "Your verification code is " (.-code verification))]
-    (notification/send-sms phone text)))
+  (let [code (.-code verification)
+        text (str "Your Ambito Dispatch verification code is: " code)]
+    (if (= config/STAGE "test")
+      code
+      (p/do
+        (notification/send-sms phone text)
+        nil))))
 
 (defn register-user [^js context {:keys [email password organization]}]
   (p/let [encrypted-password (when password (crypto/encrypt-string password))
@@ -42,8 +54,7 @@
                               (.. context -prisma -verification)
                               {:data {:code (crypto/short-code)
                                       :user {:connect {:id (.. admin -id)}}}}))]
-    (send-verification-mail email verification)
-    true))
+    (send-verification-mail email verification)))
 
 (defn login-password [^js context {:keys [email password]}]
   (p/let [^js user (when email (prisma/find-unique
@@ -75,8 +86,7 @@
                                       :user {:connect {:id (.. user -id)}}}}))]
     (when-not user
       (throw (anom/gql (anom/not-found :account-not-found))))
-    (send-verification-mail email verification)
-    true))
+    (send-verification-mail email verification)))
 
 (defn login-phone [^js context {:keys [phone]}]
   (p/let [^js user (prisma/find-unique
@@ -89,8 +99,7 @@
                                       :user {:connect {:id (.. user -id)}}}}))]
     (when-not user
       (throw (anom/gql (anom/not-found :account-not-found))))
-    (send-verification-sms phone verification)
-    true))
+    (send-verification-sms phone verification)))
 
 (defn login-user [^js context {:keys [email] :as args}]
   (if email

@@ -34,6 +34,10 @@
              :placeholder placeholder
              :value value
              :required required
+             :autoComplete "off"
+             :autoCorrect "off"
+             :autoCapitalize "off"
+             :spellCheck "false"
              :class (class-names input-class (when icon "pl-8"))
              :on-change (fn [e]
                           (let [v (-> e .-target .-value)

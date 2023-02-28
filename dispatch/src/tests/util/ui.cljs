@@ -83,4 +83,3 @@
    [apollo-mocked-provider (-> (map #(update-in % [:request :query] gql) mocks) ->js)
     [main
      [routes]]]])
-

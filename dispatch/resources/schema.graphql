@@ -7,8 +7,8 @@ type Query {
 }
 
 type Mutation {
-  register(email: String!, organization: String!): Boolean!
-  login(email: String, phone: String): Boolean!
+  register(email: String!, organization: String!): String
+  login(email: String, phone: String): String
   loginConfirm(code: Int!): String!
   createAgent(name: String!, phone: String!): Agent!
   createLocation(position: LocationPosition!, createdAt: Date): Location!
