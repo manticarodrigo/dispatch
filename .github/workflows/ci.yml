@@ -9,6 +9,9 @@ on:
 jobs:
   deploy:
     name: deploy infra
+    env:
+      DD_API_KEY: ${{ secrets.DD_API_KEY }}
+      DD_APP_KEY: ${{ secrets.DD_APP_KEY }}
     runs-on: ubuntu-20.04
     steps:
       - name: Check out code

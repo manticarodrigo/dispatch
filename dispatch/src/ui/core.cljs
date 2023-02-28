@@ -6,7 +6,7 @@
    [reagent.core :as r]
    [re-frame.core :as rf]
    [ui.events :as events]
-   [ui.lib.aws.rum]
+   [ui.lib.datadog.rum]
    [ui.lib.router :refer [browser-router]]
    [ui.lib.apollo :refer (apollo-provider)]
    [ui.lib.platform :refer (platform)]

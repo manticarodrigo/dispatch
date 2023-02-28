@@ -426,6 +426,26 @@
   dependencies:
     "@jridgewell/trace-mapping" "0.3.9"
 
+"@datadog/browser-core@4.34.2":
+  version "4.34.2"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-core/-/browser-core-4.34.2.tgz#e61aa00555992ced14464d5543dd39c567ce2088"
+  integrity sha512-zF0+edsreuaKXLupHeBIkK0QNo5GdX8dK9s1Yq3dhm2JHKTy/SE/IGHh3iL7cC+LJaXRYMNPlGZlAr5Ti/3z4g==
+
+"@datadog/browser-rum-core@4.34.2":
+  version "4.34.2"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-rum-core/-/browser-rum-core-4.34.2.tgz#9f9f3d7968df914f6890d508bb37972496a757e7"
+  integrity sha512-egtmSmARw+T6wAfoW3DwtABX6Yp34sLt4L4XZRVe/XKqjZCjuhAIEIWxUZZ1635TUVnpyJUbxvqvDlimT5Yung==
+  dependencies:
+    "@datadog/browser-core" "4.34.2"
+
+"@datadog/browser-rum@^4.34.2":
+  version "4.34.2"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-rum/-/browser-rum-4.34.2.tgz#5e44de2fe3fd39ac90afefa31c4bedd161f45c83"
+  integrity sha512-W9KdGiug1u/XACCSmDQhKNpHBmX2y3tNgxgBYD850wl8bJjLtFyO2cMrCd0QMAWN42iZ/yr5Xmp+7DtQv9+Vqg==
+  dependencies:
+    "@datadog/browser-core" "4.34.2"
+    "@datadog/browser-rum-core" "4.34.2"
+
 "@emotion/is-prop-valid@^0.8.2":
   version "0.8.8"
   resolved "https://registry.yarnpkg.com/@emotion/is-prop-valid/-/is-prop-valid-0.8.8.tgz#db28b1c4368a259b60a97311d6a952d4fd01ac1a"
@@ -705,10 +725,10 @@
   dependencies:
     "@prisma/engines-version" "4.8.0-61.d6e67a83f971b175a593ccc12e15c4a757f93ffe"
 
-"@prisma/engines-version@4.8.0-61.d6e67a83f971b175a593ccc12e15c4a757f93ffe":
-  version "4.8.0-61.d6e67a83f971b175a593ccc12e15c4a757f93ffe"
-  resolved "https://registry.yarnpkg.com/@prisma/engines-version/-/engines-version-4.8.0-61.d6e67a83f971b175a593ccc12e15c4a757f93ffe.tgz#30401aba1029e7d32e3cb717e705a7c92ccc211e"
-  integrity sha512-MHSOSexomRMom8QN4t7bu87wPPD+pa+hW9+71JnVcF3DqyyO/ycCLhRL1we3EojRpZxKvuyGho2REQsMCvxcJw==
+"@prisma/engines-version@4.5.0-43.0362da9eebca54d94c8ef5edd3b2e90af99ba452":
+  version "4.5.0-43.0362da9eebca54d94c8ef5edd3b2e90af99ba452"
+  resolved "https://registry.yarnpkg.com/@prisma/engines-version/-/engines-version-4.5.0-43.0362da9eebca54d94c8ef5edd3b2e90af99ba452.tgz#5b7fae294ee9bd9790d0e7b7a0b0912e4222ac08"
+  integrity sha512-o7LyVx8PPJBLrEzLl6lpxxk2D5VnlM4Fwmrbq0NoT6pr5aa1OuHD9ZG+WJY6TlR/iD9bhmo2LNcxddCMr5Rv2A==
 
 "@prisma/engines@4.10.1":
   version "4.10.1"
@@ -5762,9 +5782,9 @@ w3c-xmlserializer@^3.0.0:
     xml-name-validator "^4.0.0"
 
 web-vitals@^3.0.2:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/web-vitals/-/web-vitals-3.1.0.tgz#a6f5156cb6c7fee562da46078540265ac2cd2d16"
-  integrity sha512-zCeQ+bOjWjJbXv5ZL0r8Py3XP2doCQMZXNKlBGfUjPAVZWokApdeF/kFlK1peuKlCt8sL9TFkKzyXE9/cmNJQA==
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/web-vitals/-/web-vitals-3.1.1.tgz#bb124a03df7a135617f495c5bb7dbc30ecf2cce3"
+  integrity sha512-qvllU+ZeQChqzBhZ1oyXmWsjJ8a2jHYpH8AMaVuf29yscOPZfTQTjQFRX6+eADTdsDE8IanOZ0cetweHMs8/2A==
 
 webidl-conversions@^3.0.0:
   version "3.0.1"
