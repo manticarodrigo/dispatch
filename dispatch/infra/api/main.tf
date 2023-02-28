@@ -245,8 +245,16 @@ resource "aws_apigatewayv2_api" "api" {
   cors_configuration {
     allow_origins = ["*"]
     allow_methods = ["OPTIONS", "GET", "POST"]
-    allow_headers = ["content-type", "authorization", "x-amzn-trace-id"]
-    max_age       = 86400
+    allow_headers = [
+      "content-type",
+      "authorization",
+      "x-datadog-origin",
+      "x-datadog-parent-id",
+      "x-datadog-sampling-priority",
+      "x-datadog-sampling-priority",
+      "x-datadog-trace-id"
+    ]
+    max_age = 86400
   }
 }
 
