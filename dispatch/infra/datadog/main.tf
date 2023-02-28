@@ -129,7 +129,7 @@ data "aws_iam_policy_document" "datadog_aws_integration" {
 }
 
 resource "aws_iam_policy" "datadog_aws_integration" {
-  name   = "DatadogAWSIntegrationPolicy-${terraform.workspace}"
+  name   = "DatadogAWSIntegrationPolicy"
   policy = data.aws_iam_policy_document.datadog_aws_integration.json
 }
 
