@@ -16,13 +16,10 @@ module "db" {
 }
 
 module "build" {
-  source               = "./build"
-  domain_name          = var.domain_name
-  app_name             = local.app_name
-  version_name         = local.version_name
-  rum_monitor_id       = module.site.rum_monitor_id
-  rum_identity_pool_id = module.site.rum_identity_pool_id
-  rum_guest_role_arn   = module.site.rum_guest_role_arn
+  source       = "./build"
+  domain_name  = var.domain_name
+  app_name     = local.app_name
+  version_name = local.version_name
 }
 
 module "api" {
