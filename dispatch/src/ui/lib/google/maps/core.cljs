@@ -15,7 +15,7 @@
   (let [loader (Loader.
                 (->js
                  {:id "google-maps-script"
-                  :apiKey config/GOOGLE_MAPS_API_KEY
+                  :apiKey config/GOOGLE_API_KEY
                   :version "weekly"
                   :libraries ["places"]
                   :language (listen [:language])}))]

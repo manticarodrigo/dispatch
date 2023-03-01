@@ -3,7 +3,7 @@
             [promesa.core :as p]
             [api.config :as config]
             [api.lib.stripe :as stripe]
-            [api.lib.gmail :as gmail]
+            [api.lib.google.gmail :as gmail]
             [api.lib.notification :as notification]
             [api.util.prisma :as prisma]
             [api.util.crypto :as crypto]
