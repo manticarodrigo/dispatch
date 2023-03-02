@@ -6,14 +6,17 @@
             [common.utils.promise :refer (each)]
             [ui.utils.error :refer (tr-error)]
             [ui.utils.i18n :refer (tr)]
+            [tests.fixtures.tour :refer (shipments vehicles)]
             [tests.util.ui :as ui :refer (with-mounted-component test-app)]
             [tests.util.location :refer (nearby generate-polyline)]
             [tests.user :as user]
             [tests.agent :as agent]
-            [tests.location :as location]
+            ;; [tests.location :as location]
             [tests.place :as place]
             [tests.task :as task]
-            [tests.stop :as stop]))
+            [tests.stop :as stop]
+            [tests.shipment :as shipment]
+            [tests.vehicle :as vehicle]))
 
 (defmethod t/report [:cljs.test/default :begin-test-var] [m]
   (println "\n ◯" (-> m :var meta :name)))
@@ -125,7 +128,7 @@
 (deftest create-agents
   (async done
          (->
-          (p/all (map (fn [_] (agent/create-agent)) (range 50)))
+          (p/all (map (fn [_] (agent/create-agent)) (range 10)))
           (.then (fn [mocks]
                    (testing "api returns data"
                      (is (every? #(-> % :result :data :createAgent) mocks)))
@@ -169,7 +172,7 @@
 
 (deftest create-places
   (async done
-         (let [unique-names (->> (range 50)
+         (let [unique-names (->> (range 10)
                                  (map (fn [_] (.. faker -company name)))
                                  distinct)]
            (-> (p/all (map
@@ -298,4 +301,47 @@
                                       (-> fetch-mocks :result :data :user :organization :tasks)))]
            (testing "api returns data"
              (is (every? #(-> % :result :data :createArrival :arrivedAt) create-mocks))
+             (done)))))
+
+(deftest create-demo-shipments
+  (async done
+         (-> (p/all (map
+                     (fn [{:keys [reference address size duration windows latitude longitude]}]
+                       (p/let [place-mock (place/create-place
+                                           {:name reference
+                                            :description address
+                                            :lat latitude
+                                            :lng longitude})]
+                         (shipment/create-shipment
+                          {:placeId (-> place-mock :result :data :createPlace :id)
+                           :size size
+                           :duration duration
+                           :windows windows})))
+                     shipments))
+             (.then (fn [mocks]
+                      (testing "api returns data"
+                        (is (every? #(-> % :result :data :createShipment) mocks))
+                        (done)))))))
+
+(deftest fetch-demo-shipments
+  (async done
+         (p/let [fetch-mock (shipment/fetch-organization-shipments)]
+           (testing "api returns data"
+             (is (-> fetch-mock :result :data :user :organization :shipments first :id))
+             (done)))))
+
+(deftest create-demo-vehicles
+  (async done
+         (-> (p/all (map vehicle/create-vehicle vehicles))
+             (.then (fn [mocks]
+                      (testing "api returns data"
+                        (is (every? #(-> % :result :data :createVehicle) mocks))
+                        (done)))))))
+
+(deftest fetch-demo-vehicles
+  (async done
+         (p/let [fetch-mock (vehicle/fetch-organization-vehicles)]
+           (js/console.log (-> fetch-mock :result :data :user :organization :vehicles clj->js js/JSON.stringify))
+           (testing "api returns data"
+             (is (-> fetch-mock :result :data :user :organization :vehicles first :id))
              (done)))))

@@ -1,0 +1,7 @@
+mutation CreateVehicle($name: String!, $capacities: JSON) {
+  createVehicle(name: $name, capacities: $capacities) {
+    id
+    name
+    capacities
+  }
+}

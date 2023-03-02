@@ -21,17 +21,20 @@ model User {
 }
 
 model Organization {
-  id        String   @id @unique @default(uuid())
+  id        String     @id @unique @default(uuid())
   name      String
-  admin     User     @relation(fields: [adminId], references: [id])
-  adminId   String   @unique
-  stripe    Stripe   @relation(fields: [stripeId], references: [id])
-  stripeId  String   @unique
+  admin     User       @relation(fields: [adminId], references: [id])
+  adminId   String     @unique
+  stripe    Stripe     @relation(fields: [stripeId], references: [id])
+  stripeId  String     @unique
   agents    Agent[]
   places    Place[]
   tasks     Task[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  shipments Shipment[]
+  vehicles  Vehicle[]
+  plans     Plan[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 }
 
 model Stripe {
@@ -95,6 +98,7 @@ model Place {
   organization   Organization @relation(fields: [organizationId], references: [id])
   organizationId String
   stops          Stop[]
+  shipments      Shipment[]
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
 }
@@ -123,4 +127,43 @@ model Stop {
   arrivedAt DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+}
+
+model Vehicle {
+  id             String       @id @unique @default(uuid())
+  name           String?
+  capacities     Json?
+  plans          Plan[]
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model Shipment {
+  id             String       @id @unique @default(uuid())
+  size           Json?
+  duration       Int?
+  windows        Json
+  plans          Plan[]
+  place          Place        @relation(fields: [placeId], references: [id])
+  placeId        String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model Plan {
+  id             String       @id @unique @default(uuid())
+  startAt        DateTime
+  endAt          DateTime
+  breaks         Json?
+  vehicles       Vehicle[]
+  shipments      Shipment[]
+  result         Json
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 }

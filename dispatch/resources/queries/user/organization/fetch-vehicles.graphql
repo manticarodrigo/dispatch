@@ -1,0 +1,11 @@
+query OrganizationVehicles {
+  user {
+    organization {
+      vehicles {
+        id
+        name
+        capacities
+      }
+    }
+  }
+}

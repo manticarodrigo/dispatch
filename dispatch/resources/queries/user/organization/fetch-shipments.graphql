@@ -1,0 +1,21 @@
+query OrganizationShipments {
+  user {
+    organization {
+      shipments {
+        id
+        size
+        duration
+        windows
+        place {
+          id
+          name
+          phone
+          email
+          description
+          lat
+          lng
+        }
+      }
+    }
+  }
+}

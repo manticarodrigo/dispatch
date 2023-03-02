@@ -1,0 +1,18 @@
+mutation CreateShipment(
+  $placeId: ID!
+  $size: JSON
+  $duration: Int
+  $windows: JSON
+) {
+  createShipment(
+    placeId: $placeId
+    size: $size
+    duration: $duration
+    windows: $windows
+  ) {
+    id
+    size
+    duration
+    windows
+  }
+}

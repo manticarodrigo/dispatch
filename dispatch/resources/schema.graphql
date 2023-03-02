@@ -22,6 +22,13 @@ type Mutation {
   ): Place!
   createTask(agentId: ID!, startAt: Date!, placeIds: [ID]!, route: JSON!): Task!
   createArrival(stopId: ID!, note: String): Stop
+  createShipment(
+    placeId: ID!
+    size: JSON
+    duration: Int
+    windows: JSON
+  ): Shipment
+  createVehicle(name: String!, capacities: JSON): Vehicle
   detachPaymentMethod(paymentMethodId: ID!): Boolean
 }
 
@@ -44,6 +51,8 @@ type Organization {
   tasks(filters: TaskFilters): [Task]
   task(taskId: ID!): Task
   stop(stopId: ID!): Stop
+  shipments: [Shipment]
+  vehicles: [Vehicle]
 }
 
 type Agent {
@@ -116,4 +125,18 @@ enum TaskStatus {
 type Stripe {
   setupIntent: JSON
   paymentMethods: JSON
+}
+
+type Shipment {
+  id: ID!
+  place: Place!
+  size: JSON
+  duration: Int
+  windows: JSON
+}
+
+type Vehicle {
+  id: ID!
+  name: String!
+  capacities: JSON
 }
