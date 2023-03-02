@@ -6,7 +6,8 @@
             [ui.views.organization.agent.core :as agent]
             [ui.views.organization.place.core :as place]
             [ui.views.organization.stop.core :as stop]
-            [ui.views.organization.plan.core :as plan]))
+            [ui.views.organization.plan.core :as plan]
+            [ui.views.organization.shipment.core :as shipment]))
 
 (def route {:path "organization"
             :element [router/auth-route [router/outlet]]
@@ -23,6 +24,8 @@
                        {:path "stops/:stop" :element [stop/detail-view]}
                        {:path "plans" :element [plan/list-view]}
                        {:path "plans/create" :element [plan/create-view]}
+                       {:path "shipments" :element [shipment/list-view]}
+                       {:path "shipments/create" :element [shipment/create-view]}
                        (when
                         (= platform "web")
                          {:path "subscription/payment" :element [subscription/payment-view]})]})

@@ -24,6 +24,8 @@
                    :create {:title "Create place"}}
            :plan {:list {:title "Plans"}
                   :create {:title "Create plan"}}
+           :shipment {:list {:title "Shipments"}
+                      :create {:title "Create shipment"}}
            :subscription {:title "Manage subscription"
                           :payment {:title "Payments"
                                     :subtitle "Manage your payment methods."
@@ -110,6 +112,8 @@
                    :create {:title "Crear lugar"}}
            :plan {:list {:title "Planes"}
                   :create {:title "Crear plan"}}
+           :shipment {:list {:title "Envíos"}
+                      :create {:title "Crear envío"}}
            :not-found "Página no encontrada"
            :subscription {:title "Administrar suscripción"
                           :payment {:title "Pagos"
