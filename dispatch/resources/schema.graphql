@@ -9,9 +9,9 @@ type Query {
 type Mutation {
   register(email: String!, organization: String!): String
   login(email: String, phone: String): String
-  loginConfirm(code: Int!): String!
-  createAgent(name: String!, phone: String!): Agent!
-  createLocation(position: LocationPosition!, createdAt: Date): Location!
+  loginConfirm(code: Int!): String
+  createAgent(name: String!, phone: String!): Agent
+  createLocation(position: LocationPosition!, createdAt: Date): Location
   createPlace(
     name: String!
     phone: String
@@ -19,8 +19,8 @@ type Mutation {
     description: String!
     lat: Float!
     lng: Float!
-  ): Place!
-  createTask(agentId: ID!, startAt: Date!, placeIds: [ID]!, route: JSON!): Task!
+  ): Place
+  createTask(agentId: ID!, startAt: Date!, placeIds: [ID]!, route: JSON!): Task
   createArrival(stopId: ID!, note: String): Stop
   createShipment(
     placeId: ID!
@@ -29,6 +29,14 @@ type Mutation {
     windows: JSON
   ): Shipment
   createVehicle(name: String!, capacities: JSON): Vehicle
+  createPlan(
+    depotId: ID
+    startAt: Date
+    endAt: Date
+    breaks: JSON
+    vehicleIds: [ID]!
+    shipmentIds: [ID]!
+  ): Plan
   detachPaymentMethod(paymentMethodId: ID!): Boolean
 }
 
@@ -53,6 +61,7 @@ type Organization {
   stop(stopId: ID!): Stop
   shipments: [Shipment]
   vehicles: [Vehicle]
+  plans: [Plan]
 }
 
 type Agent {
@@ -139,4 +148,14 @@ type Vehicle {
   id: ID!
   name: String!
   capacities: JSON
+}
+
+type Plan {
+  id: ID!
+  depot: Place
+  startAt: Date!
+  endAt: Date!
+  breaks: JSON
+  vehicle: Vehicle!
+  shipments: [Shipment]!
 }

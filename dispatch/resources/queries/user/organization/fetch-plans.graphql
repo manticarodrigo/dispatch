@@ -1,0 +1,38 @@
+query OrganizationPlans {
+  user {
+    organization {
+      plans {
+        id
+        startAt
+        endAt
+        breaks
+        depot {
+          id
+          description
+          lat
+          lng
+        }
+        vehicles {
+          id
+          name
+          capacities
+        }
+        shipments {
+          id
+          size
+          duration
+          windows
+          place {
+            id
+            name
+            phone
+            email
+            description
+            lat
+            lng
+          }
+        }
+      }
+    }
+  }
+}

@@ -17,9 +17,7 @@
           options (->js {:headers
                          {:Content-Type "application/json"
                           :Authorization (str "Bearer " token)}})]
-    (-> (.post axios url payload options)
-        (.then (fn [response]
-                 (-> response .-data))))))
+    (.post axios url payload options)))
 
 (defn transform-shipments [shipments]
   (map (fn [{:keys [size windows duration latitude longitude]}]

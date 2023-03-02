@@ -4,10 +4,21 @@
             [shadow.resource :refer (inline)]
             [cljs-bean.core :refer (->clj ->js)]))
 
+(defn military-time-to-minutes [military-time]
+  (let [time (if (= (count military-time) 3) (str "0" military-time) military-time)
+        hours (-> time
+                  (subs 0 2)
+                  (js/parseInt))
+        minutes (-> time
+                    (subs 2)
+                    (js/parseInt))]
+    (+ (* hours 60) minutes)))
+
 (defn get-date [military-time]
   (-> (js/Date.)
       (d/startOfDay)
-      (d/addHours (-> military-time js/parseInt (/ 100)))))
+      (d/addDays 1)
+      (d/addMinutes (military-time-to-minutes military-time))))
 
 (defn scale-amount [amount factor]
   (-> amount js/parseFloat (* factor) js/parseInt))
@@ -81,16 +92,27 @@
                         :weight (scale-amount maxWeight 1000)}}))))
 
 (def depot
-  (-> (inline "samples/depot.csv")
-      (parse (->js {:columns
-                    ["reference"
-                     "description"
-                     "address"
-                     "startTime"
-                     "endTime"
-                     "waitDuration"
-                     "latitude"
-                     "longitude"]
-                    :from 2}))
-      first
-      ->clj))
+  (->>
+   (parse
+    (inline "samples/depot.csv")
+    (->js {:columns
+           ["reference"
+            "description"
+            "address"
+            "startTime"
+            "endTime"
+            "waitDuration"
+            "latitude"
+            "longitude"]
+           :from 2}))
+   ->clj
+   (map
+    (fn [{:keys [description address startTime endTime latitude longitude]}]
+      {:place {:name description
+               :description address
+               :lat (js/parseFloat latitude)
+               :lng (js/parseFloat longitude)}
+       :startAt (-> startTime get-date .toISOString)
+       :endAt (-> endTime get-date .toISOString)
+       :breaks [(get-window "1200" "1230")]}))
+   first))

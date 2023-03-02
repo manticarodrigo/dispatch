@@ -17,6 +17,7 @@
             [api.resolvers.stop :as stop]
             [api.resolvers.shipment :as shipment]
             [api.resolvers.vehicle :as vehicle]
+            [api.resolvers.plan :as plan]
             [api.resolvers.stripe :as stripe]))
 
 (def date-scalar
@@ -44,6 +45,7 @@
                  :createArrival stop/create-arrival
                  :createShipment shipment/create-shipment
                  :createVehicle vehicle/create-vehicle
+                 :createPlan plan/create-plan
                  :detachPaymentMethod stripe/detach-payment-method}
                 :Query
                 {:user #()
@@ -61,7 +63,8 @@
                  :task task/fetch-organization-task
                  :stop stop/fetch-organization-stop
                  :shipments shipment/fetch-organization-shipments
-                 :vehicles vehicle/fetch-organization-vehicles}
+                 :vehicles vehicle/fetch-organization-vehicles
+                 :plans plan/fetch-organization-plans}
                 :Agent
                 {:places place/fetch-agent-places
                  :place place/fetch-agent-place

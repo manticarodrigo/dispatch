@@ -6,8 +6,7 @@
    [promesa.core :as p]
    [cljs-bean.core :refer (->js)]
    [api.config :as config]
-   [api.lib.apollo :as apollo]
-   [api.lib.google.optimization]))
+   [api.lib.apollo :as apollo]))
 
 (def dev? (= config/STAGE "local"))
 

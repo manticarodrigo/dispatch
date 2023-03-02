@@ -101,6 +101,7 @@ model Place {
   shipments      Shipment[]
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
+  plans          Plan[]
 }
 
 model Task {
@@ -161,7 +162,9 @@ model Plan {
   breaks         Json?
   vehicles       Vehicle[]
   shipments      Shipment[]
-  result         Json
+  depot          Place?       @relation(fields: [depotId], references: [id])
+  depotId        String?
+  result         Json?
   organization   Organization @relation(fields: [organizationId], references: [id])
   organizationId String
   createdAt      DateTime     @default(now())

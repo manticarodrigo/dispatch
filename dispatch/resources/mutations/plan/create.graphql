@@ -1,0 +1,22 @@
+mutation CreatePlan(
+  $depotId: ID
+  $startAt: Date
+  $endAt: Date
+  $breaks: JSON
+  $vehicleIds: [ID]!
+  $shipmentIds: [ID]!
+) {
+  createPlan(
+    depotId: $depotId
+    startAt: $startAt
+    endAt: $endAt
+    breaks: $breaks
+    vehicleIds: $vehicleIds
+    shipmentIds: $shipmentIds
+  ) {
+    id
+    startAt
+    endAt
+    breaks
+  }
+}

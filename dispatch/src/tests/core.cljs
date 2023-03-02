@@ -6,7 +6,7 @@
             [common.utils.promise :refer (each)]
             [ui.utils.error :refer (tr-error)]
             [ui.utils.i18n :refer (tr)]
-            [tests.fixtures.tour :refer (shipments vehicles)]
+            [tests.fixtures.tour :refer (depot shipments vehicles)]
             [tests.util.ui :as ui :refer (with-mounted-component test-app)]
             [tests.util.location :refer (nearby generate-polyline)]
             [tests.user :as user]
@@ -16,6 +16,7 @@
             [tests.task :as task]
             [tests.stop :as stop]
             [tests.shipment :as shipment]
+            [tests.plan :as plan]
             [tests.vehicle :as vehicle]))
 
 (defmethod t/report [:cljs.test/default :begin-test-var] [m]
@@ -282,7 +283,6 @@
                    (.then #(testing "ui presents agent names" (is (every? some? %))))
                    (.then done)))))))
 
-
 (deftest fetch-tasks-for-agent
   (async done
          (p/let [agents-mock (agent/fetch-organization-agents)
@@ -341,7 +341,24 @@
 (deftest fetch-demo-vehicles
   (async done
          (p/let [fetch-mock (vehicle/fetch-organization-vehicles)]
-           (js/console.log (-> fetch-mock :result :data :user :organization :vehicles clj->js js/JSON.stringify))
            (testing "api returns data"
              (is (-> fetch-mock :result :data :user :organization :vehicles first :id))
+             (done)))))
+
+(deftest create-demo-plan
+  (async done
+         (p/let [shipments-mock (shipment/fetch-organization-shipments)
+                 vehicles-mock (vehicle/fetch-organization-vehicles)
+                 shipments (-> shipments-mock :result :data :user :organization :shipments)
+                 vehicles (-> vehicles-mock :result :data :user :organization :vehicles)
+                 depot-place (place/create-place (:place depot))
+                 plan-mock (plan/create-plan
+                            {:depotId (-> depot-place :result :data :createPlace :id)
+                             :startAt (-> depot :startAt)
+                             :endAt (-> depot :endAt)
+                             :breaks (-> depot :breaks)
+                             :shipmentIds (mapv :id shipments)
+                             :vehicleIds (mapv :id vehicles)})]
+           (testing "api returns data"
+             (is (-> plan-mock :result :data :createPlan))
              (done)))))
