@@ -22,6 +22,8 @@
                    :create {:title "Create agent"}}
            :place {:list {:title "Places"}
                    :create {:title "Create place"}}
+           :plan {:list {:title "Plans"}
+                  :create {:title "Create plan"}}
            :subscription {:title "Manage subscription"
                           :payment {:title "Payments"
                                     :subtitle "Manage your payment methods."
@@ -106,6 +108,8 @@
                    :create {:title "Crear agente"}}
            :place {:list {:title "Lugares"}
                    :create {:title "Crear lugar"}}
+           :plan {:list {:title "Planes"}
+                  :create {:title "Crear plan"}}
            :not-found "Página no encontrada"
            :subscription {:title "Administrar suscripción"
                           :payment {:title "Pagos"

@@ -8,6 +8,7 @@ query OrganizationPlans {
         breaks
         depot {
           id
+          name
           description
           lat
           lng

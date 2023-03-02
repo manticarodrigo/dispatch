@@ -156,6 +156,6 @@ type Plan {
   startAt: Date!
   endAt: Date!
   breaks: JSON
-  vehicle: Vehicle!
+  vehicles: [Vehicle]!
   shipments: [Shipment]!
 }

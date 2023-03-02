@@ -29,10 +29,12 @@
   {:before ui/before
    :after ui/after})
 
+(def org-email "rodrigo@ambito.app")
+
 (deftest register-success
   (async done
          (p/let [create-mock (user/register
-                              {:email "test@test.test"
+                              {:email org-email
                                :organization "Test LLC"})]
 
            (testing "api returns data"
@@ -48,7 +50,7 @@
 (deftest register-conflict
   (async done
          (p/let [create-mock (user/register
-                              {:email "test@test.test"
+                              {:email org-email
                                :organization "Test LLC"})
                  error (-> create-mock :result :errors first)
                  anom (-> error :extensions :anom)]
@@ -68,7 +70,7 @@
 
 (deftest login-success
   (async done
-         (p/let [create-mock (user/login {:email "test@test.test"})]
+         (p/let [create-mock (user/login {:email org-email})]
 
            (testing "api returns data"
              (is (-> create-mock :result :data :login)))
@@ -99,7 +101,7 @@
 
 (deftest login-confirm
   (async done
-         (p/let [login-mock (user/login {:email "test@test.test"})
+         (p/let [login-mock (user/login {:email org-email})
                  confirm-mock (user/login-confirm {:code (-> login-mock :result :data :login js/parseInt)})]
 
            (testing "api returns data"

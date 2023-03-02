@@ -17,9 +17,13 @@
              :organization {:connect {:id organization-id}}}})))
 
 (def plans-include
-  {:plans {:depot true
-           :vehicles true
-           :shipments true}})
+  {:plans
+   {:include
+    {:depot true
+     :vehicles true
+     :shipments
+     {:include
+      {:place true}}}}})
 
 (defn fetch-organization-plans [^js context]
   (p/let [^js user (user/active-user context {:include
