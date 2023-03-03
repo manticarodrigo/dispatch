@@ -26,6 +26,8 @@
                   :create {:title "Create plan"}}
            :shipment {:list {:title "Shipments"}
                       :create {:title "Create shipment"}}
+           :vehicle {:list {:title "Vehicles"}
+                     :create {:title "Create vehicle"}}
            :subscription {:title "Manage subscription"
                           :payment {:title "Payments"
                                     :subtitle "Manage your payment methods."
@@ -114,6 +116,8 @@
                   :create {:title "Crear plan"}}
            :shipment {:list {:title "Envíos"}
                       :create {:title "Crear envío"}}
+           :vehicle {:list {:title "Vehículos"}
+                     :create {:title "Crear vehículo"}}
            :not-found "Página no encontrada"
            :subscription {:title "Administrar suscripción"
                           :payment {:title "Pagos"
