@@ -4,4 +4,5 @@
 
 (defn back-button []
   (let [navigate (use-navigate)]
-    [:button {:on-click #(navigate -1)} [:> ArrowLeftIcon]]))
+    [:button {:on-click #(navigate -1)}
+     [:> ArrowLeftIcon {:class "w-4 h-4"}]]))

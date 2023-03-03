@@ -17,13 +17,13 @@
 (defn stop-list [{:keys [task loading]}]
   (let [{:keys [stops route startAt]} task
         stops-with-duration (add-cumulative-durations stops (:legs route))]
-    [:<>
+    [:div {:class "overflow-y-auto"}
      [:ol
       (doall
        (for [{:keys [id place arrivedAt cumulative-duration]} stops-with-duration]
          (let [{:keys [name description]} place]
            ^{:key id}
-           [:li {:class "mb-2"}
+           [:li
             [link-card {:to (str "../stops/" id)
                         :icon (if arrivedAt CheckIcon MinusIcon)
                         :title name

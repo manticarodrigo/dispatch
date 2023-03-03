@@ -6,7 +6,7 @@
             [ui.lib.apollo :refer (gql use-query)]
             [ui.lib.router :refer (use-params use-search-params)]
             [ui.utils.date :as d]
-            [ui.utils.css :refer (padding)]
+            [ui.components.layout.map :refer (map-layout)]
             [ui.components.title :refer (title)]
             [ui.components.filters :refer (filters)]
             [ui.components.lists.task :refer (task-list)]))
@@ -33,7 +33,7 @@
        #())
      #js[tasks])
 
-    [:div {:class padding}
+    [map-layout
      [title {:title name :subtitle description}]
      [filters {:date (-> date parse-date d/startOfDay)
                :on-date-change #(set-search-params

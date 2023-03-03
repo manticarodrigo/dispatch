@@ -21,7 +21,7 @@
                         box-class
                         box-padding-class
                         "outline-0 outline-none"
-                        "text-base text-neutral-100"))
+                        "text-sm text-neutral-100"))
 
 (def button-class (class-names
                    base-button-class

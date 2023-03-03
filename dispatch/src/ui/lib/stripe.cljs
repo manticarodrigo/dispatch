@@ -6,12 +6,15 @@
             [ui.subs :refer (listen)]
             [ui.config :as config]))
 
-(def stripe-promise
-  (loadStripe config/STRIPE_PUBLIC_KEY))
+(def !stripe-promise (atom nil))
+
+(defn get-stripe-promise []
+  (or @!stripe-promise
+      (reset! !stripe-promise (loadStripe config/STRIPE_PUBLIC_KEY))))
 
 (defn stripe-elements [{:keys [secret]} & children]
   (let [language (listen [:language])]
-    [:> Elements {:stripe stripe-promise
+    [:> Elements {:stripe (get-stripe-promise)
                   :options {:clientSecret secret
                             :locale language
                             :appearance

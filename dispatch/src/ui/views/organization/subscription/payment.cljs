@@ -9,8 +9,8 @@
             [ui.lib.router :refer (use-search-params)]
             [ui.lib.stripe :refer (stripe-elements use-setup-intent-status)]
             [ui.utils.date :as d]
-            [ui.utils.css :refer (padding)]
             [ui.utils.i18n :refer (tr)]
+            [ui.components.layout.map :refer (map-layout)]
             [ui.components.title :refer (title)]
             [ui.components.callout :refer (callout)]
             [ui.components.article :refer (article)]
@@ -85,7 +85,7 @@
         secret (:setup_intent_client_secret search-params)
         {:keys [data loading]} (use-query FETCH_PAYMENT_METHODS {})
         payment-methods (some-> data :stripe :paymentMethods :data)]
-    [:div {:class padding}
+    [map-layout
      [title {:title (tr [:view.subscription.payment/title])
              :subtitle (tr [:view.subscription.payment/subtitle])}]
      (when secret

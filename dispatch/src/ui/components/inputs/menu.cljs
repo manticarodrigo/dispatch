@@ -1,6 +1,7 @@
 (ns ui.components.inputs.menu
   (:require [headlessui-reagent.core :as ui]
             [ui.lib.router :refer (link)]
+            [ui.lib.floating :refer (use-floating)]
             [ui.utils.string :refer (class-names)]
             [ui.components.inputs.button :refer (button-class)]))
 
@@ -34,16 +35,23 @@
              class-map :class-map}
             & children]
   (let [{button-class! :button!
-         item-class :item} class-map]
+         item-class :item} class-map
+        {:keys [x y reference floating strategy]} (use-floating)]
     [ui/menu {:as "div" :class (class-names "relative inline-flex")}
-     [ui/menu-button {:class (or button-class! button-class)} label]
-     [ui/menu-items {:as "div"
-                     :class (class-names
-                             menu-class
-                             "z-10 absolute right-0 top-[100%] origin-top-right"
-                             "mt-2"
-                             "divide-y divide-neutral-700"
-                             "overflow-y-auto")}
+     [ui/menu-button
+      {:ref reference
+       :class (or button-class! button-class)} label]
+     [ui/menu-items
+      {:as "div"
+       :ref floating
+       :style {:position strategy
+               :top (or y 0)
+               :left (or x 0)}
+       :class (class-names
+               menu-class
+               "z-10"
+               "divide-y divide-neutral-700"
+               "overflow-y-auto")}
       [:<>
        (for [[idx component] (map-indexed vector children)]
          ^{:key idx}

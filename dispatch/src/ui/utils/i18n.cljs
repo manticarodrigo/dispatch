@@ -15,7 +15,9 @@
            :login {:title "Login"
                    :register-link {:title "Need an account?"
                                    :link "Register here."}}
-           :confirm {:title "Confirm"}
+           :login-confirm {:title "Confirm login"
+                           :return-link {:title "Didn't receive a code?"
+                                         :link "Return to login."}}
            :task {:list {:title "Tasks"}
                   :create {:title "Create task"}}
            :agent {:list {:title "Agents"}
@@ -51,7 +53,7 @@
             :add-stop "Add stop"
             :date "Select a date"
             :language "Select a language"
-            :search "Type to search"
+            :search "Search..."
             :status "Select a status"
             :location-search "Search location"
             :location-get "Get location"
@@ -105,7 +107,9 @@
            :login {:title "Ingresar"
                    :register-link {:title "¿Necesitas una cuenta?"
                                    :link "Registrar aquí."}}
-           :confirm {:title "Confirmar"}
+           :login-confirm {:title "Confirmar ingreso"
+                           :return-link {:title "No recibiste el código?"
+                                         :link "Regresar a ingresar."}}
            :task {:list {:title "Tareas"}
                   :create {:title "Crear tarea"}}
            :agent {:list {:title "Agentes"}
@@ -142,7 +146,7 @@
             :add-stop "Agregar parada"
             :date "Selecciona una fecha"
             :language "Selecciona un idioma"
-            :search "Escribe para buscar"
+            :search "Buscar..."
             :status "Selecciona un estado"
             :location-search "Busca ubicación"
             :location-get "Obtén ubicación"

@@ -7,13 +7,13 @@
 
 
 (defn plan-list [{:keys [plans loading]}]
-  [:<>
+  [:div {:class "overflow-y-auto"}
    [:ul
     (doall
      (for [{:keys [id startAt endAt depot vehicles shipments]} plans]
        (let [active? (d/isAfter startAt (js/Date.))]
          ^{:key id}
-         [:li {:class "mb-2"}
+         [:li
           [link-card {:to id
                       :icon PlanIcon
                       :title (str (d/format startAt "dd/MM hh:mmaaa") " - " (d/format endAt "dd/MM hh:mmaaa"))

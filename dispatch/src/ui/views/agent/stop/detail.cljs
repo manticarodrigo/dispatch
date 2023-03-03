@@ -4,7 +4,7 @@
             [re-frame.core :refer (dispatch)]
             [ui.lib.apollo :refer (gql use-query)]
             [ui.lib.router :refer (use-params)]
-            [ui.utils.css :refer (padding)]
+            [ui.components.layout.map :refer (map-layout)]
             [ui.components.title :refer (title)]
             [ui.components.forms.stop :refer (stop-form)]))
 
@@ -26,6 +26,6 @@
        #())
      #js[name lat lng])
 
-    [:div {:class padding}
+    [map-layout
      [title {:title name :subtitle description}]
      [stop-form]]))

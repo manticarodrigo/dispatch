@@ -5,7 +5,7 @@
             [ui.lib.apollo :refer (gql use-query)]
             [ui.lib.router :refer (use-params)]
             [ui.utils.i18n :refer (tr)]
-            [ui.utils.css :refer (padding)]
+            [ui.components.layout.map :refer (map-layout)]
             [ui.components.title :refer (title)]
             [ui.components.lists.stop :refer (stop-list)]))
 
@@ -32,6 +32,6 @@
        #())
      #js[route stops])
 
-    [:div {:class padding}
+    [map-layout
      [title {:title name :subtitle (tr [:status/start-at] [startAt])}]
      [stop-list {:task task :loading loading}]]))

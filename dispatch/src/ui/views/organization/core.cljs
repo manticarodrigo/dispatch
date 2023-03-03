@@ -1,6 +1,7 @@
 (ns ui.views.organization.core
   (:require [ui.lib.router :as router]
             [ui.lib.platform :refer (platform)]
+            [ui.views.organization.layout :refer (layout)]
             [ui.views.organization.subscription.core :as subscription]
             [ui.views.organization.task.core :as task]
             [ui.views.organization.agent.core :as agent]
@@ -10,9 +11,9 @@
             [ui.views.organization.vehicle.core :as vehicle]
             [ui.views.organization.plan.core :as plan]))
 
-(def route {:path "organization"
-            :element [router/auth-route [router/outlet]]
-            :children [{:index true :element [router/navigate "tasks"]}
+(def route {:path "organization/*"
+            :element [router/auth-route [layout [router/outlet]]]
+            :children [{:index true :element [router/navigate "agents"]}
                        {:path "tasks" :element [task/list-view]}
                        {:path "tasks/:task" :element [task/detail-view]}
                        {:path "tasks/create" :element [task/create-view]}

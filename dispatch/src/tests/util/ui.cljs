@@ -81,5 +81,4 @@
 (defn test-app [{:keys [route mocks]}]
   [memory-router route
    [apollo-mocked-provider (-> (map #(update-in % [:request :query] gql) mocks) ->js)
-    [main
-     [routes]]]])
+    [routes]]])

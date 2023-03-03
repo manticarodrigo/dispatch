@@ -14,3 +14,6 @@
                                  "en"))))
 (rf/reg-sub :device #(some-> % :device))
 (rf/reg-sub :map #(some-> % :map))
+
+(rf/reg-sub :layout/nav-open #(some-> % :layout :nav-open))
+(rf/reg-sub :layout/sidebar-open #(some-> % :layout :sidebar-open))

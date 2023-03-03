@@ -7,14 +7,14 @@
 
 
 (defn agent-list [{:keys [agents loading]}]
-  [:<>
+  [:div {:class "overflow-y-auto"}
    [:ul
     (doall
      (for [{:keys [id name location]} agents]
        (let [{:keys [createdAt]} location
              active? (and createdAt (d/isAfter createdAt (d/subHours (js/Date.) 26)))]
          ^{:key id}
-         [:li {:class "mb-2"}
+         [:li
           [link-card {:to id
                       :icon UserIcon
                       :title name

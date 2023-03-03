@@ -2,8 +2,8 @@
   (:require [react]
             [shadow.resource :refer (inline)]
             [ui.lib.apollo :refer (gql use-query)]
-            [ui.utils.css :refer (padding)]
             [ui.utils.i18n :refer (tr)]
+            [ui.components.layout.map :refer (map-layout)]
             [ui.components.title :refer (title)]
             [ui.components.lists.shipment :refer (shipment-list)]))
 
@@ -12,7 +12,7 @@
 (defn view []
   (let [{:keys [data loading]} (use-query FETCH_ORGANIZATION_SHIPMENTS {})
         {:keys [shipments]} (some-> data :user :organization)]
-    [:div {:class padding}
+    [map-layout
      [title {:title (tr [:view.shipment.list/title])
              :create-link "create"}]
      [shipment-list {:shipments shipments :loading loading}]]))

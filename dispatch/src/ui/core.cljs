@@ -12,7 +12,6 @@
    [ui.lib.platform :refer (platform)]
    [ui.components.loaders.device :rename {loader device-loader}]
    [ui.components.listener :refer (listener)]
-   [ui.components.main :refer (main)]
    [ui.components.routes :refer (routes)]))
 
 (when (not= platform "web")
@@ -26,8 +25,7 @@
    [apollo-provider
     [device-loader
      [listener
-      [main
-       [routes]]]]]])
+      [routes]]]]])
 
 (defonce !root (atom nil))
 

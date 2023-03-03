@@ -4,7 +4,12 @@
 
 (def label-class (class-names "block mb-2 text-sm text-neutral-50"))
 
-(def input-class (class-names button-class "appearance-none w-full text-left font-light placeholder:text-base placeholder:text-neutral-400"))
+(def input-class (class-names
+                  button-class
+                  "appearance-none"
+                  "w-full"
+                  "text-left text-sm font-light"
+                  "placeholder:text-base placeholder:text-neutral-400"))
 
 (defn input [{type :type
               aria-label :aria-label

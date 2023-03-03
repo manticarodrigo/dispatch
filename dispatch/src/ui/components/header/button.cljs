@@ -9,10 +9,13 @@
                   "organization/tasks"
                   "organization/agents"
                   "organization/places"
+                  "organization/vehicles"
+                  "organization/shipments"
+                  "organization/plans"
                   "agent/tasks"
                   "agent/places"])
 
-(def index-routes (mapv (fn [path] {:path path :element [dispatch-icon]}) index-paths))
+(def index-routes (mapv (fn [path] {:path path :element [dispatch-icon {:class "w-4 h-4"}]}) index-paths))
 
 (def routes (conj index-routes {:path "*" :element [back-button]}))
 

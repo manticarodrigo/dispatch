@@ -1,12 +1,15 @@
 (ns ui.components.link-card
   (:require [react-feather :rename {ChevronRight ChevronRightIcon}]
             [ui.lib.router :refer (link)]
-            [ui.utils.string :refer (class-names)]
-            [ui.components.inputs.button :refer (button-class)]))
+            [ui.utils.string :refer (class-names)]))
 
 (defn link-card [{:keys [to icon title subtitle detail]}]
   [link {:to to
-         :class (class-names "block" button-class)}
+         :class (class-names
+                 "block"
+                 "border-b border-neutral-800"
+                 "pl-4 pr-3 py-1"
+                 "hover:bg-neutral-800 focus:bg-neutral-800 active:bg-neutral-800")}
    [:div {:class "flex justify-between w-full text-left"}
     [:div {:class "flex items-center"}
      [:div {:class "mr-2"} [:> icon {:class "w-4 h-4"}]]]

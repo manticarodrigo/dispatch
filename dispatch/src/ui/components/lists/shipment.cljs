@@ -7,14 +7,14 @@
 
 
 (defn shipment-list [{:keys [shipments loading]}]
-  [:<>
+  [:div {:class "overflow-y-auto"}
    [:ul
     (doall
      (for [{:keys [id place size windows]} shipments]
        (let [{:keys [name]} place
              active? (d/isAfter (-> windows first :start js/Date.) (js/Date.))]
          ^{:key id}
-         [:li {:class "mb-2"}
+         [:li
           [link-card {:to id
                       :icon ShipmentIcon
                       :title (str (tr [:misc/shipment-for "Shipment for"]) " " name)

@@ -3,6 +3,7 @@
             [headlessui-reagent.core :as ui]
             [react-feather :rename {ChevronDown ChevronDownIcon}]
             [clojure.string :as s]
+            [ui.lib.floating :refer (use-floating)]
             [ui.utils.i18n :refer (tr)]
             [ui.utils.string :refer (class-names)]
             [ui.components.inputs.input :refer (label-class input-class)]
@@ -24,7 +25,8 @@
                  on-select :on-select
                  :or {option-to-value #(:value %)
                       option-to-label #(:label %)}}]
-  (let [[query set-query] (react/useState "")
+  (let [{:keys [x y reference floating strategy]} (use-floating)
+        [query set-query] (react/useState "")
         filtered-options (filter #(-> %
                                       option-to-label
                                       s/lower-case
@@ -54,15 +56,19 @@
                   (when required
                     "after:content-['*'] after:ml-0.5 after:text-red-500")))}
        (or aria-label label)]
-      [ui/combobox-button {:as "div" :class "relative"}
-       [ui/combobox-input {:placeholder placeholder
-                           :required required
-                           :class input-class
-                           :style {:padding-right "3rem"}
-                           :display-value (fn [v]
-                                            (option-to-label
-                                             (first (filter #(= v (option-to-value %)) options))))
-                           :on-change on-query}]
+      [ui/combobox-button
+       {:as "div"
+        :ref reference
+        :class "relative"}
+       [ui/combobox-input
+        {:placeholder placeholder
+         :required required
+         :class input-class
+         :style {:padding-right "3rem"}
+         :display-value (fn [v]
+                          (option-to-label
+                           (first (filter #(= v (option-to-value %)) options))))
+         :on-change on-query}]
        [:div {:class "cursor-text absolute top-[50%] translate-y-[-50%] right-0 pr-2 lg:pr-4"}
         [:> ChevronDownIcon {:class "w-4 h-4"}]]]]
 
@@ -70,11 +76,15 @@
       {:leave "transition ease-in duration-100"
        :leave-from "opacity-100"
        :leave-to "opacity-0"}
-      [ui/combobox-options {:class (class-names
-                                    menu-class
-                                    "z-10"
-                                    "absolute mt-2"
-                                    "max-h-60 w-full")}
+      [ui/combobox-options
+       {:ref floating
+        :style {:position strategy
+                :top (or y 0)
+                :left (or x 0)}
+        :class (class-names
+                menu-class
+                "z-10"
+                "max-h-60 w-full")}
        [:<>
         (when (= (count filtered-options) 0)
           [:div {:class menu-item-class}

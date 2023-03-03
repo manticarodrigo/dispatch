@@ -1,8 +1,8 @@
 (ns ui.views.organization.plan.create
-  (:require [ui.utils.css :refer (padding)]
-            [ui.utils.i18n :refer (tr)]
+  (:require [ui.utils.i18n :refer (tr)]
+            [ui.components.layout.map :refer (map-layout)]
             [ui.components.title :refer (title)]))
 
 (defn view []
-  [:div {:class padding}
+  [map-layout
    [title {:title (tr [:view.plan.create/title])}]])

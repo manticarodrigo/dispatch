@@ -19,7 +19,7 @@
      :on-change on-change}
     [:> Label {:class (when sr-label "sr-only")} (or sr-label label)]
 
-    [:div {:class (class-names options-class "flex justify-between")}
+    [:div {:class (class-names options-class "rounded flex justify-between bg-neutral-800")}
      (doall
       (for [[idx option] (map-indexed vector options)]
         (let [first? (= idx 0)
@@ -30,17 +30,14 @@
             :class (fn [props]
                      (let [{active :active checked :checked} (->clj props)]
                        (class-names
-                        "py-1 px-2"
+                        "py-0.5 px-2"
                         "cursor-pointer"
-                        "border-y border-neutral-700"
                         "w-full text-center text-sm"
-                        "transition"
-                        "hover:text-neutral-50 hover:bg-neutral-700 focus:bg-neutral-700"
-                        (when first? "rounded-l border-l")
-                        (when last? "rounded-r border-r")
+                        (when first? "rounded-l")
+                        (when last? "rounded-r")
                         (if (or checked active)
                           (class-names
                            "text-neutral-50"
-                           (when checked "border rounded border-neutral-500 bg-neutral-600 focus:bg-neutral-600"))
-                          "text-neutral-400 bg-neutral-800"))))}
+                           (when checked "rounded bg-neutral-700 focus:bg-neutral-700 shadow"))
+                          "text-neutral-400 hover:text-neutral-50"))))}
            [:> Label {:as "p"} (:label option)]])))]]])

@@ -38,3 +38,15 @@
  :map
  [trim-v]
  (assoc-key :map))
+
+(rf/reg-event-db
+ :layout/toggle-nav
+ (fn [db]
+   (assoc-in
+    db [:layout :nav-open] (not (get-in db [:layout :nav-open])))))
+
+(rf/reg-event-db
+ :layout/toggle-sidebar
+ (fn [db]
+   (assoc-in
+    db [:layout :sidebar-open] (not (get-in db [:layout :sidebar-open])))))

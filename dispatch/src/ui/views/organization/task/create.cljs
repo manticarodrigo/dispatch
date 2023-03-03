@@ -1,10 +1,10 @@
 (ns ui.views.organization.task.create
-  (:require [ui.utils.css :refer (padding)]
-            [ui.utils.i18n :refer (tr)]
+  (:require [ui.utils.i18n :refer (tr)]
+            [ui.components.layout.map :refer (map-layout)]
             [ui.components.title :refer (title)]
             [ui.components.forms.task :refer (task-form)]))
 
 (defn view []
-  [:div {:class padding}
+  [map-layout
    [title {:title (tr [:view.task.create/title])}]
    [task-form]])

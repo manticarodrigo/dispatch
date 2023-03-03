@@ -1,10 +1,10 @@
 (ns ui.views.organization.place.create
-  (:require [ui.utils.css :refer (padding)]
-            [ui.utils.i18n :refer (tr)]
+  (:require [ui.utils.i18n :refer (tr)]
+            [ui.components.layout.map :refer (map-layout)]
             [ui.components.title :refer (title)]
             [ui.components.forms.place :refer (place-form)]))
 
 (defn view []
-  [:div {:class padding}
+  [map-layout
    [title {:title (tr [:view.place.create/title])}]
    [place-form]])

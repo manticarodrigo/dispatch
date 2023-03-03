@@ -1,30 +1,23 @@
 (ns ui.components.lists.vehicle
-  (:require [react-feather :rename {Package ShipmentIcon}]
+  (:require [react-feather :rename {Truck VehicleIcon}]
             ;; [ui.utils.date :as d]
             [ui.utils.i18n :refer (tr)]
-            [ui.components.link-card :refer (link-card)]
-            [ui.components.status-detail :refer (status-detail)]))
+            [ui.components.link-card :refer (link-card)]))
 
 
 (defn vehicle-list [{:keys [vehicles loading]}]
-  [:<>
+  [:div {:class "overflow-y-auto"}
    [:ul
     (doall
      (for [{:keys [id name capacities]} vehicles]
-       (let [active? false]
-         ^{:key id}
-         [:li {:class "mb-2"}
-          [link-card {:to id
-                      :icon ShipmentIcon
-                      :title name
-                      :subtitle (str
-                                 (tr [:misc/volume "Volume "]) (:volume capacities) ", "
-                                 (tr [:misc/weight "Weight "]) (:weight capacities))
-                      :detail [status-detail
-                               {:active? active?
-                                :text (if active?
-                                        (tr [:status/active])
-                                        (tr [:status/inactive]))}]}]])))]
+       ^{:key id}
+       [:li
+        [link-card {:to id
+                    :icon VehicleIcon
+                    :title name
+                    :subtitle (str
+                               (tr [:misc/volume "Volume "]) (:volume capacities) ", "
+                               (tr [:misc/weight "Weight "]) (:weight capacities))}]]))]
    (if loading
      [:p {:class "text-center"} (tr [:misc/loading]) "..."]
      (when (empty? vehicles)

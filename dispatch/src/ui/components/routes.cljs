@@ -12,10 +12,10 @@
 (defn routes []
   (router/use-routes
    [{:index true :element [scope-loader]}
+    organization/route
+    agent/route
     {:path "register" :element [register/view]}
     {:path "login" :element [login/view]}
     {:path "login/confirm" :element [login-confirm/view]}
     {:path "logout" :element [router/remove-auth-route]}
-    organization/route
-    agent/route
     {:path "*" :element [not-found/view]}]))

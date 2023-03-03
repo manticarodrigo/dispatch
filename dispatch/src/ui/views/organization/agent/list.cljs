@@ -5,8 +5,8 @@
             [ui.lib.apollo :refer (gql use-query)]
             [ui.lib.router :refer (use-search-params)]
             [ui.utils.string :refer (filter-text)]
-            [ui.utils.css :refer (padding)]
             [ui.utils.i18n :refer (tr)]
+            [ui.components.layout.map :refer (map-layout)]
             [ui.components.title :refer (title)]
             [ui.components.filters :refer (filters)]
             [ui.components.lists.agent :refer (agent-list)]))
@@ -31,7 +31,7 @@
        #())
      #js[agents text])
 
-    [:div {:class padding}
+    [map-layout
      [title {:title (tr [:view.agent.list/title])
              :create-link "create"}]
      [filters {:search text
