@@ -43,7 +43,7 @@
            (user/with-submit-register
              {:mocks [create-mock]}
              (fn [^js component]
-               (-> (.findByText component (tr [:view.confirm/title]))
+               (-> (.findByText component (tr [:view.login-confirm/title]))
                    (.then #(testing "ui submits and redirects" (is (some? %))))
                    (.then done)))))))
 
@@ -78,7 +78,7 @@
            (user/with-submit-login
              {:mocks [create-mock]}
              (fn [^js component]
-               (-> (.findByText component (tr [:view.confirm/title]))
+               (-> (.findByText component (tr [:view.login-confirm/title]))
                    (.then #(testing "ui submits and redirects" (is (some? %))))
                    (.then done)))))))
 
