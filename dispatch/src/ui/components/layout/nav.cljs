@@ -1,7 +1,13 @@
 (ns ui.components.layout.nav
   (:require [ui.subs :refer (listen)]
             [ui.utils.string :refer (class-names)]
-            [ui.lib.router :refer (nav-link)]))
+            [ui.lib.router :refer (nav-link use-routes)]
+            [react-feather :rename {Settings SettingsIcon}]
+            [ui.components.inputs.back-button :refer (back-button)]
+            [ui.components.icons.dispatch :rename {dispatch dispatch-icon}]
+            [ui.components.inputs.menu :rename {menu menu-input}]
+            [ui.utils.i18n :refer (tr)]
+            [ui.components.inputs.language-radio-group :refer (language-radio-group)]))
 
 (defn nav-item [to label icon]
   [:li
@@ -23,19 +29,50 @@
     [:> icon {:class "w-4 h-4"}]
     [:span {:class "ml-2"} label]]])
 
-(defn nav [& children]
+(defn nav-header [{:keys [nav-items menu-items]}]
+  (let [root-paths (mapv
+                    (fn [[path]]
+                      {:path path
+                       :element [dispatch-icon {:class "w-4 h-4"}]})
+                    nav-items)
+        button (use-routes (conj root-paths {:path "*" :element [back-button]}))]
+    [:div {:class (class-names
+                   "py-4 px-4"
+                   "flex justify-between items-center"
+                   "w-full")}
+     button
+     [menu-input
+      {:label [:> SettingsIcon {:class "w-4 h-4"}]
+       :items menu-items
+       :class-map {:button! "h-full"
+                   :item "min-w-[12rem]"}}]]))
+
+(defn nav [{:keys [nav-items menu-items]} & children]
   (let [nav-open (listen [:layout/nav-open])]
-    [:nav
-     {:class
-      (class-names
-       "z-10"
-       "fixed lg:static"
-       "flex-shrink-0"
-       "border-r border-neutral-700"
-       "pt-10 lg:pt-0"
-       "w-[225px] h-full"
-       "bg-neutral-900 lg:bg-transparent"
-       "shadow-lg lg:shadow-none"
-       "transition lg:translate-x-0"
-       (if nav-open "translate-x-0" "translate-x-[-100%]"))}
+    [:div {:class "flex w-full h-full"}
+     [:nav
+      {:class
+       (class-names
+        "z-10"
+        "fixed lg:static"
+        "flex-shrink-0"
+        "border-r border-neutral-700"
+        "pt-10 lg:pt-0"
+        "w-[225px] h-full"
+        "bg-neutral-900 lg:bg-transparent"
+        "shadow-lg lg:shadow-none"
+        "transition lg:translate-x-0"
+        (if nav-open "translate-x-0" "translate-x-[-100%]"))}
+      [:div {:class "flex flex-col justify-between h-full"}
+       [:div
+        [nav-header
+         {:nav-items nav-items
+          :menu-items menu-items}]
+        [:div {:class "py-2 px-4"}
+         [:ul (doall
+               (for [[path label icon] nav-items]
+                 ^{:key path}
+                 [nav-item path (tr [label]) icon]))]]]
+       [:div {:class "py-2 px-4"}
+        [language-radio-group]]]]
      (into [:<>] children)]))
