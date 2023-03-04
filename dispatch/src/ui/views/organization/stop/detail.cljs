@@ -5,7 +5,7 @@
             [ui.lib.apollo :refer (gql use-query)]
             [ui.lib.router :refer (use-params)]
             [ui.components.layout.map :refer (map-layout)]
-            [ui.components.title :refer (title)]
+            [ui.components.layout.header :refer (header)]
             [ui.components.forms.stop :refer (stop-form)]))
 
 (def FETCH_ORGANIZATION_STOP (gql (inline "queries/user/organization/fetch-stop.graphql")))
@@ -27,5 +27,6 @@
      #js[name lat lng])
 
     [map-layout
-     [title {:title name :subtitle description}]
-     [stop-form]]))
+     [header {:title name :subtitle description}]
+     [:div {:class "p-4 overflow-y-auto"}
+      [stop-form]]]))

@@ -9,8 +9,7 @@
       (class-names
        "z-20 xl:z-auto"
        "fixed xl:static"
-       "border-r border-neutral-800"
-       "pt-12 xl:pt-0"
+       "pt-14 xl:pt-0"
        "w-full h-full"
        "bg-neutral-900 xl:bg-transparent"
        "transition xl:translate-x-0"

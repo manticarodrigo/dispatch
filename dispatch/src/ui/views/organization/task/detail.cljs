@@ -6,7 +6,7 @@
             [ui.lib.router :refer (use-params)]
             [ui.utils.i18n :refer (tr)]
             [ui.components.layout.map :refer (map-layout)]
-            [ui.components.title :refer (title)]
+            [ui.components.layout.header :refer (header)]
             [ui.components.lists.stop :refer (stop-list)]))
 
 (def FETCH_ORGANIZATION_TASK (gql (inline "queries/user/organization/fetch-task.graphql")))
@@ -33,5 +33,5 @@
      #js[route stops])
 
     [map-layout
-     [title {:title name :subtitle (tr [:status/start-at] [startAt])}]
+     [header {:title name :subtitle (tr [:status/start-at] [startAt])}]
      [stop-list {:task task :loading loading}]]))

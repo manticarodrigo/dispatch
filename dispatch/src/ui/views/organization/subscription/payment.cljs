@@ -11,7 +11,7 @@
             [ui.utils.date :as d]
             [ui.utils.i18n :refer (tr)]
             [ui.components.layout.map :refer (map-layout)]
-            [ui.components.title :refer (title)]
+            [ui.components.layout.header :refer (header)]
             [ui.components.callout :refer (callout)]
             [ui.components.article :refer (article)]
             [ui.components.modal :refer (modal)]
@@ -86,13 +86,14 @@
         {:keys [data loading]} (use-query FETCH_PAYMENT_METHODS {})
         payment-methods (some-> data :stripe :paymentMethods :data)]
     [map-layout
-     [title {:title (tr [:view.subscription.payment/title])
-             :subtitle (tr [:view.subscription.payment/subtitle])}]
-     (when secret
-       [stripe-elements {:secret secret}
-        [:div {:class "mb-4"}
-         [callout "success" [return-url-status secret]]]])
-     (if loading
-       (str (tr [:misc/loading]) "...")
-       [payment-methods-list payment-methods])
-     [setup-modal]]))
+     [header {:title (tr [:view.subscription.payment/title])
+              :subtitle (tr [:view.subscription.payment/subtitle])}]
+     [:div {:class "p-4 overflow-y-auto"}
+      (when secret
+        [stripe-elements {:secret secret}
+         [:div {:class "mb-4"}
+          [callout "success" [return-url-status secret]]]])
+      (if loading
+        (str (tr [:misc/loading]) "...")
+        [payment-methods-list payment-methods])
+      [setup-modal]]]))

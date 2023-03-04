@@ -7,7 +7,7 @@
             [ui.utils.string :refer (filter-text)]
             [ui.utils.i18n :refer (tr)]
             [ui.components.layout.map :refer (map-layout)]
-            [ui.components.title :refer (title)]
+            [ui.components.layout.header :refer (header)]
             [ui.components.filters :refer (filters)]
             [ui.components.lists.agent :refer (agent-list)]))
 
@@ -32,7 +32,7 @@
      #js[agents text])
 
     [map-layout
-     [title {:title (tr [:view.agent.list/title])
+     [header {:title (tr [:view.agent.list/title])
              :create-link "create"}]
      [filters {:search text
                :on-search-change #(set-search-params

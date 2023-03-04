@@ -14,7 +14,7 @@
    ["vehicles" :view.vehicle.list/title VehicleIcon]
    ["shipments" :view.shipment.list/title ShipmentIcon]
    ["plans" :view.plan.list/title PlanIcon]
-   ["task" :view.task.list/title TaskIcon]])
+   ["tasks" :view.task.list/title TaskIcon]])
 
 (def menu-items
   [[{:label  (tr [:view.subscription/title]) :to "subscription/payment"}]

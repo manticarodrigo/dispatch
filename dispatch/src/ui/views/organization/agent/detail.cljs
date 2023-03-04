@@ -8,7 +8,7 @@
             [ui.utils.date :as d]
             [ui.utils.i18n :refer (tr)]
             [ui.components.layout.map :refer (map-layout)]
-            [ui.components.title :refer (title)]
+            [ui.components.layout.header :refer (header)]
             [ui.components.filters :refer (filters)]
             [ui.components.lists.task :refer (task-list)]))
 
@@ -36,7 +36,7 @@
      #js[tasks])
 
     [map-layout
-     [title {:title (if loading (str (tr [:misc/loading]) "...") name)
+     [header {:title (if loading (str (tr [:misc/loading]) "...") name)
              :subtitle (tr [:status/last-seen] [createdAt])}]
      [filters {:date (-> date parse-date d/startOfDay)
                :on-date-change #(set-search-params

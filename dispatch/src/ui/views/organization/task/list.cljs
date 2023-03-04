@@ -9,7 +9,7 @@
             [ui.utils.string :refer (filter-text)]
             [ui.utils.i18n :refer (tr)]
             [ui.components.layout.map :refer (map-layout)]
-            [ui.components.title :refer (title)]
+            [ui.components.layout.header :refer (header)]
             [ui.components.filters :refer (filters)]
             [ui.components.lists.task :refer (task-list)]))
 
@@ -34,8 +34,8 @@
      #js[tasks text])
 
     [map-layout
-     [title {:title (tr [:view.task.list/title])
-             :create-link "create"}]
+     [header {:title (tr [:view.task.list/title])
+              :create-link "create"}]
      [filters {:search text
                :on-search-change #(set-search-params
                                    (if (empty? %)
