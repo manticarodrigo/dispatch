@@ -1,40 +1,34 @@
 (ns api.lib.mapbox.optimization
   (:require ["axios" :as axios]
             ["date-fns" :as d]
-            [promesa.core :as p]
-            [cljs-bean.core :refer (->js)]))
+            [cljs-bean.core :refer (->js ->clj)]))
 
 (def token "pk.eyJ1IjoibWFudGljYXJvZHJpZ28iLCJhIjoiY2xlcWUwNG16MGw0ejNza216ZjM5bWljaiJ9.N_TZRydBKQqVSR-uq6q40w")
 
-(defn optimize-tours [payload]
-  (p/let [url (str "https://api.mapbox.com/optimized-trips/v2?access_token=" token)
-          options (->js {:headers {:Content-Type "application/json"}})]
-    (.post axios url (->js payload) options)))
-
 (defn transform-locations [shipments]
-  (map-indexed
-   (fn [idx {:keys [place]}]
-     {:name (str idx) :coordinates [(:lng place) (:lat place)]})
+  (map
+   (fn [{:keys [place]}]
+     {:name (:id place) :coordinates [(:lng place) (:lat place)]})
    shipments))
 
 (defn transform-shipments [shipments]
-  (map-indexed
-   (fn [idx {:keys [id size windows duration]}]
+  (map
+   (fn [{:keys [id size windows duration place]}]
      {:name id
       :from "depot"
-      :to (str idx)
+      :to (:id place)
       :size size
       :dropoff_duration duration
-      :pickup_times (map
-                     (fn [{:keys [start end]}]
-                       {:earliest start
-                        :lastest end
-                        :type "soft_end"})
-                     windows)})
+      :dropoff_times (map
+                      (fn [{:keys [start end]}]
+                        {:earliest start
+                         :latest end
+                         :type "soft_end"})
+                      windows)})
    shipments))
 
-(defn transform-vehicles [depot vehicles]
-  (let [{:keys [startAt endAt breaks]} depot]
+(defn transform-vehicles [plan]
+  (let [{:keys [startAt endAt breaks vehicles]} plan]
     (map
      (fn [{:keys [id capacities]}]
        {:name id
@@ -51,11 +45,29 @@
                  breaks)})
      vehicles)))
 
-(defn transform-tour [depot shipments vehicles]
-  (let [{:keys [latitude longitude]} depot]
+(defn transform-plan [plan]
+  (let [{:keys [depot shipments]} plan
+        {:keys [lat lng]} depot]
     {:version 1
      :locations (concat
-                 [{:name "depot" :coordinates [longitude latitude]}]
-                 (transform-locations shipments))
-     :shipments (transform-shipments shipments)
-     :vehicles (transform-vehicles depot vehicles)}))
+                 [{:name "depot" :coordinates [lng lat]}]
+                 (transform-locations (take 2 shipments)))
+     :shipments (transform-shipments (take 2 shipments))
+     :vehicles (transform-vehicles plan)}))
+
+(defn optimize-plan [plan]
+  (let [payload (transform-plan (->clj plan))
+        url (str "https://api.mapbox.com/optimized-trips/v2?access_token=" token)
+        options (->js {:headers {:Content-Type "application/json"}})]
+    (-> payload ->js js/JSON.stringify js/console.log)
+    (.post axios url (->js payload) options)))
+
+(defn fetch-plans []
+  (let [url (str "https://api.mapbox.com/optimized-trips/v2?access_token=" token)]
+    ;; (-> payload ->js js/JSON.stringify js/console.log)
+    (.get axios url)))
+
+(defn fetch-plan [id]
+  (let [url (str "https://api.mapbox.com/optimized-trips/v2/" id "?access_token=" token)]
+    ;; (-> payload ->js js/JSON.stringify js/console.log)
+    (.get axios url)))

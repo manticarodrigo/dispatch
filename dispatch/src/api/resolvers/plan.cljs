@@ -9,3 +9,7 @@
 (defn fetch-organization-plans
   [_ _ context _]
   (plan/fetch-organization-plans context))
+
+(defn optimize-plan
+  [_ args context _]
+  (plan/optimize-plan context (->clj args)))

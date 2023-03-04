@@ -30,6 +30,7 @@
                        {:path "shipments/create" :element [shipment/create-view]}
                        {:path "plans" :element [plan/list-view]}
                        {:path "plans/create" :element [plan/create-view]}
+                       {:path "plans/:plan" :element [plan/detail-view]}
                        (when
                         (= platform "web")
                          {:path "subscription/payment" :element [subscription/payment-view]})]})

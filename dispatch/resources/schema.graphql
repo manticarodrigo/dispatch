@@ -37,6 +37,7 @@ type Mutation {
     vehicleIds: [ID]!
     shipmentIds: [ID]!
   ): Plan
+  optimizePlan(planId: ID!): JSON
   detachPaymentMethod(paymentMethodId: ID!): Boolean
 }
 

@@ -1,0 +1,3 @@
+mutation OptimizePlan($planId: ID!) {
+  optimizePlan(planId: $planId)
+}

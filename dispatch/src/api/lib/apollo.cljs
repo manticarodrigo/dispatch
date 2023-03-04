@@ -46,6 +46,7 @@
                  :createShipment shipment/create-shipment
                  :createVehicle vehicle/create-vehicle
                  :createPlan plan/create-plan
+                 :optimizePlan plan/optimize-plan
                  :detachPaymentMethod stripe/detach-payment-method}
                 :Query
                 {:user #()
