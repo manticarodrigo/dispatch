@@ -62,13 +62,15 @@
   (p/let [{:keys [mocks]} ctx
           [submit-res] mocks
           {:keys [request]} submit-res
-          {:keys [email]} (some-> request :variables)]
+          {:keys [email phone]} (some-> request :variables)]
 
     (with-mounted-component
       [test-app {:route "/login" :mocks mocks}]
       (fn [^js component]
         (p/do
-          (change (.getByLabelText component (tr [:field/email])) email)
+          (if email
+            (change (.getByLabelText component (tr [:field/email])) email)
+            (change (.getByLabelText component (tr [:field/phone])) phone))
           (submit (-> component (.-container) (.querySelector "form")))
           (f component))))))
 
@@ -92,3 +94,12 @@
       [test-app {:route "/" :mocks [scope-mock]}]
       (fn [^js component]
         (f component)))))
+
+(defn with-phone-login [phone]
+  (p/let [login-mock (login {:phone phone})
+          confirm-mock (login-confirm {:code (-> login-mock :result :data :login js/parseInt)})]
+
+    (with-submit-confirm
+      {:mocks [confirm-mock]}
+      (fn [^js component]
+        (-> (.findByText component (tr [:view.login/title])))))))

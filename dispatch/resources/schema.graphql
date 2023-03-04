@@ -68,6 +68,7 @@ type Organization {
 type Agent {
   id: ID!
   name: String!
+  user: User
   location: Location
   places: [Place]
   place(placeId: ID!, filters: TaskFilters): Place

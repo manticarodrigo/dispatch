@@ -4,6 +4,9 @@ query OrganizationAgent($agentId: ID!, $filters: TaskFilters) {
       agent(agentId: $agentId, filters: $filters) {
         id
         name
+        user {
+          phone
+        }
         location {
           id
           position

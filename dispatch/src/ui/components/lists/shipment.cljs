@@ -17,7 +17,7 @@
          [:li
           [link-card {:to id
                       :icon ShipmentIcon
-                      :title (str (tr [:misc/shipment-for "Shipment for"]) " " name)
+                      :title name
                       :subtitle (str
                                  (tr [:misc/volume "Volume "]) (:volume size) ", "
                                  (tr [:misc/weight "Weight "]) (:weight size))

@@ -26,7 +26,8 @@
                        {:agents
                         {:orderBy {:location {:createdAt "desc"}}
                          :include
-                         {:location true}}}}}})
+                         {:user true
+                          :location true}}}}}})
           ^js agents (.. user -organization -agents)]
     ;; this moves null values to the end of the list
     (sort-by #(some-> % .-location .-createdAt) > agents)))
@@ -40,7 +41,8 @@
                          {:agents
                           {:where {:id agentId}
                            :include
-                           {:location true
+                           {:user true
+                            :location true
                             :tasks {:where (filters/task filters)
                                     :orderBy {:startAt "asc"}
                                     :include {:stops {:include {:place true}}}}}}}}}})]

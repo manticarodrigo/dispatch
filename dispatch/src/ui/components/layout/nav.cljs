@@ -73,6 +73,6 @@
                (for [[path label icon] nav-items]
                  ^{:key path}
                  [nav-item path (tr [label]) icon]))]]]
-       [:div {:class "py-2 px-4"}
+       [:div {:class "p-4"}
         [language-radio-group]]]]
      (into [:<>] children)]))

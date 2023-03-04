@@ -11,13 +11,13 @@
             [tests.util.location :refer (nearby generate-polyline)]
             [tests.user :as user]
             [tests.agent :as agent]
-            ;; [tests.location :as location]
             [tests.place :as place]
             [tests.task :as task]
-            [tests.stop :as stop]
             [tests.shipment :as shipment]
             [tests.plan :as plan]
-            [tests.vehicle :as vehicle]))
+            [tests.vehicle :as vehicle]
+            [tests.location :as location]
+            [tests.stop :as stop]))
 
 (defmethod t/report [:cljs.test/default :begin-test-var] [m]
   (println "\n ◯" (-> m :var meta :name)))
@@ -159,19 +159,6 @@
                (-> (p/all (map #(.findByText component (:name %)) agents))
                    (.then #(testing "ui presents agent names" (is (every? some? %))))
                    (.then done)))))))
-
-;; (deftest create-locations
-;;   (async done
-;;          (p/let [agents-mock (agent/find-all)
-;;                  agents (->> agents-mock :result :data :agents (drop 1))
-;;                  create-mocks (p/all (map-indexed
-;;                                       (fn [idx {:keys [id device]}]
-;;                                         (let [created-at (-> (js/Date.) (d/subHours (* idx 10)))]
-;;                                           (location/create created-at)))
-;;                                       agents))]
-;;            (testing "api returns data"
-;;              (is (every? #(-> % :result :data :createLocation) create-mocks))
-;;              (done)))))
 
 (deftest create-places
   (async done
@@ -363,4 +350,22 @@
                              :vehicleIds (mapv :id vehicles)})]
            (testing "api returns data"
              (is (-> plan-mock :result :data :createPlan))
+             (done)))))
+
+(deftest create-agent-locations
+  (async done
+         (p/let [agents-mock (agent/fetch-organization-agents)
+                 agents (->> agents-mock :result :data :user :organization :agents (drop 1))
+                 create-mocks (each (map-indexed
+                                     (fn [idx agent]
+                                       (let [phone (-> agent :user :phone)
+                                             created-at (-> (js/Date.) (d/subHours (* idx 10)))]
+                                         (prn phone)
+                                         (fn []
+                                           (p/do
+                                             (user/with-phone-login phone)
+                                             (location/create created-at)))))
+                                     agents))]
+           (testing "api returns data"
+             (is (every? #(-> % :result :data :createLocation) create-mocks))
              (done)))))

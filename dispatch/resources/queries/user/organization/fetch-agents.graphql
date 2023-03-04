@@ -4,6 +4,9 @@ query OrganizationAgents {
       agents {
         id
         name
+        user {
+          phone
+        }
         location {
           id
           position
