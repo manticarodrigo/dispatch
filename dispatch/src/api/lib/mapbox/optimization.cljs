@@ -59,15 +59,12 @@
   (let [payload (transform-plan (->clj plan))
         url (str "https://api.mapbox.com/optimized-trips/v2?access_token=" token)
         options (->js {:headers {:Content-Type "application/json"}})]
-    (-> payload ->js js/JSON.stringify js/console.log)
     (.post axios url (->js payload) options)))
 
 (defn fetch-plans []
   (let [url (str "https://api.mapbox.com/optimized-trips/v2?access_token=" token)]
-    ;; (-> payload ->js js/JSON.stringify js/console.log)
     (.get axios url)))
 
 (defn fetch-plan [id]
   (let [url (str "https://api.mapbox.com/optimized-trips/v2/" id "?access_token=" token)]
-    ;; (-> payload ->js js/JSON.stringify js/console.log)
     (.get axios url)))
