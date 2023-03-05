@@ -11,7 +11,8 @@
 
 (defn stop-query [stop-id]
   {:tasks {:where {:stops {:some {:id stop-id}}}
-           :include {:stops {:include {:place true}}}}})
+           :include {:stops {:where {:id stop-id}
+                             :include {:place true}}}}})
 
 (defn fetch-organization-stop [^js context {:keys [stopId]}]
   (p/let [^js user (user/active-user context {:include
