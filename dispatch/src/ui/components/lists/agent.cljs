@@ -2,29 +2,23 @@
   (:require [react-feather :rename {User UserIcon}]
             [ui.utils.date :as d]
             [ui.utils.i18n :refer (tr)]
-            [ui.components.link-card :refer (link-card)]
+            [ui.components.lists.link-list :refer (link-list)]
             [ui.components.status-detail :refer (status-detail)]))
 
-
 (defn agent-list [{:keys [agents loading]}]
-  [:div {:class "overflow-y-auto"}
-   [:ul
-    (doall
-     (for [{:keys [id name location]} agents]
-       (let [{:keys [createdAt]} location
-             active? (and createdAt (d/isAfter createdAt (d/subHours (js/Date.) 26)))]
-         ^{:key id}
-         [:li
-          [link-card {:to id
-                      :icon UserIcon
-                      :title name
-                      :subtitle (tr [:status/last-seen] [createdAt])
-                      :detail [status-detail
-                               {:active? active?
-                                :text (if active?
-                                        (tr [:status/active])
-                                        (tr [:status/inactive]))}]}]])))]
-   (if loading
-     [:p {:class "text-center"} (tr [:misc/loading]) "..."]
-     (when (empty? agents)
-       [:p {:class "text-center"} (tr [:misc/empty-search])]))])
+  [link-list
+   {:loading loading
+    :items (map
+            (fn [{:keys [id name location]}]
+              (let [{:keys [createdAt]} location
+                    active? (and createdAt (d/isAfter createdAt (d/subHours (js/Date.) 26)))]
+                {:id id
+                 :icon UserIcon
+                 :title name
+                 :subtitle (tr [:status/last-seen] [createdAt])
+                 :detail [status-detail
+                          {:active? active?
+                           :text (if active?
+                                   (tr [:status/active])
+                                   (tr [:status/inactive]))}]}))
+            agents)}])

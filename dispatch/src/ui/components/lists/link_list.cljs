@@ -1,6 +1,7 @@
-(ns ui.components.link-card
+(ns ui.components.lists.link-list
   (:require [react-feather :rename {ChevronRight ChevronRightIcon}]
             [ui.lib.router :refer (link)]
+            [ui.utils.i18n :refer (tr)]
             [ui.utils.string :refer (class-names)]))
 
 (defn link-card [{:keys [to icon title subtitle detail]}]
@@ -18,3 +19,20 @@
     [:div {:class "flex-shrink-0 flex items-center"}
      [:div {:class "flex flex-col items-end"} detail]
      [:div {:class "ml-2"} [:> ChevronRightIcon {:class "w-4 h-4"}]]]]])
+
+(defn link-list [{:keys [type loading items]}]
+  [:div {:class "overflow-y-auto"}
+   [(or type :ul)
+    (doall
+     (for [{:keys [id to icon title subtitle detail]} items]
+       ^{:key id}
+       [:li
+        [link-card {:to (or to id)
+                    :icon icon
+                    :title title
+                    :subtitle subtitle
+                    :detail detail}]]))]
+   (if loading
+     [:p {:class "p-4 text-center"} (tr [:misc/loading]) "..."]
+     (when (empty? items)
+       [:p {:class "p-4 text-center"} (tr [:misc/empty-search])]))])
