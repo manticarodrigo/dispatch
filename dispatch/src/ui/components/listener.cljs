@@ -1,11 +1,11 @@
 (ns ui.components.listener
-  (:require [react]
+  (:require [react :refer (useEffect)]
             ["@capacitor/app" :refer (App)]
             [ui.lib.router :refer (use-navigate)]))
 
 (defn listener [& children]
   (let [navigate (use-navigate)]
-    (react/useEffect
+    (useEffect
      (fn []
        (-> App
            (.addListener
@@ -18,5 +18,4 @@
                 (navigate slug)))))
        #(.removeAllListeners App))
      #js[])
-
     (into [:<>] children)))

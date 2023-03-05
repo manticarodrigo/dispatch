@@ -11,6 +11,7 @@
             Outlet
             useRoutes
             useNavigate
+            useLocation
             useParams
             useSearchParams)]
    [reagent.core :as r]
@@ -75,6 +76,10 @@
 (defn use-params []
   (let [params (useParams)]
     (->clj params)))
+
+(defn use-location []
+  (let [location (useLocation)]
+    (->clj location)))
 
 (defn use-search-params []
   (let [[params set-params] (useSearchParams)]
