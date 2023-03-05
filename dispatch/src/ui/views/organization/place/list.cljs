@@ -1,11 +1,10 @@
 (ns ui.views.organization.place.list
-  (:require [react]
-            [re-frame.core :refer (dispatch)]
-            [shadow.resource :refer (inline)]
+  (:require [shadow.resource :refer (inline)]
             [ui.lib.apollo :refer (gql use-query)]
             [ui.lib.router :refer (use-search-params)]
             [ui.utils.string :refer (filter-text)]
             [ui.utils.i18n :refer (tr)]
+            [ui.hooks.use-map :refer (use-map-items)]
             [ui.components.layout.map :refer (map-layout)]
             [ui.components.layout.header :refer (header)]
             [ui.components.filters :refer (filters)]
@@ -19,21 +18,14 @@
         places (some-> data :user :organization :places)
         filtered-places (filter-text text :name places)]
 
-    (react/useEffect
-     (fn []
-       (dispatch [:map
-                  {:points
-                   (mapv
-                    (fn [{:keys [lat lng name]}]
-                      {:title name
-                       :position {:lat lat :lng lng}})
-                    filtered-places)}])
-       #())
-     #js[places text])
+    (use-map-items
+     loading
+     {:places filtered-places}
+     [places text])
 
     [map-layout
      [header {:title (tr [:view.place.list/title])
-             :create-link "create"}]
+              :create-link "create"}]
      [filters {:search text
                :on-search-change #(set-search-params
                                    (if (empty? %)

@@ -360,7 +360,6 @@
                                      (fn [idx agent]
                                        (let [phone (-> agent :user :phone)
                                              created-at (-> (js/Date.) (d/subHours (* idx 10)))]
-                                         (prn phone)
                                          (fn []
                                            (p/do
                                              (user/with-phone-login phone)

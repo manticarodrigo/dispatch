@@ -1,11 +1,10 @@
 (ns ui.views.agent.place.detail
-  (:require [react]
-            [re-frame.core :refer (dispatch)]
-            [shadow.resource :refer (inline)]
+  (:require [shadow.resource :refer (inline)]
             [common.utils.date :refer (parse-date)]
             [ui.lib.apollo :refer (gql use-query)]
             [ui.lib.router :refer (use-params use-search-params)]
             [ui.utils.date :as d]
+            [ui.hooks.use-map :refer (use-map-items)]
             [ui.components.layout.map :refer (map-layout)]
             [ui.components.layout.header :refer (header)]
             [ui.components.filters :refer (filters)]
@@ -27,11 +26,10 @@
         {:keys [tasks]} (some-> data :user :agent :place)
         {:keys [name description]} (some-> (or data previousData) :user :agent :place)]
 
-    (react/useEffect
-     (fn []
-       (dispatch [:map {:paths (mapv #(-> % :route :path) tasks)}])
-       #())
-     #js[tasks])
+    (use-map-items
+     loading
+     {:tasks tasks}
+     [tasks])
 
     [map-layout
      [header {:title name :subtitle description}]

@@ -12,7 +12,8 @@
    [ui.lib.platform :refer (platform)]
    [ui.components.loaders.device :rename {loader device-loader}]
    [ui.components.listener :refer (listener)]
-   [ui.components.routes :refer (routes)]))
+   [ui.components.routes :refer (routes)]
+   [ui.components.map :refer (global-map)]))
 
 (when (not= platform "web")
   (.notifyAppReady CapacitorUpdater))
@@ -21,11 +22,13 @@
 (r/set-default-compiler! functional-compiler)
 
 (defn app []
-  [browser-router
-   [apollo-provider
-    [device-loader
-     [listener
-      [routes]]]]])
+  [:<>
+   [browser-router
+    [apollo-provider
+     [device-loader
+      [listener
+       [routes]]]]]
+   [global-map]])
 
 (defonce !root (atom nil))
 

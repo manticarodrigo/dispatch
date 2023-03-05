@@ -26,7 +26,7 @@
   (let [count (.. cluster -count)
         position (.. cluster -position)
         mean (.. stats -clusters -markers -mean)
-        color (if (> count (max 10 mean)) "#dc2626" "#d97706")]
+        color (if (> count (max 10 mean)) "#7f1d1d" "#b91c1c")]
     (create-marker {:zIndex count
                     :position position
                     :label {:text (str count)
@@ -45,7 +45,7 @@
                       :position position
                       :label {:text title
                               :fontSize "0.875rem"}
-                      :icon {:url (render-marker "#2563eb")
+                      :icon {:url (render-marker "#ef4444")
                              :scaledSize (js/google.maps.Size. 30 30)
                              :labelOrigin (js/google.maps.Point. 15 -6)}}))
                   (map-indexed vector points)))

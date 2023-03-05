@@ -1,10 +1,9 @@
 (ns ui.views.organization.task.detail
-  (:require [react]
-            [re-frame.core :refer (dispatch)]
-            [shadow.resource :refer (inline)]
+  (:require [shadow.resource :refer (inline)]
             [ui.lib.apollo :refer (gql use-query)]
             [ui.lib.router :refer (use-params)]
             [ui.utils.i18n :refer (tr)]
+            [ui.hooks.use-map :refer (use-map-items)]
             [ui.components.layout.map :refer (map-layout)]
             [ui.components.layout.header :refer (header)]
             [ui.components.lists.stop :refer (stop-list)]))
@@ -17,20 +16,13 @@
         {:keys [data loading]} query
         {:keys [task]} (some-> data :user :organization)
         {:keys [agent stops route startAt]} task
-        {:keys [path]} route
         {:keys [name]} agent]
 
-    (react/useEffect
-     (fn []
-       (dispatch [:map
-                  {:paths (when path [path])
-                   :points (->> stops
-                                (mapv :place)
-                                (mapv (fn [{:keys [lat lng name]}]
-                                        {:title name
-                                         :position {:lat lat :lng lng}})))}])
-       #())
-     #js[route stops])
+    (use-map-items
+     loading
+     {:tasks [task]
+      :places (mapv :place stops)}
+     [route stops])
 
     [map-layout
      [header {:title name :subtitle (tr [:status/start-at] [startAt])}]

@@ -11,6 +11,8 @@
    [ui.lib.google.maps.directions :refer (init-directions)]
    [ui.lib.google.maps.geocoding :refer (init-geocoding)]))
 
+(def !map (atom nil))
+
 (defn- load-map []
   (let [loader (Loader.
                 (->js
@@ -21,14 +23,20 @@
                   :language (listen [:language])}))]
     (.load loader)))
 
+(defn- create-map [el]
+  (js/google.maps.Map.
+   el
+   (->js
+    {:center {:lat 0 :lng 0}
+     :zoom 2
+     :disableDefaultUI true
+     :styles (:caen styles)})))
+
 (defn- init-map [el]
-  (p/do
-    (load-map)
-    (js/google.maps.Map.
-     el (->js {:center {:lat 0 :lng 0}
-               :zoom 2
-               :disableDefaultUI true
-               :styles (:caen styles)}))))
+  (or @!map
+      (p/do
+        (load-map)
+        (reset! !map (create-map el)))))
 
 (defn init-api [el]
   (p/let [gmap (init-map el)]

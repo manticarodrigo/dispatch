@@ -1,12 +1,11 @@
 (ns ui.views.organization.agent.detail
-  (:require [react]
-            [re-frame.core :refer (dispatch)]
-            [shadow.resource :refer (inline)]
+  (:require [shadow.resource :refer (inline)]
             [common.utils.date :refer (parse-date)]
             [ui.lib.apollo :refer (gql use-query)]
             [ui.lib.router :refer (use-params use-search-params)]
             [ui.utils.date :as d]
             [ui.utils.i18n :refer (tr)]
+            [ui.hooks.use-map :refer (use-map-items)]
             [ui.components.layout.map :refer (map-layout)]
             [ui.components.layout.header :refer (header)]
             [ui.components.filters :refer (filters)]
@@ -29,15 +28,14 @@
         {:keys [name location]} (some-> (or data previousData) :user :organization :agent)
         {:keys [createdAt]} location]
 
-    (react/useEffect
-     (fn []
-       (dispatch [:map {:paths (mapv #(-> % :route :path) tasks)}])
-       #())
-     #js[tasks])
+    (use-map-items
+     loading
+     {:tasks tasks}
+     [tasks])
 
     [map-layout
      [header {:title (if loading (str (tr [:misc/loading]) "...") name)
-             :subtitle (tr [:status/last-seen] [createdAt])}]
+              :subtitle (tr [:status/last-seen] [createdAt])}]
      [filters {:date (-> date parse-date d/startOfDay)
                :on-date-change #(set-search-params
                                  (assoc search-params :date (-> % .getTime)))

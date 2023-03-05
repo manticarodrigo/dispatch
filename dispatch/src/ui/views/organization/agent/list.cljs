@@ -1,11 +1,10 @@
 (ns ui.views.organization.agent.list
-  (:require [react]
-            [re-frame.core :refer (dispatch)]
-            [shadow.resource :refer (inline)]
+  (:require [shadow.resource :refer (inline)]
             [ui.lib.apollo :refer (gql use-query)]
             [ui.lib.router :refer (use-search-params)]
             [ui.utils.string :refer (filter-text)]
             [ui.utils.i18n :refer (tr)]
+            [ui.hooks.use-map :refer (use-map-items)]
             [ui.components.layout.map :refer (map-layout)]
             [ui.components.layout.header :refer (header)]
             [ui.components.filters :refer (filters)]
@@ -19,21 +18,14 @@
         agents (some-> data :user :organization :agents)
         filtered-agents (filter-text text :name agents)]
 
-    (react/useEffect
-     (fn []
-       (dispatch [:map
-                  {:locations
-                   (mapv
-                    (fn [{:keys [name location]}]
-                      {:title name
-                       :position (:position location)})
-                    (filter #(:location %) filtered-agents))}])
-       #())
-     #js[agents text])
+    (use-map-items
+     loading
+     {:agents filtered-agents}
+     [agents text])
 
     [map-layout
      [header {:title (tr [:view.agent.list/title])
-             :create-link "create"}]
+              :create-link "create"}]
      [filters {:search text
                :on-search-change #(set-search-params
                                    (if (empty? %)

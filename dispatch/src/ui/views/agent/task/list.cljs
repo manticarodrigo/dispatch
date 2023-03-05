@@ -1,12 +1,11 @@
 (ns ui.views.agent.task.list
-  (:require [react]
-            [re-frame.core :refer (dispatch)]
-            [shadow.resource :refer (inline)]
+  (:require [shadow.resource :refer (inline)]
             [common.utils.date :refer (parse-date)]
             [ui.lib.apollo :refer (gql use-query)]
             [ui.lib.router :refer (use-search-params)]
             [ui.utils.date :as d]
             [ui.utils.i18n :refer (tr)]
+            [ui.hooks.use-map :refer (use-map-items)]
             [ui.components.layout.map :refer (map-layout)]
             [ui.components.layout.header :refer (header)]
             [ui.components.filters :refer (filters)]
@@ -15,7 +14,7 @@
 (def FETCH_AGENT_TASKS (gql (inline "queries/user/agent/fetch-tasks.graphql")))
 
 (defn view []
-  (let [[{:keys [date text status] :as search-params} set-search-params] (use-search-params)
+  (let [[{:keys [date status] :as search-params} set-search-params] (use-search-params)
         {:keys [data loading]} (use-query
                                 FETCH_AGENT_TASKS
                                 {:variables
@@ -24,11 +23,11 @@
                                    :end  (-> date parse-date d/endOfDay)
                                    :status status}}})
         {:keys [tasks]} (some-> data :user :agent)]
-    (react/useEffect
-     (fn []
-       (dispatch [:map {:paths (mapv #(-> % :route :path) tasks)}])
-       #())
-     #js[tasks text])
+
+    (use-map-items
+     loading
+     {:tasks tasks}
+     [tasks])
 
     [map-layout
      [header {:title (tr [:view.task.list/title])}]

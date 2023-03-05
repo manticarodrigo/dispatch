@@ -1,13 +1,12 @@
 (ns ui.views.organization.task.list
-  (:require [react]
-            [re-frame.core :refer (dispatch)]
-            [shadow.resource :refer (inline)]
+  (:require [shadow.resource :refer (inline)]
             [common.utils.date :refer (parse-date)]
             [ui.lib.apollo :refer (gql use-query)]
             [ui.lib.router :refer (use-search-params)]
             [ui.utils.date :as d]
             [ui.utils.string :refer (filter-text)]
             [ui.utils.i18n :refer (tr)]
+            [ui.hooks.use-map :refer (use-map-items)]
             [ui.components.layout.map :refer (map-layout)]
             [ui.components.layout.header :refer (header)]
             [ui.components.filters :refer (filters)]
@@ -27,11 +26,10 @@
         {:keys [tasks]} (some-> data :user :organization)
         filtered-tasks (filter-text text #(-> % :agent :name) tasks)]
 
-    (react/useEffect
-     (fn []
-       (dispatch [:map {:paths (mapv #(-> % :route :path) filtered-tasks)}])
-       #())
-     #js[tasks text])
+    (use-map-items
+     loading
+     {:tasks filtered-tasks}
+     [tasks text])
 
     [map-layout
      [header {:title (tr [:view.task.list/title])
