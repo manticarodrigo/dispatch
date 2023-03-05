@@ -1,11 +1,12 @@
 (ns ui.components.layout.nav
-  (:require [ui.subs :refer (listen)]
+  (:require [react-feather :rename {Settings SettingsIcon}]
+            [re-frame.core :refer (dispatch)]
+            [ui.subs :refer (listen)]
+            [ui.utils.i18n :refer (tr)]
             [ui.utils.string :refer (class-names)]
             [ui.lib.router :refer (nav-link)]
-            [react-feather :rename {Settings SettingsIcon}]
             [ui.components.icons.dispatch :rename {dispatch dispatch-icon}]
             [ui.components.inputs.menu :rename {menu menu-input}]
-            [ui.utils.i18n :refer (tr)]
             [ui.components.inputs.language-radio-group :refer (language-radio-group)]))
 
 (defn nav-item [to label icon]
@@ -43,6 +44,14 @@
 (defn nav [{:keys [nav-items menu-items]} & children]
   (let [nav-open (listen [:layout/nav-open])]
     [:div {:class "flex w-full h-full"}
+     (when nav-open
+       [:div
+        {:class (class-names
+                 "z-10"
+                 "lg:hidden"
+                 "fixed inset-0"
+                 "bg-neutral-900/50")
+         :on-click #(dispatch [:layout/toggle-nav])}])
      [:nav
       {:class
        (class-names
