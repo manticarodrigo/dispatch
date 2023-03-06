@@ -39,6 +39,7 @@
     "@prisma/client": "^4.8.0",
     "@stripe/react-stripe-js": "^1.16.4",
     "@stripe/stripe-js": "^1.46.0",
+    "@tanstack/react-table": "^8.7.9",
     "apollo-link-scalars": "^4.0.1",
     "aws-rum-web": "^1.12.0",
     "aws-sdk": "^2.1312.0",

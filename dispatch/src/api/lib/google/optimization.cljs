@@ -61,3 +61,24 @@
       :global_end_time (-> endAt .toISOString)
       :shipments (transform-shipments shipments)
       :vehicles (transform-vehicles depot vehicles)}}))
+
+(defn parse-result [^js plan]
+  (let [^js result (.. plan -result)
+        ^js routes (.. result -routes)
+        ^js shipments (.. plan -shipments)
+        ^js vehicles (.. plan -vehicles)]
+    (apply array
+           (map-indexed
+            (fn [idx ^js route]
+              #js{:vehicle (get vehicles idx)
+                  :start (.. route -vehicleStartTime)
+                  :end (.. route -vehicleEndTime)
+                  :meters (.. route -metrics -travelDistanceMeters)
+                  :volume (.. route -metrics -maxLoads -volume -amount)
+                  :weight (.. route -metrics -maxLoads -weight -amount)
+                  :shipments (apply array
+                                    (map
+                                     (fn [^js visit]
+                                       (get shipments (or 0 (.-shipmentIndex visit))))
+                                     (.-visits route)))})
+            routes))))

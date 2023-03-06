@@ -2,19 +2,18 @@
   (:require [react-feather :rename {Clipboard TaskIcon
                                     User AgentIcon
                                     MapPin PlaceIcon
-                                    ;; Package ShipmentIcon
-                                    ;; Navigation PlanIcon
-                                    ;; Truck VehicleIcon
-                                    }]
+                                    Package ShipmentIcon
+                                    Navigation PlanIcon
+                                    Truck VehicleIcon}]
             [ui.utils.i18n :refer (tr)]
             [ui.components.layout.nav :refer (nav)]))
 
 (def nav-items
   [["agents" :view.agent.list/title AgentIcon]
    ["places" :view.place.list/title PlaceIcon]
-  ;;  ["vehicles" :view.vehicle.list/title VehicleIcon]
-  ;;  ["shipments" :view.shipment.list/title ShipmentIcon]
-  ;;  ["plans" :view.plan.list/title PlanIcon]
+   ["vehicles" :view.vehicle.list/title VehicleIcon]
+   ["shipments" :view.shipment.list/title ShipmentIcon]
+   ["plans" :view.plan.list/title PlanIcon]
    ["tasks" :view.task.list/title TaskIcon]])
 
 (def menu-items

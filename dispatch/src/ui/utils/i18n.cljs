@@ -25,7 +25,13 @@
            :place {:list {:title "Places"}
                    :create {:title "Create place"}}
            :plan {:list {:title "Plans"}
-                  :create {:title "Create plan"}}
+                  :create {:title "Create plan"}
+                  :detail {:title (fn [[startAt endAt]]
+                                    (str "Plan ("
+                                         (d/format startAt "dd/MM/yyyy hh:mmaaa")
+                                         " - "
+                                         (d/format endAt "dd/MM/yyyy hh:mmaaa")
+                                         ")"))}}
            :shipment {:list {:title "Shipments"}
                       :create {:title "Create shipment"}}
            :vehicle {:list {:title "Vehicles"}
@@ -61,6 +67,15 @@
             :latitude "Latitude"
             :longitude "Longitude"
             :submit "Submit"}
+
+    :table {:plan {:vehicle "Vehicle name"
+                   :start "Start time"
+                   :end "End time"
+                   :meters "Meters traveled"
+                   :volume "Volume"
+                   :weight "Weight"
+                   :shipments "Shipments"}}
+
     :status {:all "All"
              :incomplete "Incomplete"
              :complete "Complete"
@@ -101,6 +116,7 @@
    {:noun {:status "estado"
            :never "nunca"}
     :verb {:create "crear"}
+
     :view {:register {:title "Registrar"
                       :login-link {:title "¿Ya tienes una cuenta?"
                                    :link "Ingresar aquí."}}
@@ -117,7 +133,13 @@
            :place {:list {:title "Lugares"}
                    :create {:title "Crear lugar"}}
            :plan {:list {:title "Planes"}
-                  :create {:title "Crear plan"}}
+                  :create {:title "Crear plan"}
+                  :detail {:title (fn [[startAt endAt]]
+                                    (str "Plan ("
+                                         (d/format startAt "dd/MM/yyyy hh:mmaaa")
+                                         " - "
+                                         (d/format endAt "dd/MM/yyyy hh:mmaaa")
+                                         ")"))}}
            :shipment {:list {:title "Envíos"}
                       :create {:title "Crear envío"}}
            :vehicle {:list {:title "Vehículos"}
@@ -131,6 +153,7 @@
                                     :failed "No se pudo guardar tu método de pago."
                                     :add-payment-method "Agregar método de pago"
                                     :delete-payment-method "Eliminar método de pago"}}}
+
     :field {:email "Correo electrónico"
             :phone "Teléfono"
             :code "Código"
@@ -154,6 +177,15 @@
             :latitude "Latitud"
             :longitude "Longitud"
             :submit "Enviar"}
+
+    :table {:plan {:vehicle "Nombre del vehículo"
+                   :start "Hora de inicio"
+                   :end "Hora de finalización"
+                   :meters "Metros recorridos"
+                   :volume "Volumen"
+                   :weight "Peso"
+                   :shipments "Envíos"}}
+
     :status {:all "Todos"
              :incomplete "Incompleto"
              :complete "Completo"
