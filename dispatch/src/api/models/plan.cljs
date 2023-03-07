@@ -49,7 +49,6 @@
 
 (defn create-plan-tasks [^js context {:keys [input]}]
   (p/let [{:keys [planId assignments]} input
-          ;;all-shipment-ids (flatten (map :shipmentIds assignments))
           ^js user (user/active-user context {:include
                                               {:organization
                                                {:include
@@ -73,8 +72,8 @@
                           :startAt (js/Date.)
                           :stops {:create (map-indexed
                                            (fn [idx id]
-                                             {:place {:connect {:id (get place-map id)}} 
+                                             {:place {:connect {:id (get place-map id)}}
                                               :shipment {:connect {:id id}}
-                                              :order idx
-                                             }) shipmentIds)}})
+                                              :order idx})
+                                           shipmentIds)}})
                        assignments)}}})))

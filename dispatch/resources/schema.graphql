@@ -40,6 +40,7 @@ type Mutation {
   optimizePlan(planId: ID!): JSON
   detachPaymentMethod(paymentMethodresultId: ID!): Boolean
   createPlanTasks(input: AssignmentsInput): Plan
+  updatePlanTasks(input: UpdateAssignentIput): Task
 }
 
 type User {
@@ -172,4 +173,9 @@ input AssignmentInput {
   vehicleId: ID!
   agentId: ID!
   shipmentIds: [ID]!
+}
+
+input UpdateAssignentIput {
+  taskId: ID!
+  assignment: AssignmentInput
 }

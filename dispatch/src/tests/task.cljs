@@ -23,6 +23,13 @@
     {:request request
      :result result}))
 
+(defn update-plan-tasks [variables]
+  (p/let [query (inline "mutations/plan/update-plan-tasks.graphql")
+          request  {:query query :variables variables}
+          result (send request)]
+    {:request request
+     :result result}))
+
 (defn fetch-organization-task-options []
   (p/let [query (inline "queries/user/organization/fetch-task-options.graphql")
           request  {:query query}

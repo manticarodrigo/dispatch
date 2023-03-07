@@ -63,3 +63,32 @@
                                                {:include
                                                 (task-query taskId)}}})]
     (first (.. user -agent -tasks))))
+
+
+(defn update-plan-tasks [^js context {:keys [input]}]
+  (p/let [{:keys [taskId assignment]} input
+          ^js user (user/active-user context {:include
+                                              {:organization
+                                               {:include
+                                                {:shipments
+                                                 {:include
+                                                  {:place true}}}}}})
+          place-map (into {} (for [^js shipment (.. user -organization -shipments)]
+                               {(.-id shipment) (.. shipment -place -id)}))
+          organization-id (.. user -organization -id)]
+
+    (prisma/update!
+     (.. context -prisma -task)
+     {:where {:id taskId}
+      :data
+      {:organization {:connect {:id organization-id}}
+       :agent {:connect {:id (.. assignment -agentId)}}
+       :vehicle {:connect {:id  (.. assignment -vehicleId)}}
+       :route {}
+       :startAt (js/Date.)
+       :updateAt (js/Date.)
+       :stops {:create (map-indexed
+                        (fn [idx id]
+                          {:place {:connect {:id (get place-map id)}}
+                           :shipment {:connect {:id id}}
+                           :order idx}) (.. assignment -shipmentIds))}}})))

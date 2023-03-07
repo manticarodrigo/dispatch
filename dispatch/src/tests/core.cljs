@@ -29,7 +29,7 @@
   {:before ui/before
    :after ui/after})
 
-(def org-email "rodrigo@ambito.app")
+(def org-email "alvaroevenor.puertotellez@gmail.com")
 
 (deftest register-success
   (async done
@@ -358,24 +358,52 @@
                  plans (-> plans-mock :result :data :user :organization :plans)
                  plan (first plans)
                  agents-mock (agent/fetch-organization-agents)
-                 agents (-> agents-mock :result :data :user :organization :agents) 
+                 agents (-> agents-mock :result :data :user :organization :agents)
                  shipment-id-chunks (partition
-                                  (int(/ (count (:shipments plan))
-                                     (count (:vehicles plan))))
-                                  (->> plan :shipments (map :id )))
-                
+                                     (int (/ (count (:shipments plan))
+                                             (count (:vehicles plan))))
+                                     (->> plan :shipments (map :id)))
+
                  create-mock (plan/create-plan-tasks
                               {:input {:planId (:id plan)
                                        :assignments (map-indexed
                                                      (fn [idx vehicle]
                                                        {:vehicleId (:id vehicle)
                                                         :shipmentIds (nth shipment-id-chunks idx)
-                                                        :agentId (-> agents (nth idx) :id)}) 
-                                                     (:vehicles plan))}})] 
-           (testing "api returns data" 
+                                                        :agentId (-> agents (nth idx) :id)})
+                                                     (:vehicles plan))}})]
+           (testing "api returns data"
              (is (-> create-mock :result :data :createPlanTasks))
-             (done))
-           )))
+             (done)))))
+
+(deftest upate-plan-task
+  (async done
+         (p/let [plans-mock (plan/fetch-organization-plans)
+                 plans (-> plans-mock :result :data :user :organization :plans)
+                 plan (first plans)
+                 tasks-mock (task/fetch-organization-tasks)
+                 tasks  (-> tasks-mock :result :data :user :organization :tasks)
+                 task (first tasks)
+                 agents-mock (agent/fetch-organization-agents)
+                 agents (-> agents-mock :result :data :user :organization :agents)
+                 agent (first agents)
+                 vehicles-mock (vehicle/fetch-organization-vehicles)
+
+                 vehicles (-> vehicles-mock :result :data :user :organization :vehicles)
+                 vehicle (first vehicles)
+                 shipment-id-chunks (partition
+                                     (int (/ (count (:shipments plan))
+                                             (count (:vehicles plan))))
+                                     (->> plan :shipments (map :id)))
+                 shipment-id (first shipment-id-chunks)
+                 create-mock (task/update-plan-tasks
+                              {:input {:taskId (:id task)
+                                       :assignment {:vehicleId (:id vehicle)
+                                                    :shipmentIds shipment-id
+                                                    :agentId (:id agent)}}})]
+             (testing "api returns data"
+             (is (-> create-mock :result :data :updatePlanTasks))
+             (done)))))
 
 (deftest create-agent-locations
   (async done
