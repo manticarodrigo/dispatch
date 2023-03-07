@@ -199,61 +199,61 @@
                    (.then #(testing "ui presents place names" (is (every? some? %))))
                    (.then done)))))))
 
-;; (deftest create-tasks
-;;   (async done
-;;          (p/let [fetch-options-mock (task/fetch-organization-task-options)
-;;                  {:keys [agents places]} (-> fetch-options-mock :result :data :user :organization)
-;;                  promise-fn (fn [idx agent]
-;;                               (let [shuffled-places (->> places shuffle (take (+ 2 (rand-int 8))))]
-;;                                 (fn []
-;;                                   (task/create-task
-;;                                    {:agentId (:id agent)
-;;                                     :startAt (-> (js/Date.)
-;;                                                  (d/set
-;;                                                   #js{:hours 8
-;;                                                       :minutes 0
-;;                                                       :seconds 0
-;;                                                       :milliseconds 0})
-;;                                                  (d/addDays idx))
-;;                                     :placeIds (mapv :id shuffled-places)
-;;                                     :route {:legs (->> shuffled-places
-;;                                                        (map-indexed
-;;                                                         (fn [idx place]
-;;                                                           {:duration (if (> idx 0) 1800 0)
-;;                                                            :distance (if (> idx 0) 1000 0)
-;;                                                            :address (:description place)
-;;                                                            :location (select-keys place [:lat :lng])})))
-;;                                             :path (->> shuffled-places
-;;                                                        (map #(select-keys % [:lat :lng]))
-;;                                                        (generate-polyline))
-;;                                             :bounds {:north nil :east nil :south nil :west nil}}}))))
-;;                  promise-fns (flatten
-;;                               (map
-;;                                (fn [idx]
-;;                                  (map
-;;                                   (fn [agent]
-;;                                     (promise-fn idx agent))
-;;                                   (take 10 agents)))
-;;                                (range 3)))
-;;                  create-mocks (each promise-fns)
-;;                  create-mock (first create-mocks)
-;;                  agent-id (-> create-mock :request :variables :agentId)
-;;                  agent-name (->> agents (filter #(= agent-id (:id %))) first :name)
-;;                  fetch-mock (task/fetch-organization-tasks
-;;                              {:filters
-;;                               {:start (-> (js/Date.) d/startOfDay)
-;;                                :end (-> (js/Date.) d/endOfDay)
-;;                                :status nil}})]
+(deftest create-tasks
+  (async done
+         (p/let [fetch-options-mock (task/fetch-organization-task-options)
+                 {:keys [agents places]} (-> fetch-options-mock :result :data :user :organization)
+                 promise-fn (fn [idx agent]
+                              (let [shuffled-places (->> places shuffle (take (+ 2 (rand-int 8))))]
+                                (fn []
+                                  (task/create-task
+                                   {:agentId (:id agent)
+                                    :startAt (-> (js/Date.)
+                                                 (d/set
+                                                  #js{:hours 8
+                                                      :minutes 0
+                                                      :seconds 0
+                                                      :milliseconds 0})
+                                                 (d/addDays idx))
+                                    :placeIds (mapv :id shuffled-places)
+                                    :route {:legs (->> shuffled-places
+                                                       (map-indexed
+                                                        (fn [idx place]
+                                                          {:duration (if (> idx 0) 1800 0)
+                                                           :distance (if (> idx 0) 1000 0)
+                                                           :address (:description place)
+                                                           :location (select-keys place [:lat :lng])})))
+                                            :path (->> shuffled-places
+                                                       (map #(select-keys % [:lat :lng]))
+                                                       (generate-polyline))
+                                            :bounds {:north nil :east nil :south nil :west nil}}}))))
+                 promise-fns (flatten
+                              (map
+                               (fn [idx]
+                                 (map
+                                  (fn [agent]
+                                    (promise-fn idx agent))
+                                  (take 10 agents)))
+                               (range 3)))
+                 create-mocks (each promise-fns)
+                 create-mock (first create-mocks)
+                 agent-id (-> create-mock :request :variables :agentId)
+                 agent-name (->> agents (filter #(= agent-id (:id %))) first :name)
+                 fetch-mock (task/fetch-organization-tasks
+                             {:filters
+                              {:start (-> (js/Date.) d/startOfDay)
+                               :end (-> (js/Date.) d/endOfDay)
+                               :status nil}})]
 
-;;            (testing "api returns data"
-;;              (is (every? #(-> % :result :data :createTask) create-mocks)))
+           (testing "api returns data"
+             (is (every? #(-> % :result :data :createTask) create-mocks)))
 
-;;            (task/with-submit
-;;              {:mocks [fetch-options-mock create-mock fetch-mock]}
-;;              (fn [^js component]
-;;                (-> (.findByText component agent-name)
-;;                    (.then #(testing "ui presents agent name" (is (some? %))))
-;;                    (.then done)))))))
+           (task/with-submit
+             {:mocks [fetch-options-mock create-mock fetch-mock]}
+             (fn [^js component]
+               (-> (.findByText component agent-name)
+                   (.then #(testing "ui presents agent name" (is (some? %))))
+                   (.then done)))))))
 
 (deftest fetch-tasks
   (async done
@@ -358,24 +358,23 @@
                  plans (-> plans-mock :result :data :user :organization :plans)
                  plan (first plans)
                  agents-mock (agent/fetch-organization-agents)
-                 agents (-> agents-mock :result :data :user :organization :agents) 
+                 agents (-> agents-mock :result :data :user :organization :agents)
                  shipment-id-chunks (partition
-                                  (int(/ (count (:shipments plan))
-                                     (count (:vehicles plan))))
-                                  (->> plan :shipments (map :id )))
-                
+                                     (int (/ (count (:shipments plan))
+                                             (count (:vehicles plan))))
+                                     (->> plan :shipments (map :id)))
+
                  create-mock (plan/create-plan-tasks
                               {:input {:planId (:id plan)
                                        :assignments (map-indexed
                                                      (fn [idx vehicle]
                                                        {:vehicleId (:id vehicle)
                                                         :shipmentIds (nth shipment-id-chunks idx)
-                                                        :agentId (-> agents (nth idx) :id)}) 
-                                                     (:vehicles plan))}})] 
-           (testing "api returns data" 
+                                                        :agentId (-> agents (nth idx) :id)})
+                                                     (:vehicles plan))}})]
+           (testing "api returns data"
              (is (-> create-mock :result :data :createPlanTasks))
-             (done))
-           )))
+             (done)))))
 
 (deftest create-agent-locations
   (async done
