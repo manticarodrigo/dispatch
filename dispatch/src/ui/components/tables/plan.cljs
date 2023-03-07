@@ -56,11 +56,12 @@
     :cell (fn [^js info]
             (let [row-index (-> info .-row .-index)]
               (r/as-element
-               [combobox {:value (get @!selected-agents row-index)
-                          :options agents
-                          :option-to-label :name
-                          :option-to-value :id
-                          :on-change #(swap! !selected-agents assoc row-index %)}])))}
+               [:div {:class "min-w-[200px]"}
+                [combobox {:value (get @!selected-agents row-index)
+                           :options agents
+                           :option-to-label :name
+                           :option-to-value :id
+                           :on-change #(swap! !selected-agents assoc row-index %)}]])))}
    {:id "vehicle"
     :header (tr [:table.plan/vehicle])
     :accessorFn #(.. ^js % -vehicle -name)}
