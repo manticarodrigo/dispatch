@@ -24,7 +24,7 @@
       :leave-to "opacity-0"}
      [:div {:class "fixed inset-0 bg-black/75 backdrop-blur"}]]
     [:div {:class "fixed inset-0 overflow-y-auto"}
-     [:div {:class "flex min-h-full items-center justify-center p-4 text-center"}
+     [:div {:class "flex min-h-full items-center justify-center p-4 lg:p-12 xl:p-16 text-center"}
       [:> (. Transition -Child)
        {:as Fragment
         :enter "ease-out duration-300"
@@ -34,6 +34,7 @@
         :leave-from "opacity-100 scale-100"
         :leave-to "opacity-0 scale-95"}
        [:> (. Dialog -Panel)
-        {:class "w-full max-w-md transform overflow-hidden rounded-2xl bg-neutral-900 p-6 text-left align-middle shadow-xl transition-all"}
-        [:> (. Dialog -Title) {:as "h3" :class "mb-4 text-lg font-medium leading-6"} title]
+        {:class "transform overflow-hidden rounded-2xl bg-neutral-900 text-left align-middle shadow-xl transition-all"}
+        [:header {:class "p-4 border-b border-neutral-700"}
+         [:> (. Dialog -Title) {:as "h3" :class "text-sm font-medium leading-6"} title]]
         (into [:<>] children)]]]]]])

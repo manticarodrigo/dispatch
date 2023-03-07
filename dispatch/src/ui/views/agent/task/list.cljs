@@ -7,7 +7,6 @@
             [ui.utils.i18n :refer (tr)]
             [ui.hooks.use-map :refer (use-map-items)]
             [ui.components.layout.map :refer (map-layout)]
-            [ui.components.layout.header :refer (header)]
             [ui.components.filters :refer (filters)]
             [ui.components.lists.task :refer (task-list)]))
 
@@ -29,8 +28,7 @@
      {:tasks tasks}
      [tasks])
 
-    [map-layout
-     [header {:title (tr [:view.task.list/title])}]
+    [map-layout {:title (tr [:view.task.list/title])}
      [filters {:date (-> date parse-date d/startOfDay)
                :on-date-change #(set-search-params
                                  (assoc search-params :date (-> % .getTime)))

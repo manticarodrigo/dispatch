@@ -7,7 +7,8 @@
   {:en
    {:noun {:status "status"
            :never "never"}
-    :verb {:create "create"}
+    :verb {:create "create"
+           :show "show"}
     :view {:not-found "Page not found"
            :register {:title "Register"
                       :login-link {:title "Already have an account?"
@@ -25,7 +26,16 @@
            :place {:list {:title "Places"}
                    :create {:title "Create place"}}
            :plan {:list {:title "Plans"}
-                  :create {:title "Create plan"}}
+                  :create {:title "Create plan"}
+                  :detail {:title (fn [[startAt endAt]]
+                                    (str
+                                     "Plan"
+                                     (when (and startAt endAt)
+                                       (apply str " ("
+                                              (d/format startAt "dd/MM/yyyy hh:mmaaa")
+                                              " - "
+                                              (d/format endAt "dd/MM/yyyy hh:mmaaa")
+                                              ")"))))}}
            :shipment {:list {:title "Shipments"}
                       :create {:title "Create shipment"}}
            :vehicle {:list {:title "Vehicles"}
@@ -61,6 +71,18 @@
             :latitude "Latitude"
             :longitude "Longitude"
             :submit "Submit"}
+
+    :table {:plan {:agent "Agent"
+                   :vehicle "Vehicle"
+                   :start "Start"
+                   :end "End"
+                   :distance "Distance"
+                   :volume "Volume"
+                   :weight "Weight"
+                   :visits "Visits"
+                   :place "Place"
+                   :order "Order"}}
+
     :status {:all "All"
              :incomplete "Incomplete"
              :complete "Complete"
@@ -100,7 +122,9 @@
    :es
    {:noun {:status "estado"
            :never "nunca"}
-    :verb {:create "crear"}
+    :verb {:create "crear"
+           :show "mostrar"}
+
     :view {:register {:title "Registrar"
                       :login-link {:title "¿Ya tienes una cuenta?"
                                    :link "Ingresar aquí."}}
@@ -117,7 +141,17 @@
            :place {:list {:title "Lugares"}
                    :create {:title "Crear lugar"}}
            :plan {:list {:title "Planes"}
-                  :create {:title "Crear plan"}}
+                  :create {:title "Crear plan"}
+                  :detail {:title (fn [[startAt endAt]]
+                                    (str
+                                     "Plan"
+                                     (when (and startAt endAt)
+                                       (apply str
+                                              " ("
+                                              (d/format startAt "dd/MM/yyyy hh:mmaaa")
+                                              " - "
+                                              (d/format endAt "dd/MM/yyyy hh:mmaaa")
+                                              ")"))))}}
            :shipment {:list {:title "Envíos"}
                       :create {:title "Crear envío"}}
            :vehicle {:list {:title "Vehículos"}
@@ -131,6 +165,7 @@
                                     :failed "No se pudo guardar tu método de pago."
                                     :add-payment-method "Agregar método de pago"
                                     :delete-payment-method "Eliminar método de pago"}}}
+
     :field {:email "Correo electrónico"
             :phone "Teléfono"
             :code "Código"
@@ -154,6 +189,18 @@
             :latitude "Latitud"
             :longitude "Longitud"
             :submit "Enviar"}
+
+    :table {:plan {:agent "Agente"
+                   :vehicle "Vehículo"
+                   :start "Inicio"
+                   :end "Fin"
+                   :distance "Distancia"
+                   :volume "Volumen"
+                   :weight "Peso"
+                   :visits "Visitas"
+                   :place "Lugar"
+                   :order "Orden"}}
+
     :status {:all "Todos"
              :incomplete "Incompleto"
              :complete "Completo"

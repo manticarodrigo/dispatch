@@ -28,6 +28,3 @@
 
 (defn find-many [^js model params]
   (.findMany model (->js params)))
-
-(defn create-many [^js model params]
-  (.createMany model (->js params)))

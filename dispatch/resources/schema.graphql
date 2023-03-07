@@ -37,8 +37,8 @@ type Mutation {
     vehicleIds: [ID]!
     shipmentIds: [ID]!
   ): Plan
-  optimizePlan(planId: ID!): JSON
-  detachPaymentMethod(paymentMethodresultId: ID!): Boolean
+  optimizePlan(planId: ID!): Plan
+  detachPaymentMethod(paymentMethodId: ID!): Boolean
   createPlanTasks(input: AssignmentsInput): Plan
   updatePlanTasks(input: UpdateAssignentIput): Task
 }
@@ -65,6 +65,7 @@ type Organization {
   shipments: [Shipment]
   vehicles: [Vehicle]
   plans: [Plan]
+  plan(planId: ID!): Plan
 }
 
 type Agent {
@@ -160,6 +161,7 @@ type Plan {
   startAt: Date!
   endAt: Date!
   breaks: JSON
+  result: JSON
   vehicles: [Vehicle]!
   shipments: [Shipment]!
 }

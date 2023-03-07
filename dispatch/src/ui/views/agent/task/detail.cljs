@@ -5,7 +5,6 @@
             [ui.utils.i18n :refer (tr)]
             [ui.hooks.use-map :refer (use-map-items)]
             [ui.components.layout.map :refer (map-layout)]
-            [ui.components.layout.header :refer (header)]
             [ui.components.lists.stop :refer (stop-list)]))
 
 (def FETCH_AGENT_TASK (gql (inline "queries/user/agent/fetch-task.graphql")))
@@ -24,6 +23,5 @@
       :places (mapv :place stops)}
      [task])
 
-    [map-layout
-     [header {:title name :subtitle (tr [:status/start-at] [startAt])}]
+    [map-layout {:title name :subtitle (tr [:status/start-at] [startAt])}
      [stop-list {:task task :loading loading}]]))

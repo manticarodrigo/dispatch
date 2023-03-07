@@ -1,0 +1,44 @@
+query OrganizationPlan($planId: ID!) {
+  user {
+    organization {
+      agents {
+        id
+        name
+      }
+      plan(planId: $planId) {
+        id
+        result
+        startAt
+        endAt
+        breaks
+        depot {
+          id
+          name
+          description
+          lat
+          lng
+        }
+        vehicles {
+          id
+          name
+          capacities
+        }
+        shipments {
+          id
+          size
+          duration
+          windows
+          place {
+            id
+            name
+            phone
+            email
+            description
+            lat
+            lng
+          }
+        }
+      }
+    }
+  }
+}
