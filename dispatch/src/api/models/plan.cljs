@@ -68,32 +68,33 @@
 
 (defn create-plan-tasks [^js context {:keys [input]}]
   (p/let [{:keys [planId assignments]} input
-          ;;all-shipment-ids (flatten (map :shipmentIds assignments))
+          all-shipment-ids (flatten (map :shipmentIds assignments))
           ^js user (user/active-user context {:include
                                               {:organization
                                                {:include
                                                 {:shipments
-                                                 {:include
+                                                 {:where
+                                                  {:id {:in all-shipment-ids}}
+                                                  :include
                                                   {:place true}}}}}})
           place-map (into {} (for [^js shipment (.. user -organization -shipments)]
                                {(.-id shipment) (.. shipment -place -id)}))
           organization-id (.. user -organization -id)]
-
     (prisma/update!
      (.. context -prisma -plan)
      {:where {:id planId}
       :data {:tasks
              {:create (map
                        (fn [{:keys [agentId vehicleId shipmentIds]}]
-                         {:organization {:connect {:id organization-id}}
+                         {:route {}
+                          :startAt (js/Date.)
+                          :organization {:connect {:id organization-id}}
                           :agent {:connect {:id agentId}}
                           :vehicle {:connect {:id vehicleId}}
-                          :route {}
-                          :startAt (js/Date.)
                           :stops {:create (map-indexed
                                            (fn [idx id]
-                                             {:place {:connect {:id (get place-map id)}}
-                                              :shipment {:connect {:id id}}
-                                              :order idx})
+                                             {:order idx
+                                              :place {:connect {:id (get place-map id)}}
+                                              :shipment {:connect {:id id}}})
                                            shipmentIds)}})
                        assignments)}}})))
