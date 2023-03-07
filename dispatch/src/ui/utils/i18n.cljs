@@ -7,7 +7,8 @@
   {:en
    {:noun {:status "status"
            :never "never"}
-    :verb {:create "create"}
+    :verb {:create "create"
+           :show "show"}
     :view {:not-found "Page not found"
            :register {:title "Register"
                       :login-link {:title "Already have an account?"
@@ -71,13 +72,15 @@
             :longitude "Longitude"
             :submit "Submit"}
 
-    :table {:plan {:vehicle "Vehicle name"
-                   :start "Start time"
-                   :end "End time"
-                   :meters "Meters traveled"
+    :table {:plan {:vehicle "Vehicle"
+                   :start "Start"
+                   :end "End"
+                   :distance "Distance"
                    :volume "Volume"
                    :weight "Weight"
-                   :shipments "Shipments"}}
+                   :visits "Visits"
+                   :place "Place"
+                   :order "Order"}}
 
     :status {:all "All"
              :incomplete "Incomplete"
@@ -118,7 +121,8 @@
    :es
    {:noun {:status "estado"
            :never "nunca"}
-    :verb {:create "crear"}
+    :verb {:create "crear"
+           :show "mostrar"}
 
     :view {:register {:title "Registrar"
                       :login-link {:title "¿Ya tienes una cuenta?"
@@ -185,13 +189,15 @@
             :longitude "Longitud"
             :submit "Enviar"}
 
-    :table {:plan {:vehicle "Nombre del vehículo"
-                   :start "Hora de inicio"
-                   :end "Hora de finalización"
-                   :meters "Metros recorridos"
+    :table {:plan {:vehicle "Vehículo"
+                   :start "Inicio"
+                   :end "Fin"
+                   :distance "Distancia"
                    :volume "Volumen"
                    :weight "Peso"
-                   :shipments "Envíos"}}
+                   :visits "Visitas"
+                   :place "Lugar"
+                   :order "Orden"}}
 
     :status {:all "Todos"
              :incomplete "Incompleto"

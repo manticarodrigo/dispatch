@@ -77,7 +77,7 @@
        [modal {:show @!add-card?
                :title (tr [:view.subscription.payment/add-payment-method])
                :on-close #(reset! !add-card? false)}
-        [:div {:class "p-4"}
+        [:div {:class "max-w-full w-96 p-4"}
          [setup-intent]]]])))
 
 (defn view []

@@ -77,9 +77,10 @@
                   :meters (.. route -metrics -travelDistanceMeters)
                   :volume (.. route -metrics -maxLoads -volume -amount)
                   :weight (.. route -metrics -maxLoads -weight -amount)
-                  :shipments (apply array
-                                    (map
-                                     (fn [^js visit]
-                                       (get shipments (or (.-shipmentIndex visit) 0)))
-                                     (.-visits route)))})
+                  :visits (apply array
+                                 (map
+                                  (fn [^js visit]
+                                    #js{:start (.. visit -startTime)
+                                        :shipment (get shipments (or (.-shipmentIndex visit) 0))})
+                                  (.-visits route)))})
             routes))))

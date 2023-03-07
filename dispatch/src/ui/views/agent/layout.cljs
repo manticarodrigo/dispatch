@@ -49,7 +49,7 @@
     [:<>
      (when unsupported?
        [modal {:show true :title (tr [:device.unsupported/title]) :on-close #()}
-        [:div {:class "p-4"}
+        [:div {:class "max-w-full w-96 p-4"}
          [:p {:class "mb-4"} (tr [:device.unsupported/message])]
          [:a {:href "https://play.google.com/store/apps/details?id=app.ambito.dispatch"
               :class "underline"}

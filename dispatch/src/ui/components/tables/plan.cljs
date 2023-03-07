@@ -1,5 +1,6 @@
 (ns ui.components.tables.plan
   (:require [reagent.core :as r]
+            [clojure.string :as s]
             [cljs-bean.core :refer (->clj)]
             [ui.utils.date :as d]
             [ui.utils.i18n :refer (tr)]
@@ -14,20 +15,25 @@
            :disabled disabled
            :on-change on-change}])
 
-(defn shipment-cell [^js info]
+(defn visit-cell [^js info]
   (let [!show-modal (r/atom false)]
     (fn []
-      (let [{:keys [vehicle shipments]} (->clj (.. info -row -original))]
+      (let [{:keys [visits]} (->clj (.. info -row -original))]
         [:div {:class "flex justify-between items-center"}
-         (count shipments)
-         [button {:label "Show"
+         [button {:label (s/capitalize (tr [:verb/show]))
                   :class "ml-2"
                   :on-click #(reset! !show-modal true)}]
          [modal {:show @!show-modal
-                 :title "Shipments"
+                 :title (tr [:table.plan/visits])
                  :on-close #(reset! !show-modal false)}
           [:div {:class "overflow-auto w-full h-full"}
-           [route-table {:shipments shipments}]]]]))))
+           [route-table {:visits visits}]]]]))))
+
+(defn ratio-detail [num denom unit]
+  (let [perc (-> num (/ denom) (* 100) (.toFixed 2))]
+    [:div
+     [:div [:span num] [:i {:class "font-thin"} " / " denom unit]]
+     [:div {:class "font-thin mt-1"} perc "%"]]))
 
 (defn get-columns []
   [{:id "select"
@@ -45,11 +51,11 @@
    {:id "vehicle"
     :header (tr [:table.plan/vehicle])
     :accessorFn #(.. ^js % -vehicle -name)}
-   {:id "shipments"
-    :header (tr [:table.plan/shipments])
-    :accessorFn #(count (.. ^js % -shipments))
+   {:id "visits"
+    :header (tr [:table.plan/visits])
+    :accessorFn #(count (.. ^js % -visits))
     :cell (fn [^js info]
-            (r/as-element [shipment-cell info]))}
+            (r/as-element [visit-cell info]))}
    {:id "start"
     :header (tr [:table.plan/start])
     :accessorFn #(-> (.. ^js % -start) js/Date. .getTime)
@@ -58,9 +64,13 @@
     :header (tr [:table.plan/end])
     :accessorFn #(-> (.. ^js % -end) js/Date. .getTime)
     :cell #(-> ^js % .getValue js/Date. (d/format "hh:mmaaa"))}
-   {:id "meters"
-    :header (tr [:table.plan/meters])
-    :accessorFn #(.. ^js % -meters)}
+   {:id "distance"
+    :header (tr [:table.plan/distance])
+    :accessorFn #(.. ^js % -meters)
+    :cell (fn [^js info]
+            (let [fmt #(-> % (/ 1000) (.toFixed 2))
+                  val (.getValue info)]
+              (str (fmt val) "km")))}
    {:id "volume"
     :header (tr [:table.plan/volume])
     :accessorFn #(.. ^js % -volume)
@@ -68,7 +78,8 @@
             (let [fmt #(-> % (/ 100000) (.toFixed 2))
                   val (.getValue info)
                   capacity (.. info -row -original -vehicle -capacities -volume)]
-              (str (fmt val) " / " (fmt capacity) "m³")))}
+              (r/as-element
+               [ratio-detail (fmt val) (fmt capacity) "m³"])))}
    {:id "weight"
     :header (tr [:table.plan/weight])
     :accessorFn #(.. ^js % -weight)
@@ -76,7 +87,8 @@
             (let [fmt #(-> % (/ 1000) (.toFixed 2))
                   val (.getValue info)
                   capacity (.. info -row -original -vehicle -capacities -weight)]
-              (str (fmt val) " / " (fmt capacity) "kg")))}])
+              (r/as-element
+               [ratio-detail (fmt val) (fmt capacity) "kg"])))}])
 
 (defn plan-table [{:keys [result selected-rows set-selected-rows]}]
   [table {:state #js{:rowSelection selected-rows}
