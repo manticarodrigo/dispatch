@@ -17,3 +17,11 @@
     {:query query
      :request request
      :result result}))
+
+(defn create-plan-tasks [variables]
+  (p/let [query (inline "mutations/plan/create-plan-tasks.graphql")
+          request {:query query :variables variables}
+          result (send request)]
+    {:query query
+     :request request
+     :result result}))

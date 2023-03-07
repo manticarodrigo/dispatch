@@ -13,3 +13,7 @@
 (defn optimize-plan
   [_ args context _]
   (plan/optimize-plan context (->clj args)))
+
+(defn create-plan-tasks
+  [_ args context _]
+  (plan/create-plan-tasks context (->clj args)))

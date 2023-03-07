@@ -37,7 +37,7 @@
   (p/let [^js plan (prisma/find-unique
                     (.. context -prisma -plan)
                     {:where {:id planId}
-                     :include plan-include})
+                     :include plan-include})]))
           ;; _ (->
           ;;    (optimization/optimize-plan plan)
           ;;    (.then #(js/console.log (.. % -data)))
@@ -46,4 +46,35 @@
           ;;    (optimization/fetch-plan "0649c462-f345-4703-823a-b8963a86485d")
           ;;    (.then #(js/console.log (.. % -data)))
           ;;    (.catch #(js/console.log (.. % -response -data))))
-          ]))
+
+(defn create-plan-tasks [^js context {:keys [input]}]
+  (p/let [{:keys [planId assignments]} input
+          ;;all-shipment-ids (flatten (map :shipmentIds assignments))
+          ^js user (user/active-user context {:include
+                                              {:organization
+                                               {:include
+                                                {:shipments
+                                                 {:include
+                                                  {:place true}}}}}})
+          place-map (into {} (for [^js shipment (.. user -organization -shipments)]
+                               {(.-id shipment) (.. shipment -place -id)}))
+          organization-id (.. user -organization -id)]
+
+    (prisma/update!
+     (.. context -prisma -plan)
+     {:where {:id planId}
+      :data {:tasks
+             {:create (map
+                       (fn [{:keys [agentId vehicleId shipmentIds]}]
+                         {:organization {:connect {:id organization-id}}
+                          :agent {:connect {:id agentId}}
+                          :vehicle {:connect {:id vehicleId}}
+                          :route {}
+                          :startAt (js/Date.)
+                          :stops {:create (map-indexed
+                                           (fn [idx id]
+                                             {:place {:connect {:id (get place-map id)}} 
+                                              :shipment {:connect {:id id}}
+                                              :order idx
+                                             }) shipmentIds)}})
+                       assignments)}}})))
