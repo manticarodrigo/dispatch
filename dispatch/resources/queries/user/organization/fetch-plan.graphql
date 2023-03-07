@@ -1,6 +1,10 @@
 query OrganizationPlan($planId: ID!) {
   user {
     organization {
+      agents {
+        id
+        name
+      }
       plan(planId: $planId) {
         id
         result

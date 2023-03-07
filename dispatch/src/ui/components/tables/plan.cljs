@@ -1,13 +1,14 @@
 (ns ui.components.tables.plan
-  (:require [reagent.core :as r]
-            [clojure.string :as s]
+  (:require [clojure.string :as s]
+            [reagent.core :as r]
             [cljs-bean.core :refer (->clj)]
             [ui.utils.date :as d]
             [ui.utils.i18n :refer (tr)]
             [ui.components.table :refer (table)]
             [ui.components.inputs.button :refer (button)]
             [ui.components.modal :refer (modal)]
-            [ui.components.tables.route :refer (route-table)]))
+            [ui.components.tables.route :refer (route-table)]
+            [ui.components.inputs.combobox :refer (combobox)]))
 
 (defn checkbox [{:keys [checked disabled on-change]}]
   [:input {:type "checkbox"
@@ -18,8 +19,10 @@
 (defn visit-cell [^js info]
   (let [!show-modal (r/atom false)]
     (fn []
-      (let [{:keys [visits]} (->clj (.. info -row -original))]
+      (let [num (.getValue info)
+            {:keys [visits]} (->clj (.. info -row -original))]
         [:div {:class "flex justify-between items-center"}
+         [:span num]
          [button {:label (s/capitalize (tr [:verb/show]))
                   :class "ml-2"
                   :on-click #(reset! !show-modal true)}]
@@ -35,7 +38,7 @@
      [:div [:span num] [:i {:class "font-thin"} " / " denom unit]]
      [:div {:class "font-thin mt-1"} perc "%"]]))
 
-(defn get-columns []
+(defn get-columns [agents !selected-agents]
   [{:id "select"
     :header (fn [^js info]
               (r/as-element
@@ -48,6 +51,16 @@
               {:checked (-> info .-row .getIsSelected)
                :disabled (not (-> info .-row .getCanSelect))
                :on-change (-> info .-row .getToggleSelectedHandler)}]))}
+   {:id "agent"
+    :header (tr [:table.plan/agent])
+    :cell (fn [^js info]
+            (let [row-index (-> info .-row .-index)]
+              (r/as-element
+               [combobox {:value (get @!selected-agents row-index)
+                          :options agents
+                          :option-to-label :name
+                          :option-to-value :id
+                          :on-change #(swap! !selected-agents assoc row-index %)}])))}
    {:id "vehicle"
     :header (tr [:table.plan/vehicle])
     :accessorFn #(.. ^js % -vehicle -name)}
@@ -90,8 +103,13 @@
               (r/as-element
                [ratio-detail (fmt val) (fmt capacity) "kg"])))}])
 
-(defn plan-table [{:keys [result selected-rows set-selected-rows]}]
-  [table {:state #js{:rowSelection selected-rows}
+(defn plan-table [{:keys [result
+                          agents
+                          selected-rows
+                          set-selected-rows
+                          !selected-agents]}]
+  [table {:state #js{:rowSelection selected-rows
+                     :agentSelection @!selected-agents}
           :data result
-          :columns (get-columns)
+          :columns (get-columns agents !selected-agents)
           :on-row-selection-change set-selected-rows}])

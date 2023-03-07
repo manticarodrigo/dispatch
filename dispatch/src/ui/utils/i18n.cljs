@@ -72,7 +72,8 @@
             :longitude "Longitude"
             :submit "Submit"}
 
-    :table {:plan {:vehicle "Vehicle"
+    :table {:plan {:agent "Agent"
+                   :vehicle "Vehicle"
                    :start "Start"
                    :end "End"
                    :distance "Distance"
@@ -189,7 +190,8 @@
             :longitude "Longitud"
             :submit "Enviar"}
 
-    :table {:plan {:vehicle "Vehículo"
+    :table {:plan {:agent "Agente"
+                   :vehicle "Vehículo"
                    :start "Inicio"
                    :end "Fin"
                    :distance "Distancia"
