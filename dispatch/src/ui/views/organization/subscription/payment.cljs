@@ -78,7 +78,8 @@
        [modal {:show @!add-card?
                :title (tr [:view.subscription.payment/add-payment-method])
                :on-close #(reset! !add-card? false)}
-        [setup-intent]]])))
+        [:div {:class "p-4"}
+         [setup-intent]]]])))
 
 (defn view []
   (let [[search-params] (use-search-params)

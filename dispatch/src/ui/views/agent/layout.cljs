@@ -49,10 +49,11 @@
     [:<>
      (when unsupported?
        [modal {:show true :title (tr [:device.unsupported/title]) :on-close #()}
-        [:p {:class "mb-4"} (tr [:device.unsupported/message])]
-        [:a {:href "https://play.google.com/store/apps/details?id=app.ambito.dispatch"
-             :class "underline"}
-         (tr [:device.unsupported/download])]])
+        [:div {:class "p-4"}
+         [:p {:class "mb-4"} (tr [:device.unsupported/message])]
+         [:a {:href "https://play.google.com/store/apps/details?id=app.ambito.dispatch"
+              :class "underline"}
+          (tr [:device.unsupported/download])]]])
      [nav
       {:nav-items nav-items
        :menu-items menu-items}

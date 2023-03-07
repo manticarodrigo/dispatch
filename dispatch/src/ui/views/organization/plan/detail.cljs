@@ -1,5 +1,6 @@
 (ns ui.views.organization.plan.detail
-  (:require [shadow.resource :refer (inline)]
+  (:require [react :refer (useState)]
+            [shadow.resource :refer (inline)]
             [ui.lib.apollo :refer (gql use-query use-mutation)]
             [ui.lib.router :refer (use-params)]
             [ui.utils.i18n :refer (tr)]
@@ -13,7 +14,8 @@
   (let [{plan-id :plan} (use-params)
         {:keys [data loading]} (use-query FETCH_PLAN {:variables {:planId plan-id}})
         [optimize] (use-mutation OPTIMIZE_PLAN {})
-        {:keys [result startAt endAt]} (-> data :user :organization :plan)]
+        {:keys [result startAt endAt]} (-> data :user :organization :plan)
+        [selected-rows set-selected-rows] (useState #js{})]
     [:main {:class "flex flex-col w-full h-full"}
      [header {:title (if loading
                        (str (tr [:misc/loading]) "...")
@@ -21,5 +23,7 @@
      (if loading (str (tr [:misc/loading]) "...")
          (if result
            [:div {:class "overflow-auto h-full"}
-            [plan-table {:result result}]]
+            [plan-table {:result result
+                         :selected-rows selected-rows
+                         :set-selected-rows set-selected-rows}]]
            [:button {:on-click #(optimize {:variables {:planId plan-id}})} "Optimize"]))]))

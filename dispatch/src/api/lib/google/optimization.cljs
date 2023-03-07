@@ -80,6 +80,6 @@
                   :shipments (apply array
                                     (map
                                      (fn [^js visit]
-                                       (get shipments (or 0 (.-shipmentIndex visit))))
+                                       (get shipments (or (.-shipmentIndex visit) 0)))
                                      (.-visits route)))})
             routes))))

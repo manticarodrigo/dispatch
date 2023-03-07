@@ -34,6 +34,7 @@
         :leave-from "opacity-100 scale-100"
         :leave-to "opacity-0 scale-95"}
        [:> (. Dialog -Panel)
-        {:class "w-full max-w-md transform overflow-hidden rounded-2xl bg-neutral-900 p-6 text-left align-middle shadow-xl transition-all"}
-        [:> (. Dialog -Title) {:as "h3" :class "mb-4 text-lg font-medium leading-6"} title]
+        {:class "w-full max-w-md transform overflow-hidden rounded-2xl bg-neutral-900 text-left align-middle shadow-xl transition-all"}
+        [:header {:class "p-4 border-b border-neutral-700"}
+         [:> (. Dialog -Title) {:as "h3" :class "text-sm font-medium leading-6"} title]]
         (into [:<>] children)]]]]]])
