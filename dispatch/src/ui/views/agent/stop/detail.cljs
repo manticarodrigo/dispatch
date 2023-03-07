@@ -4,7 +4,6 @@
             [ui.lib.router :refer (use-params)]
             [ui.hooks.use-map :refer (use-map-items)]
             [ui.components.layout.map :refer (map-layout)]
-            [ui.components.layout.header :refer (header)]
             [ui.components.forms.stop :refer (stop-form)]))
 
 (def FETCH_AGENT_STOP (gql (inline "queries/user/agent/fetch-stop.graphql")))
@@ -21,7 +20,6 @@
      {:places [place]}
      [place])
 
-    [map-layout
-     [header {:title name :subtitle description}]
+    [map-layout {:title name :subtitle description}
      [:div {:class "p-4 overflow-y-auto"}
       [stop-form]]]))

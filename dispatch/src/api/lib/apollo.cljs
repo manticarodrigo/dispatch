@@ -66,7 +66,8 @@
                  :stop stop/fetch-organization-stop
                  :shipments shipment/fetch-organization-shipments
                  :vehicles vehicle/fetch-organization-vehicles
-                 :plans plan/fetch-organization-plans}
+                 :plans plan/fetch-organization-plans
+                 :plan plan/fetch-organization-plan}
                 :Agent
                 {:places place/fetch-agent-places
                  :place place/fetch-agent-place

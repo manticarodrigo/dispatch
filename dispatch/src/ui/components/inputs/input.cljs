@@ -7,7 +7,7 @@
 (def input-class (class-names
                   button-class
                   "appearance-none"
-                  "w-full"
+                  "w-full truncate"
                   "text-left text-sm font-light"
                   "placeholder:text-base placeholder:text-neutral-400"))
 

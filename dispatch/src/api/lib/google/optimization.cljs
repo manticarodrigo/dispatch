@@ -56,8 +56,31 @@
 
 (defn transform-tour [depot shipments vehicles]
   (let [{:keys [startAt endAt]} depot]
-    {:model
+    {:populate_polylines true
+     :model
      {:global_start_time (-> startAt .toISOString)
       :global_end_time (-> endAt .toISOString)
       :shipments (transform-shipments shipments)
       :vehicles (transform-vehicles depot vehicles)}}))
+
+(defn parse-result [^js plan]
+  (let [^js result (.. plan -result)
+        ^js routes (some-> result .-routes)
+        ^js shipments (.. plan -shipments)
+        ^js vehicles (.. plan -vehicles)]
+    (apply array
+           (map-indexed
+            (fn [idx ^js route]
+              #js{:vehicle (get vehicles idx)
+                  :start (.. route -vehicleStartTime)
+                  :end (.. route -vehicleEndTime)
+                  :meters (.. route -metrics -travelDistanceMeters)
+                  :volume (.. route -metrics -maxLoads -volume -amount)
+                  :weight (.. route -metrics -maxLoads -weight -amount)
+                  :visits (apply array
+                                 (map
+                                  (fn [^js visit]
+                                    #js{:start (.. visit -startTime)
+                                        :shipment (get shipments (or (.-shipmentIndex visit) 0))})
+                                  (.-visits route)))})
+            routes))))

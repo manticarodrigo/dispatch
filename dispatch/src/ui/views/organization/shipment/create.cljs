@@ -1,8 +1,6 @@
 (ns ui.views.organization.shipment.create
   (:require [ui.utils.i18n :refer (tr)]
-            [ui.components.layout.map :refer (map-layout)]
-            [ui.components.layout.header :refer (header)]))
+            [ui.components.layout.map :refer (map-layout)]))
 
 (defn view []
-  [map-layout
-   [header {:title (tr [:view.shipment.create/title])}]])
+  [map-layout {:title (tr [:view.shipment.create/title])}])
