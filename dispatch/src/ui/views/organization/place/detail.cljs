@@ -22,13 +22,14 @@
                            :end  (-> date parse-date d/endOfDay)
                            :status status}}})
         {:keys [data previousData loading]} query
-        {:keys [tasks]} (some-> data :user :organization :place)
+        {:keys [place]} (some-> data :user :organization)
+        {:keys [tasks]} place
         {:keys [name description]} (some-> (or data previousData) :user :organization :place)]
 
     (use-map-items
      loading
-     {:tasks tasks}
-     [tasks])
+     {:places [place]}
+     [place])
 
     [map-layout {:title name :subtitle description}
      [filters {:date (-> date parse-date d/startOfDay)
