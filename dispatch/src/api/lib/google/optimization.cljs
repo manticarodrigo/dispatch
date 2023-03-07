@@ -56,7 +56,8 @@
 
 (defn transform-tour [depot shipments vehicles]
   (let [{:keys [startAt endAt]} depot]
-    {:model
+    {:populate_polylines true
+     :model
      {:global_start_time (-> startAt .toISOString)
       :global_end_time (-> endAt .toISOString)
       :shipments (transform-shipments shipments)
@@ -64,7 +65,7 @@
 
 (defn parse-result [^js plan]
   (let [^js result (.. plan -result)
-        ^js routes (.. result -routes)
+        ^js routes (some-> result .-routes)
         ^js shipments (.. plan -shipments)
         ^js vehicles (.. plan -vehicles)]
     (apply array

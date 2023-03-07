@@ -27,11 +27,14 @@
            :plan {:list {:title "Plans"}
                   :create {:title "Create plan"}
                   :detail {:title (fn [[startAt endAt]]
-                                    (str "Plan ("
-                                         (d/format startAt "dd/MM/yyyy hh:mmaaa")
-                                         " - "
-                                         (d/format endAt "dd/MM/yyyy hh:mmaaa")
-                                         ")"))}}
+                                    (str
+                                     "Plan"
+                                     (when (and startAt endAt)
+                                       (apply str " ("
+                                              (d/format startAt "dd/MM/yyyy hh:mmaaa")
+                                              " - "
+                                              (d/format endAt "dd/MM/yyyy hh:mmaaa")
+                                              ")"))))}}
            :shipment {:list {:title "Shipments"}
                       :create {:title "Create shipment"}}
            :vehicle {:list {:title "Vehicles"}
@@ -135,11 +138,15 @@
            :plan {:list {:title "Planes"}
                   :create {:title "Crear plan"}
                   :detail {:title (fn [[startAt endAt]]
-                                    (str "Plan ("
-                                         (d/format startAt "dd/MM/yyyy hh:mmaaa")
-                                         " - "
-                                         (d/format endAt "dd/MM/yyyy hh:mmaaa")
-                                         ")"))}}
+                                    (str
+                                     "Plan"
+                                     (when (and startAt endAt)
+                                       (apply str
+                                              " ("
+                                              (d/format startAt "dd/MM/yyyy hh:mmaaa")
+                                              " - "
+                                              (d/format endAt "dd/MM/yyyy hh:mmaaa")
+                                              ")"))))}}
            :shipment {:list {:title "Envíos"}
                       :create {:title "Crear envío"}}
            :vehicle {:list {:title "Vehículos"}

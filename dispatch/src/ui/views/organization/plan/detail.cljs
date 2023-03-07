@@ -12,7 +12,7 @@
 (defn view []
   (let [{plan-id :plan} (use-params)
         {:keys [data loading]} (use-query FETCH_PLAN {:variables {:planId plan-id}})
-        [optimize status] (use-mutation OPTIMIZE_PLAN {})
+        [optimize] (use-mutation OPTIMIZE_PLAN {})
         {:keys [result startAt endAt]} (-> data :user :organization :plan)]
     [:main {:class "flex flex-col w-full h-full"}
      [header {:title (if loading
@@ -21,5 +21,5 @@
      (if loading (str (tr [:misc/loading]) "...")
          (if result
            [:div {:class "overflow-auto h-full"}
-            [plan-table result]]
+            [plan-table {:result result}]]
            [:button {:on-click #(optimize {:variables {:planId plan-id}})} "Optimize"]))]))
