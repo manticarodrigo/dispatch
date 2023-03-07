@@ -1,8 +1,6 @@
 (ns ui.views.organization.plan.create
   (:require [ui.utils.i18n :refer (tr)]
-            [ui.components.layout.map :refer (map-layout)]
-            [ui.components.layout.header :refer (header)]))
+            [ui.components.layout.map :refer (map-layout)]))
 
 (defn view []
-  [map-layout
-   [header {:title (tr [:view.plan.create/title])}]])
+  [map-layout {:title (tr [:view.plan.create/title])}])

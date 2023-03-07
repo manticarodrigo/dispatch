@@ -11,7 +11,6 @@
             [ui.utils.date :as d]
             [ui.utils.i18n :refer (tr)]
             [ui.components.layout.map :refer (map-layout)]
-            [ui.components.layout.header :refer (header)]
             [ui.components.callout :refer (callout)]
             [ui.components.article :refer (article)]
             [ui.components.modal :refer (modal)]
@@ -86,9 +85,8 @@
         secret (:setup_intent_client_secret search-params)
         {:keys [data loading]} (use-query FETCH_PAYMENT_METHODS {})
         payment-methods (some-> data :stripe :paymentMethods :data)]
-    [map-layout
-     [header {:title (tr [:view.subscription.payment/title])
-              :subtitle (tr [:view.subscription.payment/subtitle])}]
+    [map-layout {:title (tr [:view.subscription.payment/title])
+                 :subtitle (tr [:view.subscription.payment/subtitle])}
      [:div {:class "p-4 overflow-y-auto"}
       (when secret
         [stripe-elements {:secret secret}

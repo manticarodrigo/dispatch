@@ -6,7 +6,6 @@
             [ui.utils.i18n :refer (tr)]
             [ui.hooks.use-map :refer (use-map-items)]
             [ui.components.layout.map :refer (map-layout)]
-            [ui.components.layout.header :refer (header)]
             [ui.components.filters :refer (filters)]
             [ui.components.lists.agent :refer (agent-list)]))
 
@@ -23,9 +22,8 @@
      {:agents filtered-agents}
      [agents text])
 
-    [map-layout
-     [header {:title (tr [:view.agent.list/title])
-              :create-link "create"}]
+    [map-layout {:title (tr [:view.agent.list/title])
+                 :create-link "create"}
      [filters {:search text
                :on-search-change #(set-search-params
                                    (if (empty? %)

@@ -6,7 +6,6 @@
             [ui.utils.date :as d]
             [ui.hooks.use-map :refer (use-map-items)]
             [ui.components.layout.map :refer (map-layout)]
-            [ui.components.layout.header :refer (header)]
             [ui.components.filters :refer (filters)]
             [ui.components.lists.task :refer (task-list)]))
 
@@ -31,8 +30,7 @@
      {:tasks tasks}
      [tasks])
 
-    [map-layout
-     [header {:title name :subtitle description}]
+    [map-layout {:title name :subtitle description}
      [filters {:date (-> date parse-date d/startOfDay)
                :on-date-change #(set-search-params
                                  (assoc search-params :date (-> % .getTime)))
