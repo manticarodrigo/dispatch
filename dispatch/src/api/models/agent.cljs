@@ -24,11 +24,16 @@
                      {:organization
                       {:include
                        {:agents
-                        {:orderBy {:location {:createdAt "desc"}}
-                         :include
+                        {:include
                          {:user true
-                          :location true}}}}}})
+                          :locations
+                          {:take 1
+                           :orderBy {:createdAt "desc"}}}}}}}})
           ^js agents (.. user -organization -agents)]
+    (.forEach
+     agents
+     (fn [^js agent]
+       (set! (.-location agent) (first (.-locations agent)))))
     ;; this moves null values to the end of the list
     (sort-by #(some-> % .-location .-createdAt) > agents)))
 
@@ -42,8 +47,11 @@
                           {:where {:id agentId}
                            :include
                            {:user true
-                            :location true
+                            :locations {:take 1
+                                        :orderBy {:createdAt "desc"}}
                             :tasks {:where (filters/task filters)
                                     :orderBy {:startAt "asc"}
-                                    :include {:stops {:include {:place true}}}}}}}}}})]
-    (first (.. result -organization -agents))))
+                                    :include {:stops {:include {:place true}}}}}}}}}})
+          ^js agent (first (.. result -organization -agents))]
+    (set! (.-location agent) (first (.. agent -locations)))
+    agent))

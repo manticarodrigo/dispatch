@@ -8,7 +8,6 @@
   (p/let [^js user (user/active-user context {:include {:agent true}})
           agent-id (.. user -agent -id)
           params {:data {:position position
-                         :currentFor {:connect {:id agent-id}}
                          :agent {:connect {:id agent-id}}}}]
     (when agent-id
       (prisma/create!

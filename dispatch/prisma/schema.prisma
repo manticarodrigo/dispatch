@@ -67,9 +67,7 @@ model Agent {
   userId         String?      @unique
   organization   Organization @relation(fields: [organizationId], references: [id])
   organizationId String
-  location       Location?    @relation("AgentLocation", fields: [locationId], references: [id])
-  locationId     String?      @unique
-  locations      Location[]   @relation("AgentLocations")
+  locations      Location[]
   tasks          Task[]
   places         Place[]
   createdAt      DateTime     @default(now())
@@ -77,12 +75,11 @@ model Agent {
 }
 
 model Location {
-  id         String   @id @unique @default(uuid())
-  position   Json
-  currentFor Agent?   @relation("AgentLocation")
-  agent      Agent    @relation("AgentLocations", fields: [agentId], references: [id])
-  agentId    String
-  createdAt  DateTime @default(now())
+  id        String   @id @unique @default(uuid())
+  position  Json
+  agent     Agent    @relation(fields: [agentId], references: [id])
+  agentId   String
+  createdAt DateTime @default(now())
 }
 
 model Place {
