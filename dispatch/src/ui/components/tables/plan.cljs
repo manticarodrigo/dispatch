@@ -39,6 +39,20 @@
      [:div [:span num] [:i {:class "font-thin"} " / " denom unit]]
      [:div {:class "font-thin mt-1"} perc "%"]]))
 
+(defn time-column [id label accessor-fn]
+  {:id id
+   :header label
+   :accessorFn (fn [^js info]
+                 (let [val (accessor-fn info)]
+                   (if val
+                     (-> val js/Date. .getTime)
+                     nil)))
+   :cell (fn [^js info]
+           (let [val (.getValue info)]
+             (if val
+               (-> val js/Date. (d/format "hh:mmaaa"))
+               "N/A")))})
+
 (defn get-columns [agents !selected-agents]
   [{:id "select"
     :header (fn [^js info]
@@ -86,14 +100,8 @@
     :accessorFn #(count (.. ^js % -visits))
     :cell (fn [^js info]
             (r/as-element [visit-cell info]))}
-   {:id "start"
-    :header (tr [:table.plan/start])
-    :accessorFn #(-> (.. ^js % -start) js/Date. .getTime)
-    :cell #(-> ^js % .getValue js/Date. (d/format "hh:mmaaa"))}
-   {:id "end"
-    :header (tr [:table.plan/end])
-    :accessorFn #(-> (.. ^js % -end) js/Date. .getTime)
-    :cell #(-> ^js % .getValue js/Date. (d/format "hh:mmaaa"))}
+   (time-column "start" (tr [:table.plan/start]) #(.-start ^js %))
+   (time-column "end" (tr [:table.plan/end]) #(.-end ^js %))
    {:id "distance"
     :header (tr [:table.plan/distance])
     :accessorFn #(.. ^js % -meters)
@@ -129,5 +137,6 @@
                      :agentSelection @!selected-agents}
           :data result
           :columns (get-columns agents !selected-agents)
-          :enable-row-selection #(-> ^js % .-original .-vehicle .-tasks empty?)
+          :enable-row-selection #(and (some-> ^js % .-original .-visits seq)
+                                      (some-> ^js % .-original .-vehicle .-tasks empty?))
           :on-row-selection-change set-selected-rows}])

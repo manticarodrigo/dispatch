@@ -21,7 +21,8 @@
             [optimize] (use-mutation OPTIMIZE_PLAN {})
             [create-tasks] (use-mutation CREATE_PLAN_TASKS {})
             {:keys [plan agents]} (-> data :user :organization)
-            {:keys [result startAt endAt]} plan
+            {:keys [result startAt endAt vehicles shipments]} plan
+            {:keys [routes skipped]} result
             [selected-rows set-selected-rows] (useState #js{})
             selected-indexes (->> selected-rows js/Object.keys (map int))]
 
@@ -37,35 +38,49 @@
            #())
          #js[data])
 
-        [:main {:class "flex flex-col w-full h-full"}
+        [:main {:class "flex flex-col w-full h-full min-w-0 min-h-0"}
          [header {:title (if loading
                            (str (tr [:misc/loading]) "...")
                            (tr [:view.plan.detail/title] [startAt endAt]))
-                  :actions (when (seq selected-indexes)
-                             [button
-                              {:label (tr [:verb/create])
-                               :class "capitalize"
-                               :on-click
-                               #(do
-                                  (create-tasks
-                                   {:variables
-                                    {:input
-                                     {:planId plan-id
-                                      :assignments
-                                      (map
-                                       (fn [idx]
-                                         {:agentId (get @!selected-agents (int idx))
-                                          :vehicleId (-> (nth result (int idx)) :vehicle :id)
-                                          :shipmentIds (->> (nth result (int idx)) :visits (map :shipment) (map :id))})
-                                       selected-indexes)}}})
-                                  (set-selected-rows #js{}))}
-                              (tr [:verb/create] (tr [:noun/tasks]))])}]
-         (if loading (str (tr [:misc/loading]) "...")
+                  :actions [:<>
+                            (when-not loading
+                              [button {:label (tr [:verb/optimize])
+                                       :class "capitalize"
+                                       :on-click #(optimize {:variables {:planId plan-id}})}])
+                            (when (seq selected-indexes)
+                              [button
+                               {:label (tr [:verb/create])
+                                :class "capitalize"
+                                :on-click
+                                #(do
+                                   (create-tasks
+                                    {:variables
+                                     {:input
+                                      {:planId plan-id
+                                       :assignments
+                                       (map
+                                        (fn [idx]
+                                          {:agentId (get @!selected-agents (int idx))
+                                           :vehicleId (-> (nth routes (int idx)) :vehicle :id)
+                                           :shipmentIds (->> (nth routes (int idx)) :visits (map :shipment) (map :id))})
+                                        selected-indexes)}}})
+                                   (set-selected-rows #js{}))}
+                               (tr [:verb/create] (tr [:noun/tasks]))])]}]
+         (if loading [:div {:class "p-4"}
+                      (tr [:misc/loading]) "..."]
              (if result
-               [:div {:class "overflow-auto h-full"}
-                [plan-table {:agents agents
-                             :result result
-                             :selected-rows selected-rows
-                             :set-selected-rows set-selected-rows
-                             :!selected-agents !selected-agents}]]
-               [:button {:on-click #(optimize {:variables {:planId plan-id}})} "Optimize"]))]))))
+               [:div {:class "flex flex-col w-full h-full min-w-0 min-h-0"}
+                [:div {:class "border-b border-neutral-700 p-4"}
+                 [:p {:class "text-sm"} "Skipped shipments: " (count skipped)]]
+                [:div {:class "overflow-auto w-full h-full min-w-0 min-h-0"}
+                 [plan-table {:agents agents
+                              :result routes
+                              :selected-rows selected-rows
+                              :set-selected-rows set-selected-rows
+                              :!selected-agents !selected-agents}]]]
+               [:div {:class "p-4"}
+                [:div (count vehicles)]
+                [:div (count shipments)]
+                [button {:label (tr [:verb/optimize])
+                         :class "capitalize"
+                         :on-click #(optimize {:variables {:planId plan-id}})}]]))]))))

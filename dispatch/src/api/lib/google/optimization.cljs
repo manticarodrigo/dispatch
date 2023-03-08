@@ -3,7 +3,7 @@
             ["axios" :as axios]
             ["date-fns" :as d]
             [promesa.core :as p]
-            [cljs-bean.core :refer (->js)]))
+            [cljs-bean.core :refer (->js ->clj)]))
 
 (def ^js auth-client
   (-> (-> google .-auth .-GoogleAuth)
@@ -11,57 +11,68 @@
        #js{:keyFile "resources/google/service_account.json"
            :scopes #js["https://www.googleapis.com/auth/cloud-platform"]})))
 
-(defn optimize-tours [payload]
-  (p/let [url "https://cloudoptimization.googleapis.com/v1/projects/dispatch-368818:optimizeTours"
-          token (.getAccessToken auth-client)
-          options (->js {:headers
-                         {:Content-Type "application/json"
-                          :Authorization (str "Bearer " token)}})]
-    (.post axios url payload options)))
+(defn transform-shipments [plan]
+  (let [{:keys [shipments startAt endAt]} plan]
+    (map (fn [{:keys [place size windows duration]}]
+           (let [{:keys [lat lng]} place
+                 {:keys [volume weight]} size
+                 arrival-location {:latitude lat
+                                   :longitude lng}]
+             {:deliveries
+              [{:arrival_location arrival-location
+                :time_windows (map
+                               (fn [window]
+                                 (let [start (d/max (array startAt (-> window :start js/Date.)))
+                                       end (d/min (array endAt (-> window :end js/Date.)))]
+                                   {:start_time (-> start .toISOString)
+                                    :end_time (-> end .toISOString)}))
+                               windows)
+                :duration (str duration "s")}]
+              :load_demands {:volume {:amount volume}
+                             :weight {:amount weight}}}))
+         shipments)))
 
-(defn transform-shipments [shipments]
-  (map (fn [{:keys [size windows duration latitude longitude]}]
-         {:deliveries
-          [{:arrival_location {:latitude latitude
-                               :longitude longitude}
-            :time_windows (map
-                           (fn [{:keys [start end]}]
-                             {:start_time start
-                              :end_time end})
-                           windows)
-            :duration (str duration "s")}]
-          :load_demands {:volume {:amount (:volume size)}
-                         :weight {:amount (:weight size)}}})
-       shipments))
-
-(defn transform-vehicles [depot vehicles]
-  (let [{:keys [startAt endAt latitude longitude breaks]} depot
-        depot-location {:latitude latitude
-                        :longitude longitude}]
+(defn transform-vehicles [plan]
+  (let [{:keys [breaks depot vehicles]} plan
+        {:keys [lat lng]} depot
+        depot-location {:latitude lat
+                        :longitude lng}]
     (map (fn [{:keys [capacities]}]
-           {:start_location depot-location
-            :end_location depot-location
-            :start_time_windows [{:start_time (-> startAt .toISOString)}]
-            :end_time_windows [{:end_time (-> endAt .toISOString)}]
-            :load_limits {:volume {:max_load (:volume capacities)}
-                          :weight {:max_load (:weight capacities)}}
-            :break_rule {:break_requests
-                         (map
-                          (fn [{:keys [start end]}]
-                            {:earliest_start_time (-> start .toISOString)
-                             :latest_start_time (-> end .toISOString)
-                             :min_duration (str (d/differenceInSeconds end start) "s")})
-                          breaks)}})
+           (let [{:keys [volume weight]} capacities]
+             {:start_location depot-location
+              :end_location depot-location
+              :cost_per_kilometer (* volume weight)
+              :load_limits {:volume {:max_load volume}
+                            :weight {:max_load weight}}
+              :break_rule {:break_requests
+                           (map
+                            (fn [break]
+                              (let [start (-> break :start js/Date.)
+                                    end (-> break :end js/Date.)
+                                    duration (d/differenceInSeconds end start)]
+                                {:earliest_start_time (-> start .toISOString)
+                                 :latest_start_time (-> end .toISOString)
+                                 :min_duration (str duration "s")}))
+                            breaks)}}))
          vehicles)))
 
-(defn transform-tour [depot shipments vehicles]
-  (let [{:keys [startAt endAt]} depot]
+(defn transform-plan [plan]
+  (let [{:keys [startAt endAt]} plan]
     {:populate_polylines true
      :model
      {:global_start_time (-> startAt .toISOString)
       :global_end_time (-> endAt .toISOString)
-      :shipments (transform-shipments shipments)
-      :vehicles (transform-vehicles depot vehicles)}}))
+      :shipments (transform-shipments plan)
+      :vehicles (transform-vehicles plan)}}))
+
+(defn optimize-plan [plan]
+  (p/let [payload (transform-plan (->clj plan))
+          url "https://cloudoptimization.googleapis.com/v1/projects/dispatch-368818:optimizeTours"
+          token (.getAccessToken auth-client)
+          options (->js {:headers
+                         {:Content-Type "application/json"
+                          :Authorization (str "Bearer " token)}})]
+    (.post axios url (->js payload) options)))
 
 (defn parse-result [^js plan]
   (let [^js result (.. plan -result)
@@ -69,20 +80,25 @@
         ^js shipments (.. plan -shipments)
         ^js vehicles (.. plan -vehicles)]
     (when routes
-      (apply
-       array
-       (map-indexed
-        (fn [idx ^js route]
-          #js{:vehicle (get vehicles idx)
-              :start (.. route -vehicleStartTime)
-              :end (.. route -vehicleEndTime)
-              :meters (.. route -metrics -travelDistanceMeters)
-              :volume (.. route -metrics -maxLoads -volume -amount)
-              :weight (.. route -metrics -maxLoads -weight -amount)
-              :visits (apply array
-                             (map
-                              (fn [^js visit]
-                                #js{:start (.. visit -startTime)
-                                    :shipment (get shipments (or (.-shipmentIndex visit) 0))})
-                              (.-visits route)))})
-        routes)))))
+      #js{:routes (apply
+                   array
+                   (map-indexed
+                    (fn [idx ^js route]
+                      #js{:vehicle (get vehicles idx)
+                          :start (some-> route .-vehicleStartTime)
+                          :end (some-> route .-vehicleEndTime)
+                          :meters (some-> route .-metrics .-travelDistanceMeters)
+                          :volume (some-> route .-metrics .-maxLoads .-volume .-amount)
+                          :weight (some-> route .-metrics .-maxLoads .-weight .-amount)
+                          :visits (apply array
+                                         (map
+                                          (fn [^js visit]
+                                            #js{:start (.. visit -startTime)
+                                                :shipment (get shipments (or (.-shipmentIndex visit) 0))})
+                                          (.-visits route)))})
+                    routes))
+          :skipped (apply array
+                          (map
+                           (fn [^js shipment]
+                             (get shipments (or (.-index shipment) 0)))
+                           (.-skippedShipments result)))})))

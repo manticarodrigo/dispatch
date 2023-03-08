@@ -8,7 +8,8 @@
    {:noun {:status "status"
            :never "never"}
     :verb {:create "create"
-           :show "show"}
+           :show "show"
+           :optimize "optimize"}
     :view {:not-found "Page not found"
            :register {:title "Register"
                       :login-link {:title "Already have an account?"
@@ -125,7 +126,8 @@
    {:noun {:status "estado"
            :never "nunca"}
     :verb {:create "crear"
-           :show "mostrar"}
+           :show "mostrar"
+           :optimize "optimizar"}
 
     :view {:register {:title "Registrar"
                       :login-link {:title "¿Ya tienes una cuenta?"

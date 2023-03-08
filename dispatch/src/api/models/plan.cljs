@@ -1,9 +1,7 @@
 (ns api.models.plan
-  (:require [shadow.resource :refer (inline)]
-            [promesa.core :as p]
+  (:require [promesa.core :as p]
             [api.util.prisma :as prisma]
             [api.models.user :as user]
-            ;; [api.lib.mapbox.optimization :as optimization]
             [api.lib.google.optimization :as optimization]))
 
 (defn create-plan [^js context {:keys [depotId startAt endAt breaks vehicleIds shipmentIds]}]
@@ -64,18 +62,13 @@
                     (.. context -prisma -plan)
                     {:where {:id planId}
                      :include plan-include})
-          ;; _ (->
-          ;;    (optimization/optimize-plan plan)
-          ;;    (.then #(js/console.log (.. % -data)))
-          ;;    (.catch #(js/console.log (.. % -response -data))))
-          ;; _ (->
-          ;;    (optimization/fetch-plan "0649c462-f345-4703-823a-b8963a86485d")
-          ;;    (.then #(js/console.log (.. % -data)))
-          ;;    (.catch #(js/console.log (.. % -response -data))))
+          result (-> (optimization/optimize-plan plan)
+                     (.then #(.. % -data))
+                     (.catch #(throw (.. % -response -data))))
           ^js updated-plan (prisma/update!
                             (.. context -prisma -plan)
                             {:where {:id planId}
-                             :data {:result (js/JSON.parse (inline "samples/response.json"))}
+                             :data {:result result}
                              :include plan-include})]
     (set! (.. updated-plan -result) (optimization/parse-result updated-plan))
     updated-plan))
