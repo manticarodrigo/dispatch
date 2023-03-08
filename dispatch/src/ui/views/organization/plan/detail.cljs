@@ -50,7 +50,7 @@
                             (when (seq selected-indexes)
                               [button
                                {:label (tr [:verb/create])
-                                :class "capitalize"
+                                :class "ml-4 capitalize"
                                 :on-click
                                 #(do
                                    (create-tasks
