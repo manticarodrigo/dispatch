@@ -1,5 +1,6 @@
 mutation CreatePlanTasks($input: AssignmentsInput) {
-    createPlanTasks(input: $input) {
-        id
-    }
+  createPlanTasks(input: $input) {
+    id
+    result
+  }
 }

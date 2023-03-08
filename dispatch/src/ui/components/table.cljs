@@ -5,13 +5,13 @@
                      useReactTable]]
             [cljs-bean.core :refer (->js)]))
 
-(defn table [{:keys [state data columns on-row-selection-change]
+(defn table [{:keys [state data columns enable-row-selection on-row-selection-change]
               :or {data [] columns []}}]
   (let [^js instance (useReactTable
                       #js{:state state
                           :data (->js data)
                           :columns (->js columns)
-                          :enableRowSelection true
+                          :enableRowSelection enable-row-selection
                           :onRowSelectionChange on-row-selection-change
                           :getCoreRowModel (getCoreRowModel)})
         ^js header-groups (.getHeaderGroups instance)

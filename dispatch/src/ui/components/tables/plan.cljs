@@ -2,10 +2,11 @@
   (:require [clojure.string :as s]
             [reagent.core :as r]
             [cljs-bean.core :refer (->clj)]
+            [ui.lib.router :refer (link)]
             [ui.utils.date :as d]
             [ui.utils.i18n :refer (tr)]
             [ui.components.table :refer (table)]
-            [ui.components.inputs.button :refer (button)]
+            [ui.components.inputs.button :refer (button button-class)]
             [ui.components.modal :refer (modal)]
             [ui.components.tables.route :refer (route-table)]
             [ui.components.inputs.combobox :refer (combobox)]))
@@ -51,17 +52,32 @@
               {:checked (-> info .-row .getIsSelected)
                :disabled (not (-> info .-row .getCanSelect))
                :on-change (-> info .-row .getToggleSelectedHandler)}]))}
+   {:id "task"
+    :header (tr [:table.plan/task])
+    :cell (fn [^js info]
+            (let [^js task (-> info .-row .-original .-vehicle .-tasks first)]
+              (if task
+                (r/as-element
+                 [link {:to (str "../tasks/" (.. task -id))
+                        :class button-class}
+                  (tr [:table.plan/go-to-task])])
+                "")))}
    {:id "agent"
     :header (tr [:table.plan/agent])
     :cell (fn [^js info]
-            (let [row-index (-> info .-row .-index)]
-              (r/as-element
-               [:div {:class "min-w-[200px]"}
-                [combobox {:value (get @!selected-agents row-index)
-                           :options agents
-                           :option-to-label :name
-                           :option-to-value :id
-                           :on-change #(swap! !selected-agents assoc row-index %)}]])))}
+            (let [row-index (-> info .-row .-index)
+                  ^js task (-> info .-row .-original .-vehicle .-tasks first)
+                  agent-id (get @!selected-agents row-index)]
+              (if task
+                (->> agents (filter #(= agent-id (:id %))) first :name)
+                (r/as-element
+                 [combobox {:aria-label (tr [:table.plan/agent])
+                            :value agent-id
+                            :options agents
+                            :option-to-label :name
+                            :option-to-value :id
+                            :class "min-w-[200px]"
+                            :on-change #(swap! !selected-agents assoc row-index %)}]))))}
    {:id "vehicle"
     :header (tr [:table.plan/vehicle])
     :accessorFn #(.. ^js % -vehicle -name)}
@@ -113,4 +129,5 @@
                      :agentSelection @!selected-agents}
           :data result
           :columns (get-columns agents !selected-agents)
+          :enable-row-selection #(-> ^js % .-original .-vehicle .-tasks empty?)
           :on-row-selection-change set-selected-rows}])

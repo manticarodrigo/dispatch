@@ -68,19 +68,21 @@
         ^js routes (some-> result .-routes)
         ^js shipments (.. plan -shipments)
         ^js vehicles (.. plan -vehicles)]
-    (apply array
-           (map-indexed
-            (fn [idx ^js route]
-              #js{:vehicle (get vehicles idx)
-                  :start (.. route -vehicleStartTime)
-                  :end (.. route -vehicleEndTime)
-                  :meters (.. route -metrics -travelDistanceMeters)
-                  :volume (.. route -metrics -maxLoads -volume -amount)
-                  :weight (.. route -metrics -maxLoads -weight -amount)
-                  :visits (apply array
-                                 (map
-                                  (fn [^js visit]
-                                    #js{:start (.. visit -startTime)
-                                        :shipment (get shipments (or (.-shipmentIndex visit) 0))})
-                                  (.-visits route)))})
-            routes))))
+    (when routes
+      (apply
+       array
+       (map-indexed
+        (fn [idx ^js route]
+          #js{:vehicle (get vehicles idx)
+              :start (.. route -vehicleStartTime)
+              :end (.. route -vehicleEndTime)
+              :meters (.. route -metrics -travelDistanceMeters)
+              :volume (.. route -metrics -maxLoads -volume -amount)
+              :weight (.. route -metrics -maxLoads -weight -amount)
+              :visits (apply array
+                             (map
+                              (fn [^js visit]
+                                #js{:start (.. visit -startTime)
+                                    :shipment (get shipments (or (.-shipmentIndex visit) 0))})
+                              (.-visits route)))})
+        routes)))))

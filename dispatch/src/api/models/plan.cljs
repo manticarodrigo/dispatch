@@ -24,14 +24,26 @@
                    :shipments
                    {:include
                     {:place true}}})
+
 (def plans-include
   {:plans
    {:include
     plan-include}})
 
+(defn plan-query-include [plan-id]
+  {:depot true
+   :vehicles
+   {:include
+    {:tasks
+     {:where {:plan {:id plan-id}}}}}
+   :shipments
+   {:include
+    {:place true
+     :stop true}}})
+
 (defn plan-query [plan-id]
   {:plans {:where {:id plan-id}
-           :include plan-include}})
+           :include (plan-query-include plan-id)}})
 
 (defn fetch-organization-plans [^js context]
   (p/let [^js user (user/active-user context {:include
@@ -60,11 +72,13 @@
           ;;    (optimization/fetch-plan "0649c462-f345-4703-823a-b8963a86485d")
           ;;    (.then #(js/console.log (.. % -data)))
           ;;    (.catch #(js/console.log (.. % -response -data))))
-          ]
-    (prisma/update!
-     (.. context -prisma -plan)
-     {:where {:id planId}
-      :data {:result (js/JSON.parse (inline "samples/response.json"))}})))
+          ^js updated-plan (prisma/update!
+                            (.. context -prisma -plan)
+                            {:where {:id planId}
+                             :data {:result (js/JSON.parse (inline "samples/response.json"))}
+                             :include plan-include})]
+    (set! (.. updated-plan -result) (optimization/parse-result updated-plan))
+    updated-plan))
 
 (defn create-plan-tasks [^js context {:keys [input]}]
   (p/let [{:keys [planId assignments]} input
@@ -79,22 +93,25 @@
                                                   {:place true}}}}}})
           place-map (into {} (for [^js shipment (.. user -organization -shipments)]
                                {(.-id shipment) (.. shipment -place -id)}))
-          organization-id (.. user -organization -id)]
-    (prisma/update!
-     (.. context -prisma -plan)
-     {:where {:id planId}
-      :data {:tasks
-             {:create (map
-                       (fn [{:keys [agentId vehicleId shipmentIds]}]
-                         {:route {}
-                          :startAt (js/Date.)
-                          :organization {:connect {:id organization-id}}
-                          :agent {:connect {:id agentId}}
-                          :vehicle {:connect {:id vehicleId}}
-                          :stops {:create (map-indexed
-                                           (fn [idx id]
-                                             {:order idx
-                                              :place {:connect {:id (get place-map id)}}
-                                              :shipment {:connect {:id id}}})
-                                           shipmentIds)}})
-                       assignments)}}})))
+          organization-id (.. user -organization -id)
+          ^js updated-plan (prisma/update!
+                            (.. context -prisma -plan)
+                            {:where {:id planId}
+                             :data {:tasks
+                                    {:create (map
+                                              (fn [{:keys [agentId vehicleId shipmentIds]}]
+                                                {:route {}
+                                                 :startAt (js/Date.)
+                                                 :organization {:connect {:id organization-id}}
+                                                 :agent {:connect {:id agentId}}
+                                                 :vehicle {:connect {:id vehicleId}}
+                                                 :stops {:create (map-indexed
+                                                                  (fn [idx id]
+                                                                    {:order idx
+                                                                     :place {:connect {:id (get place-map id)}}
+                                                                     :shipment {:connect {:id id}}})
+                                                                  shipmentIds)}})
+                                              assignments)}}
+                             :include (plan-query-include planId)})]
+    (set! (.. updated-plan -result) (optimization/parse-result updated-plan))
+    updated-plan))

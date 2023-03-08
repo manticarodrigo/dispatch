@@ -9,7 +9,7 @@
             [ui.components.inputs.back-button :refer (back-button)]
             [ui.components.inputs.button :refer (button-class)]))
 
-(defn header [{:keys [title create-link]}]
+(defn header [{:keys [title create-link actions]}]
   (let [nav-open (listen [:layout/nav-open])
         sidebar-open (listen [:layout/sidebar-open])]
     [:header
@@ -25,6 +25,7 @@
                      "truncate")}
         title]]
       [:div {:class "flex-shrink-0 flex items-center"}
+       actions
        (when create-link
          [link {:to create-link :class (class-names button-class "capitalize flex items-center")}
           [:> CreateIcon {:class "inline mr-1 w-4 h-4"}] (tr [:verb/create])])

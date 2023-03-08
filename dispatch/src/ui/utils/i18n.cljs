@@ -74,6 +74,7 @@
 
     :table {:plan {:agent "Agent"
                    :vehicle "Vehicle"
+                   :task "Task"
                    :start "Start"
                    :end "End"
                    :distance "Distance"
@@ -81,7 +82,8 @@
                    :weight "Weight"
                    :visits "Visits"
                    :place "Place"
-                   :order "Order"}}
+                   :order "Order"
+                   :go-to-task "Go to task"}}
 
     :status {:all "All"
              :incomplete "Incomplete"
@@ -192,6 +194,7 @@
 
     :table {:plan {:agent "Agente"
                    :vehicle "Vehículo"
+                   :task "Tarea"
                    :start "Inicio"
                    :end "Fin"
                    :distance "Distancia"
@@ -199,7 +202,8 @@
                    :weight "Peso"
                    :visits "Visitas"
                    :place "Lugar"
-                   :order "Orden"}}
+                   :order "Orden"
+                   :go-to-task "Ir a tarea"}}
 
     :status {:all "Todos"
              :incomplete "Incompleto"
