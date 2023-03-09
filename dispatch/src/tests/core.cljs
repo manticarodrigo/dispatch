@@ -2,6 +2,7 @@
   (:require ["@faker-js/faker" :refer (faker)]
             [date-fns :as d]
             [cljs.test :as t :refer-macros [deftest async testing is use-fixtures]]
+            [shadow.resource :refer (inline)]
             [promesa.core :as p]
             [common.utils.promise :refer (each)]
             [ui.utils.error :refer (tr-error)]
@@ -347,7 +348,9 @@
                              :endAt (-> depot :endAt)
                              :breaks (-> depot :breaks)
                              :shipmentIds (mapv :id shipments)
-                             :vehicleIds (mapv :id vehicles)})]
+                             :vehicleIds (mapv :id vehicles)
+                            ;;  :result (js/JSON.parse (inline "samples/solutions/4.json"))
+                             })]
            (testing "api returns data"
              (is (-> plan-mock :result :data :createPlan))
              (done)))))
@@ -360,19 +363,21 @@
                  {:keys [shipments vehicles]} plan
                  agents-mock (agent/fetch-organization-agents)
                  agents (-> agents-mock :result :data :user :organization :agents)
-                 shipment-id-chunks (partition
-                                     (int (/ (count shipments)
-                                             (count vehicles)))
-                                     (->> shipments (map :id)))
+                 shipment-chunks (partition
+                                  (int (/ (count shipments)
+                                          (count vehicles)))
+                                  shipments)
                  create-mock (plan/create-plan-tasks
                               {:input {:planId (:id plan)
                                        :assignments (map-indexed
                                                      (fn [idx vehicle]
                                                        {:agentId (-> agents (nth idx) :id)
-                                                        :vehicleId (:id vehicle)
+                                                        :vehicleId (-> vehicle :vehicle  :id)
                                                         :visits (map
-                                                                 #(hash-map :shipmentId %)
-                                                                 (nth shipment-id-chunks idx))})
+                                                                 #(hash-map
+                                                                   :placeId (-> % :shipment :place :id)
+                                                                   :shipmentId (-> % :shipment :id))
+                                                                 (nth shipment-chunks idx))})
                                                      vehicles)}})]
            (testing "api returns data"
              (is (-> create-mock :result :data :createPlanTasks))
