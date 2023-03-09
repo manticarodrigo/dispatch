@@ -357,21 +357,23 @@
          (p/let [plans-mock (plan/fetch-organization-plans)
                  plans (-> plans-mock :result :data :user :organization :plans)
                  plan (first plans)
+                 {:keys [shipments vehicles]} plan
                  agents-mock (agent/fetch-organization-agents)
                  agents (-> agents-mock :result :data :user :organization :agents)
                  shipment-id-chunks (partition
-                                     (int (/ (count (:shipments plan))
-                                             (count (:vehicles plan))))
-                                     (->> plan :shipments (map :id)))
-
+                                     (int (/ (count shipments)
+                                             (count vehicles)))
+                                     (->> shipments (map :id)))
                  create-mock (plan/create-plan-tasks
                               {:input {:planId (:id plan)
                                        :assignments (map-indexed
                                                      (fn [idx vehicle]
-                                                       {:vehicleId (:id vehicle)
-                                                        :shipmentIds (nth shipment-id-chunks idx)
-                                                        :agentId (-> agents (nth idx) :id)})
-                                                     (:vehicles plan))}})]
+                                                       {:agentId (-> agents (nth idx) :id)
+                                                        :vehicleId (:id vehicle)
+                                                        :visits (map
+                                                                 #(hash-map :shipmentId %)
+                                                                 (nth shipment-id-chunks idx))})
+                                                     vehicles)}})]
            (testing "api returns data"
              (is (-> create-mock :result :data :createPlanTasks))
              (done)))))

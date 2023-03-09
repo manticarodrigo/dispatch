@@ -173,5 +173,10 @@ input AssignmentsInput {
 input AssignmentInput {
   vehicleId: ID!
   agentId: ID!
-  shipmentIds: [ID]!
+  visits: [VisitInput]!
+}
+
+input VisitInput {
+  shipmentId: ID
+  depotId: ID
 }

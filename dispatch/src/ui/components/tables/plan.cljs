@@ -8,7 +8,7 @@
             [ui.components.table :refer (table)]
             [ui.components.inputs.button :refer (button button-class)]
             [ui.components.modal :refer (modal)]
-            [ui.components.tables.route :refer (route-table)]
+            [ui.components.tables.visit :refer (visit-table)]
             [ui.components.inputs.combobox :refer (combobox)]))
 
 (defn checkbox [{:keys [checked disabled on-change]}]
@@ -17,21 +17,19 @@
            :disabled disabled
            :on-change on-change}])
 
-(defn visit-cell [^js info]
+(defn visit-cell [visits]
   (let [!show-modal (r/atom false)]
     (fn []
-      (let [num (.getValue info)
-            {:keys [visits]} (->clj (.. info -row -original))]
-        [:div {:class "flex justify-between items-center"}
-         [:span num]
-         [button {:label (s/capitalize (tr [:verb/show]))
-                  :class "ml-2"
-                  :on-click #(reset! !show-modal true)}]
-         [modal {:show @!show-modal
-                 :title (tr [:table.plan/visits])
-                 :on-close #(reset! !show-modal false)}
-          [:div {:class "overflow-auto w-full h-full"}
-           [route-table {:visits visits}]]]]))))
+      [:div {:class "flex justify-between items-center"}
+       [:span (count visits)]
+       [button {:label (s/capitalize (tr [:verb/show]))
+                :class "ml-2"
+                :on-click #(reset! !show-modal true)}]
+       [modal {:show @!show-modal
+               :title (tr [:table.plan/visits])
+               :on-close #(reset! !show-modal false)}
+        [:div {:class "overflow-auto w-full h-full"}
+         [visit-table {:visits visits}]]]])))
 
 (defn ratio-detail [num denom unit]
   (let [perc (-> num (/ denom) (* 100) (.toFixed 2))]
@@ -99,7 +97,17 @@
     :header (tr [:table.plan/visits])
     :accessorFn #(count (.. ^js % -visits))
     :cell (fn [^js info]
-            (r/as-element [visit-cell info]))}
+            (r/as-element [visit-cell (-> info .-row .-original .-visits ->clj)]))}
+   {:id "flexibleVisits"
+    :header (tr [:table.plan/flexible-visits])
+    :cell (fn [^js info]
+            (let [visits (filter
+                          #(and
+                            (> (count (-> % :shipment :windows)) 1)
+                            (d/isBefore (-> % :arrival js/Date. .getTime)
+                                        (-> % :shipment :windows second :start js/Date. .getTime)))
+                          (-> info .-row .-original .-visits ->clj))]
+              (r/as-element [visit-cell visits])))}
    (time-column "start" (tr [:table.plan/start]) #(.-start ^js %))
    (time-column "end" (tr [:table.plan/end]) #(.-end ^js %))
    {:id "distance"

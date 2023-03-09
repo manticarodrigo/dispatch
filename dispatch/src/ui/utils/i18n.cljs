@@ -6,7 +6,9 @@
 (def ^:private dict
   {:en
    {:noun {:status "status"
-           :never "never"}
+           :never "never"
+           :shipments "shipments"
+           :vehicles "vehicles"}
     :verb {:create "create"
            :show "show"
            :optimize "optimize"}
@@ -78,13 +80,17 @@
                    :task "Task"
                    :start "Start"
                    :end "End"
+                   :windows "Windows"
+                   :arrival "Arrival"
                    :distance "Distance"
                    :volume "Volume"
                    :weight "Weight"
                    :visits "Visits"
+                   :flexible-visits "Flexible visits"
                    :place "Place"
                    :order "Order"
-                   :go-to-task "Go to task"}}
+                   :go-to-task "Go to task"
+                   :view-skipped-shipments "View skipped shipments"}}
 
     :status {:all "All"
              :incomplete "Incomplete"
@@ -124,7 +130,9 @@
             :verification-not-found "The verification code you entered is invalid."}}
    :es
    {:noun {:status "estado"
-           :never "nunca"}
+           :never "nunca"
+           :shipments "envíos"
+           :vehicles "vehículos"}
     :verb {:create "crear"
            :show "mostrar"
            :optimize "optimizar"}
@@ -197,15 +205,19 @@
     :table {:plan {:agent "Agente"
                    :vehicle "Vehículo"
                    :task "Tarea"
+                   :windows "Ventanas"
                    :start "Inicio"
                    :end "Fin"
+                   :arrival "Llegada"
                    :distance "Distancia"
                    :volume "Volumen"
                    :weight "Peso"
                    :visits "Visitas"
+                   :flexible-visits "Visitas flexibles"
                    :place "Lugar"
                    :order "Orden"
-                   :go-to-task "Ir a tarea"}}
+                   :go-to-task "Ir a tarea"
+                   :view-skipped-shipments "Ver envíos omitidos"}}
 
     :status {:all "Todos"
              :incomplete "Incompleto"

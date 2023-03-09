@@ -12,13 +12,25 @@
            :scopes #js["https://www.googleapis.com/auth/cloud-platform"]})))
 
 (defn transform-shipments [plan]
-  (let [{:keys [shipments startAt endAt]} plan]
+  (let [{:keys [startAt endAt depot shipments]} plan
+        {:keys [lat lng]} depot
+        depot-location {:latitude lat
+                        :longitude lng}]
     (map (fn [{:keys [place size windows duration]}]
            (let [{:keys [lat lng]} place
                  {:keys [volume weight]} size
                  arrival-location {:latitude lat
                                    :longitude lng}]
-             {:deliveries
+             {;; :penalty_cost (/ volume weight)
+              :load_demands
+              {:volume {:amount volume}
+               :weight {:amount weight}}
+              :pickups
+              [{:arrival_location depot-location
+                :time_windows [{:start_time (-> startAt .toISOString)
+                                :end_time (-> endAt .toISOString)}]
+                :duration (str "120" "s")}]
+              :deliveries
               [{:arrival_location arrival-location
                 :time_windows (map
                                (fn [window]
@@ -27,9 +39,7 @@
                                    {:start_time (-> start .toISOString)
                                     :end_time (-> end .toISOString)}))
                                windows)
-                :duration (str duration "s")}]
-              :load_demands {:volume {:amount volume}
-                             :weight {:amount weight}}}))
+                :duration (str duration "s")}]}))
          shipments)))
 
 (defn transform-vehicles [plan]
@@ -41,7 +51,7 @@
            (let [{:keys [volume weight]} capacities]
              {:start_location depot-location
               :end_location depot-location
-              :cost_per_kilometer (* volume weight)
+              :cost_per_kilometer (/ volume weight)
               :load_limits {:volume {:max_load volume}
                             :weight {:max_load weight}}
               :break_rule {:break_requests
@@ -51,14 +61,15 @@
                                     end (-> break :end js/Date.)
                                     duration (d/differenceInSeconds end start)]
                                 {:earliest_start_time (-> start .toISOString)
-                                 :latest_start_time (-> end .toISOString)
+                                 :latest_start_time (-> (d/addSeconds end duration) .toISOString)
                                  :min_duration (str duration "s")}))
                             breaks)}}))
          vehicles)))
 
 (defn transform-plan [plan]
-  (let [{:keys [startAt endAt]} plan]
-    {:populate_polylines true
+  (let [{:keys [startAt endAt result]} plan]
+    {:injected_first_solution_routes (:routes result)
+     :populate_polylines true
      :model
      {:global_start_time (-> startAt .toISOString)
       :global_end_time (-> endAt .toISOString)
@@ -73,6 +84,17 @@
                          {:Content-Type "application/json"
                           :Authorization (str "Bearer " token)}})]
     (.post axios url (->js payload) options)))
+
+(defn merge-pickups [visits]
+  (let [merged-visits (reduce
+                       (fn [acc obj]
+                         (if (and (contains? obj :isPickup)
+                                  (= true (get obj :isPickup))
+                                  (= true (contains? (last acc) :isPickup)))
+                           (conj (pop acc) (last acc))
+                           (conj acc obj)))
+                       [{}] visits)]
+    (rest merged-visits)))
 
 (defn parse-result [^js plan]
   (let [^js result (.. plan -result)
@@ -93,9 +115,11 @@
                           :visits (apply array
                                          (map
                                           (fn [^js visit]
-                                            #js{:start (.. visit -startTime)
-                                                :shipment (get shipments (or (.-shipmentIndex visit) 0))})
-                                          (.-visits route)))})
+                                            (let [pickup? (.-isPickup visit)]
+                                              #js{:arrival (.. visit -startTime)
+                                                  :depot (when pickup? (.-depot plan))
+                                                  :shipment (when-not pickup? (get shipments (or (.-shipmentIndex visit) 0)))}))
+                                          (-> route .-visits ->clj merge-pickups ->js)))})
                     routes))
           :skipped (apply array
                           (map
