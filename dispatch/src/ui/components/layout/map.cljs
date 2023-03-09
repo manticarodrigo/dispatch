@@ -11,12 +11,13 @@
             [ui.components.inputs.button :refer (button-class)]
             [ui.components.map :refer (gmap)]))
 
-(defn map-layout [{:keys [title create-link]} & children]
+(defn map-layout [{:keys [title create-link actions]} & children]
   (let [nav-open (listen [:layout/nav-open])]
     [:div {:class "flex w-full h-full"}
      [:main {:class "flex-shrink-0 flex flex-col w-full xl:w-[450px] h-full"}
       [header {:title title
                :actions [:<>
+                         actions
                          (when create-link
                            [link {:to create-link :class (class-names button-class "capitalize flex items-center")}
                             [:> CreateIcon {:class "inline mr-1 w-4 h-4"}] (tr [:verb/create])])

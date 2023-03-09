@@ -1,0 +1,15 @@
+mutation OptimizeTask($taskId: ID!) {
+  optimizeTask(taskId: $taskId) {
+    id
+    stops {
+      id
+      place {
+        id
+        name
+        lat
+        lng
+      }
+      order
+    }
+  }
+}

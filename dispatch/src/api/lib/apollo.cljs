@@ -47,6 +47,7 @@
                  :createVehicle vehicle/create-vehicle
                  :createPlan plan/create-plan
                  :optimizePlan plan/optimize-plan
+                 :optimizeTask task/optimize-task
                  :detachPaymentMethod stripe/detach-payment-method
                  :createPlanTasks plan/create-plan-tasks}
                 :Query

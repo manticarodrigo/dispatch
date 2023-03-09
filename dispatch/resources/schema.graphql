@@ -38,6 +38,7 @@ type Mutation {
     shipmentIds: [ID]!
   ): Plan
   optimizePlan(planId: ID!): Plan
+  optimizeTask(taskId: ID!): Task
   detachPaymentMethod(paymentMethodId: ID!): Boolean
   createPlanTasks(input: AssignmentsInput): Plan
 }

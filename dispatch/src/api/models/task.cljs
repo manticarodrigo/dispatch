@@ -1,9 +1,9 @@
 (ns api.models.task
-  (:require
-   [promesa.core :as p]
-   [api.util.prisma :as prisma]
-   [api.filters.core :as filters]
-   [api.models.user :as user]))
+  (:require [promesa.core :as p]
+            [cljs-bean.core :refer (->clj)]
+            [api.util.prisma :as prisma]
+            [api.filters.core :as filters]
+            [api.models.user :as user]))
 
 (defn create-task [^js context {:keys [agentId startAt placeIds route]}]
   (p/let [^js user (user/active-user context {:include {:organization true}})]
@@ -63,3 +63,23 @@
                                                {:include
                                                 (task-query taskId)}}})]
     (first (.. user -agent -tasks))))
+
+(defn optimize-task [^js context {:keys [taskId]}]
+  (prn taskId)
+  (p/let [^js task (fetch-organization-task context {:taskId taskId})
+          stops (->clj (.. task -stops))
+          {complete true incomplete false} (group-by #(-> % :arrivedAt some?) stops)]
+    (println complete)
+    (println incomplete)
+    ;; (prisma/update!
+    ;;  (.. context -prisma -task)
+    ;;  {:where {:id taskId}
+    ;;   :data {:route (.. task -result -route)
+    ;;          :stops {:create (mapv (fn [[idx id]]
+    ;;                                  {:order idx
+    ;;                                   :place {:connect {:id id}}})
+    ;;                                (map-indexed vector (.. task -result -placeIds)))}}
+    ;;   :include {:agent true
+    ;;             :stops {:include {:place true}
+    ;;                     :orderBy {:order "asc"}}}})
+    ))

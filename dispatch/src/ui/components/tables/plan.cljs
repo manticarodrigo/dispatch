@@ -20,16 +20,18 @@
 (defn visit-cell [visits]
   (let [!show-modal (r/atom false)]
     (fn []
-      [:div {:class "flex justify-between items-center"}
-       [:span (count visits)]
-       [button {:label (s/capitalize (tr [:verb/show]))
-                :class "ml-2"
-                :on-click #(reset! !show-modal true)}]
-       [modal {:show @!show-modal
-               :title (tr [:table.plan/visits])
-               :on-close #(reset! !show-modal false)}
-        [:div {:class "overflow-auto w-full h-full"}
-         [visit-table {:visits visits}]]]])))
+      (if (seq visits)
+        [:div {:class "flex justify-between items-center"}
+         [:span (count visits)]
+         [button {:label (s/capitalize (tr [:verb/show]))
+                  :class "ml-2"
+                  :on-click #(reset! !show-modal true)}]
+         [modal {:show @!show-modal
+                 :title (tr [:table.plan/visits])
+                 :on-close #(reset! !show-modal false)}
+          [:div {:class "overflow-auto w-full h-full"}
+           [visit-table {:visits visits}]]]]
+        "0"))))
 
 (defn ratio-detail [num denom unit]
   (let [perc (-> num (/ denom) (* 100) (.toFixed 2))]

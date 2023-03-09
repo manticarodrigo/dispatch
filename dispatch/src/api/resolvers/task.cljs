@@ -22,3 +22,7 @@
 (defn fetch-agent-task
   [_ args context _]
   (task/fetch-agent-task context (->clj args)))
+
+(defn optimize-task
+  [_ args context _]
+  (task/optimize-task context (->clj args)))
