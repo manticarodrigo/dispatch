@@ -133,46 +133,68 @@ model Stop {
 }
 
 model Vehicle {
-  id             String       @id @unique @default(uuid())
+  id             String        @id @unique @default(uuid())
   name           String?
   capacities     Json?
-  plans          Plan[]
   tasks          Task[]
-  organization   Organization @relation(fields: [organizationId], references: [id])
+  plans          PlanVehicle[]
+  organization   Organization  @relation(fields: [organizationId], references: [id])
   organizationId String
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
 }
 
 model Shipment {
-  id             String       @id @unique @default(uuid())
+  id             String         @id @unique @default(uuid())
   size           Json?
   duration       Int?
   windows        Json
-  plans          Plan[]
-  place          Place        @relation(fields: [placeId], references: [id])
+  place          Place          @relation(fields: [placeId], references: [id])
   placeId        String
-  organization   Organization @relation(fields: [organizationId], references: [id])
+  organization   Organization   @relation(fields: [organizationId], references: [id])
   organizationId String
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  stop           Stop?        @relation(fields: [stopId], references: [id])
-  stopId         String?      @unique
+  plans          PlanShipment[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  stop           Stop?          @relation(fields: [stopId], references: [id])
+  stopId         String?        @unique
 }
 
 model Plan {
-  id             String       @id @unique @default(uuid())
+  id             String         @id @unique @default(uuid())
   startAt        DateTime
   endAt          DateTime
   breaks         Json?
-  vehicles       Vehicle[]
-  shipments      Shipment[]
+  vehicles       PlanVehicle[]
+  shipments      PlanShipment[]
   tasks          Task[]
-  depot          Place?       @relation(fields: [depotId], references: [id])
+  depot          Place?         @relation(fields: [depotId], references: [id])
   depotId        String?
   result         Json?
-  organization   Organization @relation(fields: [organizationId], references: [id])
+  organization   Organization   @relation(fields: [organizationId], references: [id])
   organizationId String
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model PlanVehicle {
+  id        String   @id @unique @default(uuid())
+  order     Int
+  plan      Plan     @relation(fields: [planId], references: [id])
+  planId    String
+  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id])
+  vehicleId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PlanShipment {
+  id         String   @id @unique @default(uuid())
+  order      Int
+  plan       Plan     @relation(fields: [planId], references: [id])
+  planId     String
+  shipment   Shipment @relation(fields: [shipmentId], references: [id])
+  shipmentId String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }

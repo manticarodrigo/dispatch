@@ -162,8 +162,20 @@ type Plan {
   endAt: Date!
   breaks: JSON
   result: JSON
-  vehicles: [Vehicle]!
-  shipments: [Shipment]!
+  vehicles: [PlanVehicle]!
+  shipments: [PlanShipment]!
+}
+
+type PlanVehicle {
+  id: ID!
+  order: Int!
+  vehicle: Vehicle!
+}
+
+type PlanShipment {
+  id: ID!
+  order: Int!
+  shipment: Shipment!
 }
 
 input AssignmentsInput {

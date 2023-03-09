@@ -13,15 +13,28 @@
              :startAt startAt
              :endAt endAt
              :breaks breaks
-             :vehicles {:connect (mapv #(hash-map :id %) vehicleIds)}
-             :shipments {:connect (mapv #(hash-map :id %) shipmentIds)}
+             :vehicles {:create (map-indexed
+                                 (fn [idx vehicleId]
+                                   {:order idx
+                                    :vehicle {:connect {:id vehicleId}}})
+                                 vehicleIds)}
+             :shipments {:create  (map-indexed
+                                   (fn [idx shipmentId]
+                                     {:order idx
+                                      :shipment {:connect {:id shipmentId}}})
+                                   shipmentIds)}
              :organization {:connect {:id organization-id}}}})))
 
 (def plan-include {:depot true
-                   :vehicles true
+                   :vehicles
+                   {:orderBy {:order "asc"}
+                    :include {:vehicle true}}
                    :shipments
-                   {:include
-                    {:place true}}})
+                   {:orderBy {:order "asc"}
+                    :include
+                    {:shipment {:include
+                                {:place true
+                                 :stop true}}}}})
 
 (def plans-include
   {:plans
@@ -31,13 +44,18 @@
 (defn plan-query-include [plan-id]
   {:depot true
    :vehicles
-   {:include
-    {:tasks
-     {:where {:plan {:id plan-id}}}}}
+   {:orderBy {:order "asc"}
+    :include
+    {:vehicle
+     {:include
+      {:tasks
+       {:where {:plan {:id plan-id}}}}}}}
    :shipments
-   {:include
-    {:place true
-     :stop true}}})
+   {:orderBy {:order "asc"}
+    :include
+    {:shipment
+     {:include {:place true
+                :stop true}}}}})
 
 (defn plan-query [plan-id]
   {:plans {:where {:id plan-id}

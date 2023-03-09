@@ -16,8 +16,9 @@
         {:keys [lat lng]} depot
         depot-location {:latitude lat
                         :longitude lng}]
-    (map (fn [{:keys [place size windows duration]}]
-           (let [{:keys [lat lng]} place
+    (map (fn [{:keys [shipment]}]
+           (let [{:keys [place size windows duration]} shipment
+                 {:keys [lat lng]} place
                  {:keys [volume weight]} size
                  arrival-location {:latitude lat
                                    :longitude lng}]
@@ -47,8 +48,9 @@
         {:keys [lat lng]} depot
         depot-location {:latitude lat
                         :longitude lng}]
-    (map (fn [{:keys [capacities]}]
-           (let [{:keys [volume weight]} capacities]
+    (map (fn [{:keys [vehicle]}]
+           (let [{:keys [capacities]} vehicle
+                 {:keys [volume weight]} capacities]
              {:start_location depot-location
               :end_location depot-location
               :cost_per_kilometer (/ volume weight)
@@ -67,8 +69,9 @@
          vehicles)))
 
 (defn transform-plan [plan]
-  (let [{:keys [startAt endAt result]} plan]
-    {:injected_first_solution_routes (:routes result)
+  (let [{:keys [startAt endAt result]} plan
+        {:keys [routes]} result]
+    {:injected_first_solution_routes routes
      :populate_polylines true
      :model
      {:global_start_time (-> startAt .toISOString)
@@ -106,7 +109,7 @@
                    array
                    (map-indexed
                     (fn [idx ^js route]
-                      #js{:vehicle (get vehicles idx)
+                      #js{:vehicle (.-vehicle (get vehicles idx))
                           :start (some-> route .-vehicleStartTime)
                           :end (some-> route .-vehicleEndTime)
                           :meters (some-> route .-metrics .-travelDistanceMeters)
@@ -118,11 +121,11 @@
                                             (let [pickup? (.-isPickup visit)]
                                               #js{:arrival (.. visit -startTime)
                                                   :depot (when pickup? (.-depot plan))
-                                                  :shipment (when-not pickup? (get shipments (or (.-shipmentIndex visit) 0)))}))
+                                                  :shipment (when-not pickup? (.-shipment (get shipments (or (.-shipmentIndex visit) 0))))}))
                                           (-> route .-visits ->clj merge-pickups ->js)))})
                     routes))
           :skipped (apply array
                           (map
                            (fn [^js shipment]
-                             (get shipments (or (.-index shipment) 0)))
+                             (.-shipment (get shipments (or (.-index shipment) 0))))
                            (.-skippedShipments result)))})))

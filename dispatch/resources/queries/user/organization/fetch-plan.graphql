@@ -20,22 +20,30 @@ query OrganizationPlan($planId: ID!) {
         }
         vehicles {
           id
-          name
-          capacities
+          order
+          vehicle {
+            id
+            name
+            capacities
+          }
         }
         shipments {
           id
-          size
-          duration
-          windows
-          place {
+          order
+          shipment {
             id
-            name
-            phone
-            email
-            description
-            lat
-            lng
+            size
+            duration
+            windows
+            place {
+              id
+              name
+              phone
+              email
+              description
+              lat
+              lng
+            }
           }
         }
       }
