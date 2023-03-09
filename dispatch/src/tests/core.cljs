@@ -377,37 +377,6 @@
              (done))
            )))
 
-(deftest upate-plan-task
-  (async done
-         (p/let [plans-mock (plan/fetch-organization-plans)
-                 plans (-> plans-mock :result :data :user :organization :plans)
-                 plan (first plans)
-                 tasks-mock (task/fetch-organization-tasks)
-                 tasks  (-> tasks-mock :result :data :user :organization :tasks)
-                 task (first tasks)
-                 agents-mock (agent/fetch-organization-agents)
-                 agents (-> agents-mock :result :data :user :organization :agents)
-                 agent (first agents)
-                 vehicles-mock (vehicle/fetch-organization-vehicles)
-
-                 vehicles (-> vehicles-mock :result :data :user :organization :vehicles)
-                 vehicle (first vehicles)
-
-                 _ (prn (:id vehicle))
-                 shipment-id-chunks (partition
-                                     (int (/ (count (:shipments plan))
-                                             (count (:vehicles plan))))
-                                     (->> plan :shipments (map :id)))
-                 shipment-id (first shipment-id-chunks)
-                 create-mock (task/update-plan-tasks
-                              {:input {:taskId (:id task)
-                                       :assignment {:vehicleId (:id vehicle)
-                                                    :shipmentIds shipment-id
-                                                    :agentId (:id agent)}}})]
-           (testing "api returns data"
-             (is (-> create-mock :result :data :updatePlanTasks))
-             (done)))))
-
 (deftest create-agent-locations
   (async done
          (p/let [agents-mock (agent/fetch-organization-agents)

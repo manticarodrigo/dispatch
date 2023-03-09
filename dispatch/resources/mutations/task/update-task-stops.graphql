@@ -1,0 +1,5 @@
+mutation UpdateTaskStops($input: UpdateAssignentIput) {
+    updateTaskStops(input: $input) {
+        id
+    }
+}

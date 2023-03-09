@@ -48,8 +48,7 @@
                  :createPlan plan/create-plan
                  :optimizePlan plan/optimize-plan
                  :detachPaymentMethod stripe/detach-payment-method
-                 :createPlanTasks plan/create-plan-tasks
-                 :updatePlanTasks task/update-plan-tasks}
+                 :createPlanTasks plan/create-plan-tasks}
                 :Query
                 {:user #()
                  :stripe #()}

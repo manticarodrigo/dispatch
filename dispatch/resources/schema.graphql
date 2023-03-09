@@ -40,7 +40,7 @@ type Mutation {
   optimizePlan(planId: ID!): Plan
   detachPaymentMethod(paymentMethodId: ID!): Boolean
   createPlanTasks(input: AssignmentsInput): Plan
-  updatePlanTasks(input: UpdateAssignentIput): Task
+  updateTaskStops(input: UpdateAssignentIput): Task
 }
 
 type User {
@@ -117,12 +117,16 @@ type Stop {
   arrivedAt: Date
 }
 
+type Version {
+  stops: [Stop]!
+  route: JSON!
+}
+
 type Task {
   id: ID!
   agent: Agent!
   startAt: Date!
-  stops: [Stop]!
-  route: JSON!
+  versions: Version
 }
 
 input TaskFilters {
@@ -179,5 +183,5 @@ input AssignmentInput {
 
 input UpdateAssignentIput {
   taskId: ID!
-  assignment: AssignmentInput
+  placeIds: [ID]!
 }

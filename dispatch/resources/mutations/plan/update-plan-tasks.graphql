@@ -1,5 +1,0 @@
-mutation UpdatePlanTasks($input: UpdateAssignentIput) {
-    updatePlanTasks(input: $input) {
-        id
-    }
-}

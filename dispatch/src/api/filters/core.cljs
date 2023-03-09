@@ -6,11 +6,12 @@
                      :createdAt {:gte (d/subDays (js/Date.) 7)}}}})
 
 (defn task [{:keys [start end status]}]
-  {:AND (concat [{:stops
-                  (condp = status
-                    "INCOMPLETE" {:some {:arrivedAt {:equals nil}}}
-                    "COMPLETE" {:every {:arrivedAt {:not nil}}}
-                    nil {})}]
+  {:AND (concat ;[{;:stops
+                  ;(condp = status
+                  ;  "INCOMPLETE" {:some {:arrivedAt {:equals nil}}}
+                  ;  "COMPLETE" {:every {:arrivedAt {:not nil}}}
+                  ;  nil {})}
+                 ;]
                 (if (and start end)
                   [{:startAt {:gte start}}
                    {:startAt {:lte end}}]

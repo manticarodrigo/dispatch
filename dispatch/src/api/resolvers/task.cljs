@@ -23,6 +23,3 @@
   [_ args context _]
   (task/fetch-agent-task context (->clj args)))
 
-(defn update-plan-tasks
-  [_ args context _]
-  (task/update-plan-tasks context (->clj args)))
