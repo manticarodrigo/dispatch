@@ -4,26 +4,29 @@
             [api.models.user :as user]
             [api.lib.google.optimization :as optimization]))
 
-(defn create-plan [^js context {:keys [depotId startAt endAt breaks vehicleIds shipmentIds]}]
+(defn create-plan [^js context {:keys [depotId startAt endAt breaks vehicleIds shipmentIds result]}]
   (p/let [^js user (user/active-user context {:include {:organization true}})
-          organization-id (.. user -organization -id)]
+          organization-id (.. user -organization -id)
+          payload {:data {:depot {:connect {:id depotId}}
+                          :startAt startAt
+                          :endAt endAt
+                          :breaks breaks
+                          :vehicles {:create (map-indexed
+                                              (fn [idx vehicleId]
+                                                {:order idx
+                                                 :vehicle {:connect {:id vehicleId}}})
+                                              vehicleIds)}
+                          :shipments {:create  (map-indexed
+                                                (fn [idx shipmentId]
+                                                  {:order idx
+                                                   :shipment {:connect {:id shipmentId}}})
+                                                shipmentIds)}
+                          :organization {:connect {:id organization-id}}}}]
     (prisma/create!
      (.. context -prisma -plan)
-     {:data {:depot {:connect {:id depotId}}
-             :startAt startAt
-             :endAt endAt
-             :breaks breaks
-             :vehicles {:create (map-indexed
-                                 (fn [idx vehicleId]
-                                   {:order idx
-                                    :vehicle {:connect {:id vehicleId}}})
-                                 vehicleIds)}
-             :shipments {:create  (map-indexed
-                                   (fn [idx shipmentId]
-                                     {:order idx
-                                      :shipment {:connect {:id shipmentId}}})
-                                   shipmentIds)}
-             :organization {:connect {:id organization-id}}}})))
+     (if result
+       (assoc-in payload [:data :result] result)
+       payload))))
 
 (def plan-include {:depot true
                    :vehicles
@@ -93,20 +96,7 @@
 
 (defn create-plan-tasks [^js context {:keys [input]}]
   (p/let [{:keys [planId assignments]} input
-          all-visits (flatten (map :visits assignments))
-          all-shipment-ids (flatten (->> all-visits
-                                         (map :shipmentId)
-                                         (remove nil?)))
-          ^js user (user/active-user context {:include
-                                              {:organization
-                                               {:include
-                                                {:shipments
-                                                 {:where
-                                                  {:id {:in all-shipment-ids}}
-                                                  :include
-                                                  {:place true}}}}}})
-          shipment-place-map (into {} (for [^js shipment (.. user -organization -shipments)]
-                                        {(.-id shipment) (.. shipment -place -id)}))
+          ^js user (user/active-user context {:include {:organization true}})
           organization-id (.. user -organization -id)
           ^js updated-plan (prisma/update!
                             (.. context -prisma -plan)
@@ -121,13 +111,13 @@
                                                  :vehicle {:connect {:id vehicleId}}
                                                  :stops {:create (map-indexed
                                                                   (fn [idx visit]
-                                                                    (let [{:keys [depotId shipmentId]} visit]
-                                                                      (if depotId
+                                                                    (let [{:keys [placeId shipmentId]} visit]
+                                                                      (if shipmentId
                                                                         {:order idx
-                                                                         :place {:connect {:id depotId}}}
+                                                                         :place {:connect {:id placeId}}
+                                                                         :shipment {:connect {:id shipmentId}}}
                                                                         {:order idx
-                                                                         :place {:connect {:id (get shipment-place-map shipmentId)}}
-                                                                         :shipment {:connect {:id shipmentId}}})))
+                                                                         :place {:connect {:id placeId}}})))
                                                                   visits)}})
                                               assignments)}}
                              :include (plan-query-include planId)})]

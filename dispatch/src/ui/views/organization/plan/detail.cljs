@@ -85,8 +85,9 @@
                                                         (map (fn [visit]
                                                                (let [{:keys [depot shipment]} visit]
                                                                  (if depot
-                                                                   {:depotId (:id depot)}
-                                                                   {:shipmentId (:id shipment)})))))})
+                                                                   {:placeId (:id depot)}
+                                                                   {:placeId (-> shipment :place :id)
+                                                                    :shipmentId (-> shipment :id)})))))})
                                         selected-indexes)}}})
                                    (set-selected-rows #js{}))}
                                (tr [:verb/create] (tr [:noun/tasks]))])]}]
