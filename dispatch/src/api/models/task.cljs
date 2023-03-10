@@ -24,17 +24,11 @@
 
 (def tasks-include
   {:agent true
-   :versions {:orderBy {:createdAt "desc"} 
+   :versions {:orderBy {:createdAt "desc"}
               :take 1
-              :include {:stops 
+              :include {:stops
                         {:orderBy {:order "asc"}
                          :include {:place true}}}}})
-
-; (def tasks-include
-;   {
-;    :agent true
-;    :stops true
-;   })
 
 (defn tasks-query [filters]
   (prn filters)
@@ -65,12 +59,11 @@
                                               {:organization
                                                {:include
                                                 (task-query taskId)}}})
-          ^js tasks (.. user -organization -tasks)] 
-    (.forEach 
-     tasks
+          ^js tasks (.. user -organization -tasks)]
+     (.forEach
+      tasks
       (fn [^js task]
         (set! (.-stops task) (.-versions task))))
-    (prn (first tasks))
     (first tasks)))
 
 (defn fetch-agent-task [^js context {:keys [taskId]}]
