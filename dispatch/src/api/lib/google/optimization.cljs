@@ -50,22 +50,26 @@
                         :longitude lng}]
     (map (fn [{:keys [vehicle]}]
            (let [{:keys [capacities]} vehicle
-                 {:keys [volume weight]} capacities]
-             {:start_location depot-location
-              :end_location depot-location
-              :cost_per_kilometer (/ volume weight)
-              :load_limits {:volume {:max_load volume}
-                            :weight {:max_load weight}}
-              :break_rule {:break_requests
-                           (map
-                            (fn [break]
-                              (let [start (-> break :start js/Date.)
-                                    end (-> break :end js/Date.)
-                                    duration (d/differenceInSeconds end start)]
-                                {:earliest_start_time (-> start .toISOString)
-                                 :latest_start_time (-> (d/addSeconds end duration) .toISOString)
-                                 :min_duration (str duration "s")}))
-                            breaks)}}))
+                 {:keys [volume weight]} capacities
+                 base-payload {:start_location depot-location
+                               :end_location depot-location
+                               :cost_per_kilometer (/ volume weight)
+                               :load_limits {:volume {:max_load volume}
+                                             :weight {:max_load weight}}}
+                 breaks-payload {:break_rule
+                                 {:break_requests
+                                  (map
+                                   (fn [break]
+                                     (let [start (-> break :start js/Date.)
+                                           end (-> break :end js/Date.)
+                                           duration (d/differenceInSeconds end start)]
+                                       {:earliest_start_time (-> start .toISOString)
+                                        :latest_start_time (-> (d/addSeconds end duration) .toISOString)
+                                        :min_duration (str duration "s")}))
+                                   breaks)}}]
+             (if (seq breaks)
+               (merge base-payload breaks-payload)
+               base-payload)))
          vehicles)))
 
 (defn transform-plan [plan]

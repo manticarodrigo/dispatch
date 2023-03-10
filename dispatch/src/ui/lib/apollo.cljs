@@ -59,7 +59,7 @@
    (into [:<>] children)])
 
 (defn use-query [query options]
-  (let [q (useQuery query (->js (merge options {:fetchPolicy "network-only"})))]
+  (let [q (useQuery query (->js (merge {:fetchPolicy "network-only"} options)))]
     (->clj q)))
 
 (defn use-mutation [query options]
