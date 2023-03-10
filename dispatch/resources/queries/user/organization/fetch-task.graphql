@@ -13,8 +13,7 @@ query OrganizationTask($taskId: ID!) {
             createdAt
           }
         }
-        versions {
-          stops {
+        stops {
           id
           place {
             id
@@ -27,8 +26,7 @@ query OrganizationTask($taskId: ID!) {
           note
           arrivedAt
         }
-        route 
-        }
+        route
       }
     }
   }

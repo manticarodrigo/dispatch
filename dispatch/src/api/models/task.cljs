@@ -24,7 +24,17 @@
 
 (def tasks-include
   {:agent true
-   :versions true})
+   :versions {:orderBy {:createdAt "desc"} 
+              :take 1
+              :include {:stops 
+                        {:orderBy {:order "asc"}
+                         :include {:place true}}}}})
+
+; (def tasks-include
+;   {
+;    :agent true
+;    :stops true
+;   })
 
 (defn tasks-query [filters]
   (prn filters)
@@ -38,7 +48,7 @@
    {:where {:id taskId}
     :include tasks-include}})
 
-(defn fetch-organization-tasks [^js context {:keys [filters]}] 
+(defn fetch-organization-tasks [^js context {:keys [filters]}]
   (p/let [^js user (user/active-user context {:include
                                               {:organization
                                                {:include (tasks-query filters)}}})]
@@ -54,9 +64,14 @@
   (p/let [^js user (user/active-user context {:include
                                               {:organization
                                                {:include
-                                                (task-query taskId)}}})]
-    (prn (.. user -organization -tasks))
-    (first (.. user -organization -tasks))))
+                                                (task-query taskId)}}})
+          ^js tasks (.. user -organization -tasks)] 
+    (.forEach 
+     tasks
+      (fn [^js task]
+        (set! (.-stops task) (.-versions task))))
+    (prn (first tasks))
+    (first tasks)))
 
 (defn fetch-agent-task [^js context {:keys [taskId]}]
   (p/let [^js user (user/active-user context {:include

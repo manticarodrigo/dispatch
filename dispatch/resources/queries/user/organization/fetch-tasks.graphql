@@ -13,20 +13,21 @@ query OrganizationTasks($filters: TaskFilters) {
             createdAt
           }
         }
-        versions {
-          stops {
+        stops {
+          id
+          place {
             id
-            place {
-              id
-              name
-              lat
-              lng
-            }
-            order
+            name
+            description
+            lat
+            lng
           }
-          route
-      }
+          order
+          note
+          arrivedAt
+        }
+        route
+        }
       }
     }
-  }
 }

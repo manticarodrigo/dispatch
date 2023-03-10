@@ -16,18 +16,20 @@ mutation CreateTask(
       name
     }
     startAt
-    versions {
-      stops {
-        id
-        place {
+     stops {
           id
-          name
-          lat
-          lng
+          place {
+            id
+            name
+            description
+            lat
+            lng
+          }
+          order
+          note
+          arrivedAt
         }
-      order
-    }
-    }
-    
-  }
-}
+        route
+    }    
+ }
+

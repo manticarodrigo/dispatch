@@ -111,22 +111,24 @@ type Place {
 
 type Stop {
   id: ID!
-  place: Place!
-  order: Int!
+  place: Place
+  order: Int
   note: String
   arrivedAt: Date
 }
 
 type Version {
-  stops: [Stop]!
-  route: JSON!
+  id:    ID
+  stops: [Stop]
+  route: JSON
 }
 
 type Task {
   id: ID!
   agent: Agent!
   startAt: Date!
-  versions: Version
+  stops: [Stop]
+  route: JSON
 }
 
 input TaskFilters {
