@@ -2,12 +2,11 @@
   (:require ["@faker-js/faker" :refer (faker)]
             [date-fns :as d]
             [cljs.test :as t :refer-macros [deftest async testing is use-fixtures]]
-            [shadow.resource :refer (inline)]
             [promesa.core :as p]
             [common.utils.promise :refer (each)]
             [ui.utils.error :refer (tr-error)]
             [ui.utils.i18n :refer (tr)]
-            [tests.fixtures.tour :refer (depot shipments vehicles)]
+            [tests.fixtures.tour :refer (depot shipments vehicles solution)]
             [tests.util.ui :as ui :refer (with-mounted-component test-app)]
             [tests.util.location :refer (nearby generate-polyline)]
             [tests.user :as user]
@@ -295,19 +294,20 @@
 
 (deftest create-demo-shipments
   (async done
-         (-> (p/all (map
-                     (fn [{:keys [reference address size duration windows latitude longitude]}]
-                       (p/let [place-mock (place/create-place
-                                           {:name reference
-                                            :description address
-                                            :lat latitude
-                                            :lng longitude})]
-                         (shipment/create-shipment
-                          {:placeId (-> place-mock :result :data :createPlace :id)
-                           :size size
-                           :duration duration
-                           :windows windows})))
-                     shipments))
+         (-> (each (map
+                    (fn [{:keys [reference address size duration windows latitude longitude]}]
+                      (fn []
+                        (p/let [place-mock (place/create-place
+                                            {:name reference
+                                             :description address
+                                             :lat latitude
+                                             :lng longitude})]
+                          (shipment/create-shipment
+                           {:placeId (-> place-mock :result :data :createPlace :id)
+                            :size size
+                            :duration duration
+                            :windows windows}))))
+                    shipments))
              (.then (fn [mocks]
                       (testing "api returns data"
                         (is (every? #(-> % :result :data :createShipment) mocks))
@@ -322,7 +322,10 @@
 
 (deftest create-demo-vehicles
   (async done
-         (-> (p/all (map vehicle/create-vehicle vehicles))
+         (-> (each (map
+                    (fn [vehicle]
+                      (fn [] (vehicle/create-vehicle vehicle)))
+                    vehicles))
              (.then (fn [mocks]
                       (testing "api returns data"
                         (is (every? #(-> % :result :data :createVehicle) mocks))
@@ -349,8 +352,7 @@
                              :breaks (-> depot :breaks)
                              :shipmentIds (mapv :id shipments)
                              :vehicleIds (mapv :id vehicles)
-                            ;;  :result (js/JSON.parse (inline "samples/solutions/4.json"))
-                             })]
+                             :result solution})]
            (testing "api returns data"
              (is (-> plan-mock :result :data :createPlan))
              (done)))))

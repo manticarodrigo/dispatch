@@ -30,7 +30,7 @@
 
 (def shipments
   (->> (parse
-        (inline "samples/shipments.csv")
+        (inline "fixtures/optimization/shipments.csv")
         (->js {:columns
                ["order"
                 "reference"
@@ -70,7 +70,7 @@
 
 (def vehicles
   (->> (parse
-        (inline "samples/vehicles.csv")
+        (inline "fixtures/optimization/vehicles.csv")
         (->js {:columns
                ["description"
                 "maxWeight"
@@ -94,7 +94,7 @@
 (def depot
   (->>
    (parse
-    (inline "samples/depot.csv")
+    (inline "fixtures/optimization/depot.csv")
     (->js {:columns
            ["reference"
             "description"
@@ -116,3 +116,5 @@
        :endAt (-> endTime get-date .toISOString)
        :breaks [(get-window "1200" "1230")]}))
    first))
+
+(def solution (js/JSON.parse (inline "fixtures/optimization/solution.json")))

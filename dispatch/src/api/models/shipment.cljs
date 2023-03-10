@@ -15,7 +15,8 @@
              :organization {:connect {:id organization-id}}}})))
 
 (def shipments-include
-  {:shipments {:include {:place true}}})
+  {:shipments {:orderBy {:createdAt "desc"}
+               :include {:place true}}})
 
 (defn fetch-organization-shipments [^js context]
   (p/let [^js user (user/active-user context {:include

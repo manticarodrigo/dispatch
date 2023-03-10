@@ -13,7 +13,7 @@
              :organization {:connect {:id organization-id}}}})))
 
 (def vehicles-include
-  {:vehicles true})
+  {:vehicles {:orderBy {:createdAt "desc"}}})
 
 (defn fetch-organization-vehicles [^js context]
   (p/let [^js user (user/active-user context {:include
