@@ -35,7 +35,7 @@
      (fn [^js agent]
        (set! (.-location agent) (first (.-locations agent)))))
     ;; this moves null values to the end of the list
-    (sort-by #(some-> % .-location .-createdAt) > agents)))
+    (sort-by #(some-> ^js % .-location .-createdAt) > agents)))
 
 (defn fetch-organization-agent [^js context {:keys [agentId filters]}]
   (p/let [^js result (active-user

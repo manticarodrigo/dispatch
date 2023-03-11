@@ -1,6 +1,6 @@
 locals {
   app_name     = "dispatch"
-  version_name = "0.0.12"
+  version_name = "0.0.13"
 }
 
 variable "domain_name" {}
