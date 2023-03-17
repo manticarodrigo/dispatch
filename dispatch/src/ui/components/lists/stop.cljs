@@ -27,7 +27,7 @@
                    :icon (if arrivedAt CheckIcon MinusIcon)
                    :title name
                    :subtitle description
-                   :detail [:div {:class "shrink-0 flex flex-col items-end pl-4 lg:pl-6 text-xs text-neutral-300"}
+                   :detail [:div {:class "flex flex-col items-end pl-4 lg:pl-6 text-xs text-neutral-300"}
                             (if arrivedAt
                               [:div {:class "flex"}
                                [:> PackageIcon {:class "mr-3 w-4 h-4 text-green-500"}]

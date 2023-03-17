@@ -135,7 +135,8 @@ model Stop {
 model Vehicle {
   id             String        @id @unique @default(uuid())
   name           String?
-  capacities     Json?
+  volume         Float?
+  weight         Float?
   tasks          Task[]
   plans          PlanVehicle[]
   organization   Organization  @relation(fields: [organizationId], references: [id])
@@ -146,7 +147,8 @@ model Vehicle {
 
 model Shipment {
   id             String         @id @unique @default(uuid())
-  size           Json?
+  volume         Float?
+  weight         Float?
   duration       Int?
   windows        Json
   place          Place          @relation(fields: [placeId], references: [id])

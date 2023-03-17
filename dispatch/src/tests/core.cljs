@@ -295,7 +295,7 @@
 (deftest create-demo-shipments
   (async done
          (-> (each (map
-                    (fn [{:keys [reference address size duration windows latitude longitude]}]
+                    (fn [{:keys [reference address weight volume duration windows latitude longitude]}]
                       (fn []
                         (p/let [place-mock (place/create-place
                                             {:name reference
@@ -304,7 +304,8 @@
                                              :lng longitude})]
                           (shipment/create-shipment
                            {:placeId (-> place-mock :result :data :createPlace :id)
-                            :size size
+                            :weight weight
+                            :volume volume
                             :duration duration
                             :windows windows}))))
                     shipments))

@@ -27,3 +27,13 @@
 
 (defn parse-date [date]
   (if date (-> date js/parseInt js/Date.) (js/Date.)))
+
+(defn military->minutes [military-time]
+  (let [time (if (= (count military-time) 3) (str "0" military-time) military-time)
+        hours (-> time
+                  (subs 0 2)
+                  (js/parseInt))
+        minutes (-> time
+                    (subs 2)
+                    (js/parseInt))]
+    (+ (* hours 60) minutes)))

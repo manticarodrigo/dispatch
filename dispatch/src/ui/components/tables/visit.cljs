@@ -1,6 +1,5 @@
 (ns ui.components.tables.visit
-  (:require [cljs-bean.core :refer (->clj)]
-            [ui.utils.date :as d]
+  (:require [ui.utils.date :as d]
             [ui.utils.i18n :refer (tr)]
             [ui.components.table :refer (table)]))
 
@@ -19,18 +18,12 @@
     :cell #(-> ^js % .getValue js/Date. (d/format "hh:mmaaa"))}
    {:id "volume"
     :header (tr [:table.plan/volume])
-    :accessorFn #(some-> ^js % .-shipment .-size .-volume)
-    :cell (fn [^js info]
-            (let [fmt #(-> % (/ 100000) (.toFixed 2))
-                  val (.getValue info)]
-              (str (fmt val) "m³")))}
+    :accessorFn #(some-> ^js % .-shipment .-volume)
+    :cell #(str (.getValue ^js %) "m³")}
    {:id "weight"
     :header (tr [:table.plan/weight])
-    :accessorFn #(some-> ^js % .-shipment .-size .-weight)
-    :cell (fn [^js info]
-            (let [fmt #(-> % (/ 1000) (.toFixed 2))
-                  val (.getValue info)]
-              (str (fmt val) "kg")))}])
+    :accessorFn #(some-> ^js % .-shipment .-weight)
+    :cell #(str (.getValue ^js %) "kg")}])
 
 (defn visit-table [{:keys [visits]}]
   [table {:data visits

@@ -1,27 +1,16 @@
 (ns tests.fixtures.tour
-  (:require ["csv-parse/sync" :refer (parse)]
+  (:require ["papaparse" :refer (parse)]
             [date-fns :as d]
             [shadow.resource :refer (inline)]
-            [cljs-bean.core :refer (->clj ->js)]))
-
-(defn military-time-to-minutes [military-time]
-  (let [time (if (= (count military-time) 3) (str "0" military-time) military-time)
-        hours (-> time
-                  (subs 0 2)
-                  (js/parseInt))
-        minutes (-> time
-                    (subs 2)
-                    (js/parseInt))]
-    (+ (* hours 60) minutes)))
+            [cljs-bean.core :refer (->clj)]
+            [common.utils.number :refer (scale-amount)]
+            [common.utils.date :refer (military->minutes)]))
 
 (defn get-date [military-time]
   (-> (js/Date.)
       (d/startOfDay)
       (d/addDays 1)
-      (d/addMinutes (military-time-to-minutes military-time))))
-
-(defn scale-amount [amount factor]
-  (-> amount js/parseFloat (* factor) js/parseInt))
+      (d/addMinutes (military->minutes military-time))))
 
 (defn get-window [start end]
   (when (and (not-empty start) (not-empty end))
@@ -31,21 +20,24 @@
 (def shipments
   (->> (parse
         (inline "fixtures/optimization/shipments.csv")
-        (->js {:columns
-               ["order"
-                "reference"
-                "address"
-                "start1"
-                "end1"
-                "start2"
-                "end2"
-                "duration"
-                "volume"
-                "weight"
-                "latitude"
-                "longitude"]
-               :from 2}))
+        #js{:header true
+            :transformHeader (fn [name idx]
+                               (case idx
+                                 0 "order"
+                                 1 "reference"
+                                 2 "address"
+                                 3 "start1"
+                                 4 "end1"
+                                 5 "start2"
+                                 6 "end2"
+                                 7 "duration"
+                                 8 "volume"
+                                 9 "weight"
+                                 10 "latitude"
+                                 11 "longitude"
+                                 name))})
        ->clj
+       :data
        (map
         (fn [{:keys [reference
                      address
@@ -60,8 +52,8 @@
                      longitude]}]
           {:reference reference
            :address address
-           :size {:volume (scale-amount volume 100000)
-                  :weight (scale-amount weight 1000)}
+           :weight (js/parseFloat weight)
+           :volume (js/parseFloat volume)
            :duration (scale-amount duration 60)
            :windows (filter some? [(get-window start1 end1)
                                    (get-window start2 end2)])
@@ -71,41 +63,47 @@
 (def vehicles
   (->> (parse
         (inline "fixtures/optimization/vehicles.csv")
-        (->js {:columns
-               ["description"
-                "maxWeight"
-                "maxVolume"
-                "maxItems"
-                "maxDuration"
-                "loadingTime"
-                "avgSpeed"
-                "breakStart"
-                "breakEnd"
-                "breakDuration"
-                "minBreakDuration"]
-               :from 2}))
+        #js{:header true
+            :transformHeader (fn [name idx]
+                               (case idx
+                                 0 "description"
+                                 1 "maxWeight"
+                                 2 "maxVolume"
+                                 3 "maxItems"
+                                 4 "maxDuration"
+                                 5 "loadingTime"
+                                 6 "avgSpeed"
+                                 7 "breakStart"
+                                 8 "breakEnd"
+                                 9 "breakDuration"
+                                 10 "minBreakDuration"
+                                 name))})
        ->clj
+       :data
        (map
         (fn [{:keys [description maxWeight maxVolume]}]
           {:name description
-           :capacities {:volume (scale-amount maxVolume 100000)
-                        :weight (scale-amount maxWeight 1000)}}))))
+           :weight (js/parseFloat maxWeight)
+           :volume (js/parseFloat maxVolume)}))))
 
 (def depot
   (->>
    (parse
     (inline "fixtures/optimization/depot.csv")
-    (->js {:columns
-           ["reference"
-            "description"
-            "address"
-            "startTime"
-            "endTime"
-            "waitDuration"
-            "latitude"
-            "longitude"]
-           :from 2}))
+    #js{:header true
+        :transformHeader (fn [name idx]
+                           (case idx
+                             0 "reference"
+                             1 "description"
+                             2 "address"
+                             3 "startTime"
+                             4 "endTime"
+                             5 "waitDuration"
+                             6 "latitude"
+                             7 "longitude"
+                             name))})
    ->clj
+   :data
    (map
     (fn [{:keys [description address startTime endTime latitude longitude]}]
       {:place {:name description

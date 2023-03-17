@@ -3,13 +3,14 @@
             [api.util.prisma :as prisma]
             [api.models.user :as user]))
 
-(defn create-vehicle [^js context {:keys [name capacities]}]
+(defn create-vehicle [^js context {:keys [name weight volume]}]
   (p/let [^js user (user/active-user context {:include {:organization true}})
           organization-id (.. user -organization -id)]
     (prisma/create!
      (.. context -prisma -vehicle)
      {:data {:name name
-             :capacities capacities
+             :weight weight
+             :volume volume
              :organization {:connect {:id organization-id}}}})))
 
 (def vehicles-include

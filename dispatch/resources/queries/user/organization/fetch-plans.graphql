@@ -19,7 +19,8 @@ query OrganizationPlans {
           vehicle {
             id
             name
-            capacities
+            weight
+            volume
           }
         }
         shipments {
@@ -27,7 +28,8 @@ query OrganizationPlans {
           order
           shipment {
             id
-            size
+            weight
+            volume
             duration
             windows
             place {

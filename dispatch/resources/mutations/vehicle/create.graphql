@@ -1,7 +1,8 @@
-mutation CreateVehicle($name: String!, $capacities: JSON) {
-  createVehicle(name: $name, capacities: $capacities) {
+mutation CreateVehicle($name: String!, $weight: Float, $volume: Float) {
+  createVehicle(name: $name, weight: $weight, volume: $volume) {
     id
     name
-    capacities
+    weight
+    volume
   }
 }

@@ -16,23 +16,19 @@
                   fmt #(-> % js/Date. (d/format "hh:mmaaa"))]
               (r/as-element
                [:div {:class "space-y-2"}
-                (for [{:keys [start end]} windows]
-                  [:div
-                   (str (fmt start) " - " (fmt end))])])))}
+                (doall
+                 (for [[idx {:keys [start end]}] (map-indexed vector windows)]
+                   ^{:key idx}
+                   [:div
+                    (str (fmt start) " - " (fmt end))]))])))}
    {:id "volume"
     :header (tr [:table.plan/volume])
-    :accessorFn #(.. ^js % -size -volume)
-    :cell (fn [^js info]
-            (let [fmt #(-> % (/ 100000) (.toFixed 2))
-                  val (.getValue info)]
-              (str (fmt val) "m³")))}
+    :accessorFn #(some-> ^js % .-volume (.toFixed 2))
+    :cell #(str (.getValue ^js %) "m³")}
    {:id "weight"
     :header (tr [:table.plan/weight])
-    :accessorFn #(.. ^js % -size -weight)
-    :cell (fn [^js info]
-            (let [fmt #(-> % (/ 1000) (.toFixed 2))
-                  val (.getValue info)]
-              (str (fmt val) "kg")))}])
+    :accessorFn #(some-> ^js % .-weight (.toFixed 2))
+    :cell #(str (.getValue ^js %) "kg")}])
 
 (defn shipment-table [{:keys [shipments]}]
   [table {:data shipments

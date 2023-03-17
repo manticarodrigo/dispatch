@@ -13,11 +13,12 @@
 
 (defn transform-shipments [shipments]
   (map
-   (fn [{:keys [id size windows duration place]}]
+   (fn [{:keys [id weight volume windows duration place]}]
      {:name id
       :from "depot"
       :to (:id place)
-      :size size
+      :size {:weight weight
+             :volume volume}
       :dropoff_duration duration
       :dropoff_times (map
                       (fn [{:keys [start end]}]
@@ -30,11 +31,12 @@
 (defn transform-vehicles [plan]
   (let [{:keys [startAt endAt breaks vehicles]} plan]
     (map
-     (fn [{:keys [id capacities]}]
+     (fn [{:keys [id weight volume]}]
        {:name id
         :start_location "depot"
         :end_location "depot"
-        :capacities capacities
+        :capacities {:weight weight
+                     :volume volume}
         :earliest_start startAt
         :latest_end endAt
         :breaks (map

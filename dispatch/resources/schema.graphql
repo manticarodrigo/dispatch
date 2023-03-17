@@ -24,11 +24,12 @@ type Mutation {
   createArrival(stopId: ID!, note: String): Stop
   createShipment(
     placeId: ID!
-    size: JSON
+    weight: Float
+    volume: Float
     duration: Int
     windows: JSON
   ): Shipment
-  createVehicle(name: String!, capacities: JSON): Vehicle
+  createVehicle(name: String!, weight: Float, volume: Float): Vehicle
   createPlan(
     depotId: ID
     startAt: Date
@@ -145,7 +146,8 @@ type Stripe {
 type Shipment {
   id: ID!
   place: Place!
-  size: JSON
+  weight: Float
+  volume: Float
   duration: Int
   windows: JSON
 }
@@ -153,7 +155,8 @@ type Shipment {
 type Vehicle {
   id: ID!
   name: String!
-  capacities: JSON
+  weight: Float
+  volume: Float
 }
 
 type Plan {

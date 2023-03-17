@@ -3,12 +3,13 @@
             [api.util.prisma :as prisma]
             [api.models.user :as user]))
 
-(defn create-shipment [^js context {:keys [placeId size duration windows]}]
+(defn create-shipment [^js context {:keys [placeId weight volume duration windows]}]
   (p/let [^js user (user/active-user context {:include {:organization true}})
           organization-id (.. user -organization -id)]
     (prisma/create!
      (.. context -prisma -shipment)
-     {:data {:size size
+     {:data {:weight weight
+             :volume volume
              :duration duration
              :windows windows
              :place {:connect {:id placeId}}

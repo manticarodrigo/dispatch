@@ -3,7 +3,14 @@
             ["axios" :as axios]
             ["date-fns" :as d]
             [promesa.core :as p]
-            [cljs-bean.core :refer (->js ->clj)]))
+            [cljs-bean.core :refer (->js ->clj)]
+            [common.utils.number :refer (scale-amount)]))
+
+(defn upscale-capacity [capacity]
+  (scale-amount capacity 1000000))
+
+(defn downscale-capacity [capacity]
+  (scale-amount capacity 0.000001))
 
 (def ^js auth-client
   (-> (-> google .-auth .-GoogleAuth)
@@ -17,11 +24,12 @@
         depot-location {:latitude lat
                         :longitude lng}]
     (map (fn [{:keys [shipment]}]
-           (let [{:keys [place size windows duration]} shipment
+           (let [{:keys [place windows duration]} shipment
                  {:keys [lat lng]} place
-                 {:keys [volume weight]} size
                  arrival-location {:latitude lat
-                                   :longitude lng}]
+                                   :longitude lng}
+                 volume (upscale-capacity (:volume shipment))
+                 weight (upscale-capacity (:weight shipment))]
              {;; :penalty_cost (/ volume weight)
               :load_demands
               {:volume {:amount volume}
@@ -49,8 +57,8 @@
         depot-location {:latitude lat
                         :longitude lng}]
     (map (fn [{:keys [vehicle]}]
-           (let [{:keys [capacities]} vehicle
-                 {:keys [volume weight]} capacities
+           (let [volume (upscale-capacity (:volume vehicle))
+                 weight (upscale-capacity (:weight vehicle))
                  base-payload {:start_location depot-location
                                :end_location depot-location
                                :cost_per_kilometer (/ volume weight)
@@ -117,8 +125,8 @@
                           :start (some-> route .-vehicleStartTime)
                           :end (some-> route .-vehicleEndTime)
                           :meters (some-> route .-metrics .-travelDistanceMeters)
-                          :volume (some-> route .-metrics .-maxLoads .-volume .-amount)
-                          :weight (some-> route .-metrics .-maxLoads .-weight .-amount)
+                          :volume (some-> route .-metrics .-maxLoads .-volume .-amount downscale-capacity)
+                          :weight (some-> route .-metrics .-maxLoads .-weight .-amount downscale-capacity)
                           :visits (apply array
                                          (map
                                           (fn [^js visit]

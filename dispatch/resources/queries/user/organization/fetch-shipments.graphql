@@ -3,7 +3,8 @@ query OrganizationShipments {
     organization {
       shipments {
         id
-        size
+        weight
+        volume
         duration
         windows
         place {
