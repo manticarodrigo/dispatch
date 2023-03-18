@@ -1,5 +1,5 @@
 (ns ui.components.inputs.combobox
-  (:require ["react"]
+  (:require ["react" :refer (useState)]
             ["react-feather" :rename {ChevronDown ChevronDownIcon}]
             [headlessui-reagent.core :as ui]
             [clojure.string :as s]
@@ -26,7 +26,7 @@
                  :or {option-to-value #(:value %)
                       option-to-label #(:label %)}}]
   (let [{:keys [x y reference floating strategy]} (use-floating)
-        [query set-query] (react/useState "")
+        [query set-query] (useState "")
         filtered-options (filter #(-> %
                                       option-to-label
                                       s/lower-case

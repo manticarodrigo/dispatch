@@ -119,6 +119,7 @@
           :columns (get-columns agents !selected-agents)
           :state #js{:rowSelection selected-rows
                      :agentSelection @!selected-agents}
-          :enable-row-selection #(and (some-> ^js % .-original .-visits seq)
-                                      (some-> ^js % .-original .-vehicle .-tasks empty?))
+          :enable-row-selection #(let [v (->clj %)]
+                                   (and (some-> v :original :visits seq)
+                                        (some-> v :original :vehicle :tasks empty?)))
           :on-row-selection-change set-selected-rows}])

@@ -1,9 +1,8 @@
 (ns ui.components.forms.task
   (:require ["uuid" :rename {v4 uuid}]
-            ["react"]
-            ["react-feather"
-             :rename {Menu MenuIcon
-                      X XIcon}]
+            ["react" :refer (useEffect)]
+            ["react-feather" :rename {Menu MenuIcon
+                                      X XIcon}]
             ["framer-motion" :refer (Reorder)]
             [reagent.core :as r]
             [re-frame.core :refer (dispatch)]
@@ -80,14 +79,14 @@
                              :position (select-keys location [:lat :lng])}))
                          vec)]
 
-        (react/useEffect
+        (useEffect
          (fn []
            (reset! !loading-route true)
            (-calc-route selected-places)
            #())
          #js[origin-id destination-id stop-tuples])
 
-        (react/useEffect
+        (useEffect
          (fn []
            (dispatch [:map {:paths (when route [(:path route)])
                             :points markers}])

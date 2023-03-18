@@ -1,5 +1,5 @@
 (ns ui.lib.stripe
-  (:require ["react"]
+  (:require ["react" :refer (useState useEffect)]
             ["@stripe/stripe-js" :refer (loadStripe)]
             ["@stripe/react-stripe-js" :refer (Elements PaymentElement useStripe useElements)]
             [cljs-bean.core :refer (->js ->clj)]
@@ -44,8 +44,8 @@
 
 (defn use-setup-intent-status [secret]
   (let [^js stripe (useStripe)
-        [intent set-intent] (react/useState nil)]
-    (react/useEffect
+        [intent set-intent] (useState nil)]
+    (useEffect
      (fn []
        (when stripe
          (-> stripe
@@ -53,4 +53,4 @@
              (.then set-intent)))
        #())
      #js[stripe])
-    (some-> intent .-setupIntent .-status)))
+    (some-> ^js intent .-setupIntent .-status)))

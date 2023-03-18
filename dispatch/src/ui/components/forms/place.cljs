@@ -1,5 +1,5 @@
 (ns ui.components.forms.place
-  (:require ["react" :refer (useState)]
+  (:require ["react" :refer (useEffect useState)]
             [clojure.set :refer (rename-keys)]
             [shadow.resource :refer (inline)]
             [reagent.core :as r]
@@ -44,7 +44,7 @@
                         (cons state @!options)
                         @!options)]
 
-    (react/useEffect
+    (useEffect
      (fn []
        (dispatch [:map
                   {:points

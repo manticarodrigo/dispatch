@@ -1,5 +1,5 @@
 (ns ui.views.agent.layout
-  (:require ["react"]
+  (:require ["react" :refer (useEffect)]
             ["react-feather" :rename {Clipboard TaskIcon
                                       MapPin PlaceIcon}]
             [re-frame.core :refer (dispatch)]
@@ -32,7 +32,7 @@
         [create-location] (use-mutation CREATE_LOCATION {})
         unsupported? (= platform "")]
 
-    (react/useEffect
+    (useEffect
      (fn []
        (when-not unsupported?
          (watch-location
