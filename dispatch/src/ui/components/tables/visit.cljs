@@ -18,11 +18,11 @@
     :cell #(-> ^js % .getValue js/Date. (d/format "hh:mmaaa"))}
    {:id "volume"
     :header (tr [:table.plan/volume])
-    :accessorFn #(some-> ^js % .-shipment .-volume)
+    :accessorFn #(some-> ^js % .-shipment .-volume (.toFixed 2))
     :cell #(str (.getValue ^js %) "m³")}
    {:id "weight"
     :header (tr [:table.plan/weight])
-    :accessorFn #(some-> ^js % .-shipment .-weight)
+    :accessorFn #(some-> ^js % .-shipment .-weight (.toFixed 2))
     :cell #(str (.getValue ^js %) "kg")}])
 
 (defn visit-table [{:keys [visits]}]

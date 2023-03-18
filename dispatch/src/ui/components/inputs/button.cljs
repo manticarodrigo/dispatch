@@ -9,8 +9,10 @@
 
 (def box-interact-class (class-names
                          "transition"
-                         "hover:border-neutral-500 focus:border-neutral-500"
-                         "hover:bg-neutral-700 focus:bg-neutral-700 active:bg-neutral-700"))
+                         "hover:border-neutral-500 focus:border-neutral-500 disabled:border-neutral-600"
+                         "hover:bg-neutral-700 focus:bg-neutral-700 active:bg-neutral-700 disabled:bg-neutral-800"
+                         "disabled:cursor-not-allowed"
+                         "disabled:text-neutral-600"))
 
 (def box-peer-interact-class (class-names
                               "transition"
@@ -29,11 +31,13 @@
 
 (defn button [{type :type
                aria-label :aria-label
+               disabled :disabled
                label :label
                class :class
                on-click :on-click}]
   [:button {:type type
             :aria-label aria-label
+            :disabled disabled
             :class (class-names
                     class
                     button-class)

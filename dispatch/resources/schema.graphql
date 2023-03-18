@@ -30,6 +30,8 @@ type Mutation {
     windows: JSON
   ): Shipment
   createVehicle(name: String!, weight: Float, volume: Float): Vehicle
+  createVehicles(vehicles: [VehicleInput]!): Organization
+  archiveVehicles(vehicleIds: [ID]!): Organization
   createPlan(
     depotId: ID
     startAt: Date
@@ -154,6 +156,12 @@ type Shipment {
 
 type Vehicle {
   id: ID!
+  name: String!
+  weight: Float
+  volume: Float
+}
+
+input VehicleInput {
   name: String!
   weight: Float
   volume: Float

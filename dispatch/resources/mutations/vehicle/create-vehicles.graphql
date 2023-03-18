@@ -1,0 +1,11 @@
+mutation CreateVehicles($vehicles: [VehicleInput]!) {
+  createVehicles(vehicles: $vehicles) {
+    id
+    vehicles {
+      id
+      name
+      weight
+      volume
+    }
+  }
+}

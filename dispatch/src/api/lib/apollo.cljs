@@ -45,6 +45,8 @@
                  :createArrival stop/create-arrival
                  :createShipment shipment/create-shipment
                  :createVehicle vehicle/create-vehicle
+                 :createVehicles vehicle/create-vehicles
+                 :archiveVehicles vehicle/archive-vehicles
                  :createPlan plan/create-plan
                  :optimizePlan plan/optimize-plan
                  :optimizeTask task/optimize-task

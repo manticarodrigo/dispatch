@@ -1,0 +1,11 @@
+mutation ArchiveVehicles($vehicleIds: [ID]!) {
+  archiveVehicles(vehicleIds: $vehicleIds) {
+    id
+    vehicles {
+      id
+      name
+      weight
+      volume
+    }
+  }
+}

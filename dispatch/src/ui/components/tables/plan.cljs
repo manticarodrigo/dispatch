@@ -9,13 +9,8 @@
             [ui.components.inputs.button :refer (button button-class)]
             [ui.components.modal :refer (modal)]
             [ui.components.tables.visit :refer (visit-table)]
+            [ui.components.tables.columns.checkbox :refer (checkbox-column)]
             [ui.components.inputs.combobox :refer (combobox)]))
-
-(defn checkbox [{:keys [checked disabled on-change]}]
-  [:input {:type "checkbox"
-           :checked checked
-           :disabled disabled
-           :on-change on-change}])
 
 (defn visit-cell [visits]
   (let [!show-modal (r/atom false)]
@@ -54,18 +49,7 @@
                "N/A")))})
 
 (defn get-columns [agents !selected-agents]
-  [{:id "select"
-    :header (fn [^js info]
-              (r/as-element
-               [checkbox
-                {:checked (-> info .-table .getIsAllRowsSelected)
-                 :on-change (-> info .-table .getToggleAllRowsSelectedHandler)}]))
-    :cell (fn [^js info]
-            (r/as-element
-             [checkbox
-              {:checked (-> info .-row .getIsSelected)
-               :disabled (not (-> info .-row .getCanSelect))
-               :on-change (-> info .-row .getToggleSelectedHandler)}]))}
+  [checkbox-column
    {:id "task"
     :header (tr [:table.plan/task])
     :cell (fn [^js info]
@@ -131,10 +115,10 @@
                           selected-rows
                           set-selected-rows
                           !selected-agents]}]
-  [table {:state #js{:rowSelection selected-rows
-                     :agentSelection @!selected-agents}
-          :data result
+  [table {:data result
           :columns (get-columns agents !selected-agents)
+          :state #js{:rowSelection selected-rows
+                     :agentSelection @!selected-agents}
           :enable-row-selection #(and (some-> ^js % .-original .-visits seq)
                                       (some-> ^js % .-original .-vehicle .-tasks empty?))
           :on-row-selection-change set-selected-rows}])

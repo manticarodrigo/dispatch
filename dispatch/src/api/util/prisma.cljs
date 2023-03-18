@@ -17,6 +17,9 @@
 (defn delete! [^js model params]
   (.delete model (->js params)))
 
+(defn delete-many! [^js model params]
+  (.deleteMany model (->js params)))
+
 (defn find-first [^js model params]
   (.findFirst model (->js params)))
 

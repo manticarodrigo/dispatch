@@ -4,7 +4,7 @@
             [ui.components.icons.spinner :refer (spinner)]
             [ui.components.inputs.button :refer (button)]))
 
-(defn loading-button [{:keys [loading type label class on-click]}]
+(defn loading-button [{:keys [loading disabled type label class on-click]}]
   [button
    {:type type
     :label (if loading
@@ -12,5 +12,5 @@
               [spinner {:class "mr-2 w-5 h-5"}] (tr [:misc/loading]) "..."]
              label)
     :class (class-names class (when loading "cursor-progress"))
-    :disabled loading
+    :disabled (or loading disabled)
     :on-click on-click}])

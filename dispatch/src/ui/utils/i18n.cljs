@@ -10,7 +10,10 @@
            :shipments "shipments"
            :vehicles "vehicles"}
     :verb {:create "create"
+           :archive "archive"
+           :upload "upload"
            :show "show"
+           :close "close"
            :optimize "optimize"}
     :view {:not-found "Page not found"
            :register {:title "Register"
@@ -42,6 +45,7 @@
            :shipment {:list {:title "Shipments"}
                       :create {:title "Create shipment"}}
            :vehicle {:list {:title "Vehicles"}
+                     :upload {:title "Upload vehicles"}
                      :create {:title "Create vehicle"}}
            :subscription {:title "Manage subscription"
                           :payment {:title "Payments"
@@ -90,7 +94,10 @@
                    :place "Place"
                    :order "Order"
                    :go-to-task "Go to task"
-                   :view-skipped-shipments "View skipped shipments"}}
+                   :view-skipped-shipments "View skipped shipments"}
+            :vehicle {:name "Name"
+                      :weight "Weight (kg)"
+                      :volume "Volume (m³)"}}
 
     :status {:all "All"
              :incomplete "Incomplete"
@@ -134,7 +141,10 @@
            :shipments "envíos"
            :vehicles "vehículos"}
     :verb {:create "crear"
+           :archive "archivar"
+           :upload "subir"
            :show "mostrar"
+           :close "cerrar"
            :optimize "optimizar"}
 
     :view {:register {:title "Registrar"
@@ -167,6 +177,7 @@
            :shipment {:list {:title "Envíos"}
                       :create {:title "Crear envío"}}
            :vehicle {:list {:title "Vehículos"}
+                     :upload {:title "Subir vehículos"}
                      :create {:title "Crear vehículo"}}
            :not-found "Página no encontrada"
            :subscription {:title "Administrar suscripción"
@@ -217,7 +228,10 @@
                    :place "Lugar"
                    :order "Orden"
                    :go-to-task "Ir a tarea"
-                   :view-skipped-shipments "Ver envíos omitidos"}}
+                   :view-skipped-shipments "Ver envíos omitidos"}
+            :vehicle {:name "Nombre"
+                      :weight "Peso (kg)"
+                      :volume "Volumen (m³)"}}
 
     :status {:all "Todos"
              :incomplete "Incompleto"

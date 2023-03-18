@@ -1,5 +1,6 @@
 (ns ui.components.table
-  (:require ["@tanstack/react-table"
+  (:require [react :refer (useMemo)]
+            ["@tanstack/react-table"
              :refer [flexRender
                      getCoreRowModel
                      useReactTable]]
@@ -7,10 +8,12 @@
 
 (defn table [{:keys [state data columns enable-row-selection on-row-selection-change]
               :or {data [] columns []}}]
-  (let [^js instance (useReactTable
+  (let [_data (useMemo #(->js data) (array data))
+        _columns (useMemo #(->js columns) (array columns))
+        ^js instance (useReactTable
                       #js{:state state
-                          :data (->js data)
-                          :columns (->js columns)
+                          :data _data
+                          :columns _columns
                           :enableRowSelection enable-row-selection
                           :onRowSelectionChange on-row-selection-change
                           :getCoreRowModel (getCoreRowModel)})

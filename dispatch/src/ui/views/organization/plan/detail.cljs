@@ -5,7 +5,7 @@
             [ui.lib.apollo :refer (gql use-query use-mutation)]
             [ui.lib.router :refer (use-params)]
             [ui.utils.i18n :refer (tr)]
-            [ui.components.layout.header :refer (header)]
+            [ui.components.layout.bare :refer (bare-layout)]
             [ui.components.tables.plan :refer (plan-table)]
             [ui.components.tables.shipment :refer (shipment-table)]
             [ui.components.inputs.button :refer (button)]
@@ -23,11 +23,11 @@
      [:p {:class "text-sm"}
       [button {:label (str (tr [:table.plan/view-skipped-shipments]) " (" (count skipped) ")")
                :class "text-sm"
-               :on-click #(set-modal-open? true)}]
-      [modal {:show modal-open?
-              :title "Skipped shipments"
-              :on-close #(set-modal-open? false)}
-       [shipment-table {:shipments skipped}]]]]))
+               :on-click #(set-modal-open? true)}]]
+     [modal {:show modal-open?
+             :title "Skipped shipments"
+             :on-close #(set-modal-open? false)}
+      [shipment-table {:shipments skipped}]]]))
 
 (defn view []
   (let [!selected-agents (r/atom {})]
@@ -54,43 +54,43 @@
            #())
          #js[data])
 
-        [:main {:class "flex flex-col w-full h-full min-w-0 min-h-0"}
-         [header {:title (if loading
-                           (str (tr [:misc/loading]) "...")
-                           (tr [:view.plan.detail/title] [startAt endAt]))
-                  :actions [:<>
-                            (when-not loading
-                              [loading-button
-                               {:loading (:loading optimize-status)
-                                :label (tr [:verb/optimize])
-                                :class "capitalize"
-                                :on-click #(optimize {:variables {:planId plan-id}})}])
-                            (when (seq selected-indexes)
-                              [loading-button
-                               {:loading (:loading create-tasks-status)
-                                :label (tr [:verb/create])
-                                :class "ml-4 capitalize"
-                                :on-click
-                                #(do
-                                   (create-tasks
-                                    {:variables
-                                     {:input
-                                      {:planId plan-id
-                                       :assignments
-                                       (map
-                                        (fn [idx]
-                                          {:agentId (get @!selected-agents (int idx))
-                                           :vehicleId (-> (nth routes (int idx)) :vehicle :id)
-                                           :visits (->> (nth routes (int idx)) :visits
-                                                        (map (fn [visit]
-                                                               (let [{:keys [depot shipment]} visit]
-                                                                 (if depot
-                                                                   {:placeId (:id depot)}
-                                                                   {:placeId (-> shipment :place :id)
-                                                                    :shipmentId (-> shipment :id)})))))})
-                                        selected-indexes)}}})
-                                   (set-selected-rows #js{}))}
-                               (tr [:verb/create] (tr [:noun/tasks]))])]}]
+        [bare-layout
+         {:title (if loading
+                   (str (tr [:misc/loading]) "...")
+                   (tr [:view.plan.detail/title] [startAt endAt]))
+          :actions [:<>
+                    (when-not loading
+                      [loading-button
+                       {:loading (:loading optimize-status)
+                        :label (tr [:verb/optimize])
+                        :class "capitalize"
+                        :on-click #(optimize {:variables {:planId plan-id}})}])
+                    (when (seq selected-indexes)
+                      [loading-button
+                       {:loading (:loading create-tasks-status)
+                        :label (tr [:verb/create])
+                        :class "ml-4 capitalize"
+                        :on-click
+                        #(do
+                           (create-tasks
+                            {:variables
+                             {:input
+                              {:planId plan-id
+                               :assignments
+                               (map
+                                (fn [idx]
+                                  {:agentId (get @!selected-agents (int idx))
+                                   :vehicleId (-> (nth routes (int idx)) :vehicle :id)
+                                   :visits (->> (nth routes (int idx)) :visits
+                                                (map (fn [visit]
+                                                       (let [{:keys [depot shipment]} visit]
+                                                         (if depot
+                                                           {:placeId (:id depot)}
+                                                           {:placeId (-> shipment :place :id)
+                                                            :shipmentId (-> shipment :id)})))))})
+                                selected-indexes)}}})
+                           (set-selected-rows #js{}))}
+                       (tr [:verb/create] (tr [:noun/tasks]))])]}
          (if loading [:div {:class "p-4"}
                       (tr [:misc/loading]) "..."]
              (if result

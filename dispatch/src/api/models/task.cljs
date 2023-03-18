@@ -65,7 +65,6 @@
     (first (.. user -agent -tasks))))
 
 (defn optimize-task [^js context {:keys [taskId]}]
-  (prn taskId)
   (p/let [^js task (fetch-organization-task context {:taskId taskId})
           stops (->clj (.. task -stops))
           {complete true incomplete false} (group-by #(-> % :arrivedAt some?) stops)]
