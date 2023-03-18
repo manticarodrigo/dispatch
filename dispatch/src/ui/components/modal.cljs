@@ -15,7 +15,7 @@
     :as Fragment}
    [:> Dialog
     {:as "div"
-     :class "relative z-10"
+     :class "relative z-40"
      :on-close on-close}
     [:> (. Transition -Child)
      {:as Fragment

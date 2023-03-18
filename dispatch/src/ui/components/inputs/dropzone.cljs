@@ -24,6 +24,7 @@
                          "transition"
                          "cursor-pointer"
                          "flex flex-col items-center justify-center w-full h-full"
+                         "text-center"
                          "rounded border-2 border-dashed outline-0"
                          (cond isDragAccept "border-green-500 bg-green-800/50"
                                isDragReject "border-red-500 bg-red-800/50"

@@ -17,10 +17,14 @@
     :accessorFn #(some-> ^js % .-volume (.toFixed 2))}])
 
 (defn vehicle-table [{:keys [data
+                             search-term
+                             set-search-term
                              selected-rows
                              set-selected-rows]}]
   [table {:state #js{:rowSelection selected-rows}
           :data data
           :columns (get-columns)
+          :search-term search-term
+          :set-search-term set-search-term
           :enable-row-selection true
           :on-row-selection-change set-selected-rows}])

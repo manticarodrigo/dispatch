@@ -75,6 +75,8 @@
             :location-search "Search location"
             :location-get "Get location"
             :description "Description"
+            :weight "Weight capacity (kg)"
+            :volume "Volume capacity (m³)"
             :latitude "Latitude"
             :longitude "Longitude"
             :submit "Submit"}
@@ -96,8 +98,8 @@
                    :go-to-task "Go to task"
                    :view-skipped-shipments "View skipped shipments"}
             :vehicle {:name "Name"
-                      :weight "Weight (kg)"
-                      :volume "Volume (m³)"}}
+                      :weight "Weight capacity (kg)"
+                      :volume "Volume capacity (m³)"}}
 
     :status {:all "All"
              :incomplete "Incomplete"
@@ -209,6 +211,8 @@
             :location-search "Busca ubicación"
             :location-get "Obtén ubicación"
             :description "Descripción"
+            :weight "Capacidad de peso (kg)"
+            :volume "Capacidad de volumen (m³)"
             :latitude "Latitud"
             :longitude "Longitud"
             :submit "Enviar"}
@@ -230,8 +234,8 @@
                    :go-to-task "Ir a tarea"
                    :view-skipped-shipments "Ver envíos omitidos"}
             :vehicle {:name "Nombre"
-                      :weight "Peso (kg)"
-                      :volume "Volumen (m³)"}}
+                      :weight "Capacidad de peso (kg)"
+                      :volume "Capacidad de volumen (m³)"}}
 
     :status {:all "Todos"
              :incomplete "Incompleto"
