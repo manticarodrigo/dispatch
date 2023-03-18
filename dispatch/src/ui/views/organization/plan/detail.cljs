@@ -1,5 +1,5 @@
 (ns ui.views.organization.plan.detail
-  (:require [react :refer (useState useEffect)]
+  (:require ["react" :refer (useState useEffect)]
             [reagent.core :as r]
             [shadow.resource :refer (inline)]
             [ui.lib.apollo :refer (gql use-query use-mutation)]

@@ -1,5 +1,5 @@
 (ns ui.components.lists.task
-  (:require [react-feather :rename {Clipboard TaskIcon}]
+  (:require ["react-feather" :rename {Clipboard TaskIcon}]
             [ui.utils.date :as d]
             [ui.utils.i18n :refer (tr)]
             [ui.components.lists.link-list :refer (link-list)]

@@ -1,5 +1,5 @@
 (ns ui.components.lists.vehicle
-  (:require [react-feather :rename {Truck VehicleIcon}]
+  (:require ["react-feather" :rename {Truck VehicleIcon}]
             [ui.components.lists.link-list :refer (link-list)]))
 
 (defn vehicle-list [{:keys [vehicles loading]}]

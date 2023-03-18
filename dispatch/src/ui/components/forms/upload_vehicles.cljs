@@ -1,5 +1,5 @@
 (ns ui.components.forms.upload-vehicles
-  (:require [react :refer (useState)]
+  (:require ["react" :refer (useState)]
             ["papaparse" :refer (parse)]
             [cljs-bean.core :refer (->clj ->js)]
             [shadow.resource :refer (inline)]

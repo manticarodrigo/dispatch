@@ -1,7 +1,7 @@
 (ns ui.views.agent.layout
-  (:require [react]
-            [react-feather :rename {Clipboard TaskIcon
-                                    MapPin PlaceIcon}]
+  (:require ["react"]
+            ["react-feather" :rename {Clipboard TaskIcon
+                                      MapPin PlaceIcon}]
             [re-frame.core :refer (dispatch)]
             [shadow.resource :refer (inline)]
             [ui.lib.apollo :refer (gql use-mutation)]

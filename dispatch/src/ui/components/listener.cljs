@@ -1,5 +1,5 @@
 (ns ui.components.listener
-  (:require [react :refer (useEffect)]
+  (:require ["react" :refer (useEffect)]
             ["@capacitor/app" :refer (App)]
             [ui.lib.router :refer (use-navigate)]))
 

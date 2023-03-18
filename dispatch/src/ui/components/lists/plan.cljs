@@ -1,5 +1,5 @@
 (ns ui.components.lists.plan
-  (:require [react-feather :rename {Navigation PlanIcon}]
+  (:require ["react-feather" :rename {Navigation PlanIcon}]
             [ui.utils.date :as d]
             [ui.utils.i18n :refer (tr)]
             [ui.components.lists.link-list :refer (link-list)]

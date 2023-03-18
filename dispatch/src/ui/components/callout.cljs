@@ -1,8 +1,8 @@
 (ns ui.components.callout
-  (:require [react-feather :rename {AlertCircle SuccessIcon
-                                    AlertTriangle WarningIcon
-                                    AlertOctagon ErrorIcon
-                                    Info InfoIcon}]
+  (:require ["react-feather" :rename {AlertCircle SuccessIcon
+                                      AlertTriangle WarningIcon
+                                      AlertOctagon ErrorIcon
+                                      Info InfoIcon}]
             [ui.utils.string :refer (class-names)]))
 
 (defn callout [type message]

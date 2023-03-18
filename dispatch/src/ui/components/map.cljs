@@ -1,7 +1,7 @@
 (ns ui.components.map
-  (:require [react-dom :refer (createPortal)]
+  (:require ["react-dom" :refer (createPortal)]
+            ["react-feather" :refer (Crosshair)]
             [reagent.core :as r]
-            [react-feather :refer (Crosshair)]
             [ui.hooks.use-map :refer (use-map use-map-render)]
             [ui.utils.i18n :refer (tr)]
             [ui.utils.string :refer (class-names)]

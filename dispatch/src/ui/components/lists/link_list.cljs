@@ -1,5 +1,5 @@
 (ns ui.components.lists.link-list
-  (:require [react-feather :rename {ChevronRight ChevronRightIcon}]
+  (:require ["react-feather" :rename {ChevronRight ChevronRightIcon}]
             [ui.lib.router :refer (link)]
             [ui.utils.i18n :refer (tr)]
             [ui.utils.string :refer (class-names)]))

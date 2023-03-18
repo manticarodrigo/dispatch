@@ -1,5 +1,5 @@
 (ns ui.views.organization.subscription.payment
-  (:require [react-feather :rename {CreditCard CreditCardIcon
+  (:require ["react-feather" :rename {CreditCard CreditCardIcon
                                     CheckCircle CheckIcon
                                     Trash TrashIcon}]
             [reagent.core :as r]

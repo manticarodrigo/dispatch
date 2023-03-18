@@ -1,5 +1,5 @@
 (ns ui.views.organization.plan.list
-  (:require [react]
+  (:require ["react"]
             [shadow.resource :refer (inline)]
             [ui.lib.apollo :refer (gql use-query)]
             [ui.utils.i18n :refer (tr)]

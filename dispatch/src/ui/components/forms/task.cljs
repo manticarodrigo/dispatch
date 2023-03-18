@@ -1,10 +1,10 @@
 (ns ui.components.forms.task
-  (:require [uuid :rename {v4 uuid}]
-            [react]
-            [react-feather
+  (:require ["uuid" :rename {v4 uuid}]
+            ["react"]
+            ["react-feather"
              :rename {Menu MenuIcon
                       X XIcon}]
-            [framer-motion :refer (Reorder)]
+            ["framer-motion" :refer (Reorder)]
             [reagent.core :as r]
             [re-frame.core :refer (dispatch)]
             [shadow.resource :refer (inline)]

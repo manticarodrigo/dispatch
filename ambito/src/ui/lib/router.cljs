@@ -1,6 +1,6 @@
 (ns ui.lib.router
   (:require
-   [react-router-dom
+   ["react-router-dom"
     :refer (BrowserRouter
             Routes
             Route)]

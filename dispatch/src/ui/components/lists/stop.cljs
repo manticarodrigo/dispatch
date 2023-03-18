@@ -1,5 +1,5 @@
 (ns ui.components.lists.stop
-  (:require [react-feather :rename {Check CheckIcon
+  (:require ["react-feather" :rename {Check CheckIcon
                                     Minus MinusIcon
                                     Package PackageIcon
                                     Clock ClockIcon}]

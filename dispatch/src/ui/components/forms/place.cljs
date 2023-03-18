@@ -1,5 +1,5 @@
 (ns ui.components.forms.place
-  (:require [react :refer (useState)]
+  (:require ["react" :refer (useState)]
             [clojure.set :refer (rename-keys)]
             [shadow.resource :refer (inline)]
             [reagent.core :as r]

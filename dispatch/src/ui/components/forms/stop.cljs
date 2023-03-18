@@ -1,5 +1,5 @@
 (ns ui.components.forms.stop
-  (:require [react :refer (useState)]
+  (:require ["react" :refer (useState)]
             [shadow.resource :refer (inline)]
             [reagent.core :as r]
             [ui.lib.apollo :refer (gql use-mutation parse-anoms)]

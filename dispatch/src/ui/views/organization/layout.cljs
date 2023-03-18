@@ -1,5 +1,5 @@
 (ns ui.views.organization.layout
-  (:require [react-feather :rename {Clipboard TaskIcon
+  (:require ["react-feather" :rename {Clipboard TaskIcon
                                     User AgentIcon
                                     MapPin PlaceIcon
                                     Package ShipmentIcon

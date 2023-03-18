@@ -1,7 +1,7 @@
 (ns ui.components.inputs.combobox
-  (:require [react]
+  (:require ["react"]
+            ["react-feather" :rename {ChevronDown ChevronDownIcon}]
             [headlessui-reagent.core :as ui]
-            [react-feather :rename {ChevronDown ChevronDownIcon}]
             [clojure.string :as s]
             [ui.lib.floating :refer (use-floating)]
             [ui.utils.i18n :refer (tr)]

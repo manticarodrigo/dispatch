@@ -5,16 +5,16 @@
             [ui.lib.platform :refer (platform)]))
 
 (defn get-id []
-  (p/-> (.getId Device) (.-uuid)))
+  (p/-> (.getId ^js Device) (.-uuid)))
 
 (defn get-info []
-  (p/-> (.getInfo Device) ->clj))
+  (p/-> (.getInfo ^js Device) ->clj))
 
 (defn get-language-code []
-  (p/-> (.getLanguageCode Device) (.-value)))
+  (p/-> (.getLanguageCode ^js Device) (.-value)))
 
 (defn get-battery-info []
-  (.getBatteryInfo Device))
+  (.getBatteryInfo ^js Device))
 
 (defn get-device-info []
   (-> (p/all [(get-id)

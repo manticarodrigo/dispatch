@@ -1,19 +1,18 @@
 (ns ui.lib.router
   (:require
    ["@apollo/client" :refer (useApolloClient)]
-   [react-router-dom
-    :refer (BrowserRouter
-            Routes
-            Route
-            Navigate
-            NavLink
-            Link
-            Outlet
-            useRoutes
-            useNavigate
-            useLocation
-            useParams
-            useSearchParams)]
+   ["react-router-dom" :refer (BrowserRouter
+                               Routes
+                               Route
+                               Navigate
+                               NavLink
+                               Link
+                               Outlet
+                               useRoutes
+                               useNavigate
+                               useLocation
+                               useParams
+                               useSearchParams)]
    [reagent.core :as r]
    [cljs-bean.core :refer (->clj ->js)]
    [ui.subs :refer (listen)]

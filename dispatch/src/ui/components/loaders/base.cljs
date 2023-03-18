@@ -1,7 +1,5 @@
 (ns ui.components.loaders.base
-  (:require
-   [react]
-   [ui.components.icons.dispatch :rename {dispatch dispatch-icon}]))
+  (:require [ui.components.icons.dispatch :rename {dispatch dispatch-icon}]))
 
 (defn loader []
   [:div {:class "flex justify-center items-center h-full w-full"}

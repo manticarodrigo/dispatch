@@ -1,5 +1,5 @@
 (ns ui.components.inputs.back-button
-  (:require [react-feather :rename {ArrowLeft ArrowLeftIcon}]
+  (:require ["react-feather" :rename {ArrowLeft ArrowLeftIcon}]
             [ui.lib.router :refer (use-location use-navigate)]))
 
 (def root-paths ["/organization/agents"

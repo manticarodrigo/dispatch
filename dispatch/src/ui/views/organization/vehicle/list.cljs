@@ -1,8 +1,8 @@
 (ns ui.views.organization.vehicle.list
-  (:require [react :refer (useState)]
-            [react-feather :rename {Upload UploadIcon
-                                    Trash DeleteIcon
-                                    Edit CreateIcon}]
+  (:require ["react" :refer (useState)]
+            ["react-feather" :rename {Upload UploadIcon
+                                      Trash DeleteIcon
+                                      Edit CreateIcon}]
             [shadow.resource :refer (inline)]
             [ui.lib.apollo :refer (gql use-query use-mutation)]
             [ui.utils.i18n :refer (tr)]

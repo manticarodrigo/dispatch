@@ -1,5 +1,5 @@
 (ns ui.components.lists.place
-  (:require [react-feather :rename {MapPin PinIcon}]
+  (:require ["react-feather" :rename {MapPin PinIcon}]
             [ui.components.lists.link-list :refer (link-list)]))
 
 (defn place-list [{:keys [places loading]}]

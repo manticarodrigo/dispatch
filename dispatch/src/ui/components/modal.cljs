@@ -1,6 +1,6 @@
 (ns ui.components.modal
-  (:require [react :refer (Fragment)]
-            [react-feather :rename {X CloseIcon}]
+  (:require ["react" :refer (Fragment)]
+            ["react-feather" :rename {X CloseIcon}]
             ["@headlessui/react" :refer (Transition Dialog)]
             [ui.utils.i18n :refer (tr)]
             [ui.utils.string :refer (class-names)]))

@@ -1,5 +1,5 @@
 (ns ui.hooks.use-map
-  (:require [react :refer (useEffect)]
+  (:require ["react" :refer (useEffect)]
             [reagent.core :as r]
             [re-frame.core :refer (dispatch)]
             [promesa.core :as p]

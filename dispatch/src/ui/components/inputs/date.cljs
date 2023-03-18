@@ -1,8 +1,8 @@
 (ns ui.components.inputs.date
-  (:require [react-feather :rename {ChevronLeft ChevronLeftIcon
+  (:require ["react-feather" :rename {ChevronLeft ChevronLeftIcon
                                     ChevronRight ChevronRightIcon
                                     Calendar CalendarIcon}]
-            [use-lilius :refer (useLilius)]
+            ["use-lilius" :refer (useLilius)]
             [cljs-bean.core :refer (->clj)]
             [headlessui-reagent.core :as ui]
             [ui.lib.floating :refer (use-floating)]

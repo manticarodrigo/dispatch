@@ -1,5 +1,5 @@
 (ns ui.hooks.use-window-size
-  (:require [react :refer (useState useEffect)]))
+  (:require ["react" :refer (useState useEffect)]))
 
 (defn get-window-size []
   {:width (.-innerWidth js/window)

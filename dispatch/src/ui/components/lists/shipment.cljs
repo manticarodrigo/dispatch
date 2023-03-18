@@ -1,5 +1,5 @@
 (ns ui.components.lists.shipment
-  (:require [react-feather :rename {Package ShipmentIcon}]
+  (:require ["react-feather" :rename {Package ShipmentIcon}]
             [ui.components.lists.link-list :refer (link-list)]))
 
 (defn shipment-list [{:keys [shipments loading]}]

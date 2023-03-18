@@ -1,5 +1,5 @@
 (ns ui.components.layout.nav
-  (:require [react-feather :rename {Settings SettingsIcon}]
+  (:require ["react-feather" :rename {Settings SettingsIcon}]
             [re-frame.core :refer (dispatch)]
             [ui.subs :refer (listen)]
             [ui.utils.i18n :refer (tr)]

@@ -1,8 +1,7 @@
 (ns ui.hooks.use-location
-  (:require
-   [react :refer (useEffect)]
-   [promesa.core :as p]
-   [ui.lib.location :refer (watch-position)]))
+  (:require ["react" :refer (useEffect)]
+            [promesa.core :as p]
+            [ui.lib.location :refer (watch-position)]))
 
 (def !cleanup (atom nil))
 

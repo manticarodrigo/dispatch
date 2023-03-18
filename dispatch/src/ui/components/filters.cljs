@@ -1,5 +1,5 @@
 (ns ui.components.filters
-  (:require [react-feather :rename {Search SearchIcon}]
+  (:require ["react-feather" :rename {Search SearchIcon}]
             [ui.utils.i18n :refer (tr)]
             [ui.components.inputs.input :refer (input)]
             [ui.components.inputs.date :refer (date-select)]

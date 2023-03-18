@@ -1,5 +1,5 @@
 (ns ui.views.not-found
-  (:require [react-feather :rename {AlertTriangle AlertIcon
+  (:require ["react-feather" :rename {AlertTriangle AlertIcon
                                     ArrowLeft ArrowLeftIcon}]
             [ui.lib.router :refer (link)]
             [ui.utils.i18n :refer (tr)]))

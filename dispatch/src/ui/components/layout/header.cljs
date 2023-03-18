@@ -1,5 +1,5 @@
 (ns ui.components.layout.header
-  (:require [react-feather :rename {Sidebar SidebarIcon}]
+  (:require ["react-feather" :rename {Sidebar SidebarIcon}]
             [re-frame.core :refer (dispatch)]
             [ui.subs :refer (listen)]
             [ui.utils.string :refer (class-names)]

@@ -1,5 +1,5 @@
 (ns ui.hooks.use-media-query
-  (:require [react :refer (useState useEffect)]))
+  (:require ["react" :refer (useState useEffect)]))
 
 (defn use-media-query [query]
   (let [[matches set-matches] (useState false)]

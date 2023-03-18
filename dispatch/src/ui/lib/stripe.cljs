@@ -1,5 +1,5 @@
 (ns ui.lib.stripe
-  (:require [react]
+  (:require ["react"]
             ["@stripe/stripe-js" :refer (loadStripe)]
             ["@stripe/react-stripe-js" :refer (Elements PaymentElement useStripe useElements)]
             [cljs-bean.core :refer (->js ->clj)]

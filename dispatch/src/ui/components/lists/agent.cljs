@@ -1,5 +1,5 @@
 (ns ui.components.lists.agent
-  (:require [react-feather :rename {User UserIcon}]
+  (:require ["react-feather" :rename {User UserIcon}]
             [ui.utils.date :as d]
             [ui.utils.i18n :refer (tr)]
             [ui.components.lists.link-list :refer (link-list)]
