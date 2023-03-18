@@ -1,22 +1,31 @@
 (ns ui.components.table
-  (:require [react :refer (useMemo)]
-            ["@tanstack/react-table"
-             :refer [flexRender
-                     getCoreRowModel
-                     useReactTable]]
+  (:require ["react" :refer (useMemo)]
+            ["@tanstack/react-table" :refer (flexRender
+                                             getCoreRowModel
+                                             getFilteredRowModel
+                                             useReactTable)]
+            ["@tanstack/match-sorter-utils" :refer (rankItem)]
             [cljs-bean.core :refer (->js)]))
 
-(defn table [{:keys [state data columns enable-row-selection on-row-selection-change]
+(defn fuzzy-filter [^js row column-id value add-meta]
+  (let [item-rank (rankItem (.getValue row column-id) value)]
+    (add-meta #js{:itemRank item-rank})
+    (.-passed item-rank)))
+
+(defn table [{:keys [state data columns search-term set-search-term enable-row-selection on-row-selection-change]
               :or {data [] columns []}}]
   (let [_data (useMemo #(->js data) (array data))
         _columns (useMemo #(->js columns) (array columns))
         ^js instance (useReactTable
-                      #js{:state state
+                      #js{:state (js/Object.assign state #js{:globalFilter search-term})
                           :data _data
                           :columns _columns
+                          :globalFilterFn fuzzy-filter
+                          :onGlobalFilterChange set-search-term
                           :enableRowSelection enable-row-selection
                           :onRowSelectionChange on-row-selection-change
-                          :getCoreRowModel (getCoreRowModel)})
+                          :getCoreRowModel (getCoreRowModel)
+                          :getFilteredRowModel (getFilteredRowModel)})
         ^js header-groups (.getHeaderGroups instance)
         ^js rows (.-rows (.getRowModel instance))]
     [:table {:class "w-full"}
