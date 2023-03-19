@@ -59,32 +59,29 @@
      (if loading
        [:div {:class "p-4"}
         (str (tr [:misc/loading]) "...")]
-       (if vehicles
-         [:div {:class "flex flex-col w-full h-full min-w-0 min-h-0"}
-          [:div {:class "flex border-b border-neutral-700 p-4 w-full"}
-           [input {:icon SearchIcon
-                   :aria-label (tr [:field/search])
-                   :placeholder (tr [:field/search])
-                   :value search-term
-                   :class "mr-2"
-                   :on-text #(set-state (merge state {:search-term %}))}]
-           [loading-button {:loading (:loading archive-status)
-                            :disabled (empty? selected-vehicle-ids)
-                            :label [:span {:class "flex items-center"}
-                                    [:> DeleteIcon {:class "mr-2 w-4 h-4"}]
-                                    (tr [:verb/archive])
-                                    (when-not (empty? selected-vehicle-ids)
-                                      (str " (" (count selected-vehicle-ids) ")"))]
-                            :class "mr-2 capitalize"
-                            :on-click #(do
-                                         (archive {:variables {:vehicleIds selected-vehicle-ids}})
-                                         (set-selected-rows #js{}))}]]
-          [:div {:class "w-full h-full min-w-0 min-h-0 overflow-auto"}
-           [vehicle-table
-            {:data vehicles
-             :search-term search-term
-             :set-search-term #(set-state (merge state {:search-term %}))
-             :selected-rows selected-rows
-             :set-selected-rows set-selected-rows}]]]
-         [:div {:class "p-4"}
-          (tr [:misc/empty-search])]))]))
+       [:div {:class "flex flex-col w-full h-full min-w-0 min-h-0"}
+        [:div {:class "flex border-b border-neutral-700 p-4 w-full"}
+         [input {:icon SearchIcon
+                 :aria-label (tr [:field/search])
+                 :placeholder (tr [:field/search])
+                 :value search-term
+                 :class "mr-2"
+                 :on-text #(set-state (merge state {:search-term %}))}]
+         [loading-button {:loading (:loading archive-status)
+                          :disabled (empty? selected-vehicle-ids)
+                          :label [:span {:class "flex items-center"}
+                                  [:> DeleteIcon {:class "mr-2 w-4 h-4"}]
+                                  (tr [:verb/archive])
+                                  (when-not (empty? selected-vehicle-ids)
+                                    (str " (" (count selected-vehicle-ids) ")"))]
+                          :class "mr-2 capitalize"
+                          :on-click #(do
+                                       (archive {:variables {:vehicleIds selected-vehicle-ids}})
+                                       (set-selected-rows #js{}))}]]
+        [:div {:class "w-full h-full min-w-0 min-h-0 overflow-auto"}
+         [vehicle-table
+          {:vehicles vehicles
+           :search-term search-term
+           :set-search-term #(set-state (merge state {:search-term %}))
+           :selected-rows selected-rows
+           :set-selected-rows set-selected-rows}]]])]))

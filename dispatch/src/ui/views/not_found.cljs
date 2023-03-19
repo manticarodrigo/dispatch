@@ -9,4 +9,4 @@
    [:> AlertIcon {:class "w-8 h-8 text-neutral-500"}]
    [:p {:class "my-2 text-xl"} (tr [:view/not-found])]
    [link {:to "/" :class "flex items-center text-sm underline"}
-    [:> ArrowLeftIcon {:class "mr-2 w-4 h-4"}] "Back to app"]])
+    [:> ArrowLeftIcon {:class "mr-2 w-4 h-4"}] (tr [:misc/back-to-home])]])

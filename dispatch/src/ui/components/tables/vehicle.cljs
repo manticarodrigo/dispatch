@@ -16,13 +16,13 @@
     :header (tr [:table.vehicle/volume])
     :accessorFn #(some-> ^js % .-volume (.toFixed 2))}])
 
-(defn vehicle-table [{:keys [data
+(defn vehicle-table [{:keys [vehicles
                              search-term
                              set-search-term
                              selected-rows
                              set-selected-rows]}]
   [table {:state #js{:rowSelection selected-rows}
-          :data data
+          :data vehicles
           :columns (get-columns)
           :search-term search-term
           :set-search-term set-search-term

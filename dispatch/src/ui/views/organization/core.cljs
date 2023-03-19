@@ -1,6 +1,7 @@
 (ns ui.views.organization.core
   (:require [ui.lib.router :as router]
             [ui.lib.platform :refer (platform)]
+            [ui.views.not-found :as not-found]
             [ui.views.organization.layout :refer (layout)]
             [ui.views.organization.subscription.core :as subscription]
             [ui.views.organization.task.core :as task]
@@ -26,10 +27,10 @@
                        {:path "stops/:stop" :element [stop/detail-view]}
                        {:path "vehicles" :element [vehicle/list-view]}
                        {:path "shipments" :element [shipment/list-view]}
-                       {:path "shipments/create" :element [shipment/create-view]}
                        {:path "plans" :element [plan/list-view]}
                        {:path "plans/create" :element [plan/create-view]}
                        {:path "plans/:plan" :element [plan/detail-view]}
                        (when
                         (= platform "web")
-                         {:path "subscription/payment" :element [subscription/payment-view]})]})
+                         {:path "subscription/payment" :element [subscription/payment-view]})
+                       {:path "*" :element [not-found/view]}]})

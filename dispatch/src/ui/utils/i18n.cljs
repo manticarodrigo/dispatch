@@ -140,7 +140,8 @@
                :next-month "Next month"}
     :misc {:sign-out "Sign out"
            :loading "Loading"
-           :empty-search "No results found"}
+           :empty-search "No results found"
+           :back-to-home "Back to home"}
     :map {:center "Center map"}
     :location {:title "Tracking you"
                :message "Cancel to prevent battery drain."
@@ -294,7 +295,8 @@
                :next-month "Mes siguiente"}
     :misc {:sign-out "Cerrar sesión"
            :loading "Cargando"
-           :empty-search "No se han encontrado resultados"}
+           :empty-search "No se han encontrado resultados"
+           :back-to-home "Regresar a inicio"}
     :map {:center "Centrar mapa"}
     :location {:title "Rastreando"
                :message "Cancelar para evitar el consumo de batería."
