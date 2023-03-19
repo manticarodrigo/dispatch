@@ -44,7 +44,7 @@ type Mutation {
   optimizePlan(planId: ID!): Plan
   optimizeTask(taskId: ID!): Task
   detachPaymentMethod(paymentMethodId: ID!): Boolean
-  createPlanTasks(input: AssignmentsInput): Plan
+  createPlanTasks(planId: ID!, assignments: [AssignmentInput]): Plan
 }
 
 type User {
@@ -190,18 +190,7 @@ type PlanShipment {
   shipment: Shipment!
 }
 
-input AssignmentsInput {
-  planId: ID!
-  assignments: [AssignmentInput]
-}
-
 input AssignmentInput {
-  vehicleId: ID!
   agentId: ID!
-  visits: [VisitInput]!
-}
-
-input VisitInput {
-  placeId: ID
-  shipmentId: ID
+  routeIndex: Int!
 }

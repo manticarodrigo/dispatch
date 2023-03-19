@@ -1,5 +1,6 @@
 (ns api.models.plan
   (:require [promesa.core :as p]
+            [cljs-bean.core :refer (->clj)]
             [api.util.prisma :as prisma]
             [api.models.user :as user]
             [api.lib.google.optimization :as optimization]))
@@ -94,31 +95,40 @@
     (set! (.. updated-plan -result) (optimization/parse-result updated-plan))
     updated-plan))
 
-(defn create-plan-tasks [^js context {:keys [input]}]
-  (p/let [{:keys [planId assignments]} input
-          ^js user (user/active-user context {:include {:organization true}})
+(defn create-plan-tasks [^js context {:keys [planId assignments]}]
+  (p/let [^js user (user/active-user context {:include {:organization {:include (plan-query planId)}}})
           organization-id (.. user -organization -id)
+          ^js plan (first (.. user -organization -plans))
+          routes (-> (optimization/parse-result plan) ->clj :routes)
           ^js updated-plan (prisma/update!
                             (.. context -prisma -plan)
                             {:where {:id planId}
                              :data {:tasks
                                     {:create (map
-                                              (fn [{:keys [agentId vehicleId visits]}]
-                                                {:route {}
-                                                 :startAt (js/Date.)
-                                                 :organization {:connect {:id organization-id}}
-                                                 :agent {:connect {:id agentId}}
-                                                 :vehicle {:connect {:id vehicleId}}
-                                                 :stops {:create (map-indexed
-                                                                  (fn [idx visit]
-                                                                    (let [{:keys [placeId shipmentId]} visit]
-                                                                      (if shipmentId
-                                                                        {:order idx
-                                                                         :place {:connect {:id placeId}}
-                                                                         :shipment {:connect {:id shipmentId}}}
-                                                                        {:order idx
-                                                                         :place {:connect {:id placeId}}})))
-                                                                  visits)}})
+                                              (fn [{:keys [agentId routeIndex]}]
+                                                (let [vehicleId (-> (nth routes routeIndex) :vehicle :id)
+                                                      visits (->> (nth routes routeIndex) :visits
+                                                                  (map (fn [visit]
+                                                                         (let [{:keys [depot shipment]} visit]
+                                                                           (if depot
+                                                                             {:placeId (:id depot)}
+                                                                             {:placeId (-> shipment :place :id)
+                                                                              :shipmentId (-> shipment :id)})))))]
+                                                  {:route {}
+                                                   :startAt (js/Date.)
+                                                   :organization {:connect {:id organization-id}}
+                                                   :agent {:connect {:id agentId}}
+                                                   :vehicle {:connect {:id vehicleId}}
+                                                   :stops {:create (map-indexed
+                                                                    (fn [idx visit]
+                                                                      (let [{:keys [placeId shipmentId]} visit]
+                                                                        (if shipmentId
+                                                                          {:order idx
+                                                                           :place {:connect {:id placeId}}
+                                                                           :shipment {:connect {:id shipmentId}}}
+                                                                          {:order idx
+                                                                           :place {:connect {:id placeId}}})))
+                                                                    visits)}}))
                                               assignments)}}
                              :include (plan-query-include planId)})]
     (set! (.. updated-plan -result) (optimization/parse-result updated-plan))

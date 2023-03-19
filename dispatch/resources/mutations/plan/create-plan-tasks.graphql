@@ -1,5 +1,5 @@
-mutation CreatePlanTasks($input: AssignmentsInput) {
-  createPlanTasks(input: $input) {
+mutation CreatePlanTasks($planId: ID!, $assignments: [AssignmentInput]) {
+  createPlanTasks(planId: $planId, assignments: $assignments) {
     id
     result
   }

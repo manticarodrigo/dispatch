@@ -1,5 +1,8 @@
-(ns ui.components.tables.plan
-  (:require [clojure.string :as s]
+(ns ui.components.tables.route
+  (:require ["react-feather" :rename {Edit CreateIcon
+                                      ArrowRight ArrowRightIcon
+                                      Eye ViewIcon}]
+            [clojure.string :as s]
             [reagent.core :as r]
             [cljs-bean.core :refer (->clj)]
             [ui.lib.router :refer (link)]
@@ -17,9 +20,12 @@
     (fn []
       (if (seq visits)
         [:div {:class "flex justify-between items-center"}
-         [:span (count visits)]
-         [button {:label (s/capitalize (tr [:verb/show]))
-                  :class "ml-2"
+         [button {:label [:div {:class "flex justify-center items-center"}
+                          [:> ViewIcon {:class "mr-2 w-4 h-4"}]
+                          (s/capitalize (tr [:verb/view]))
+                          (when (> (count visits) 0)
+                            [:<> " (" (count visits) ")"])]
+                  :class "w-full"
                   :on-click #(reset! !show-modal true)}]
          [modal {:show @!show-modal
                  :title (tr [:table.plan/visits])
@@ -48,20 +54,13 @@
                (-> val js/Date. (d/format "hh:mmaaa"))
                "N/A")))})
 
-(defn get-columns [agents !selected-agents]
+(defn get-columns [agents !selected-agents on-create-task]
   [checkbox-column
-   {:id "task"
-    :header (tr [:table.plan/task])
-    :cell (fn [^js info]
-            (let [^js task (-> info .-row .-original .-vehicle .-tasks first)]
-              (if task
-                (r/as-element
-                 [link {:to (str "../tasks/" (.. task -id))
-                        :class button-class}
-                  (tr [:table.plan/go-to-task])])
-                "")))}
    {:id "agent"
     :header (tr [:table.plan/agent])
+    :accessorFn (fn [_ idx]
+                  (let [agent-id (get @!selected-agents idx)]
+                    (->> agents (filter #(= agent-id (:id %))) first :name)))
     :cell (fn [^js info]
             (let [row-index (-> info .-row .-index)
                   ^js task (-> info .-row .-original .-vehicle .-tasks first)
@@ -108,17 +107,40 @@
             (let [val (.getValue info)
                   capacity (.. info -row -original -vehicle -weight)]
               (r/as-element
-               [ratio-detail val capacity "kg"])))}])
+               [ratio-detail val capacity "kg"])))}
+   {:id "task"
+    :header ""
+    :cell (fn [^js info]
+            (let [^js task (-> info .-row .-original .-vehicle .-tasks first)]
+              (if task
+                (r/as-element
+                 [link {:to (str "../tasks/" (.. task -id))
+                        :class (str
+                                button-class
+                                " w-full flex justify-center items-center")}
+                  [:> ArrowRightIcon {:class "w-4 h-4 mr-2"}]
+                  (tr [:table.plan/go-to-task])])
+                (r/as-element
+                 [button {:label [:div {:class "flex justify-center items-center"}
+                                  [:> CreateIcon {:class "w-4 h-4 mr-2"}]
+                                  (tr [:view.task.create/title])]
+                          :class "w-full"
+                          :on-click #(on-create-task (-> info .-row .-index))}]))))}])
 
-(defn plan-table [{:keys [result
-                          agents
-                          selected-rows
-                          set-selected-rows
-                          !selected-agents]}]
+(defn route-table [{:keys [result
+                           agents
+                           search-term
+                           set-search-term
+                           selected-rows
+                           set-selected-rows
+                           !selected-agents
+                           on-create-task]}]
   [table {:data result
-          :columns (get-columns agents !selected-agents)
+          :columns (get-columns agents !selected-agents on-create-task)
           :state #js{:rowSelection selected-rows
                      :agentSelection @!selected-agents}
+          :search-term search-term
+          :set-search-term set-search-term
           :enable-row-selection #(let [v (->clj %)]
                                    (and (some-> v :original :visits seq)
                                         (some-> v :original :vehicle :tasks empty?)))

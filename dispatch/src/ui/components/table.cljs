@@ -17,7 +17,7 @@
   (let [_data (useMemo #(->js data) (array data))
         _columns (useMemo #(->js columns) (array columns))
         ^js instance (useReactTable
-                      #js{:state (js/Object.assign state #js{:globalFilter search-term})
+                      #js{:state (when state (js/Object.assign state #js{:globalFilter search-term}))
                           :data _data
                           :columns _columns
                           :globalFilterFn fuzzy-filter

@@ -80,6 +80,11 @@
         agents (->> items :agents (filterv some?))]
     (useEffect
      (fn []
+       #(dispatch [:map nil]))
+     #js[])
+
+    (useEffect
+     (fn []
        (dispatch
         [:map
          {:paths

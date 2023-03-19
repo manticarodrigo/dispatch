@@ -2,7 +2,8 @@
   (:require ["react" :refer (useState)]
             ["react-feather" :rename {Upload UploadIcon
                                       Trash DeleteIcon
-                                      Edit CreateIcon}]
+                                      Edit CreateIcon
+                                      Search SearchIcon}]
             [shadow.resource :refer (inline)]
             [ui.lib.apollo :refer (gql use-query use-mutation)]
             [ui.utils.i18n :refer (tr)]
@@ -59,9 +60,10 @@
        [:div {:class "p-4"}
         (str (tr [:misc/loading]) "...")]
        (if vehicles
-         [:div {:class "flex flex-col w-full h-full"}
+         [:div {:class "flex flex-col w-full h-full min-w-0 min-h-0"}
           [:div {:class "flex border-b border-neutral-700 p-4 w-full"}
-           [input {:aria-label (tr [:field/search])
+           [input {:icon SearchIcon
+                   :aria-label (tr [:field/search])
                    :placeholder (tr [:field/search])
                    :value search-term
                    :class "mr-2"
@@ -77,7 +79,7 @@
                             :on-click #(do
                                          (archive {:variables {:vehicleIds selected-vehicle-ids}})
                                          (set-selected-rows #js{}))}]]
-          [:div {:class "w-full h-full overflow-auto min-w-0"}
+          [:div {:class "w-full h-full min-w-0 min-h-0 overflow-auto"}
            [vehicle-table
             {:data vehicles
              :search-term search-term

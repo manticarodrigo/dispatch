@@ -363,25 +363,16 @@
          (p/let [plans-mock (plan/fetch-organization-plans)
                  plans (-> plans-mock :result :data :user :organization :plans)
                  plan (first plans)
-                 {:keys [shipments vehicles]} plan
+                 {:keys [vehicles]} plan
                  agents-mock (agent/fetch-organization-agents)
                  agents (-> agents-mock :result :data :user :organization :agents)
-                 shipment-chunks (partition
-                                  (int (/ (count shipments)
-                                          (count vehicles)))
-                                  shipments)
                  create-mock (plan/create-plan-tasks
-                              {:input {:planId (:id plan)
-                                       :assignments (map-indexed
-                                                     (fn [idx vehicle]
-                                                       {:agentId (-> agents (nth idx) :id)
-                                                        :vehicleId (-> vehicle :vehicle  :id)
-                                                        :visits (map
-                                                                 #(hash-map
-                                                                   :placeId (-> % :shipment :place :id)
-                                                                   :shipmentId (-> % :shipment :id))
-                                                                 (nth shipment-chunks idx))})
-                                                     vehicles)}})]
+                              {:planId (:id plan)
+                               :assignments (map
+                                             (fn [idx]
+                                               {:agentId (-> agents (nth idx) :id)
+                                                :routeIndex idx})
+                                             (range (int (/ (count vehicles) 2))))})]
            (testing "api returns data"
              (is (-> create-mock :result :data :createPlanTasks))
              (done)))))
