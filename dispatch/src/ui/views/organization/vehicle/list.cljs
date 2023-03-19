@@ -60,7 +60,7 @@
         (str (tr [:misc/loading]) "...")]
        (if vehicles
          [:div {:class "flex flex-col w-full h-full"}
-          [:div {:class "flex border-b border-neutral-700 py-2 px-4 w-full"}
+          [:div {:class "flex border-b border-neutral-700 p-4 w-full"}
            [input {:aria-label (tr [:field/search])
                    :placeholder (tr [:field/search])
                    :value search-term

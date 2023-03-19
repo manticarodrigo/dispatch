@@ -1,11 +1,6 @@
 (ns ui.components.tables.columns.checkbox
-  (:require [reagent.core :as r]))
-
-(defn checkbox [{:keys [checked disabled on-change]}]
-  [:input {:type "checkbox"
-           :checked checked
-           :disabled disabled
-           :on-change on-change}])
+  (:require [reagent.core :as r]
+            [ui.components.inputs.checkbox :refer (checkbox)]))
 
 (def checkbox-column
   {:id "select"

@@ -25,7 +25,6 @@
                        {:path "places/create" :element [place/create-view]}
                        {:path "stops/:stop" :element [stop/detail-view]}
                        {:path "vehicles" :element [vehicle/list-view]}
-                       {:path "vehicles/create" :element [vehicle/create-view]}
                        {:path "shipments" :element [shipment/list-view]}
                        {:path "shipments/create" :element [shipment/create-view]}
                        {:path "plans" :element [plan/list-view]}
