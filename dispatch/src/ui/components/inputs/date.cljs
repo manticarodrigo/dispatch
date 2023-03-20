@@ -27,6 +27,7 @@
      [ui/popover-button {:ref reference :class "w-full text-left"}
       [input {:icon CalendarIcon
               :label label
+              :aria-label placeholder
               :placeholder placeholder
               :value (if value (d/format value "dd/MM/yyyy") "")
               :required required

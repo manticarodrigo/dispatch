@@ -3,6 +3,7 @@
             [cljs-bean.core :refer (->clj)]
             [camel-snake-kebab.core :as csk]
             [camel-snake-kebab.extras :as cske]
+            [ui.utils.i18n :refer (tr)]
             [ui.utils.string :refer (class-names)]))
 
 (defn ->kebab-case [^js obj]
@@ -24,8 +25,9 @@
                          "transition"
                          "cursor-pointer"
                          "flex flex-col items-center justify-center w-full h-full"
-                         "text-center"
+                         "text-center text-sm"
                          "rounded border-2 border-dashed outline-0"
+                         "hover:border-blue-500 hover:bg-blue-800/50"
                          (cond isDragAccept "border-green-500 bg-green-800/50"
                                isDragReject "border-red-500 bg-red-800/50"
                                isFocused "border-blue-500 bg-blue-800/50"
@@ -36,6 +38,6 @@
      [:input (tranform-props input-props)]
      [:div {:class "p-4 select-none"}
       (cond
-        isDragAccept "Drop the files here"
-        isDragReject "These files will be rejected"
-        :else "Drag and drop files here, or click to select files")]]))
+        isDragAccept (tr [:dropzone/accepted])
+        isDragReject (tr [:dropzone/rejected])
+        :else (tr [:dropzone/neutral]))]]))

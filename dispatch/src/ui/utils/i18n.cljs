@@ -134,7 +134,20 @@
                        :weight "Weight (kg)"
                        :volume "Volume (m³)"
                        :duration "Duration (s)"
-                       :windows "Visit windows"}}
+                       :windows "Visit windows"}
+            :shipment-upload {:notes {:attach-csv "* Attach a CSV file with the structure shown below."
+                                      :column-names "* Column names do not need to match, only the order."
+                                      :external-id "* External ID will be used to update and unarchive matching shipments."
+                                      :external-place-id "* External place ID is required and must match an existing external place ID."}
+                              :columns {:external-id "External ID"
+                                        :external-place-id "External place ID"
+                                        :weight "Weight (kg)"
+                                        :volume "Volume (m³)"
+                                        :duration "Duration (s)"
+                                        :start1 "First start (military)"
+                                        :end1 "First end (military)"
+                                        :start2 "Second start (military)"
+                                        :end2 "Second end (military)"}}}
 
     :status {:all "All"
              :incomplete "Incomplete"
@@ -153,6 +166,11 @@
                                   " "
                                   (d/formatDistanceToNowStrict date)))
                            "Loading..."))}
+
+    :dropzone {:neutral "Drag and drop files here, or click to select files"
+               :accepted "Drop the files here"
+               :rejected "This file type is not supported"}
+
     :calendar {:previous-month "Previous month"
                :next-month "Next month"}
     :misc {:sign-out "Sign out"
@@ -308,7 +326,20 @@
                        :weight "Peso (kg)"
                        :volume "Volumen (m³)"
                        :duration "Duración (s)"
-                       :windows "Ventanas de visita"}}
+                       :windows "Ventanas de visita"}
+            :shipment-upload {:notes {:attach-csv "* Adjuntar CSV con la estructura mostrada abajo."
+                                      :column-names "* Los nombres de las columnas no necesitan coincidir, solo el orden."
+                                      :external-id "* ID externo será usado para actualizar y desarchivar envíos que coincidan."
+                                      :external-place-id "* ID externo de lugar es requerido y debe coincidir con un ID externo de lugar existente."}
+                              :columns {:external-id "ID externo"
+                                        :external-place-id "ID externo de lugar"
+                                        :weight "Peso (kg)"
+                                        :volume "Volumen (m³)"
+                                        :duration "Duración (s)"
+                                        :start1 "Primer inicio (militar)"
+                                        :end1 "Primer fin (militar)"
+                                        :start2 "Segundo inicio (militar)"
+                                        :end2 "Segundo fin (militar)"}}}
 
     :status {:all "Todos"
              :incomplete "Incompleto"
@@ -329,6 +360,11 @@
                            "Cargando..."))}
     :calendar {:previous-month "Mes anterior"
                :next-month "Mes siguiente"}
+
+    :dropzone {:neutral "Arrastra y suelta los archivos aquí"
+               :accepted "Suelta los archivos aqui"
+               :rejected "Este tipo de archivo no es soportado"}
+
     :misc {:sign-out "Cerrar sesión"
            :loading "Cargando"
            :empty-search "No se han encontrado resultados"

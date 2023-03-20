@@ -5,7 +5,9 @@
             [shadow.resource :refer (inline)]
             [common.utils.date :refer (military->window)]
             [ui.lib.apollo :refer (gql use-mutation)]
+            [ui.utils.i18n :refer (tr)]
             [ui.components.tables.shipment :refer (shipment-table)]
+            [ui.components.table :refer (table)]
             [ui.components.inputs.dropzone :refer (dropzone)]
             [ui.components.inputs.submit-button :refer (submit-button)]))
 
@@ -36,7 +38,42 @@
           :set-selected-rows set-selected-rows}]]
        [:div {:class "p-4"}
         [submit-button {:loading (:loading create-status)}]]]
-      [:div {:class "flex flex-col items-center justify-center p-8 w-full h-full"}
+      [:div {:class "flex flex-col items-center justify-center p-4 w-full h-full"}
+       [:div {:class "flex flex-col w-full"}
+        [:div {:class "mb-4 text-xs text-neutral-300"}
+         [:p (tr [:table.shipment-upload.notes/attach-csv])]
+         [:p (tr [:table.shipment-upload.notes/column-names])]
+         [:p (tr [:table.shipment-upload.notes/external-id])]
+         [:p (tr [:table.shipment-upload.notes/external-place-id])]]
+        [:div {:class "mb-4 w-full overflow-auto"}
+         [table
+          {:data [{:externalId "123"
+                   :externalPlaceId "123"
+                   :weight "5.5"
+                   :volume "5.5"
+                   :duration "60"
+                   :start1 "0000"
+                   :end1 "1200"
+                   :start2 "1230"
+                   :end2 "2400"}]
+           :columns [{:header (tr [:table.shipment-upload.columns/external-id])
+                      :accessorFn #(aget % "externalId")}
+                     {:header (tr [:table.shipment-upload.columns/external-place-id])
+                      :accessorFn #(aget % "externalPlaceId")}
+                     {:header (tr [:table.shipment-upload.columns/weight])
+                      :accessorFn #(aget % "weight")}
+                     {:header (tr [:table.shipment-upload.columns/volume])
+                      :accessorFn #(aget % "volume")}
+                     {:header (tr [:table.shipment-upload.columns/duration])
+                      :accessorFn #(aget % "duration")}
+                     {:header (tr [:table.shipment-upload.columns/start1])
+                      :accessorFn #(aget % "start1")}
+                     {:header (tr [:table.shipment-upload.columns/end1])
+                      :accessorFn #(aget % "end1")}
+                     {:header (tr [:table.shipment-upload.columns/start2])
+                      :accessorFn #(aget % "start2")}
+                     {:header (tr [:table.shipment-upload.columns/end2])
+                      :accessorFn #(aget % "end2")}]}]]]
        [dropzone
         {:accept #js{"text/csv" #js[".csv"]}
          :on-drop (fn [files]

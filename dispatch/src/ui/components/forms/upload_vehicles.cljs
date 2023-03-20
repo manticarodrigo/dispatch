@@ -4,6 +4,7 @@
             [cljs-bean.core :refer (->clj ->js)]
             [shadow.resource :refer (inline)]
             [ui.lib.apollo :refer (gql use-mutation)]
+            [ui.utils.i18n :refer (tr)]
             [ui.components.tables.vehicle :refer (vehicle-table)]
             [ui.components.inputs.dropzone :refer (dropzone)]
             [ui.components.inputs.submit-button :refer (submit-button)]))
@@ -30,12 +31,21 @@
                                (.then on-submit)))}
        [:div {:class "overflow-auto w-full h-full min-w-0 min-h-0"}
         [vehicle-table
-         {:data vehicles
+         {:vehicles vehicles
           :selected-rows selected-rows
           :set-selected-rows set-selected-rows}]]
        [:div {:class "p-4"}
         [submit-button {:loading (:loading create-status)}]]]
-      [:div {:class "flex flex-col items-center justify-center p-8 w-full h-full"}
+      [:div {:class "flex flex-col items-center justify-center p-4 w-full h-full"}
+       [:div {:class "flex flex-col w-full"}
+        [:div {:class "mb-4 text-xs text-neutral-300"}
+         [:p (tr [:table.shipment-upload.notes/attach-csv])]
+         [:p (tr [:table.shipment-upload.notes/column-names])]]
+        [:div {:class "mb-4 w-full overflow-auto"}
+         [vehicle-table
+          {:vehicles [{:name "250936 2.5T"
+                       :weight 2160
+                       :volume 9.9}]}]]]
        [dropzone
         {:accept #js{"text/csv" #js[".csv"]}
          :on-drop (fn [files]

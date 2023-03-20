@@ -38,7 +38,8 @@
                     :include
                     {:shipment {:include
                                 {:place true
-                                 :stop true}}}}})
+                                 :stop true
+                                 :windows true}}}}})
 
 (def plans-include
   {:plans
@@ -59,7 +60,8 @@
     :include
     {:shipment
      {:include {:place true
-                :stop true}}}}})
+                :stop true
+                :windows true}}}}})
 
 (defn plan-query [plan-id]
   {:plans {:where {:id plan-id}

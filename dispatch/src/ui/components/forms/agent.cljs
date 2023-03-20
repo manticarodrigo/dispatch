@@ -33,6 +33,7 @@
          [input {:label (tr [:field/phone])
                  :value phone
                  :required true
+                 :class "mb-4"
                  :on-text #(swap! !state assoc :phone %)}]
          [submit-button {:loading loading}]
          [errors @!anoms]]))))
