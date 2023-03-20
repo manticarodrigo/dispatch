@@ -44,6 +44,8 @@
                  :createLocation location/create-location
                  :createArrival stop/create-arrival
                  :createShipment shipment/create-shipment
+                 :createShipments shipment/create-shipments
+                 :archiveShipments shipment/archive-shipments
                  :createVehicle vehicle/create-vehicle
                  :createVehicles vehicle/create-vehicles
                  :archiveVehicles vehicle/archive-vehicles

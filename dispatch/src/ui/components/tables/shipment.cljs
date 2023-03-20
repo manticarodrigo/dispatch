@@ -22,10 +22,10 @@
                (r/as-element
                 [:div {:class "space-y-2"}
                  (doall
-                  (for [[idx {:keys [start end]}] (map-indexed vector windows)]
+                  (for [[idx {:keys [startAt endAt]}] (map-indexed vector windows)]
                     ^{:key idx}
                     [:div
-                     (str (fmt start) " - " (fmt end))]))])))}
+                     (str (fmt startAt) " - " (fmt endAt))]))])))}
     {:id "volume"
      :header (tr [:table.plan/volume])
      :accessorFn #(some-> ^js % .-volume (.toFixed 2))

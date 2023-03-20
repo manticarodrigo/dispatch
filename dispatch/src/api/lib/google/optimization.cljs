@@ -43,8 +43,8 @@
               [{:arrival_location arrival-location
                 :time_windows (map
                                (fn [window]
-                                 (let [start (d/max (array startAt (-> window :start js/Date.)))
-                                       end (d/min (array endAt (-> window :end js/Date.)))]
+                                 (let [start (d/max (array startAt (-> window :startAt js/Date.)))
+                                       end (d/min (array endAt (-> window :endAt js/Date.)))]
                                    {:start_time (-> start .toISOString)
                                     :end_time (-> end .toISOString)}))
                                windows)

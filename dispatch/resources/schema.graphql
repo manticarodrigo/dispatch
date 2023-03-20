@@ -27,8 +27,10 @@ type Mutation {
     weight: Float
     volume: Float
     duration: Int
-    windows: JSON
+    windows: [WindowInput]
   ): Shipment
+  createShipments(shipments: [ShipmentInput]!): Organization
+  archiveShipments(shipmentIds: [ID]!): Organization
   createVehicle(name: String!, weight: Float, volume: Float): Vehicle
   createVehicles(vehicles: [VehicleInput]!): Organization
   archiveVehicles(vehicleIds: [ID]!): Organization
@@ -151,7 +153,26 @@ type Shipment {
   weight: Float
   volume: Float
   duration: Int
-  windows: JSON
+  windows: [ShipmentWindow]
+}
+
+type ShipmentWindow {
+  id: ID!
+  startAt: Date!
+  endAt: Date!
+}
+
+input ShipmentInput {
+  placeId: ID!
+  weight: Float
+  volume: Float
+  duration: Int
+  windows: [WindowInput]
+}
+
+input WindowInput {
+  startAt: Date!
+  endAt: Date!
 }
 
 type Vehicle {

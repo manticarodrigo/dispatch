@@ -21,7 +21,7 @@
                on-date-change)
       [:div {:class "w-2"}])
     (when on-date-change
-      [date-select {:label (tr [:field/date])
+      [date-select {:placeholder (tr [:field/date])
                     :value date
                     :class "w-full"
                     :on-select on-date-change}])]

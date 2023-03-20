@@ -1,0 +1,15 @@
+mutation ArchiveShipments($shipmentIds: [ID]!) {
+  archiveShipments(shipmentIds: $shipmentIds) {
+    id
+    shipments {
+      id
+      weight
+      volume
+      windows {
+        id
+        startAt
+        endAt
+      }
+    }
+  }
+}

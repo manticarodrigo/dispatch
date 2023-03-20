@@ -3,7 +3,7 @@ mutation CreateShipment(
   $weight: Float
   $volume: Float
   $duration: Int
-  $windows: JSON
+  $windows: [WindowInput]
 ) {
   createShipment(
     placeId: $placeId
@@ -16,6 +16,10 @@ mutation CreateShipment(
     weight
     volume
     duration
-    windows
+    windows {
+      id
+      startAt
+      endAt
+    }
   }
 }

@@ -9,7 +9,10 @@
            :never "never"
            :shipments "shipments"
            :vehicles "vehicles"
-           :tasks "tasks"}
+           :tasks "tasks"
+           :date "date"
+           :weight "weight"
+           :volume "volume"}
     :verb {:create "create"
            :archive "archive"
            :upload "upload"
@@ -61,6 +64,7 @@
                                               (d/format endAt "dd/MM/yyyy hh:mmaaa")
                                               ")"))))}}
            :shipment {:list {:title "Shipments"}
+                      :upload {:title "Upload shipments"}
                       :create {:title "Create shipment"}}
            :vehicle {:list {:title "Vehicles"}
                      :upload {:title "Upload vehicles"}
@@ -81,6 +85,7 @@
             :name "Name"
             :note "Note"
             :agent "Agent"
+            :place "Place"
             :departure "Departure"
             :origin "Origin"
             :destination "Destination"
@@ -93,8 +98,15 @@
             :location-search "Search location"
             :location-get "Get location"
             :description "Description"
-            :weight "Weight capacity (kg)"
-            :volume "Volume capacity (m³)"
+            :visit-duration "Visit duration (s)"
+            :visit-date "Visit date"
+            :visit-windows "Visit windows"
+            :capacity-weight "Weight capacity (kg)"
+            :capacity-volume "Volume capacity (m³)"
+            :load-weight "Load weight (kg)"
+            :load-volume "Load volume (m³)"
+            :add-window "Add window"
+            :duration "Duration"
             :latitude "Latitude"
             :longitude "Longitude"
             :submit "Submit"}
@@ -161,7 +173,10 @@
            :never "nunca"
            :shipments "envíos"
            :vehicles "vehículos"
-           :tasks "tareas"}
+           :tasks "tareas"
+           :date "fecha"
+           :weight "peso"
+           :volume "volumen"}
     :verb {:create "crear"
            :archive "archivar"
            :upload "subir"
@@ -214,6 +229,7 @@
                                               (d/format endAt "dd/MM/yyyy hh:mmaaa")
                                               ")"))))}}
            :shipment {:list {:title "Envíos"}
+                      :upload {:title "Subir envíos"}
                       :create {:title "Crear envío"}}
            :vehicle {:list {:title "Vehículos"}
                      :upload {:title "Subir vehículos"}
@@ -236,6 +252,7 @@
             :name "Nombre"
             :note "Nota"
             :agent "Agente"
+            :place "Lugar"
             :departure "Salida"
             :origin "Origen"
             :destination "Destino"
@@ -250,6 +267,15 @@
             :description "Descripción"
             :weight "Capacidad de peso (kg)"
             :volume "Capacidad de volumen (m³)"
+            :visit-duration "Duración de visita (s)"
+            :visit-date "Fecha de visita"
+            :visit-windows "Ventanas de visita"
+            :capacity-weight "Capacidad de peso (kg)"
+            :capacity-volume "Capacidad de volumen (m³)"
+            :load-weight "Peso de carga (kg)"
+            :load-volume "Volumen de carga (m³)"
+            :add-window "Agregar ventana"
+            :duration "Duración"
             :latitude "Latitud"
             :longitude "Longitud"
             :submit "Enviar"}

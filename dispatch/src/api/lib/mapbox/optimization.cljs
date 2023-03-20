@@ -21,9 +21,9 @@
              :volume volume}
       :dropoff_duration duration
       :dropoff_times (map
-                      (fn [{:keys [start end]}]
-                        {:earliest start
-                         :latest end
+                      (fn [{:keys [startAt endAt]}]
+                        {:earliest startAt
+                         :latest endAt
                          :type "soft_end"})
                       windows)})
    shipments))

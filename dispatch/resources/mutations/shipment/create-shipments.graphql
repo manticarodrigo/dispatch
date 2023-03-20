@@ -1,0 +1,15 @@
+mutation CreateShipments($shipments: [ShipmentInput]!) {
+  createShipments(shipments: $shipments) {
+    id
+    shipments {
+      id
+      weight
+      volume
+      windows {
+        id
+        startAt
+        endAt
+      }
+    }
+  }
+}

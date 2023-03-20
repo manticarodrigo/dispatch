@@ -6,7 +6,11 @@ query OrganizationShipments {
         weight
         volume
         duration
-        windows
+        windows {
+          id
+          startAt
+          endAt
+        }
         place {
           id
           name

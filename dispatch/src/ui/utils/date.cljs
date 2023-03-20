@@ -26,4 +26,5 @@
 (def startOfDay d/startOfDay)
 (def endOfDay d/endOfDay)
 (def subHours d/subHours)
+(def addMinutes d/addMinutes)
 (def addSeconds d/addSeconds)

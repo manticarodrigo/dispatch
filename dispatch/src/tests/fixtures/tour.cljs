@@ -14,8 +14,8 @@
 
 (defn get-window [start end]
   (when (and (not-empty start) (not-empty end))
-    {:start (-> start get-date .toISOString)
-     :end (-> end get-date .toISOString)}))
+    {:startAt (-> start get-date .toISOString)
+     :endAt (-> end get-date .toISOString)}))
 
 (def shipments
   (->> (parse

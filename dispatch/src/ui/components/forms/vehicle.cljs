@@ -29,13 +29,14 @@
                              (.catch #(reset! !anoms (parse-anoms %)))))}
      [input {:label (tr [:field/name])
              :value name
+             :required true
              :class "mb-4"
              :on-text #(set-state (assoc state :name %))}]
-     [input {:label (tr [:field/weight])
+     [input {:label (tr [:field/capacity-weight])
              :value weight
              :class "mb-4"
              :on-text #(set-state (assoc state :weight %))}]
-     [input {:label (tr [:field/volume])
+     [input {:label (tr [:field/capacity-volume])
              :value volume
              :class "mb-4"
              :on-text #(set-state (assoc state :volume %))}]
