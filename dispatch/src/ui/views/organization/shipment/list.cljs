@@ -13,7 +13,8 @@
             [ui.components.inputs.button :refer (button)]
             [ui.components.inputs.input :refer (input)]
             [ui.components.inputs.loading-button :refer (loading-button)]
-            [ui.components.forms.shipment :refer (shipment-form)]))
+            [ui.components.forms.shipment :refer (shipment-form)]
+            [ui.components.forms.upload-shipments :refer (upload-shipments-form)]))
 
 (def FETCH_ORGANIZATION_SHIPMENTS (gql (inline "queries/user/organization/fetch-shipments.graphql")))
 (def ARCHIVE_SHIPMENTS (gql (inline "mutations/shipment/archive-shipments.graphql")))
@@ -49,12 +50,12 @@
        :on-close #(set-state (merge state {:create-open? false}))}
       [:div {:class "p-4 sm:w-96"}
        [shipment-form {:on-submit #(set-state (merge state {:create-open? false}))}]]]
-    ;;  [modal
-    ;;   {:show (or upload-open? false)
-    ;;    :title (tr [:view.shipment.upload/title])
-    ;;    :on-close #(set-state (merge state {:upload-open? false}))}
-    ;;   [:div {:class "w-[80vw] h-[80vh]"}
-    ;;    [upload-vehicles-form {:on-submit #(set-state (merge state {:upload-open? false}))}]]]
+     [modal
+      {:show (or upload-open? false)
+       :title (tr [:view.shipment.upload/title])
+       :on-close #(set-state (merge state {:upload-open? false}))}
+      [:div {:class "w-[80vw] h-[80vh]"}
+       [upload-shipments-form {:on-submit #(set-state (merge state {:upload-open? false}))}]]]
      (if loading
        [:div {:class "p-4"}
         (tr [:misc/loading]) "..."]

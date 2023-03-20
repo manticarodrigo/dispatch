@@ -62,6 +62,7 @@ model Session {
 
 model Agent {
   id             String       @id @unique @default(uuid())
+  externalId     String?
   name           String
   user           User?        @relation(fields: [userId], references: [id])
   userId         String?      @unique
@@ -72,6 +73,8 @@ model Agent {
   places         Place[]
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
+
+  @@unique([externalId, organizationId])
 }
 
 model Location {
@@ -84,6 +87,7 @@ model Location {
 
 model Place {
   id             String       @id @unique @default(uuid())
+  externalId     String?
   name           String
   phone          String?
   email          String?
@@ -99,6 +103,8 @@ model Place {
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
   plans          Plan[]
+
+  @@unique([externalId, organizationId])
 }
 
 model Task {
@@ -134,6 +140,7 @@ model Stop {
 
 model Vehicle {
   id             String        @id @unique @default(uuid())
+  externalId     String?
   name           String?
   volume         Float?
   weight         Float?
@@ -144,10 +151,13 @@ model Vehicle {
   archived       Boolean       @default(false)
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
+
+  @@unique([externalId, organizationId])
 }
 
 model Shipment {
   id             String           @id @unique @default(uuid())
+  externalId     String?
   volume         Float?
   weight         Float?
   duration       Int?
@@ -162,6 +172,8 @@ model Shipment {
   archived       Boolean          @default(false)
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
+
+  @@unique([externalId, organizationId])
 }
 
 model ShipmentWindow {

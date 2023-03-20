@@ -1,6 +1,5 @@
 (ns common.utils.date
-  ;; (:require [clojure.string :as s])
-  )
+  (:require ["date-fns" :as d]))
 
 (defn ten [i]
   (str (if (< i 10) "0" "") i))
@@ -13,11 +12,6 @@
         II (-> date .getMinutes ten)
         SS (-> date .getSeconds ten)]
     (str YYYY "-" MM "-" DD "T" HH ":" II ":" SS)))
-
-;; (defn from-datetime-local [date]
-;;   (let [full-iso (-> date .toISOString)
-;;         [part-iso] (s/split full-iso ".")]
-;;     (str part-iso "." "000Z")))
 
 (def date-scalar-map
   {:serialize #(.getTime %)
@@ -37,3 +31,14 @@
                     (subs 2)
                     (js/parseInt))]
     (+ (* hours 60) minutes)))
+
+(defn military->date [military-time]
+  (-> (js/Date.)
+      (d/startOfDay)
+      (d/addDays 1)
+      (d/addMinutes (military->minutes military-time))))
+
+(defn military->window [start end]
+  (when (and (not-empty start) (not-empty end))
+    {:startAt (-> start military->date)
+     :endAt (-> end military->date)}))

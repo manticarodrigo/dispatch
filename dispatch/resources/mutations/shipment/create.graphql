@@ -1,17 +1,5 @@
-mutation CreateShipment(
-  $placeId: ID!
-  $weight: Float
-  $volume: Float
-  $duration: Int
-  $windows: [WindowInput]
-) {
-  createShipment(
-    placeId: $placeId
-    weight: $weight
-    volume: $volume
-    duration: $duration
-    windows: $windows
-  ) {
+mutation CreateShipment($shipment: ShipmentInput!) {
+  createShipment(shipment: $shipment) {
     id
     weight
     volume

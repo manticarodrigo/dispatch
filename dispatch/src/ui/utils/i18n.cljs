@@ -129,7 +129,12 @@
                    :view-skipped-shipments "View skipped shipments"}
             :vehicle {:name "Name"
                       :weight "Weight capacity (kg)"
-                      :volume "Volume capacity (m³)"}}
+                      :volume "Volume capacity (m³)"}
+            :shipment {:place "Place"
+                       :weight "Weight (kg)"
+                       :volume "Volume (m³)"
+                       :duration "Duration (s)"
+                       :windows "Visit windows"}}
 
     :status {:all "All"
              :incomplete "Incomplete"
@@ -298,7 +303,12 @@
                    :view-skipped-shipments "Ver envíos omitidos"}
             :vehicle {:name "Nombre"
                       :weight "Capacidad de peso (kg)"
-                      :volume "Capacidad de volumen (m³)"}}
+                      :volume "Capacidad de volumen (m³)"}
+            :shipment {:place "Lugar"
+                       :weight "Peso (kg)"
+                       :volume "Volumen (m³)"
+                       :duration "Duración (s)"
+                       :windows "Ventanas de visita"}}
 
     :status {:all "Todos"
              :incomplete "Incompleto"

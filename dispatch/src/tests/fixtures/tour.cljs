@@ -1,21 +1,34 @@
 (ns tests.fixtures.tour
   (:require ["papaparse" :refer (parse)]
-            [date-fns :as d]
             [shadow.resource :refer (inline)]
             [cljs-bean.core :refer (->clj)]
-            [common.utils.number :refer (scale-amount)]
-            [common.utils.date :refer (military->minutes)]))
+            [common.utils.date :refer (military->date military->window)]))
 
-(defn get-date [military-time]
-  (-> (js/Date.)
-      (d/startOfDay)
-      (d/addDays 1)
-      (d/addMinutes (military->minutes military-time))))
-
-(defn get-window [start end]
-  (when (and (not-empty start) (not-empty end))
-    {:startAt (-> start get-date .toISOString)
-     :endAt (-> end get-date .toISOString)}))
+(def places
+  (->> (parse
+        (inline "fixtures/optimization/places.csv")
+        #js{:header true
+            :transformHeader (fn [name idx]
+                               (case idx
+                                 0 "externalId"
+                                 1 "name"
+                                 2 "description"
+                                 3 "latitude"
+                                 4 "longitude"
+                                 name))})
+       ->clj
+       :data
+       (map
+        (fn [{:keys [externalId
+                     name
+                     description
+                     latitude
+                     longitude]}]
+          {:externalId externalId
+           :name name
+           :description description
+           :lat (js/parseFloat latitude)
+           :lng (js/parseFloat longitude)}))))
 
 (def shipments
   (->> (parse
@@ -23,42 +36,35 @@
         #js{:header true
             :transformHeader (fn [name idx]
                                (case idx
-                                 0 "order"
-                                 1 "reference"
-                                 2 "address"
-                                 3 "start1"
-                                 4 "end1"
-                                 5 "start2"
-                                 6 "end2"
-                                 7 "duration"
-                                 8 "volume"
-                                 9 "weight"
-                                 10 "latitude"
-                                 11 "longitude"
+                                 0 "externalId"
+                                 1 "externalPlaceId"
+                                 2 "weight"
+                                 3 "volume"
+                                 4 "duration"
+                                 5 "start1"
+                                 6 "end1"
+                                 7 "start2"
+                                 8 "end2"
                                  name))})
        ->clj
        :data
        (map
-        (fn [{:keys [reference
-                     address
+        (fn [{:keys [externalId
+                     externalPlaceId
+                     weight
+                     volume
+                     duration
                      start1
                      end1
                      start2
-                     end2
-                     duration
-                     volume
-                     weight
-                     latitude
-                     longitude]}]
-          {:reference reference
-           :address address
+                     end2]}]
+          {:externalId externalId
+           :externalPlaceId externalPlaceId
            :weight (js/parseFloat weight)
            :volume (js/parseFloat volume)
-           :duration (scale-amount duration 60)
-           :windows (filter some? [(get-window start1 end1)
-                                   (get-window start2 end2)])
-           :latitude (js/parseFloat latitude)
-           :longitude (js/parseFloat longitude)}))))
+           :duration (js/parseInt duration)
+           :windows (filter some? [(military->window start1 end1)
+                                   (military->window start2 end2)])}))))
 
 (def vehicles
   (->> (parse
@@ -110,9 +116,9 @@
                :description address
                :lat (js/parseFloat latitude)
                :lng (js/parseFloat longitude)}
-       :startAt (-> startTime get-date .toISOString)
-       :endAt (-> endTime get-date .toISOString)
-       :breaks [(get-window "1200" "1230")]}))
+       :startAt (-> startTime military->date .toISOString)
+       :endAt (-> endTime military->date .toISOString)
+       :breaks [(military->window "1200" "1230")]}))
    first))
 
 (def solution (js/JSON.parse (inline "fixtures/optimization/solution.json")))

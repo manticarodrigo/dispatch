@@ -1,4 +1,5 @@
 mutation CreatePlace(
+  $externalId: ID
   $name: String!
   $phone: String
   $email: String
@@ -7,6 +8,7 @@ mutation CreatePlace(
   $lng: Float!
 ) {
   createPlace(
+    externalId: $externalId
     name: $name
     phone: $phone
     email: $email

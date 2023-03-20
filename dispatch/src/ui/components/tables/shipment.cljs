@@ -12,10 +12,22 @@
    [(when selected-rows
       checkbox-column)
     {:id "name"
-     :header (tr [:table.plan/place])
+     :header (tr [:table.shipment/place])
      :accessorFn #(.. ^js % -place -name)}
+    {:id "volume"
+     :header (tr [:table.shipment/volume])
+     :accessorFn #(some-> ^js % .-volume (.toFixed 2))
+     :cell #(str (.getValue ^js %) "m³")}
+    {:id "weight"
+     :header (tr [:table.shipment/weight])
+     :accessorFn #(some-> ^js % .-weight (.toFixed 2))
+     :cell #(str (.getValue ^js %) "kg")}
+    {:id "duration"
+     :header (tr [:table.shipment/duration])
+     :accessorFn #(some-> ^js % .-duration)
+     :cell #(str (or (.getValue ^js %) 0) "s")}
     {:id "windows"
-     :header (tr [:table.plan/windows])
+     :header (tr [:table.shipment/windows])
      :cell (fn [^js info]
              (let [windows (->clj (.. info -row -original -windows))
                    fmt #(-> % js/Date. (d/format "hh:mmaaa"))]
@@ -25,15 +37,7 @@
                   (for [[idx {:keys [startAt endAt]}] (map-indexed vector windows)]
                     ^{:key idx}
                     [:div
-                     (str (fmt startAt) " - " (fmt endAt))]))])))}
-    {:id "volume"
-     :header (tr [:table.plan/volume])
-     :accessorFn #(some-> ^js % .-volume (.toFixed 2))
-     :cell #(str (.getValue ^js %) "m³")}
-    {:id "weight"
-     :header (tr [:table.plan/weight])
-     :accessorFn #(some-> ^js % .-weight (.toFixed 2))
-     :cell #(str (.getValue ^js %) "kg")}]))
+                     (str (fmt startAt) " - " (fmt endAt))]))])))}]))
 
 (defn shipment-table [{:keys [shipments search-term set-search-term selected-rows set-selected-rows]}]
   [table {:state #js{:rowSelection selected-rows}

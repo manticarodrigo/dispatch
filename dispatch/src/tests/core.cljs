@@ -6,7 +6,7 @@
             [common.utils.promise :refer (each)]
             [ui.utils.error :refer (tr-error)]
             [ui.utils.i18n :refer (tr)]
-            [tests.fixtures.tour :refer (depot shipments vehicles solution)]
+            [tests.fixtures.tour :refer (depot places shipments vehicles solution)]
             [tests.util.ui :as ui :refer (with-mounted-component test-app)]
             [tests.util.location :refer (nearby generate-polyline)]
             [tests.user :as user]
@@ -294,25 +294,17 @@
 
 (deftest create-demo-shipments
   (async done
-         (-> (each (map
-                    (fn [{:keys [reference address weight volume duration windows latitude longitude]}]
-                      (fn []
-                        (p/let [place-mock (place/create-place
-                                            {:name reference
-                                             :description address
-                                             :lat latitude
-                                             :lng longitude})]
-                          (shipment/create-shipment
-                           {:placeId (-> place-mock :result :data :createPlace :id)
-                            :weight weight
-                            :volume volume
-                            :duration duration
-                            :windows windows}))))
-                    shipments))
-             (.then (fn [mocks]
-                      (testing "api returns data"
-                        (is (every? #(-> % :result :data :createShipment) mocks))
-                        (done)))))))
+         (p/do (p/all (map place/create-place places))
+               (-> (each (map
+                          (fn [shipment]
+                            (fn []
+                              (shipment/create-shipment
+                               {:shipment shipment})))
+                          shipments))
+                   (.then (fn [mocks]
+                            (testing "api returns data"
+                              (is (every? #(-> % :result :data :createShipment) mocks))
+                              (done))))))))
 
 (deftest fetch-demo-shipments
   (async done

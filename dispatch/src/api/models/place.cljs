@@ -4,7 +4,7 @@
             [api.filters.core :as filters]
             [api.models.user :as user]))
 
-(defn create-place [^js context {:keys [name phone email description lat lng]}]
+(defn create-place [^js context {:keys [externalId name phone email description lat lng]}]
   (p/let [^js user (user/active-user context {:include
                                               {:agent
                                                {:include
@@ -12,7 +12,8 @@
                                                :organization true}})
           ^js organization (or (.. user -organization)
                                (.. user -agent -organization))
-          payload {:data {:name name
+          payload {:data {:externalId externalId
+                          :name name
                           :phone phone
                           :email email
                           :description description
