@@ -41,3 +41,8 @@
   (when (and (not-empty start) (not-empty end))
     {:startAt (-> start military->date)
      :endAt (-> end military->date)}))
+
+(defn half-hours->date [date half-hours]
+  (-> date
+      d/startOfDay
+      (d/addMinutes (* half-hours 30))))

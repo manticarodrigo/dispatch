@@ -3,14 +3,17 @@
             [ui.components.inputs.button :refer (box-class)]
             [ui.utils.string :refer (class-names)]))
 
-(def thumb-class (class-names
-                  "cursor-pointer block rounded-full w-4 h-4"
-                  "bg-neutral-200 hover:bg-neutral-100 focus:bg-neutral-50 active:bg-neutral-50"
-                  "shadow-sm hover:shadow-md focus:shadow-md active:shadow-lg"))
-
 (defn thumb [value value-to-label]
-  [:> Thumb {:class thumb-class}
-   [:div {:class "absolute top-full left-1/2 -translate-x-1/2 translate-y-2 text-neutral-50 text-xs font-semibold"}
+  [:> Thumb {:class (class-names
+                     "hover:z-10 focus:z-10 active:z-10"
+                     "cursor-pointer block rounded-full w-4 h-4"
+                     "bg-neutral-200 hover:bg-neutral-100 focus:bg-neutral-50 active:bg-neutral-50"
+                     "shadow-sm hover:shadow-md focus:shadow-md active:shadow-lg")}
+   [:div {:class (class-names
+                  "absolute top-full left-1/2 -translate-x-1/2 translate-y-2"
+                  "rounded-md p-1"
+                  "text-neutral-50 text-xs font-semibold"
+                  "bg-neutral-800/75 backdrop-blur")}
     (if value-to-label
       (value-to-label value)
       value)]])

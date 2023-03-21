@@ -5,9 +5,9 @@
             [ui.components.inputs.button :refer (box-class box-interact-class)]
             [ui.utils.string :refer (class-names)]))
 
-(defn checkbox [{:keys [checked disabled on-change]}]
+(defn checkbox [{:keys [checked class disabled on-change]}]
   [ui/switch {:class (class-names
-                      "inline-block"
+                      class
                       box-class
                       box-interact-class
                       (if checked

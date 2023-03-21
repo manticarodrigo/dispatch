@@ -8,10 +8,12 @@
              (r/as-element
               [checkbox
                {:checked (-> info .-table .getIsAllRowsSelected)
+                :class "block"
                 :on-change (-> info .-table .getToggleAllRowsSelectedHandler)}]))
    :cell (fn [^js info]
            (r/as-element
             [checkbox
              {:checked (-> info .-row .getIsSelected)
               :disabled (not (-> info .-row .getCanSelect))
+              :class "block"
               :on-change (-> info .-row .getToggleSelectedHandler)}]))})

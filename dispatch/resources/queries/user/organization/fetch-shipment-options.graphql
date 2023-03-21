@@ -1,0 +1,13 @@
+query OrganizationShipmentOptions {
+  user {
+    organization {
+      places {
+        id
+        name
+        description
+        lat
+        lng
+      }
+    }
+  }
+}
