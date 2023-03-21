@@ -46,6 +46,12 @@
                              (dissoc search-params :text)
                              (assoc search-params :text %)))]
     [bare-layout {:title (tr [:view.shipment.list/title])
+                  :filters [date-select {:placeholder (tr [:field/date])
+                                         :value (-> date parse-date d/startOfDay)
+                                         :class "ml-2"
+                                         :input-class "!border-0 !bg-transparent !max-w-[7rem] !shadow-none"
+                                         :on-select #(set-search-params
+                                                      (assoc search-params :date (-> % .getTime)))}]
                   :actions [:div
                             [button {:label [:span {:class "flex items-center"}
                                              [:> CreateIcon {:class "mr-2 w-4 h-4"}]
@@ -88,11 +94,6 @@
                :value text
                :class "mr-2"
                :on-text on-search-change}]
-       [date-select {:placeholder (tr [:field/date])
-                     :value (-> date parse-date d/startOfDay)
-                     :class "mr-2"
-                     :on-select #(set-search-params
-                                  (assoc search-params :date (-> % .getTime)))}]
        (if (= status "ARCHIVED")
          [loading-button {:loading (:loading unarchive-status)
                           :disabled (empty? selected-shipment-ids)

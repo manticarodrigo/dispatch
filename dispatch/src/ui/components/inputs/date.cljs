@@ -13,7 +13,7 @@
             [ui.components.inputs.menu :refer (menu-class)]
             [ui.components.inputs.button :refer (button)]))
 
-(defn date-select [{:keys [class label required placeholder value on-select]}]
+(defn date-select [{:keys [label required placeholder value class input-class on-select]}]
   (let [{:keys [x y reference floating strategy]} (use-floating)
         {:keys [calendar
                 isSelected
@@ -29,8 +29,9 @@
               :label label
               :aria-label (when-not label placeholder)
               :placeholder placeholder
-              :value (if value (d/format value "dd/MM/yyyy") "")
+              :value (if value (d/format value "dd/MM/yy") "")
               :required required
+              :input-class input-class
               :on-change #()}]]
 
      [ui/popover-panel {:ref floating

@@ -19,6 +19,7 @@
               value :value
               required :required
               class :class
+              input-class-prop :input-class
               on-validate :on-validate
               on-change :on-change
               on-text :on-text}]
@@ -43,7 +44,7 @@
              :autoCorrect "off"
              :autoCapitalize "off"
              :spellCheck "false"
-             :class (class-names input-class (when icon "pl-8"))
+             :class (class-names input-class input-class-prop (when icon "pl-8"))
              :on-change (fn [e]
                           (let [v (-> e .-target .-value)
                                 valid? (if on-validate (on-validate v) true)]

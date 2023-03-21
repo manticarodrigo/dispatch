@@ -192,7 +192,8 @@
     :misc {:sign-out "Sign out"
            :loading "Loading"
            :empty-search "No results found"
-           :back-to-home "Back to home"}
+           :back-to-home "Back to home"
+           :leaving-from "Leaving from"}
     :map {:center "Center map"}
     :location {:title "Tracking you"
                :message "Cancel to prevent battery drain."
@@ -400,7 +401,8 @@
     :misc {:sign-out "Cerrar sesión"
            :loading "Cargando"
            :empty-search "No se han encontrado resultados"
-           :back-to-home "Regresar a inicio"}
+           :back-to-home "Regresar a inicio"
+           :leaving-from "Salida desde"}
     :map {:center "Centrar mapa"}
     :location {:title "Rastreando"
                :message "Cancelar para evitar el consumo de batería."
