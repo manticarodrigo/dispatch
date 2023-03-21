@@ -1,0 +1,39 @@
+query OrganizationPlanOptions($filters: ShipmentFilters) {
+  user {
+    organization {
+      places {
+        id
+        name
+        description
+        lat
+        lng
+      }
+      vehicles {
+        id
+        name
+        weight
+        volume
+      }
+      shipments(filters: $filters) {
+        id
+        weight
+        volume
+        duration
+        windows {
+          id
+          startAt
+          endAt
+        }
+        place {
+          id
+          name
+          phone
+          email
+          description
+          lat
+          lng
+        }
+      }
+    }
+  }
+}

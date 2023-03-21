@@ -12,15 +12,16 @@
             [ui.utils.date :as d]
             [ui.utils.i18n :refer (tr)]
             [ui.components.layout.bare :refer (bare-layout)]
-            [ui.components.tables.shipment :refer (shipment-table)]
             [ui.components.modal :refer (modal)]
+            [ui.components.table :refer (data->selected-row-ids)]
             [ui.components.inputs.button :refer (button)]
             [ui.components.inputs.input :refer (input)]
             [ui.components.inputs.date :refer (date-select)]
             [ui.components.inputs.radio-group :refer (radio-group)]
             [ui.components.inputs.loading-button :refer (loading-button)]
             [ui.components.forms.shipment :refer (shipment-form)]
-            [ui.components.forms.upload-shipments :refer (upload-shipments-form)]))
+            [ui.components.forms.upload-shipments :refer (upload-shipments-form)]
+            [ui.components.tables.shipment :refer (shipment-table)]))
 
 (def FETCH_ORGANIZATION_SHIPMENTS (gql (inline "queries/user/organization/fetch-shipments.graphql")))
 (def ARCHIVE_SHIPMENTS (gql (inline "mutations/shipment/archive-shipments.graphql")))
@@ -39,12 +40,7 @@
         [archive archive-status] (use-mutation ARCHIVE_SHIPMENTS {:refetchQueries [{:query FETCH_ORGANIZATION_SHIPMENTS}]})
         [unarchive unarchive-status] (use-mutation UNARCHIVE_SHIPMENTS {:refetchQueries [{:query FETCH_ORGANIZATION_SHIPMENTS}]})
         {:keys [shipments]} (some-> data :user :organization)
-        selected-shipment-ids (->> shipments
-                                   (map-indexed vector)
-                                   (filter
-                                    (fn [[idx]]
-                                      (= true (aget selected-rows idx))))
-                                   (mapv (fn [[_ {:keys [id]}]] id)))
+        selected-shipment-ids (data->selected-row-ids shipments selected-rows)
         on-search-change #(set-search-params
                            (if (empty? %)
                              (dissoc search-params :text)

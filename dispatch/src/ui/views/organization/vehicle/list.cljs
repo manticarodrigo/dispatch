@@ -8,13 +8,14 @@
             [ui.lib.apollo :refer (gql use-query use-mutation)]
             [ui.utils.i18n :refer (tr)]
             [ui.components.layout.bare :refer (bare-layout)]
-            [ui.components.tables.vehicle :refer (vehicle-table)]
             [ui.components.modal :refer (modal)]
+            [ui.components.table :refer (data->selected-row-ids)]
             [ui.components.inputs.button :refer (button)]
             [ui.components.inputs.loading-button :refer (loading-button)]
             [ui.components.inputs.input :refer (input)]
             [ui.components.forms.vehicle :refer (vehicle-form)]
-            [ui.components.forms.upload-vehicles :refer (upload-vehicles-form)]))
+            [ui.components.forms.upload-vehicles :refer (upload-vehicles-form)]
+            [ui.components.tables.vehicle :refer (vehicle-table)]))
 
 (def FETCH_ORGANIZATION_VEHICLES (gql (inline "queries/user/organization/fetch-vehicles.graphql")))
 (def ARCHIVE_VEHICLES (gql (inline "mutations/vehicle/archive-vehicles.graphql")))
@@ -26,12 +27,7 @@
         {:keys [data loading]} (use-query FETCH_ORGANIZATION_VEHICLES {})
         [archive archive-status] (use-mutation ARCHIVE_VEHICLES {:refetchQueries [{:query FETCH_ORGANIZATION_VEHICLES}]})
         {:keys [vehicles]} (some-> data :user :organization)
-        selected-vehicle-ids (->> vehicles
-                                  (map-indexed vector)
-                                  (filter
-                                   (fn [[idx]]
-                                     (= true (aget selected-rows idx))))
-                                  (mapv (fn [[_ {:keys [id]}]] id)))]
+        selected-vehicle-ids (data->selected-row-ids vehicles selected-rows)]
     [bare-layout {:title (tr [:view.vehicle.list/title])
                   :actions [:div
                             [button {:label [:span {:class "flex items-center"}

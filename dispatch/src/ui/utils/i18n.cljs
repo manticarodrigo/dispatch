@@ -102,8 +102,17 @@
             :visit-duration "Visit duration (s)"
             :visit-date "Visit date"
             :visit-windows "Visit windows"
+            :depot "Depot"
             :plan-date "Plan date"
             :plan-window "Plan window"
+            :vehicles "Vehicles"
+            :shipments "Shipments"
+            :select-vehicles "Select vehicles"
+            :select-shipments "Select shipments"
+            :selected-vehicles (fn [[n]]
+                                 (str "Selected " n " vehicles"))
+            :selected-shipments (fn [[n]]
+                                  (str "Selected " n " shipments"))
             :capacity-weight "Weight capacity (kg)"
             :capacity-volume "Volume capacity (m³)"
             :load-weight "Load weight (kg)"
@@ -301,8 +310,17 @@
             :visit-duration "Duración de visita (s)"
             :visit-date "Fecha de visita"
             :visit-windows "Ventanas de visita"
+            :depot "Depósito"
             :plan-date "Fecha de plan"
             :plan-window "Ventana de plan"
+            :vehicles "Vehículos"
+            :shipments "Envíos"
+            :select-vehicles "Selecciona vehículos"
+            :select-shipments "Selecciona envíos"
+            :selected-vehicles (fn [[n]]
+                                 (str n " vehículos seleccionados"))
+            :selected-shipments (fn [[n]]
+                                  (str n " envíos seleccionados"))
             :capacity-weight "Capacidad de peso (kg)"
             :capacity-volume "Capacidad de volumen (m³)"
             :load-weight "Peso de carga (kg)"

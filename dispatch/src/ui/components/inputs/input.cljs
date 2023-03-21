@@ -9,7 +9,7 @@
                   "appearance-none"
                   "w-full truncate"
                   "text-left text-sm font-light"
-                  "placeholder:text-base placeholder:text-neutral-400"))
+                  "placeholder:text-sm placeholder:text-neutral-400"))
 
 (defn input [{type :type
               aria-label :aria-label

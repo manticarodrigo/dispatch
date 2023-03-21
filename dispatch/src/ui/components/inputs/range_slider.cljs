@@ -61,5 +61,5 @@
          :label [:div {:class "flex justify-center items-center"}
                  [:> PlusIcon {:class "mr-2 w-4 h-4"}] (tr [:field/add-range])]
          :disabled (not available-range)
-         :class (class-names "my-2 border-2 border-dashed w-full")
+         :class (class-names "mt-2 mb-4 border-2 border-dashed w-full")
          :on-click #(on-add (conj ranges available-range))}])]))

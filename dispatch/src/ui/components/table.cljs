@@ -10,6 +10,14 @@
             ["@tanstack/match-sorter-utils" :refer (rankItem)]
             [cljs-bean.core :refer (->js)]))
 
+(defn data->selected-row-ids [data selection]
+  (->> data
+       (map-indexed vector)
+       (filter
+        (fn [[idx]]
+          (= true (aget selection idx))))
+       (mapv (fn [[_ {:keys [id]}]] id))))
+
 (defn fuzzy-filter [^js row column-id value add-meta]
   (let [item-rank (rankItem (.getValue row column-id) value)]
     (add-meta #js{:itemRank item-rank})
