@@ -24,7 +24,7 @@
                      on-row-selection-change]
               :or {data [] columns []}}]
   (let [[sorting set-sorting] (useState #js[])
-        _data (useMemo #(->js data) (array data))
+        _data (useMemo #(->js (or data [])) (array data))
         _columns (useMemo #(->js columns) (array columns))
         ^js instance (useReactTable
                       #js{:state (when state (js/Object.assign state #js{:sorting sorting
@@ -50,7 +50,7 @@
                  :class (str
                          "py-2 px-4 text-sm text-left font-normal whitespace-nowrap"
                          (when (-> header .-column .getCanSort)
-                           " cursor-pointer"))
+                           " cursor-pointer hover:bg-neutral-800"))
                  :on-click (-> header .-column .getToggleSortingHandler)}
             (if (.-isPlaceholder header)
               nil

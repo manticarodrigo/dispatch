@@ -35,7 +35,6 @@
 (defn military->date [military-time]
   (-> (js/Date.)
       (d/startOfDay)
-      (d/addDays 1)
       (d/addMinutes (military->minutes military-time))))
 
 (defn military->window [start end]

@@ -26,6 +26,7 @@ type Mutation {
   createShipment(shipment: ShipmentInput!): Shipment
   createShipments(shipments: [ShipmentInput]!): Organization
   archiveShipments(shipmentIds: [ID]!): Organization
+  unarchiveShipments(shipmentIds: [ID]!): Organization
   createVehicle(name: String!, weight: Float, volume: Float): Vehicle
   createVehicles(vehicles: [VehicleInput]!): Organization
   archiveVehicles(vehicleIds: [ID]!): Organization
@@ -63,7 +64,7 @@ type Organization {
   tasks(filters: TaskFilters): [Task]
   task(taskId: ID!): Task
   stop(stopId: ID!): Stop
-  shipments: [Shipment]
+  shipments(filters: ShipmentFilters): [Shipment]
   vehicles: [Vehicle]
   plans: [Plan]
   plan(planId: ID!): Plan
@@ -165,6 +166,17 @@ input ShipmentInput {
   volume: Float
   duration: Int
   windows: [WindowInput]
+}
+
+input ShipmentFilters {
+  start: Date
+  end: Date
+  status: ShipmentStatus
+}
+
+enum ShipmentStatus {
+  ASSIGNED
+  ARCHIVED
 }
 
 input WindowInput {

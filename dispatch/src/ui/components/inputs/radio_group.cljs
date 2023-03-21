@@ -19,7 +19,7 @@
      :on-change on-change}
     [:> Label {:class (when sr-label "sr-only")} (or sr-label label)]
 
-    [:div {:class (class-names options-class "rounded flex justify-between bg-neutral-800")}
+    [:div {:class (class-names options-class "rounded-md flex justify-between bg-neutral-800")}
      (doall
       (for [[idx option] (map-indexed vector options)]
         (let [first? (= idx 0)
@@ -33,11 +33,11 @@
                         "py-0.5 px-2"
                         "cursor-pointer"
                         "w-full text-center text-sm"
-                        (when first? "rounded-l")
-                        (when last? "rounded-r")
+                        (when first? "rounded-l-md")
+                        (when last? "rounded-r-md")
                         (if (or checked active)
                           (class-names
                            "text-neutral-50"
-                           (when checked "rounded bg-neutral-700 focus:bg-neutral-700 shadow"))
+                           (when checked "rounded-md bg-neutral-700 focus:bg-neutral-700 shadow"))
                           "text-neutral-400 hover:text-neutral-50"))))}
-           [:> Label {:as "p"} (:label option)]])))]]])
+           [:> Label {:as "p" :class "select-none"} (:label option)]])))]]])

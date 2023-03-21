@@ -1,0 +1,15 @@
+mutation UnarchiveShipments($shipmentIds: [ID]!) {
+  unarchiveShipments(shipmentIds: $shipmentIds) {
+    id
+    shipments {
+      id
+      weight
+      volume
+      windows {
+        id
+        startAt
+        endAt
+      }
+    }
+  }
+}

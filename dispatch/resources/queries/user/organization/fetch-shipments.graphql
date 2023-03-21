@@ -1,7 +1,7 @@
-query OrganizationShipments {
+query OrganizationShipments($filters: ShipmentFilters) {
   user {
     organization {
-      shipments {
+      shipments(filters: $filters) {
         id
         weight
         volume

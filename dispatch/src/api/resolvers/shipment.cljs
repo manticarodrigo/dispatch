@@ -14,6 +14,10 @@
   [_ args context _]
   (shipment/archive-shipments context (->clj args)))
 
+(defn unarchive-shipments
+  [_ args context _]
+  (shipment/unarchive-shipments context (->clj args)))
+
 (defn fetch-organization-shipments
-  [_ _ context _]
-  (shipment/fetch-organization-shipments context))
+  [_ args context _]
+  (shipment/fetch-organization-shipments context (->clj args)))

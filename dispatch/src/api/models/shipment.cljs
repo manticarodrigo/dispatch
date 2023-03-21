@@ -3,11 +3,26 @@
             [api.util.prisma :as prisma]
             [api.models.user :as user]))
 
+(def shipment-include
+  {:place true
+   :windows true})
+
 (def shipments-include
   {:shipments {:where {:archived false}
                :orderBy {:createdAt "desc"}
-               :include {:place true
-                         :windows true}}})
+               :include shipment-include}})
+
+(defn shipments-query [{:keys [start end status]}]
+  {:shipments {:where (merge
+                       (case status
+                         "ASSIGNED" {:stop {:is {}} :archived false}
+                         "ARCHIVED" {:archived true}
+                         {:stop nil :archived false})
+                       (when (and start end)
+                         {:windows {:some {:startAt {:gte start}
+                                           :endAt {:lte end}}}}))
+               :orderBy {:createdAt "desc"}
+               :include shipment-include}})
 
 (defn create-shipments [^js context {:keys [shipments]}]
   (p/let [^js user (user/active-user context {:include {:organization true}})
@@ -65,8 +80,18 @@
                                       :data {:archived true}}}}
       :include shipments-include})))
 
-(defn fetch-organization-shipments [^js context]
+(defn unarchive-shipments [^js context {:keys [shipmentIds]}]
+  (p/let [^js user (user/active-user context {:include {:organization true}})
+          organization-id (.. user -organization -id)]
+    (prisma/update!
+     (.. context -prisma -organization)
+     {:where {:id organization-id}
+      :data {:shipments {:updateMany {:where {:id {:in shipmentIds}}
+                                      :data {:archived false}}}}
+      :include shipments-include})))
+
+(defn fetch-organization-shipments [^js context {:keys [filters]}]
   (p/let [^js user (user/active-user context {:include
                                               {:organization
-                                               {:include shipments-include}}})]
+                                               {:include (shipments-query filters)}}})]
     (.. user -organization -shipments)))

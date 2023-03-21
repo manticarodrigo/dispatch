@@ -15,6 +15,7 @@
            :volume "volume"}
     :verb {:create "create"
            :archive "archive"
+           :unarchive "unarchive"
            :upload "upload"
            :show "show"
            :view "view"
@@ -154,6 +155,9 @@
              :complete "Complete"
              :active "Active"
              :inactive "Inactive"
+             :pending "Pending"
+             :assigned "Assigned"
+             :archived "Archived"
              :last-seen (fn [[date]]
                           (str "Seen "
                                (if date
@@ -202,6 +206,7 @@
            :volume "volumen"}
     :verb {:create "crear"
            :archive "archivar"
+           :unarchive "desarchivar"
            :upload "subir"
            :show "mostrar"
            :view "ver"
@@ -346,6 +351,9 @@
              :complete "Completo"
              :active "Activo"
              :inactive "Inactivo"
+             :pending "Pendiente"
+             :assigned "Asignado"
+             :archived "Archivado"
              :last-seen (fn [[date]]
                           (str "Visto "
                                (if date

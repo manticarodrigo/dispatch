@@ -46,6 +46,7 @@
                  :createShipment shipment/create-shipment
                  :createShipments shipment/create-shipments
                  :archiveShipments shipment/archive-shipments
+                 :unarchiveShipments shipment/unarchive-shipments
                  :createVehicle vehicle/create-vehicle
                  :createVehicles vehicle/create-vehicles
                  :archiveVehicles vehicle/archive-vehicles
