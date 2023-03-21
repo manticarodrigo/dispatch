@@ -68,8 +68,8 @@
                                  {:break_requests
                                   (map
                                    (fn [break]
-                                     (let [start (-> break :start js/Date.)
-                                           end (-> break :end js/Date.)
+                                     (let [start (-> break :startAt js/Date.)
+                                           end (-> break :endAt js/Date.)
                                            duration (d/differenceInSeconds end start)]
                                        {:earliest_start_time (-> start .toISOString)
                                         :latest_start_time (-> (d/addSeconds end duration) .toISOString)
