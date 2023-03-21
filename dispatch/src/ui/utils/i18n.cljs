@@ -55,6 +55,7 @@
                    :create {:title "Create place"}}
            :plan {:list {:title "Plans"}
                   :create {:title "Create plan"}
+                  :optimize {:title "Optimize plan"}
                   :detail {:title (fn [[startAt endAt]]
                                     (str
                                      "Plan"
@@ -259,6 +260,7 @@
                    :create {:title "Crear lugar"}}
            :plan {:list {:title "Planes"}
                   :create {:title "Crear plan"}
+                  :optimize {:title "Optimizar plan"}
                   :detail {:title (fn [[startAt endAt]]
                                     (str
                                      "Plan"

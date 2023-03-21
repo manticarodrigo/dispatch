@@ -25,8 +25,8 @@
   (let [!selected-agents (r/atom {})]
     (fn []
       (let [{plan-id :plan} (use-params)
-            {:keys [data loading refetch]} (use-query FETCH_PLAN {:variables {:planId plan-id}})
-            [optimize optimize-status] (use-mutation OPTIMIZE_PLAN {})
+            {:keys [data loading]} (use-query FETCH_PLAN {:variables {:planId plan-id}})
+            [optimize optimize-status] (use-mutation OPTIMIZE_PLAN {:refetchQueries [{:query FETCH_PLAN}]})
             [create-tasks create-tasks-status] (use-mutation CREATE_PLAN_TASKS {})
             {:keys [plan agents]} (-> data :user :organization)
             {:keys [result startAt endAt vehicles shipments]} plan
@@ -61,63 +61,67 @@
                     [modal {:show modal-open?
                             :title (str (s/capitalize (tr [:adjective/skipped])) " " (tr [:noun/shipments]))
                             :on-close #(set-modal-open? false)}
-                     [shipment-table {:shipments skipped}]]]
-          :on-refresh #(refetch {:variables {:planId plan-id}})}
-         (if loading [:div {:class "p-4"}
-                      (tr [:misc/loading]) "..."]
+                     [shipment-table {:shipments skipped}]]]}
+         [:div {:class "flex flex-col w-full h-full min-w-0 min-h-0"}
+          [:div {:class "flex items-center border-b border-neutral-700 p-4 w-full overflow-y-hidden overflow-x-auto"}
+           [input {:icon SearchIcon
+                   :aria-label (tr [:field/search])
+                   :placeholder (tr [:field/search])
+                   :value search-term
+                   :class "shrink-0 mr-2"
+                   :on-text #(set-search-term %)}]
+           [loading-button
+            {:disabled (empty? selected-indexes)
+             :loading (:loading create-tasks-status)
+             :label [:div {:class "flex items-center"}
+                     [:> CreateIcon {:class "mr-2 w-4 h-4"}]
+                     (tr [:view.plan.create/title])
+                     " "
+                     (tr [:noun/tasks])
+                     (when (> (count selected-indexes) 0)
+                       (str " (" (count selected-indexes) ")"))]
+             :class "shrink-0 mr-2"
+             :on-click #(do
+                          (create-tasks
+                           {:variables
+                            {:planId plan-id
+                             :assignments
+                             (map
+                              (fn [idx]
+                                {:agentId (get @!selected-agents (int idx))
+                                 :routeIndex idx})
+                              selected-indexes)}})
+                          (set-selected-rows #js{}))}]]
+          [:div {:class "w-full h-full min-w-0 min-h-0 overflow-auto"}
+           [route-table {:agents agents
+                         :result routes
+                         :search-term search-term
+                         :set-search-term set-search-term
+                         :selected-rows selected-rows
+                         :set-selected-rows set-selected-rows
+                         :!selected-agents !selected-agents
+                         :on-create-task #(do
+                                            (create-tasks
+                                             {:variables
+                                              {:planId plan-id
+                                               :assignments
+                                               [{:agentId (get @!selected-agents (int %))
+                                                 :routeIndex %}]}})
+                                            (set-selected-rows #js{}))}]
+           (if loading
+             [:p {:class "p-4 text-center"} (tr [:misc/loading]) "..."]
              (if result
-               [:<>
-                [:div {:class "flex flex-col w-full h-full min-w-0 min-h-0"}
-                 [:div {:class "flex items-center border-b border-neutral-700 p-4 w-full overflow-y-hidden overflow-x-auto"}
-                  [input {:icon SearchIcon
-                          :aria-label (tr [:field/search])
-                          :placeholder (tr [:field/search])
-                          :value search-term
-                          :class "shrink-0 mr-2"
-                          :on-text #(set-search-term %)}]
-                  [loading-button
-                   {:disabled (empty? selected-indexes)
-                    :loading (:loading create-tasks-status)
-                    :label [:div {:class "flex items-center"}
-                            [:> CreateIcon {:class "mr-2 w-4 h-4"}]
-                            (tr [:view.plan.create/title])
-                            " "
-                            (tr [:noun/tasks])
-                            (when (> (count selected-indexes) 0)
-                              (str " (" (count selected-indexes) ")"))]
-                    :class "shrink-0 mr-2"
-                    :on-click #(do
-                                 (create-tasks
-                                  {:variables
-                                   {:planId plan-id
-                                    :assignments
-                                    (map
-                                     (fn [idx]
-                                       {:agentId (get @!selected-agents (int idx))
-                                        :routeIndex idx})
-                                     selected-indexes)}})
-                                 (set-selected-rows #js{}))}]]
-                 [:div {:class "w-full h-full min-w-0 min-h-0 overflow-auto"}
-                  [route-table {:agents agents
-                                :result routes
-                                :search-term search-term
-                                :set-search-term set-search-term
-                                :selected-rows selected-rows
-                                :set-selected-rows set-selected-rows
-                                :!selected-agents !selected-agents
-                                :on-create-task #(do
-                                                   (create-tasks
-                                                    {:variables
-                                                     {:planId plan-id
-                                                      :assignments
-                                                      [{:agentId (get @!selected-agents (int %))
-                                                        :routeIndex %}]}})
-                                                   (set-selected-rows #js{}))}]]]]
+               (when (empty? routes)
+                 [:p {:class "p-4 text-center"} (tr [:misc/empty-search])])
                [:div {:class "p-4"}
-                [:div (count vehicles) " " (tr [:noun/vehicles])]
-                [:div (count shipments) " " (tr [:noun/shipments])]
-                [loading-button
-                 {:loading (:loading optimize-status)
-                  :label (tr [:verb/optimize])
-                  :class "mt-4 capitalize"
-                  :on-click #(optimize {:variables {:planId plan-id}})}]]))]))))
+                [:div {:class "rounded border-2 border-dashed border-neutral-400 p-4 text-center"}
+                 [:p {:class "text-lg"} (tr [:view.plan.optimize/title]) ":"]
+                 [:div {:class "mt-2 text-sm"}
+                  [:span (count vehicles) " " (tr [:noun/vehicles])]
+                  ", "
+                  [:span (count shipments) " " (tr [:noun/shipments])]]
+                 [loading-button
+                  {:loading (:loading optimize-status)
+                   :label (tr [:verb/optimize])
+                   :class "mt-4 capitalize"
+                   :on-click #(optimize {:variables {:planId plan-id}})}]]]))]]]))))
