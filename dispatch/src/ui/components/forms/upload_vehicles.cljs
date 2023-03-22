@@ -38,9 +38,11 @@
         [submit-button {:loading (:loading create-status)}]]]
       [:div {:class "flex flex-col items-center justify-center p-4 w-full h-full"}
        [:div {:class "flex flex-col w-full"}
-        [:div {:class "mb-4 text-xs text-neutral-300"}
-         [:p (tr [:table.shipment-upload.notes/attach-csv])]
-         [:p (tr [:table.shipment-upload.notes/column-names])]]
+        [:div {:class "mb-4 text-sm text-neutral-300"}
+         [:p
+          (tr [:table.shipment-upload.notes/attach-csv])
+          " "
+          (tr [:table.shipment-upload.notes/column-names])]]
         [:div {:class "mb-4 w-full overflow-auto"}
          [vehicle-table
           {:vehicles [{:name "250936 2.5T"

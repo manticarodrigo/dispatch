@@ -23,6 +23,7 @@
 (def isToday d/isToday)
 (def isBefore d/isBefore)
 (def isAfter d/isAfter)
+(def isSameDay d/isSameDay)
 (def startOfDay d/startOfDay)
 (def endOfDay d/endOfDay)
 (def subHours d/subHours)

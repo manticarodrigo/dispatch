@@ -77,8 +77,8 @@
          :search-term search-term
          :set-search-term #(set-state (merge state {:search-term %}))
          :selected-rows selected-rows
-         :set-selected-rows set-selected-rows}]]
-      (if loading
-        [:p {:class "p-4 text-center"} (tr [:misc/loading]) "..."]
-        (when (empty? vehicles)
-          [:p {:class "p-4 text-center"} (tr [:misc/empty-search])]))]]))
+         :set-selected-rows set-selected-rows}]
+       (if loading
+         [:p {:class "p-4 text-center"} (tr [:misc/loading]) "..."]
+         (when (empty? vehicles)
+           [:p {:class "p-4 text-center"} (tr [:misc/empty-search])]))]]]))

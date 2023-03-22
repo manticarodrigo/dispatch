@@ -1,14 +1,17 @@
 (ns ui.components.table
   (:require ["react" :refer (useState useMemo)]
             ["react-feather" :rename {ChevronUp ChevronUpIcon
-                                      ChevronDown ChevronDownIcon}]
+                                      ChevronDown ChevronDownIcon
+                                      Info InfoIcon}]
             ["@tanstack/react-table" :refer (flexRender
                                              getCoreRowModel
                                              getFilteredRowModel
                                              getSortedRowModel
                                              useReactTable)]
             ["@tanstack/match-sorter-utils" :refer (rankItem)]
-            [cljs-bean.core :refer (->js)]))
+            [reagent.core :as r]
+            [cljs-bean.core :refer (->js)]
+            [ui.components.inputs.tooltip :refer (tooltip)]))
 
 (defn data->selected-row-ids [data selection]
   (->> data
@@ -22,6 +25,19 @@
   (let [item-rank (rankItem (.getValue row column-id) value)]
     (add-meta #js{:itemRank item-rank})
     (.-passed item-rank)))
+
+(defn tooltip-header [{:keys [label content required]}]
+  (fn []
+    (r/as-element
+     [:span {:class "flex items-center"}
+      [:span
+       {:class
+        (when required
+          "after:content-['*'] after:ml-0.5 after:text-red-500")}
+       label]
+      [tooltip
+       [:> InfoIcon {:class "ml-2 w-4 h-4"}]
+       [:span content]]])))
 
 (defn table [{:keys [state
                      data
@@ -57,7 +73,9 @@
            [:th {:key (.-id header)
                  :class (str
                          "py-2 px-4 text-sm text-left font-normal whitespace-nowrap"
-                         (when (-> header .-column .getCanSort)
+                         (when (and
+                                (> (count data) 1)
+                                (-> header .-column .getCanSort))
                            " cursor-pointer hover:bg-neutral-800"))
                  :on-click (-> header .-column .getToggleSortingHandler)}
             (if (.-isPlaceholder header)

@@ -149,10 +149,10 @@
                        :volume "Volume (m³)"
                        :duration "Duration (s)"
                        :windows "Visit windows"}
-            :shipment-upload {:notes {:attach-csv "* Attach a CSV file with the structure shown below."
-                                      :column-names "* Column names do not need to match, only the order."
-                                      :external-id "* External ID will be used to update and unarchive matching shipments."
-                                      :external-place-id "* External place ID is required and must match an existing external place ID."}
+            :shipment-upload {:notes {:attach-csv "Attach a CSV file with the structure shown below."
+                                      :column-names "Column names do not need to match, only the order."
+                                      :external-id "External ID will be used to update and unarchive matching shipments."
+                                      :external-place-id "External place ID is required and must match an existing external place ID."}
                               :columns {:external-id "External ID"
                                         :external-place-id "External place ID"
                                         :weight "Weight (kg)"
@@ -359,10 +359,10 @@
                        :volume "Volumen (m³)"
                        :duration "Duración (s)"
                        :windows "Ventanas de visita"}
-            :shipment-upload {:notes {:attach-csv "* Adjuntar CSV con la estructura mostrada abajo."
-                                      :column-names "* Los nombres de las columnas no necesitan coincidir, solo el orden."
-                                      :external-id "* ID externo será usado para actualizar y desarchivar envíos que coincidan."
-                                      :external-place-id "* ID externo de lugar es requerido y debe coincidir con un ID externo de lugar existente."}
+            :shipment-upload {:notes {:attach-csv "Adjuntar CSV con la estructura mostrada abajo."
+                                      :column-names "Los nombres de las columnas no necesitan coincidir, solo el orden."
+                                      :external-id "ID externo será usado para actualizar y desarchivar envíos que coincidan."
+                                      :external-place-id "ID externo de lugar es requerido y debe coincidir con un ID externo de lugar existente."}
                               :columns {:external-id "ID externo"
                                         :external-place-id "ID externo de lugar"
                                         :weight "Peso (kg)"

@@ -7,7 +7,7 @@
             [ui.lib.apollo :refer (gql use-mutation)]
             [ui.utils.i18n :refer (tr)]
             [ui.components.tables.shipment :refer (shipment-table)]
-            [ui.components.table :refer (table)]
+            [ui.components.table :refer (table tooltip-header)]
             [ui.components.inputs.dropzone :refer (dropzone)]
             [ui.components.inputs.submit-button :refer (submit-button)]))
 
@@ -40,11 +40,11 @@
         [submit-button {:loading (:loading create-status)}]]]
       [:div {:class "flex flex-col items-center justify-center p-4 w-full h-full"}
        [:div {:class "flex flex-col w-full"}
-        [:div {:class "mb-4 text-xs text-neutral-300"}
-         [:p (tr [:table.shipment-upload.notes/attach-csv])]
-         [:p (tr [:table.shipment-upload.notes/column-names])]
-         [:p (tr [:table.shipment-upload.notes/external-id])]
-         [:p (tr [:table.shipment-upload.notes/external-place-id])]]
+        [:div {:class "mb-4 text-sm text-neutral-300"}
+         [:p
+          (tr [:table.shipment-upload.notes/attach-csv])
+          " "
+          (tr [:table.shipment-upload.notes/column-names])]]
         [:div {:class "mb-4 w-full overflow-auto"}
          [table
           {:data [{:externalId "123"
@@ -56,9 +56,16 @@
                    :end1 "1200"
                    :start2 "1230"
                    :end2 "2400"}]
-           :columns [{:header (tr [:table.shipment-upload.columns/external-id])
+           :columns [{:id "externalId"
+                      :header (tooltip-header
+                               {:label (tr [:table.shipment-upload.columns/external-id])
+                                :content (tr [:table.shipment-upload.notes/external-id])})
                       :accessorFn #(aget % "externalId")}
-                     {:header (tr [:table.shipment-upload.columns/external-place-id])
+                     {:id "externalPlaceId"
+                      :header (tooltip-header
+                               {:label (tr [:table.shipment-upload.columns/external-place-id])
+                                :content (tr [:table.shipment-upload.notes/external-place-id])
+                                :required true})
                       :accessorFn #(aget % "externalPlaceId")}
                      {:header (tr [:table.shipment-upload.columns/weight])
                       :accessorFn #(aget % "weight")}
