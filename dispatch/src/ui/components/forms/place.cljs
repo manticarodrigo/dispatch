@@ -1,15 +1,15 @@
 (ns ui.components.forms.place
-  (:require ["react" :refer (useEffect useState)]
+  (:require ["react" :refer (useState)]
             [clojure.set :refer (rename-keys)]
             [shadow.resource :refer (inline)]
             [reagent.core :as r]
-            [re-frame.core :refer (dispatch)]
             [ui.lib.apollo :refer (gql parse-anoms use-mutation)]
             [ui.lib.router :refer (use-navigate)]
             [ui.lib.location :refer (get-location)]
             [ui.lib.google.maps.autocomplete :refer (search-places)]
             [ui.lib.google.maps.places :refer (find-place)]
             [ui.lib.google.maps.geocoding :refer (reverse-geocode)]
+            [ui.hooks.use-map :refer (use-map-items)]
             [ui.utils.i18n :refer (tr)]
             [ui.utils.location :refer (position-to-lat-lng)]
             [ui.utils.validation :refer (latitude? longitude?)]
@@ -43,16 +43,10 @@
         place-options (if selected-place-missing?
                         (cons state @!options)
                         @!options)]
-
-    (useEffect
-     (fn []
-       (dispatch [:map
-                  {:points
-                   (when (and lat lng)
-                     [{:title (or name "???")
-                       :position {:lat lat :lng lng}}])}])
-       #())
-     #js[name lat lng])
+    (use-map-items
+     loading
+     {:places [state]}
+     [loading name lat lng])
 
     [:form {:class "flex flex-col"
             :on-submit (fn [e]
@@ -112,13 +106,13 @@
              :required true
              :class "mb-4"
              :on-validate latitude?
-             :on-text (fn [v] (set-state #(assoc % :lat v)))}]
+             :on-text (fn [v] (set-state #(assoc % :lat (js/parseFloat v))))}]
      [input {:label (tr [:field/longitude])
              :value lng
              :required true
              :class "mb-4"
              :on-validate longitude?
-             :on-text (fn [v] (set-state #(assoc % :lng v)))}]
+             :on-text (fn [v] (set-state #(assoc % :lng (js/parseFloat v))))}]
      [input {:type "tel"
              :label (tr [:field/phone])
              :value phone

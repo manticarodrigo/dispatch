@@ -5,22 +5,6 @@
             [api.filters.core :as filters]
             [api.models.user :as user]))
 
-(defn create-task [^js context {:keys [agentId startAt placeIds route]}]
-  (p/let [^js user (user/active-user context {:include {:organization true}})]
-    (prisma/create!
-     (.. context -prisma -task)
-     {:data {:organization {:connect {:id (.. user -organization -id)}}
-             :agent {:connect {:id agentId}}
-             :stops {:create (mapv (fn [[idx id]]
-                                     {:order idx
-                                      :place {:connect {:id id}}})
-                                   (map-indexed vector placeIds))}
-             :route route
-             :startAt startAt}
-      :include {:agent true
-                :stops {:include {:place true}
-                        :orderBy {:order "asc"}}}})))
-
 (def tasks-include
   {:agent true
    :stops {:orderBy {:order "asc"}
@@ -37,6 +21,37 @@
   {:tasks
    {:where {:id taskId}
     :include tasks-include}})
+
+(defn create-task [^js context {:keys [agentId startAt placeIds route]}]
+  (p/let [^js user (user/active-user context {:include {:organization true}})]
+    (prisma/create!
+     (.. context -prisma -task)
+     {:data {:organization {:connect {:id (.. user -organization -id)}}
+             :agent {:connect {:id agentId}}
+             :stops {:create (mapv (fn [[idx id]]
+                                     {:order idx
+                                      :place {:connect {:id id}}})
+                                   (map-indexed vector placeIds))}
+             :route route
+             :startAt startAt}
+      :include {:agent true
+                :stops {:include {:place true}
+                        :orderBy {:order "asc"}}}})))
+
+;; (defn update-task [^js context {:keys [taskId stops route]}]
+;;   (p/let [^js user (user/active-user context {:include
+;;                                               {:organization
+;;                                                {:include (task-query taskId)}}})]
+;;     (prisma/update!
+;;      (.. context -prisma -task)
+;;      {:where {:id taskId}
+;;       :data {:organization {:connect {:id (.. user -organization -id)}}
+;;              :stops {:create (mapv (fn [[idx id]]
+;;                                      {:order idx
+;;                                       :place {:connect {:id id}}})
+;;                                    (map-indexed vector stops))}
+;;              :route route}
+;;       :include tasks-include})))
 
 (defn fetch-organization-tasks [^js context {:keys [filters]}]
   (p/let [^js user (user/active-user context {:include

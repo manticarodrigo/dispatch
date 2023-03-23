@@ -96,16 +96,18 @@
            some?
            (mapv
             (fn [{:keys [lat lng name]}]
-              {:title name
-               :position {:lat lat :lng lng}})
+              (when (and lat lng)
+                {:title (or name "???")
+                 :position {:lat lat :lng lng}}))
             places))
           :locations
           (filterv
            some?
            (mapv
             (fn [{:keys [name location]}]
-              {:title name
-               :position (:position location)})
+              (when-let [position (:position location)]
+                {:title name
+                 :position position}))
             (filter #(:location %) agents)))}])
 
        (when-not loading

@@ -5,7 +5,6 @@
                                       X XIcon}]
             ["framer-motion" :refer (Reorder)]
             [reagent.core :as r]
-            [re-frame.core :refer (dispatch)]
             [shadow.resource :refer (inline)]
             [common.utils.date :refer (to-datetime-local)]
             [ui.lib.apollo :refer (gql parse-anoms use-query use-mutation)]
@@ -16,6 +15,7 @@
             [ui.utils.string :refer (class-names)]
             [ui.utils.vector :refer (vec-remove)]
             [ui.utils.input :refer (debounce)]
+            [ui.hooks.use-map :refer (use-map-items)]
             [ui.components.inputs.combobox :refer (combobox)]
             [ui.components.inputs.input :refer (input)]
             [ui.components.inputs.button :refer (base-button-class)]
@@ -70,14 +70,7 @@
             selected-places (mapv #(get place-map %) place-ids)
             draggable-item-ids (mapv first stop-tuples)
             draggable-item-map (into {} (for [[item-id place-id] stop-tuples]
-                                          {item-id place-id}))
-            markers (->> route
-                         :legs
-                         (map-indexed
-                          (fn [idx {:keys [location]}]
-                            {:title (-> selected-places (get idx) :name)
-                             :position (select-keys location [:lat :lng])}))
-                         vec)]
+                                          {item-id place-id}))]
 
         (useEffect
          (fn []
@@ -86,12 +79,12 @@
            #())
          #js[origin-id destination-id stop-tuples])
 
-        (useEffect
-         (fn []
-           (dispatch [:map {:paths (when route [(:path route)])
-                            :points markers}])
-           #())
-         #js[route])
+
+        (use-map-items
+         loading
+         {:tasks [{:route route}]
+          :places selected-places}
+         [loading route selected-places])
 
         [:form {:class "flex flex-col"
                 :on-submit
@@ -151,9 +144,9 @@
                             base-button-class
                             "cursor-grab flex items-center mb-2 rounded p-2")}
                    [:> MenuIcon {:class "flex-shrink-0"}]
-                   [:div {:class "px-3 w-full"}
-                    [:div {:class "text-base"} name]
-                    [:div {:class "text-sm text-neutral-300"} description]]
+                   [:div {:class "px-3 w-full min-w-0"}
+                    [:div {:class "text-sm truncate"} name]
+                    [:div {:class "text-xs text-neutral-300 truncate"} description]]
                    [:button
                     {:type "button"
                      :class "flex-shrink-0"
