@@ -1,38 +1,62 @@
 (ns ui.components.tables.route
-  (:require ["react-feather" :rename {Edit CreateIcon
+  (:require ["react" :refer (useState)]
+            ["react-feather" :rename {Edit CreateIcon
                                       ArrowRight ArrowRightIcon
                                       Eye ViewIcon}]
             [clojure.string :as s]
             [reagent.core :as r]
             [cljs-bean.core :refer (->clj)]
             [ui.lib.router :refer (link)]
+            [ui.lib.google.maps.polyline :refer (decode-polyline)]
             [ui.utils.date :as d]
             [ui.utils.i18n :refer (tr)]
+            [ui.hooks.use-map :refer (use-map-items)]
             [ui.components.table :refer (table)]
-            [ui.components.inputs.button :refer (button button-class)]
+            [ui.components.map :refer (gmap)]
             [ui.components.modal :refer (modal)]
             [ui.components.tables.visit :refer (visit-table)]
             [ui.components.tables.columns.checkbox :refer (checkbox-column)]
-            [ui.components.inputs.combobox :refer (combobox)]))
+            [ui.components.inputs.button :refer (button button-class)]
+            [ui.components.inputs.combobox :refer (combobox)]
+            [ui.components.inputs.radio-group :refer (radio-group)]))
 
-(defn visit-cell [visits]
-  (let [!show-modal (r/atom false)]
-    (fn []
-      (if (seq visits)
-        [:div {:class "flex justify-between items-center"}
-         [button {:label [:div {:class "flex justify-center items-center"}
-                          [:> ViewIcon {:class "mr-2 w-4 h-4"}]
-                          (s/capitalize (tr [:verb/view]))
-                          (when (> (count visits) 0)
-                            [:<> " (" (count visits) ")"])]
-                  :class "w-full"
-                  :on-click #(reset! !show-modal true)}]
-         [modal {:show @!show-modal
-                 :title (tr [:table.plan/visits])
-                 :on-close #(reset! !show-modal false)}
-          [:div {:class "overflow-auto w-full h-full"}
-           [visit-table {:visits visits}]]]]
-        "0"))))
+(defn map-view [visits payload]
+  (use-map-items
+   false
+   {:tasks [{:route {:path (-> payload :routePolyline :points decode-polyline)}}]
+    :places (mapv
+             #(or (-> % :depot)
+                  (-> % :shipment :place))
+             visits)}
+   [visits payload])
+  [gmap])
+
+(defn visit-cell [{:keys [visits payload]}]
+  (let [[show set-show] (useState false)
+        [tab set-tab] (useState "table")]
+    (if (seq visits)
+      [:div {:class "flex justify-between items-center"}
+       [button {:label [:div {:class "flex justify-center items-center"}
+                        [:> ViewIcon {:class "mr-2 w-4 h-4"}]
+                        (s/capitalize (tr [:verb/view]))
+                        (when (> (count visits) 0)
+                          [:<> " (" (count visits) ")"])]
+                :class "w-full"
+                :on-click #(set-show true)}]
+       [modal {:show show
+               :title (tr [:table.plan/visits])
+               :on-close #(set-show false)}
+        [:div {:class "flex flex-col items-start w-[80vw] h-[80vh]"}
+         [:div {:class "p-4"}
+          [radio-group {:options [{:label "Table" :key "table" :value "table"}
+                                  {:label "Map" :key "map" :value "map"}]
+                        :value tab
+                        :on-change #(set-tab %)}]]
+         [:div {:class "overflow-auto w-full h-full min-w-0 min-h-0"}
+          (case tab
+            "table" [visit-table {:visits visits}]
+            "map" [map-view visits payload])]]]]
+      "0")))
 
 (defn ratio-detail [num denom unit]
   (let [perc (-> num (/ denom) (* 100) (.toFixed 2))]
@@ -82,7 +106,7 @@
     :header (tr [:table.plan/visits])
     :accessorFn #(count (.. ^js % -visits))
     :cell (fn [^js info]
-            (r/as-element [visit-cell (-> info .-row .-original .-visits ->clj)]))}
+            (r/as-element [visit-cell (-> info .-row .-original ->clj)]))}
    (time-column "start" (tr [:table.plan/start]) #(.-start ^js %))
    (time-column "end" (tr [:table.plan/end]) #(.-end ^js %))
    {:id "distance"

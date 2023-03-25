@@ -29,7 +29,7 @@
     [:> icon {:class "w-4 h-4"}]
     [:span {:class "ml-2"} label]]])
 
-(defn nav-header [{:keys [menu-items]}]
+(defn nav-header [menu-items]
   [:div {:class (class-names
                  "py-4 px-4"
                  "flex justify-between items-center"
@@ -40,6 +40,20 @@
      :items menu-items
      :class-map {:button! "h-full"
                  :item "min-w-[12rem]"}}]])
+
+(defn nav-list [nav-items]
+  [:ul
+   (doall
+    (for [item nav-items]
+      (if (map? item)
+        (let [{:keys [label items]} item]
+          ^{:key label}
+          [:li
+           [:div {:class "p-2 text-xs text-medium text-neutral-500 select-none"} label]
+           [nav-list items]])
+        (let [[path label icon] item]
+          ^{:key path}
+          [nav-item path (tr [label]) icon]))))])
 
 (defn nav [{:keys [nav-items menu-items]} & children]
   (let [nav-open (listen [:layout/nav-open])]
@@ -67,12 +81,9 @@
         (if nav-open "translate-x-0" "translate-x-[-100%]"))}
       [:div {:class "flex flex-col justify-between h-full"}
        [:div
-        [nav-header {:menu-items menu-items}]
+        [nav-header menu-items]
         [:div {:class "py-2 px-4"}
-         [:ul (doall
-               (for [[path label icon] nav-items]
-                 ^{:key path}
-                 [nav-item path (tr [label]) icon]))]]]
+         [nav-list nav-items]]]
        [:div {:class "p-4"}
         [language-radio-group]]]]
      (into [:<>] children)]))

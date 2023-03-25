@@ -108,16 +108,19 @@
                              :data {:tasks
                                     {:create (map
                                               (fn [{:keys [agentId routeIndex]}]
-                                                (let [vehicleId (-> (nth routes routeIndex) :vehicle :id)
-                                                      visits (->> (nth routes routeIndex) :visits
-                                                                  (map (fn [visit]
-                                                                         (let [{:keys [depot shipment]} visit]
-                                                                           (if depot
-                                                                             {:placeId (:id depot)}
-                                                                             {:placeId (-> shipment :place :id)
-                                                                              :shipmentId (-> shipment :id)})))))]
-                                                  {:route {}
-                                                   :startAt (js/Date.)
+                                                (let [route (nth routes routeIndex)
+                                                      {:keys [vehicle visits payload]} route
+                                                      vehicleId (:id vehicle)
+                                                      visits (map
+                                                              (fn [visit]
+                                                                (let [{:keys [depot shipment]} visit]
+                                                                  (if depot
+                                                                    {:placeId (:id depot)}
+                                                                    {:placeId (-> shipment :place :id)
+                                                                     :shipmentId (-> shipment :id)})))
+                                                              visits)]
+                                                  {:route payload
+                                                   :startAt (-> payload :vehicleStartTime)
                                                    :organization {:connect {:id organization-id}}
                                                    :agent {:connect {:id agentId}}
                                                    :vehicle {:connect {:id vehicleId}}

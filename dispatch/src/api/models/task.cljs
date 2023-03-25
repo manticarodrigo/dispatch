@@ -5,22 +5,25 @@
             [api.filters.core :as filters]
             [api.models.user :as user]))
 
-(def tasks-include
+(def task-include
   {:agent true
    :stops {:orderBy {:order "asc"}
            :include
-           {:place true}}})
+           {:place true
+            :shipment
+            {:include
+             {:windows true}}}}})
 
 (defn tasks-query [filters]
   {:tasks
    {:where (filters/task filters)
     :orderBy {:startAt "asc"}
-    :include tasks-include}})
+    :include task-include}})
 
 (defn task-query [taskId]
   {:tasks
    {:where {:id taskId}
-    :include tasks-include}})
+    :include task-include}})
 
 (defn create-task [^js context {:keys [agentId startAt placeIds route]}]
   (p/let [^js user (user/active-user context {:include {:organization true}})]

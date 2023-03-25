@@ -121,7 +121,8 @@
                    array
                    (map-indexed
                     (fn [idx ^js route]
-                      #js{:vehicle (.-vehicle (get vehicles idx))
+                      #js{:payload route
+                          :vehicle (.-vehicle (get vehicles idx))
                           :start (some-> route .-vehicleStartTime)
                           :end (some-> route .-vehicleEndTime)
                           :meters (some-> route .-metrics .-travelDistanceMeters)

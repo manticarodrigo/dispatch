@@ -19,7 +19,7 @@
                  {:id "google-maps-script"
                   :apiKey config/GOOGLE_API_KEY
                   :version "weekly"
-                  :libraries ["places"]
+                  :libraries ["places" "geometry"]
                   :language (listen [:language])}))]
     (.load loader)))
 

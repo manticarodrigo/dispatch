@@ -6,7 +6,7 @@
             [cljs-bean.core :refer (->js)]
             [ui.subs :refer (listen)]
             [ui.lib.google.maps.core :refer (init-api)]
-            [ui.lib.google.maps.polyline :refer (set-polylines clear-polylines)]
+            [ui.lib.google.maps.polyline :refer (set-polylines clear-polylines decode-polyline)]
             [ui.lib.google.maps.marker :refer (set-markers clear-markers)]
             [ui.lib.google.maps.overlay :refer (set-overlays clear-overlays)]
             [ui.utils.location :refer (position-to-lat-lng)]))
@@ -90,7 +90,8 @@
          {:paths
           (filterv
            some?
-           (mapv #(-> % :route :path) tasks))
+           (mapv #(or (-> % :route :path)
+                      (-> % :route :routePolyline :points decode-polyline)) tasks))
           :points
           (filterv
            some?

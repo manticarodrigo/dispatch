@@ -12,7 +12,9 @@
            :tasks "tasks"
            :date "date"
            :weight "weight"
-           :volume "volume"}
+           :volume "volume"
+           :monitoring "monitoring"
+           :planning "planning"}
     :verb {:create "create"
            :archive "archive"
            :unarchive "unarchive"
@@ -217,7 +219,9 @@
            :tasks "tareas"
            :date "fecha"
            :weight "peso"
-           :volume "volumen"}
+           :volume "volumen"
+           :monitoring "monitoreo"
+           :planning "planificación"}
     :verb {:create "crear"
            :archive "archivar"
            :unarchive "desarchivar"

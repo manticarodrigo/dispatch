@@ -72,7 +72,7 @@
          (for [^js header (.-headers header-group)]
            [:th {:key (.-id header)
                  :class (str
-                         "py-2 px-4 text-sm text-left font-normal whitespace-nowrap"
+                         "py-2 px-4 text-sm text-left font-normal whitespace-nowrap select-none"
                          (when (and
                                 (> (count data) 1)
                                 (-> header .-column .getCanSort))
@@ -88,10 +88,9 @@
               "asc" [:> ChevronUpIcon {:class "inline w-4 h-4 ml-1 text-neutral-200"}]
               "desc" [:> ChevronDownIcon {:class "inline w-4 h-4 ml-1 text-neutral-200"}]
               "")])])]
-     [:tbody
+     [:tbody {:class "divide-y divide-neutral-800"}
       (for [^js row rows]
-        [:tr {:key (.-id row)
-              :class "border-b border-neutral-800"}
+        [:tr {:key (.-id row)}
          (for [^js cell (.getVisibleCells row)]
            [:td {:key (.-id cell)
                  :class "py-2 px-4 text-xs whitespace-nowrap"}

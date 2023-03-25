@@ -1,6 +1,6 @@
 (ns ui.components.layout.map
   (:require ["react-feather" :rename {Sidebar SidebarIcon
-                                    Edit CreateIcon}]
+                                      Edit CreateIcon}]
             [re-frame.core :refer (dispatch)]
             [ui.subs :refer (listen)]
             [ui.lib.router :refer (link)]

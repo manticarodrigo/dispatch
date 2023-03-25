@@ -113,9 +113,10 @@ type Place {
 
 type Stop {
   id: ID!
-  place: Place!
   order: Int!
   note: String
+  place: Place!
+  shipment: Shipment
   arrivedAt: Date
 }
 

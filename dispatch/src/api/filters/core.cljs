@@ -14,4 +14,5 @@
                 (if (and start end)
                   [{:startAt {:gte start}}
                    {:startAt {:lte end}}]
-                  []))})
+                  [])
+                )})

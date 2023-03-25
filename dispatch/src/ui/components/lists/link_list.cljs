@@ -4,7 +4,7 @@
             [ui.utils.i18n :refer (tr)]
             [ui.utils.string :refer (class-names)]))
 
-(defn link-card [{:keys [to icon title subtitle detail]}]
+(defn link-card [{:keys [to decorator icon title subtitle detail]}]
   [link {:to to
          :class (class-names
                  "block"
@@ -12,7 +12,7 @@
                  "pl-4 pr-3 py-1"
                  "hover:bg-neutral-800 focus:bg-neutral-800 active:bg-neutral-800")}
    [:div {:class "flex items-center justify-between w-full text-left"}
-    [:div [:> icon {:class "w-4 h-4"}]]
+    [:div (or decorator [:> icon {:class "w-4 h-4"}])]
     [:div {:class "px-4 w-full truncate"}
      [:div {:class "font-medium text-sm truncate"} title]
      [:div {:class "font-light text-xs text-neutral-400 truncate"} subtitle]]
@@ -24,10 +24,11 @@
   [:div {:class "overflow-y-auto"}
    [(or type :ul)
     (doall
-     (for [{:keys [id to icon title subtitle detail]} items]
+     (for [{:keys [id to decorator icon title subtitle detail]} items]
        ^{:key id}
        [:li
         [link-card {:to (or to id)
+                    :decorator decorator
                     :icon icon
                     :title title
                     :subtitle subtitle

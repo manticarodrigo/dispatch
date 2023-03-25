@@ -15,6 +15,8 @@ query OrganizationTask($taskId: ID!) {
         }
         stops {
           id
+          order
+          note
           place {
             id
             name
@@ -22,8 +24,17 @@ query OrganizationTask($taskId: ID!) {
             lat
             lng
           }
-          order
-          note
+          shipment {
+            id
+            weight
+            volume
+            duration
+            windows {
+              id
+              startAt
+              endAt
+            }
+          }
           arrivedAt
         }
         route
