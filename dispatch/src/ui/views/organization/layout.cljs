@@ -1,14 +1,16 @@
 (ns ui.views.organization.layout
-  (:require ["react-feather" :rename {Clipboard TaskIcon
-                                    User AgentIcon
-                                    MapPin PlaceIcon
-                                    Package ShipmentIcon
-                                    Navigation PlanIcon
-                                    Truck VehicleIcon}]
+  (:require ["react-feather" :rename {BarChart2 AnalyticsIcon
+                                      Clipboard TaskIcon
+                                      User AgentIcon
+                                      MapPin PlaceIcon
+                                      Package ShipmentIcon
+                                      Navigation PlanIcon
+                                      Truck VehicleIcon}]
             [ui.utils.i18n :refer (tr)]
             [ui.components.layout.nav :refer (nav)]))
 
 (def nav-items
+  ["analytics" :view.analytics/title AnalyticsIcon]
   [["agents" :view.agent.list/title AgentIcon]
    ["places" :view.place.list/title PlaceIcon]
    ["tasks" :view.task.list/title TaskIcon]

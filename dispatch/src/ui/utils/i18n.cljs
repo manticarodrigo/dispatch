@@ -47,6 +47,7 @@
            :login-confirm {:title "Confirm login"
                            :return-link {:title "Didn't receive a code?"
                                          :link "Return to login."}}
+           :analytics {:title "Analytics"}
            :task {:list {:title "Tasks"}
                   :create {:title "Create task"}}
            :agent {:list {:title "Agents"}
@@ -252,6 +253,7 @@
            :login-confirm {:title "Confirmar ingreso"
                            :return-link {:title "No recibiste el código?"
                                          :link "Regresar a ingresar."}}
+           :analytics {:title "Analítica"}
            :task {:list {:title "Tareas"}
                   :create {:title "Crear tarea"}}
            :agent {:list {:title "Agentes"}
