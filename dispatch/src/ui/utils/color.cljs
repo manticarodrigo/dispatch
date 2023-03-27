@@ -18,7 +18,23 @@
                 :pink "#ec4899"
                 :rose "#f43f5e"})
 
-(def color-list (vals color-map))
+(def color-list [(:sky color-map)
+                 (:emerald color-map)
+                 (:fuchsia color-map)
+                 (:rose color-map)
+                 (:violet color-map)
+                 (:indigo color-map)
+                 (:blue color-map)
+                 (:cyan color-map)
+                 (:teal color-map)
+                 (:green color-map)
+                 (:lime color-map)
+                 (:yellow color-map)
+                 (:amber color-map)
+                 (:orange color-map)
+                 (:red color-map)
+                 (:pink color-map)
+                 (:purple color-map)])
 
 (defn get-color [idx]
   (nth color-list (mod idx (count color-list))))
