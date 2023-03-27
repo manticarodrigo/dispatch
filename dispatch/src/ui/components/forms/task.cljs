@@ -82,7 +82,7 @@
 
         (use-map-items
          loading
-         {:tasks [{:route route}]
+         {:tasks (when route [{:route route}])
           :places selected-places}
          [loading route selected-places])
 

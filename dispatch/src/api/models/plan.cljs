@@ -118,7 +118,7 @@
                                                                     {:placeId (:id depot)}
                                                                     {:placeId (-> shipment :place :id)
                                                                      :shipmentId (-> shipment :id)})))
-                                                              visits)]
+                                                              (conj visits {:depot (-> plan .-depot ->clj)}))]
                                                   {:route payload
                                                    :startAt (-> payload :vehicleStartTime)
                                                    :organization {:connect {:id organization-id}}
