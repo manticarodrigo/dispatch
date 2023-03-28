@@ -7,18 +7,12 @@
             [ui.lib.apollo :refer (gql use-mutation)]
             [ui.lib.platform :refer (platform)]
             [ui.utils.i18n :refer (tr)]
-            [ui.utils.input :refer (debounce)]
+            [ui.utils.input :refer (debounce-cb)]
             [ui.hooks.use-location :refer (use-location)]
             [ui.components.layout.nav :refer (nav)]
             [ui.components.modal :refer (modal)]))
 
 (def CREATE_LOCATION (gql (inline "mutations/location/create.graphql")))
-
-(def -debounce
-  (debounce
-   (fn [fn]
-     (fn))
-   500))
 
 (def nav-items
   [["tasks" :view.task.list/title TaskIcon]
@@ -40,7 +34,7 @@
             (dispatch [:device/position
                        {:title "Your device"
                         :position position}])
-            (-debounce
+            (debounce-cb
              #(create-location
                {:variables {:position position}})))))
        #())

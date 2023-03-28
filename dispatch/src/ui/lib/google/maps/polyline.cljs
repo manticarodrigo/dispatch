@@ -32,12 +32,14 @@
     (clear-polyline polyline)))
 
 (defn decode-polyline [encoded-polyline]
-  (when-let [decode (.. js/window -google -maps -geometry -encoding -decodePath)]
-    (->> (decode encoded-polyline)
-         (mapv (fn [latlng]
-                 (let [lat (.lat latlng)
-                       lng (.lng latlng)]
-                   {:lat lat :lng lng}))))))
+  (let [^js google (some-> js/window .-google)
+        decode (when google (.. google -maps -geometry -encoding -decodePath))]
+    (when google
+      (->> (decode encoded-polyline)
+           (mapv (fn [latlng]
+                   (let [lat (.lat latlng)
+                         lng (.lng latlng)]
+                     {:lat lat :lng lng})))))))
 
 (defn decode-polylines [encoded-polylines]
   (mapv decode-polyline encoded-polylines))

@@ -5,3 +5,9 @@
   (let [dbnc (Debouncer. f interval)]
     ;; we use apply here to support functions of various arities
     (fn [& args] (.apply (.-fire dbnc) dbnc (to-array args)))))
+
+(def debounce-cb
+  (debounce
+   (fn [fn]
+     (fn))
+   500))

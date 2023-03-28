@@ -16,8 +16,9 @@
             :element [router/auth-route [layout [router/outlet]]]
             :children [{:index true :element [router/navigate "agents"]}
                        {:path "tasks" :element [task/list-view]}
-                       {:path "tasks/:task" :element [task/detail-view]}
                        {:path "tasks/create" :element [task/create-view]}
+                       {:path "tasks/:task" :element [task/detail-view]}
+                       {:path "tasks/:task/update" :element [task/update-view]}
                        {:path "agents" :element [agent/list-view]}
                        {:path "agents/:agent" :element [agent/detail-view]}
                        {:path "agents/create" :element [agent/create-view]}

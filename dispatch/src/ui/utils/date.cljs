@@ -6,16 +6,24 @@
 
 (def dict {:en en :es es})
 
-(defn localize [f]
+(defn localize-and-suffix [f]
   (fn [& args]
     (let [language (listen [:language])
           locale ((keyword language) dict)
           options #js{:locale locale :addSuffix true}]
       (apply f (conj (vec args) options)))))
 
-(def format (localize d/format))
-(def formatRelative (localize d/formatRelative))
-(def formatDistanceToNowStrict (localize d/formatDistanceToNowStrict))
+(defn localize [f]
+  (fn [& args]
+    (let [language (listen [:language])
+          locale ((keyword language) dict)
+          options #js{:locale locale}]
+      (apply f (conj (vec args) options)))))
+
+(def format (localize-and-suffix d/format))
+(def formatRelative (localize-and-suffix d/formatRelative))
+(def formatDistanceToNowStrict (localize-and-suffix d/formatDistanceToNowStrict))
+(def formatDistanceStrict (localize d/formatDistanceStrict))
 
 (def set d/set)
 (def getDay d/getDay)

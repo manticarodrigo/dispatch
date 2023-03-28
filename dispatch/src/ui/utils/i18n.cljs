@@ -16,6 +16,7 @@
            :monitoring "monitoring"
            :planning "planning"}
     :verb {:create "create"
+           :update "update"
            :archive "archive"
            :unarchive "unarchive"
            :upload "upload"
@@ -50,7 +51,8 @@
                            :return-link {:title "Didn't receive a code?"
                                          :link "Return to login."}}
            :task {:list {:title "Tasks"}
-                  :create {:title "Create task"}}
+                  :create {:title "Create task"}
+                  :update {:title "Update task"}}
            :agent {:list {:title "Agents"}
                    :create {:title "Create agent"}}
            :place {:list {:title "Places"}
@@ -223,6 +225,7 @@
            :monitoring "monitoreo"
            :planning "planificación"}
     :verb {:create "crear"
+           :update "update"
            :archive "archivar"
            :unarchive "desarchivar"
            :upload "subir"
@@ -257,7 +260,8 @@
                            :return-link {:title "No recibiste el código?"
                                          :link "Regresar a ingresar."}}
            :task {:list {:title "Tareas"}
-                  :create {:title "Crear tarea"}}
+                  :create {:title "Crear tarea"}
+                  :update {:title "Actualizar tarea"}}
            :agent {:list {:title "Agentes"}
                    :create {:title "Crear agente"}}
            :place {:list {:title "Lugares"}

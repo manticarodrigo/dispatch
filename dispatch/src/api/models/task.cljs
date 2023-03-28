@@ -69,11 +69,12 @@
     (.. user -agent -tasks)))
 
 (defn fetch-organization-task [^js context {:keys [taskId]}]
-  (p/let [^js user (user/active-user context {:include
-                                              {:organization
-                                               {:include
-                                                (task-query taskId)}}})]
-    (first (.. user -organization -tasks))))
+  (when taskId
+    (p/let [^js user (user/active-user context {:include
+                                                {:organization
+                                                 {:include
+                                                  (task-query taskId)}}})]
+      (first (.. user -organization -tasks)))))
 
 (defn fetch-agent-task [^js context {:keys [taskId]}]
   (p/let [^js user (user/active-user context {:include

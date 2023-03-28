@@ -12,6 +12,8 @@ const dd_domains = [
   "dtd.co",
   "dtd.co",
   "tdg.co",
+  "tdg.o",
+  "synthetics.t.co",
   "synhti.td.co",
   "synthtics.ddg.co",
   "syntheticsdtdg.co",

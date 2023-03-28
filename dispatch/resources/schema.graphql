@@ -62,7 +62,7 @@ type Organization {
   places: [Place]
   place(placeId: ID!, filters: TaskFilters): Place
   tasks(filters: TaskFilters): [Task]
-  task(taskId: ID!): Task
+  task(taskId: ID): Task
   stop(stopId: ID!): Stop
   shipments(filters: ShipmentFilters): [Shipment]
   vehicles: [Vehicle]
