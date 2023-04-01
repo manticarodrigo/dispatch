@@ -11,7 +11,7 @@
             [promesa.core :as p]
             [reagent.core :as r]
             [ui.events]
-            [ui.components.routes :refer (routes)]))
+            [ui.views.core :refer (views)]))
 
 (rtl/configure #js{:asyncUtilTimeout 5000})
 
@@ -80,4 +80,4 @@
 (defn test-app [{:keys [route mocks]}]
   [memory-router route
    [apollo-mocked-provider (-> (map #(update-in % [:request :query] gql) mocks) ->js)
-    [routes]]])
+    [views]]])

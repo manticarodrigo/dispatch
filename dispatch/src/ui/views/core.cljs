@@ -1,4 +1,4 @@
-(ns ui.components.routes
+(ns ui.views.core
   (:require
    [ui.lib.router :as router]
    [ui.views.register :as register]
@@ -7,13 +7,15 @@
    [ui.views.organization.core :as organization]
    [ui.views.agent.core :as agent]
    [ui.views.not-found :as not-found]
+   [ui.views.landing :refer (landing-view)]
    [ui.components.loaders.scope :rename {loader scope-loader}]))
 
-(defn routes []
+(defn views []
   (router/use-routes
    [{:index true :element [scope-loader]}
     organization/route
     agent/route
+    {:path "landing" :element [landing-view]}
     {:path "register" :element [register/view]}
     {:path "login" :element [login/view]}
     {:path "login/confirm" :element [login-confirm/view]}

@@ -12,8 +12,8 @@
    [ui.lib.platform :refer (platform)]
    [ui.components.loaders.device :rename {loader device-loader}]
    [ui.components.listener :refer (listener)]
-   [ui.components.routes :refer (routes)]
-   [ui.components.map :refer (global-map)]))
+   [ui.components.map :refer (global-map)]
+   [ui.views.core :refer (views)]))
 
 (when (not= platform "web")
   (.notifyAppReady CapacitorUpdater))
@@ -27,7 +27,7 @@
     [apollo-provider
      [device-loader
       [listener
-       [routes]]]]]
+       [views]]]]]
    [global-map]])
 
 (defonce !root (atom nil))
