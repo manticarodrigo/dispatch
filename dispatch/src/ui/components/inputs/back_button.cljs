@@ -2,7 +2,8 @@
   (:require ["react-feather" :rename {ArrowLeft ArrowLeftIcon}]
             [ui.lib.router :refer (use-location use-navigate)]))
 
-(def root-paths ["/organization/agents"
+(def root-paths ["/organization/analytics"
+                 "/organization/agents"
                  "/organization/places"
                  "/organization/vehicles"
                  "/organization/shipments"

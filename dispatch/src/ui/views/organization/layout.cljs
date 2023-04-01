@@ -1,5 +1,6 @@
 (ns ui.views.organization.layout
-  (:require ["react-feather" :rename {Clipboard TaskIcon
+  (:require ["react-feather" :rename {BarChart2 AnalyticsIcon
+                                      Clipboard TaskIcon
                                       User AgentIcon
                                       MapPin PlaceIcon
                                       Package ShipmentIcon
@@ -10,7 +11,8 @@
             [ui.components.layout.nav :refer (nav)]))
 
 (def nav-items
-  [{:label (s/capitalize (tr [:noun/monitoring]))
+  [["analytics" :view.analytics/title AnalyticsIcon]
+   {:label (s/capitalize (tr [:noun/monitoring]))
     :items [["agents" :view.agent.list/title AgentIcon]
             ["places" :view.place.list/title PlaceIcon]
             ["tasks" :view.task.list/title TaskIcon]]}

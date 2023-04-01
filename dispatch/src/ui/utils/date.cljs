@@ -38,3 +38,4 @@
 (def addSeconds d/addSeconds)
 (def addMinutes d/addMinutes)
 (def addHours d/addHours)
+(def addDays d/addDays)
