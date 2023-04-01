@@ -12,7 +12,8 @@
            {:place true
             :shipment
             {:include
-             {:windows true}}}}})
+             {:place true
+              :windows true}}}}})
 
 (defn tasks-query [filters]
   {:tasks

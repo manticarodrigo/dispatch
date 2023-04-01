@@ -7,5 +7,4 @@
 (defn view []
   (let [{task-id :task} (use-params)]
     [map-layout {:title (tr [:view.task.update/title])}
-     [:div {:class "p-4 overflow-y-auto"}
-      [task-form {:id task-id}]]]))
+     [task-form {:id task-id}]]))

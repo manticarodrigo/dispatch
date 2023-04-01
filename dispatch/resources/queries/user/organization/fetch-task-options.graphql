@@ -65,6 +65,13 @@ query OrganizationTaskOptions($taskId: ID) {
               startAt
               endAt
             }
+            place {
+              id
+              name
+              description
+              lat
+              lng
+            }
           }
           arrivedAt
         }

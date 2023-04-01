@@ -5,5 +5,4 @@
 
 (defn view []
   [map-layout {:title (tr [:view.task.create/title])}
-   [:div {:class "p-4 overflow-y-auto"}
-    [task-form]]])
+   [task-form]])

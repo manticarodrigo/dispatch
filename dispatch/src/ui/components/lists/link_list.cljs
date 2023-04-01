@@ -8,7 +8,6 @@
   [link {:to to
          :class (class-names
                  "block"
-                 "border-b border-neutral-800"
                  "pl-4 pr-3 py-1"
                  "hover:bg-neutral-800 focus:bg-neutral-800 active:bg-neutral-800")}
    [:div {:class "flex items-center justify-between w-full text-left"}
@@ -22,7 +21,7 @@
 
 (defn link-list [{:keys [type loading items]}]
   [:div {:class "overflow-y-auto"}
-   [(or type :ul)
+   [(or type :ul) {:class "divide-y divide-neutral-800"}
     (doall
      (for [{:keys [id to decorator icon title subtitle detail]} items]
        ^{:key id}
