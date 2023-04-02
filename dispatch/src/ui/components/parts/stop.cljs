@@ -7,7 +7,7 @@
 
 (defn stop-order [idx]
   [:div {:class "relative font-bold text-sm"}
-   [:div {:class "absolute top-6 left-1/2 -translate-x-1/2 border-l-2 border-dashed border-neutral-800 h-[calc(100%_-_1rem)]"}]
+   [:div {:class "absolute top-6 left-1/2 -translate-x-1/2 border-l-2 border-dashed border-neutral-700 h-[calc(100%_-_1rem)]"}]
    (when (< (inc idx) 10) "0")
    (inc idx)])
 

@@ -78,17 +78,17 @@
                (-> val js/Date. (d/format "hh:mmaaa"))
                "N/A")))})
 
-(defn get-columns [agents !selected-agents on-create-task]
+(defn get-columns [agents selected-agents set-selected-agents on-create-task]
   [checkbox-column
    {:id "agent"
     :header (tr [:table.plan/agent])
     :accessorFn (fn [_ idx]
-                  (let [agent-id (get @!selected-agents idx)]
+                  (let [agent-id (get selected-agents idx)]
                     (->> agents (filter #(= agent-id (:id %))) first :name)))
     :cell (fn [^js info]
             (let [row-index (-> info .-row .-index)
                   ^js task (-> info .-row .-original .-vehicle .-tasks first)
-                  agent-id (get @!selected-agents row-index)]
+                  agent-id (get selected-agents row-index)]
               (if task
                 (->> agents (filter #(= agent-id (:id %))) first :name)
                 (r/as-element
@@ -98,7 +98,7 @@
                             :option-to-label :name
                             :option-to-value :id
                             :class "min-w-[200px]"
-                            :on-change #(swap! !selected-agents assoc row-index %)}]))))}
+                            :on-change #(set-selected-agents (assoc selected-agents row-index %))}]))))}
    {:id "vehicle"
     :header (tr [:table.plan/vehicle])
     :accessorFn #(.. ^js % -vehicle -name)}
@@ -157,12 +157,13 @@
                            set-search-term
                            selected-rows
                            set-selected-rows
-                           !selected-agents
+                           selected-agents
+                           set-selected-agents
                            on-create-task]}]
   [table {:data result
-          :columns (get-columns agents !selected-agents on-create-task)
+          :columns (get-columns agents selected-agents set-selected-agents on-create-task)
           :state #js{:rowSelection selected-rows
-                     :agentSelection @!selected-agents}
+                     :agentSelection selected-agents}
           :search-term search-term
           :set-search-term set-search-term
           :enable-row-selection #(let [v (->clj %)]
