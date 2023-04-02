@@ -3,7 +3,6 @@
             ["@visx/curve" :rename {curveNatural curve}]
             ["@visx/grid" :refer (GridRows GridColumns)]
             ["@visx/scale" :refer (scaleTime scaleLinear)]
-            ["@visx/marker" :refer (MarkerCircle)]
             ["@visx/tooltip" :refer (withTooltip Tooltip TooltipWithBounds defaultStyles)]
             ["@visx/event" :refer (localPoint)]
             ["@visx/gradient" :refer (LinearGradient)]
@@ -14,10 +13,10 @@
             [reagent.core :as r]
             [cljs-bean.core :refer (->clj ->js)]))
 
-(def background-color "#1e3a8a")
-(def accent-color-dark "#1e40af")
-(def accent-color "#60a5fa")
-(def axis-color "#fafafa")
+(def blue-900 "#1e3a8a")
+(def blue-800 "#1e40af")
+(def blue-400 "#60a5fa")
+(def zinc-50 "#fafafa")
 
 (def get-date #(-> ^js % .-x js/Date.))
 (def get-value #(-> ^js % .-y))
@@ -69,15 +68,15 @@
          :height height}
         [:> LinearGradient
          {:id "area-gradient"
-          :from accent-color
-          :to accent-color-dark
+          :from blue-900
+          :to blue-800
           :to-opacity 0}]
         [:> GridRows
          {:left left
           :scale value-scale
           :width inner-width
           :stroke-dasharray "1,3"
-          :stroke accent-color
+          :stroke zinc-50
           :stroke-opacity 0
           :pointer-events "none"}]
         [:> GridColumns
@@ -85,7 +84,7 @@
           :scale date-scale
           :height inner-height
           :stroke-dasharray "1,3"
-          :stroke accent-color
+          :stroke zinc-50
           :stroke-opacity 0.2
           :pointer-events "none"}]
         [:> AreaClosed
@@ -119,7 +118,7 @@
            [:> Line
             {:from {:x tooltip-left :y top}
              :to {:x tooltip-left :y (+ inner-height top)}
-             :stroke accent-color-dark
+             :stroke blue-800
              :stroke-width 2
              :pointer-events "none"
              :stroke-dasharray "5,2"}]
@@ -137,7 +136,7 @@
             {:cx tooltip-left
              :cy tooltip-top
              :r 4
-             :fill accent-color-dark
+             :fill blue-800
              :stroke "white"
              :stroke-width 2
              :pointer-events "none"}]])
@@ -146,27 +145,27 @@
           :scale date-scale
           :num-ticks 4
           :tick-format format-date
-          :stroke axis-color
-          :tick-stroke axis-color
+          :stroke zinc-50
+          :tick-stroke zinc-50
           :tick-label-props
           {:text-anchor "middle"
            :font-size 10
            :dx "0em"
            :dy "0.32em"
-           :fill axis-color}}]
+           :fill zinc-50}}]
         [:> AxisLeft
          {:scale value-scale
           :left left
           :num-ticks 4
           :tick-format format-x
-          :stroke axis-color
-          :tick-stroke axis-color
+          :stroke zinc-50
+          :tick-stroke zinc-50
           :tick-label-props
           {:text-anchor "end"
            :font-size 10
            :dx "-0.25em"
            :dy "0.32em"
-           :fill axis-color}}]]
+           :fill zinc-50}}]]
 
        (when tooltip-data
          [:div
@@ -175,8 +174,8 @@
             :top (- tooltip-top 12)
             :left (+ tooltip-left 12)
             :style (assoc (->clj defaultStyles)
-                          :background background-color
-                          :color axis-color)}
+                          :background blue-900
+                          :color zinc-50)}
            (format-x (get-value tooltip-data))]
           [:> Tooltip
            {:top (- (+ inner-height top) 0)
@@ -184,8 +183,8 @@
             :style (merge (->clj defaultStyles)
                           {:min-width 90
                            :text-align "center"
-                           :background accent-color
-                           :color background-color
+                           :background blue-400
+                           :color blue-900
                            :transform "translateX(-50%)"})}
            (format-date (get-date tooltip-data))]])])))
 
