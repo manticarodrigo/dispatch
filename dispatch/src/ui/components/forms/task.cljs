@@ -24,7 +24,7 @@
 
 (defn task-form [{:keys [id]}]
   (let [navigate (use-navigate)
-        query (use-query FETCH_ORGANIZATION_TASK_OPTIONS {:variables {:taskId id}})
+        query (use-query FETCH_ORGANIZATION_TASK_OPTIONS (if id {:variables {:taskId id}} {}))
         [create status] (use-mutation CREATE_TASK {})
         [anoms set-anoms] (useState {})
         [state set-state] (useState {:agentId nil
@@ -168,7 +168,7 @@
         {:tuples stop-tuples
          :class "relative divide-y divide-neutral-800 w-full"
          :render-item (fn [idx stop]
-                        (let [{:keys [place shipment arrivedAt]} stop
+                        (let [{:keys [place shipment finishedAt]} stop
                               {:keys [name description]} place
                               {:keys [duration distance]} (-> route :legs (nth idx))
                               {:keys [weight volume]
@@ -191,7 +191,7 @@
                               {;; :visits visits
                                :weight weight
                                :volume volume
-                               :arrivedAt arrivedAt
+                               :finished-at finishedAt
                                :start-at start-at
                                :end-at end-at}]
                              [:div {:class "mb-2 text-sm"} name]
@@ -204,7 +204,7 @@
                    :option-to-label #(:name %)
                    :option-to-value #(:id %)
                    :class "mt-4"
-                   :on-change #(set-state (fn [s]  (update s :stop-tuples conj [(count stop-tuples) {:place {:id %}}])))}]]]]
+                   :on-change #(set-state (fn [s]  (update s :stop-tuples conj [(count stop-tuples) {:place (get place-map %)}])))}]]]]
      [:div {:class "p-4"}
       [submit-button {:loading loading}]]
      [errors anoms]]))

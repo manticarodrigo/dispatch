@@ -24,7 +24,7 @@ query AgentTask($taskId: ID!) {
             lat
             lng
           }
-          shipment {
+          pickups {
             id
             weight
             volume
@@ -35,7 +35,19 @@ query AgentTask($taskId: ID!) {
               endAt
             }
           }
-          arrivedAt
+          deliveries {
+            id
+            weight
+            volume
+            duration
+            windows {
+              id
+              startAt
+              endAt
+            }
+          }
+          status
+          finishedAt
         }
         route
       }

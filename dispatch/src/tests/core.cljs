@@ -289,7 +289,7 @@
                                         (stop/create-arrival (-> stops first :id)))
                                       (-> fetch-mocks :result :data :user :organization :tasks)))]
            (testing "api returns data"
-             (is (every? #(-> % :result :data :createArrival :arrivedAt) create-mocks))
+             (is (every? #(-> % :result :data :createArrival :finishedAt) create-mocks))
              (done)))))
 
 (deftest create-demo-shipments

@@ -11,7 +11,8 @@ query AgentStop($stopId: ID!) {
           lng
         }
         note
-        arrivedAt
+        status
+        finishedAt
       }
     }
   }

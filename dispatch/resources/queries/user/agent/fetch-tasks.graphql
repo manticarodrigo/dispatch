@@ -24,7 +24,8 @@ query AgentTasks($filters: TaskFilters) {
           }
           order
           note
-          arrivedAt
+          status
+          finishedAt
         }
         route
       }

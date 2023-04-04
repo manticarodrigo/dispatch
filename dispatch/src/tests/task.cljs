@@ -51,10 +51,7 @@
         {:keys [agentId startAt placeIds route]} (-> create-mock :request :variables)
         agent (some #(when (= (:id %) agentId) %) agents)
         {:keys [legs path]} route
-        sorted-places (sort-by-id places placeIds)
-        origin-place (first sorted-places)
-        destination-place (last sorted-places)
-        stops (->> sorted-places (drop 1) (drop-last 1))]
+        sorted-places (sort-by-id places placeIds)]
 
     (with-mounted-component
       [test-app
@@ -68,9 +65,6 @@
           (change
            (.getByLabelText component (tr [:field/departure]))
            (to-datetime-local (js/Date. startAt)))
-
-          (select-combobox user component (tr [:field/origin]) (-> origin-place :name))
-          (select-combobox user component (tr [:field/destination]) (-> destination-place :name))
 
           (set! js/google (mock-google
                            {:routes
@@ -89,7 +83,7 @@
           (init-directions)
 
           #_{:clj-kondo/ignore [:unresolved-symbol]}
-          (p/doseq [{place-name :name} stops]
+          (p/doseq [{place-name :name} sorted-places]
             (select-combobox user component (tr [:field/add-stop]) place-name)
             (.findByText component place-name))
 

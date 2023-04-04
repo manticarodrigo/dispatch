@@ -22,7 +22,7 @@ type Mutation {
     lng: Float!
   ): Place
   createTask(agentId: ID!, startAt: Date!, placeIds: [ID]!, route: JSON!): Task
-  createArrival(stopId: ID!, note: String): Stop
+  createArrival(stopId: ID!, note: String, status: StopStatus): Stop
   createShipment(shipment: ShipmentInput!): Shipment
   createShipments(shipments: [ShipmentInput]!): Organization
   archiveShipments(shipmentIds: [ID]!): Organization
@@ -116,8 +116,15 @@ type Stop {
   order: Int!
   note: String
   place: Place!
-  shipment: Shipment
-  arrivedAt: Date
+  pickups: [Shipment]
+  deliveries: [Shipment]
+  status: StopStatus
+  finishedAt: Date
+}
+
+enum StopStatus {
+  COMPLETE
+  INCOMPLETE
 }
 
 type Task {

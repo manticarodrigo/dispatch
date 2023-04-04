@@ -1,7 +1,8 @@
-mutation CreateArrival($stopId: ID!, $note: String) {
-  createArrival(stopId: $stopId, note: $note) {
+mutation CreateArrival($stopId: ID!, $note: String, $status: StopStatus) {
+  createArrival(stopId: $stopId, note: $note, status: $status) {
     id
     note
-    arrivedAt
+    status
+    finishedAt
   }
 }

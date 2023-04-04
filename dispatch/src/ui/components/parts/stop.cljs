@@ -29,7 +29,7 @@
     ", "
     (-> distance (/ 1000) js/Math.round) " km"]])
 
-(defn stop-details [{:keys [type visits weight volume arrivedAt start-at end-at]}]
+(defn stop-details [{:keys [type visits weight volume status finished-at start-at end-at]}]
   [:div {:class "flex justify-between"}
    [:div {:class "mb-2 flex flex-col items-start"}
     (case type
@@ -50,13 +50,14 @@
        " • "
        volume " m³"])]
    [:div {:class "shrink-0 flex flex-col items-end pl-4 lg:pl-6 text-xs text-neutral-300"}
-    (if arrivedAt
-      (s/capitalize (d/formatRelative arrivedAt (js/Date.)))
+    (if finished-at
+      (s/capitalize (d/formatRelative finished-at (js/Date.)))
       [:div {:class "flex"}
        (when start-at (d/format start-at "hh:mm aaa"))
        (when (and start-at end-at) " - ")
        (when end-at (d/format end-at "hh:mm aaa"))])
     [:div {:class "font-medium text-xs text-neutral-500 uppercase"}
-     (cond
-       arrivedAt [:span {:class "text-green-500"} "Completed"]
-       :else "Scheduled")]]])
+     (case status
+       "COMPLETE" [:span {:class "text-green-500"} "Complete"]
+       "INCOMPLETE" [:span {:class "text-yellow-500"} "Incomplete"]
+       "Scheduled")]]])
