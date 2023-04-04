@@ -125,17 +125,26 @@ model Task {
 }
 
 model Stop {
-  id        String    @id @unique @default(uuid())
-  order     Int
-  note      String?
-  shipment  Shipment?
-  place     Place     @relation(fields: [placeId], references: [id])
-  placeId   String
-  task      Task      @relation(fields: [taskId], references: [id])
-  taskId    String
-  arrivedAt DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id         String      @id @unique @default(uuid())
+  order      Int
+  note       String?
+  break      Boolean?
+  duration   Int?
+  pickups    Shipment[]  @relation("ShipmentPickup")
+  deliveries Shipment[]  @relation("ShipmentDelivery")
+  place      Place?      @relation(fields: [placeId], references: [id])
+  placeId    String?
+  task       Task        @relation(fields: [taskId], references: [id])
+  taskId     String
+  status     StopStatus?
+  finishedAt DateTime?
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+enum StopStatus {
+  COMPLETE
+  INCOMPLETE
 }
 
 model Vehicle {
@@ -162,8 +171,10 @@ model Shipment {
   weight         Float?
   duration       Int?
   windows        ShipmentWindow[]
-  stop           Stop?            @relation(fields: [stopId], references: [id])
-  stopId         String?          @unique
+  pickup         Stop?            @relation("ShipmentPickup", fields: [pickupId], references: [id])
+  pickupId       String?
+  delivery       Stop?            @relation("ShipmentDelivery", fields: [deliveryId], references: [id])
+  deliveryId     String?
   place          Place            @relation(fields: [placeId], references: [id])
   placeId        String
   organization   Organization     @relation(fields: [organizationId], references: [id])

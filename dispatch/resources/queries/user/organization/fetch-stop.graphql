@@ -11,7 +11,8 @@ query OrganizationStop($stopId: ID!) {
           lng
         }
         note
-        arrivedAt
+        status
+        finishedAt
       }
     }
   }

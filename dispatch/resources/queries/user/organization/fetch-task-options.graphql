@@ -55,7 +55,7 @@ query OrganizationTaskOptions($taskId: ID) {
             lat
             lng
           }
-          shipment {
+          pickups {
             id
             weight
             volume
@@ -65,15 +65,20 @@ query OrganizationTaskOptions($taskId: ID) {
               startAt
               endAt
             }
-            place {
+          }
+          deliveries {
+            id
+            weight
+            volume
+            duration
+            windows {
               id
-              name
-              description
-              lat
-              lng
+              startAt
+              endAt
             }
           }
-          arrivedAt
+          status
+          finishedAt
         }
         route
       }

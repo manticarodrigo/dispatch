@@ -38,7 +38,8 @@
                     :include
                     {:shipment {:include
                                 {:place true
-                                 :stop true
+                                 :pickup true
+                                 :delivery true
                                  :windows true}}}}})
 
 (def plans-include
@@ -60,7 +61,8 @@
     :include
     {:shipment
      {:include {:place true
-                :stop true
+                :pickup true
+                :delivery true
                 :windows true}}}}})
 
 (defn plan-query [plan-id]
@@ -101,39 +103,45 @@
   (p/let [^js user (user/active-user context {:include {:organization {:include (plan-query planId)}}})
           organization-id (.. user -organization -id)
           ^js plan (first (.. user -organization -plans))
-          routes (-> (optimization/parse-result plan) ->clj :routes)
           ^js updated-plan (prisma/update!
                             (.. context -prisma -plan)
                             {:where {:id planId}
                              :data {:tasks
                                     {:create (map
                                               (fn [{:keys [agentId routeIndex]}]
-                                                (let [route (nth routes routeIndex)
-                                                      {:keys [vehicle visits payload]} route
-                                                      vehicleId (:id vehicle)
-                                                      visits (map
-                                                              (fn [visit]
-                                                                (let [{:keys [depot shipment]} visit]
-                                                                  (if depot
-                                                                    {:placeId (:id depot)}
-                                                                    {:placeId (-> shipment :place :id)
-                                                                     :shipmentId (-> shipment :id)})))
-                                                              (conj visits {:depot (-> plan .-depot ->clj)}))]
-                                                  {:route payload
-                                                   :startAt (-> payload :vehicleStartTime)
+                                                (let [route (-> plan .-result .-routes (nth routeIndex) ->clj)
+                                                      vehicle-idx (-> route :vehicleIndex (or 0))
+                                                      vehicle-id (-> (.. plan -vehicles) ^js (nth vehicle-idx) .-vehicle .-id)
+                                                      merged-stops (optimization/merge-stops route)]
+                                                  {:route route
+                                                   :startAt (-> route :vehicleStartTime)
                                                    :organization {:connect {:id organization-id}}
                                                    :agent {:connect {:id agentId}}
-                                                   :vehicle {:connect {:id vehicleId}}
+                                                   :vehicle {:connect {:id vehicle-id}}
                                                    :stops {:create (map-indexed
-                                                                    (fn [idx visit]
-                                                                      (let [{:keys [placeId shipmentId]} visit]
-                                                                        (if shipmentId
+                                                                    (fn [idx {:keys [visits]}]
+                                                                      (let [first? (= idx 0)
+                                                                            last? (= idx (dec (count merged-stops)))
+                                                                            shipments (->> visits
+                                                                                           (map #(or (:shipmentIndex %) 0))
+                                                                                           (map #(-> plan .-shipments ^js (nth %) .-shipment)))
+                                                                            ^js first-shipment (first shipments)]
+                                                                        (if (or first? last?)
                                                                           {:order idx
-                                                                           :place {:connect {:id placeId}}
-                                                                           :shipment {:connect {:id shipmentId}}}
+                                                                           :place {:connect
+                                                                                   {:id (-> plan .-depot .-id)}}
+                                                                           :pickups {:connect
+                                                                                     (map (fn [^js shipment]
+                                                                                            {:id (.-id shipment)})
+                                                                                          shipments)}}
                                                                           {:order idx
-                                                                           :place {:connect {:id placeId}}})))
-                                                                    visits)}}))
+                                                                           :place {:connect
+                                                                                   {:id (-> first-shipment .-place .-id)}}
+                                                                           :deliveries {:connect
+                                                                                        (map (fn [^js shipment]
+                                                                                               {:id (.-id shipment)})
+                                                                                             shipments)}})))
+                                                                    merged-stops)}}))
                                               assignments)}}
                              :include (plan-query-include planId)})]
     (set! (.. updated-plan -result) (optimization/parse-result updated-plan))

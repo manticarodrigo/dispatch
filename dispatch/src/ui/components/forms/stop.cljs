@@ -7,7 +7,7 @@
             [ui.utils.i18n :refer (tr)]
             [ui.components.inputs.input :refer (input)]
             [ui.components.inputs.submit-button :refer (submit-button)]
-            [ui.components.inputs.radio-group :refer (radio-group)] 
+            [ui.components.inputs.radio-group :refer (radio-group)]
             [ui.components.errors :refer (errors)]))
 
 (def CREATE_ARRIVAL (gql (inline "mutations/stop/create-arrival.graphql")))
@@ -15,11 +15,11 @@
 (def !anoms (r/atom nil))
 
 (def status-options
-  [{:key "complete" :label "Complete"}
-   {:key "incomplete" :label "Attempted"}])
+  [{:key "COMPLETE" :label "Complete"}
+   {:key "INCOMPLETE" :label "Incomplete"}])
 
 (defn stop-form [{:keys [id on-submit]}]
-  (let [[state set-state] (useState {:status "complete"})
+  (let [[state set-state] (useState {:status "COMPLETE"})
         params (use-params)
         stop-id (or id (:stop params))
         [create-arrival create-arrival-status] (use-mutation CREATE_ARRIVAL {})
@@ -30,7 +30,8 @@
                          (.preventDefault e)
                          (-> (create-arrival {:variables
                                               {:stopId stop-id
-                                               :note (:note state)}})
+                                               :note (:note state)
+                                               :status (:status state)}})
                              (.catch #(reset! !anoms (parse-anoms %)))
                              (.then #(when on-submit (on-submit)))))}
      [input {:label (tr [:field/note])

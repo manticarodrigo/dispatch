@@ -24,7 +24,8 @@ query OrganizationAgent($agentId: ID!, $filters: TaskFilters) {
               lat
               lng
             }
-            arrivedAt
+            status
+            finishedAt
           }
           route
         }

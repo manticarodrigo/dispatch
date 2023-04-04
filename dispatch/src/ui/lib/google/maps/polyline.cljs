@@ -36,7 +36,7 @@
         decode (when google (.. google -maps -geometry -encoding -decodePath))]
     (when google
       (->> (decode encoded-polyline)
-           (mapv (fn [latlng]
+           (mapv (fn [^js latlng]
                    (let [lat (.lat latlng)
                          lng (.lng latlng)]
                      {:lat lat :lng lng})))))))

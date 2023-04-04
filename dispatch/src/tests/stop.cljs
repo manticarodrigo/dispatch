@@ -6,7 +6,7 @@
 
 (defn create-arrival [stop-id]
   (p/let [query (inline "mutations/stop/create-arrival.graphql")
-          variables {:stopId stop-id}
+          variables {:stopId stop-id :status "COMPLETE"}
           request  {:query query :variables variables}
           result (send request)]
     {:request request

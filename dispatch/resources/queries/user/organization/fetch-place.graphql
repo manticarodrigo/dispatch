@@ -21,7 +21,8 @@ query OrganizationPlace($placeId: ID!, $filters: TaskFilters) {
               lat
               lng
             }
-            arrivedAt
+            status
+            finishedAt
           }
           route
         }

@@ -10,7 +10,7 @@
                      {:organization
                       {:include
                        {:stripe true}}}})]
-    (some-> user .-organization .-stripe .-customerId)))
+    (.. user -organization -stripe -customerId)))
 
 
 (defn fetch-payment-methods [^js context]

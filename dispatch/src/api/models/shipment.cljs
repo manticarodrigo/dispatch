@@ -15,9 +15,9 @@
 (defn shipments-query [{:keys [start end status]}]
   {:shipments {:where (merge
                        (case status
-                         "ASSIGNED" {:stop {:is {}} :archived false}
+                         "ASSIGNED" {:delivery {:is {}} :archived false}
                          "ARCHIVED" {:archived true}
-                         {:stop nil :archived false})
+                         {:delivery nil :archived false})
                        (when (and start end)
                          {:windows {:some {:startAt {:gte start}
                                            :endAt {:lte end}}}}))

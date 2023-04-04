@@ -38,7 +38,7 @@
         merged-stops (merge-stops stops route)]
     [:ol {:class "overflow-auto"}
      (doall
-      (for [[idx {:keys [id place arrivedAt shipment visits transitions travel-steps]}] (map-indexed vector merged-stops)]
+      (for [[idx {:keys [id place status finishedAt shipment visits transitions travel-steps]}] (map-indexed vector merged-stops)]
         (let [{:keys [name description lat lng]} place
               pickup? (->> visits (some :isPickup))
               delivery? (and (seq visits)
@@ -49,8 +49,8 @@
               leg-duration (or (some-> travel-steps last :duration js/parseInt)
                                (some-> leg :duration))
               prev-stop (get merged-stops (dec idx))
-              prev-stop-arrived-at (some-> prev-stop :arrivedAt)
-              active? (and (not arrivedAt)
+              prev-stop-arrived-at (some-> prev-stop :finishedAt)
+              active? (and (not finishedAt)
                            (or (nil? prev-stop) prev-stop-arrived-at))
               prev-transition-start-at (when prev-stop (some-> prev-stop :transitions last :startTime js/Date.))
               prev-transition-end-at (when prev-transition-start-at (d/addSeconds prev-transition-start-at leg-duration))
@@ -68,7 +68,7 @@
           ^{:key id}
           [:li {:class (class-names
                         "relative divide-y divide-neutral-800 w-full"
-                        (when-not (or arrivedAt active?) "opacity-50"))}
+                        (when-not (or finishedAt active?) "opacity-50"))}
            (when (> idx 0)
              [:div {:class "absolute bottom-full translate-y-1/2 w-full text-center"}
               [stop-transition
@@ -86,7 +86,8 @@
                :visits visits
                :weight transition-kg
                :volume transition-m3
-               :arrivedAt arrivedAt
+               :status status
+               :finished-at finishedAt
                :start-at start-at
                :end-at end-at}]
              [:div {:class "mb-2 text-sm"} name]

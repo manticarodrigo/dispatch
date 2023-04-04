@@ -111,6 +111,26 @@
                        [{}] visits)]
     (rest merged-visits)))
 
+(defn merge-stops [route]
+  (let [{:keys [visits transitions travelSteps]} route]
+    (reduce
+     (fn [acc idx]
+       (let [visit (get visits idx)
+             transition (get transitions (inc idx))
+             travel-step (get travelSteps idx)]
+         (if (and (seq acc)
+                  (:isPickup visit)
+                  (:isPickup (get visits (dec idx))))
+           (conj (pop acc) (merge (last acc) {:transitions (conj (:transitions (last acc)) transition)
+                                              :travel-steps (conj (:travel-steps (last acc)) travel-step)
+                                              :visits (conj (:visits (last acc)) visit)}))
+           (conj acc (merge
+                      {:transitions (when transition [transition])
+                       :travel-steps (when travel-step [travel-step])
+                       :visits (when visit [visit])})))))
+     []
+     (range (count transitions)))))
+
 (defn parse-result [^js plan]
   (let [^js result (.. plan -result)
         ^js routes (some-> result .-routes)
@@ -121,24 +141,27 @@
                    array
                    (map-indexed
                     (fn [idx ^js route]
-                      #js{:payload route
-                          :vehicle (.-vehicle (get vehicles idx))
-                          :start (some-> route .-vehicleStartTime)
-                          :end (some-> route .-vehicleEndTime)
-                          :meters (some-> route .-metrics .-travelDistanceMeters)
-                          :volume (some-> route .-metrics .-maxLoads .-volume .-amount downscale-capacity)
-                          :weight (some-> route .-metrics .-maxLoads .-weight .-amount downscale-capacity)
-                          :visits (apply array
-                                         (map
-                                          (fn [^js visit]
-                                            (let [pickup? (.-isPickup visit)]
-                                              #js{:arrival (.. visit -startTime)
-                                                  :depot (when pickup? (.-depot plan))
-                                                  :shipment (when-not pickup? (.-shipment (get shipments (or (.-shipmentIndex visit) 0))))}))
-                                          (-> route .-visits ->clj merge-pickups ->js)))})
+                      (let [^js plan-vehicle (get vehicles idx)]
+                        #js{:payload route
+                            :vehicle (.-vehicle plan-vehicle)
+                            :start (some-> route .-vehicleStartTime)
+                            :end (some-> route .-vehicleEndTime)
+                            :meters (some-> route .-metrics .-travelDistanceMeters)
+                            :volume (some-> route .-metrics .-maxLoads .-volume .-amount downscale-capacity)
+                            :weight (some-> route .-metrics .-maxLoads .-weight .-amount downscale-capacity)
+                            :visits (apply array
+                                           (map
+                                            (fn [^js visit]
+                                              (let [pickup? (.-isPickup visit)
+                                                    ^js plan-shipment (get shipments (or (.-shipmentIndex visit) 0))]
+                                                #js{:arrival (.. visit -startTime)
+                                                    :depot (when pickup? (.-depot plan))
+                                                    :shipment (when-not pickup? (.-shipment plan-shipment))}))
+                                            (-> route .-visits ->clj merge-pickups ->js)))}))
                     routes))
           :skipped (apply array
                           (map
                            (fn [^js shipment]
-                             (.-shipment (get shipments (or (.-index shipment) 0))))
+                             (let [^js plan-shipment (get shipments (or (.-index shipment) 0))]
+                               (.-shipment plan-shipment)))
                            (.-skippedShipments result)))})))

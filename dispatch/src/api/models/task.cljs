@@ -10,7 +10,11 @@
    :stops {:orderBy {:order "asc"}
            :include
            {:place true
-            :shipment
+            :pickups
+            {:include
+             {:place true
+              :windows true}}
+            :deliveries
             {:include
              {:place true
               :windows true}}}}})
@@ -87,7 +91,7 @@
 (defn optimize-task [^js context {:keys [taskId]}]
   (p/let [^js task (fetch-organization-task context {:taskId taskId})
           stops (->clj (.. task -stops))
-          {complete true incomplete false} (group-by #(-> % :arrivedAt some?) stops)]
+          {complete true incomplete false} (group-by #(-> % :finishedAt some?) stops)]
     (println complete)
     (println incomplete)
     ;; (prisma/update!

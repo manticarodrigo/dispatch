@@ -24,7 +24,8 @@ query OrganizationTasks($filters: TaskFilters) {
           }
           order
           note
-          arrivedAt
+          status
+          finishedAt
         }
         route
       }
