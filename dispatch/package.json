@@ -3,7 +3,7 @@
   "license": "UNLICENSED",
   "version": "0.0.13",
   "scripts": {
-    "postinstall": "patch-package",
+    "postinstall": "patch-package --exclude 'nothing'",
     "ancient": "clojure -Sdeps '{:deps {com.github.liquidz/antq {:mvn/version \"RELEASE\"}}}' -m antq.core",
     "report": "shadow-cljs run shadow.cljs.build-report ui target/build-report.html",
     "assets": "capacitor-assets generate --iconBackgroundColor \"#171717\" --splashBackgroundColor \"#171717\"",

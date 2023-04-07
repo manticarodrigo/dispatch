@@ -1,0 +1,25 @@
+diff --git a/node_modules/d3-color/package.json b/node_modules/d3-color/package.json
+index 4034085..34884a5 100644
+--- a/node_modules/d3-color/package.json
++++ b/node_modules/d3-color/package.json
+@@ -23,19 +23,14 @@
+     "name": "Mike Bostock",
+     "url": "http://bost.ocks.org/mike"
+   },
+-  "type": "module",
+   "files": [
+     "dist/**/*.js",
+     "src/**/*.js"
+   ],
+   "module": "src/index.js",
+-  "main": "src/index.js",
++  "main": "dist/d3-color.min.js",
+   "jsdelivr": "dist/d3-color.min.js",
+   "unpkg": "dist/d3-color.min.js",
+-  "exports": {
+-    "umd": "./dist/d3-color.min.js",
+-    "default": "./src/index.js"
+-  },
+   "sideEffects": false,
+   "devDependencies": {
+     "eslint": "8",

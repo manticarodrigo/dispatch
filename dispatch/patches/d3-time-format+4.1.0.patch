@@ -1,0 +1,29 @@
+diff --git a/node_modules/d3-time-format/package.json b/node_modules/d3-time-format/package.json
+index fbdac72..c33e3ea 100644
+--- a/node_modules/d3-time-format/package.json
++++ b/node_modules/d3-time-format/package.json
+@@ -20,23 +20,15 @@
+     "name": "Mike Bostock",
+     "url": "http://bost.ocks.org/mike"
+   },
+-  "type": "module",
+   "files": [
+     "dist/**/*.js",
+     "src/**/*.js",
+     "locale/*.json"
+   ],
+   "module": "src/index.js",
+-  "main": "src/index.js",
++  "main": "dist/d3-time-format.min.js",
+   "jsdelivr": "dist/d3-time-format.min.js",
+   "unpkg": "dist/d3-time-format.min.js",
+-  "exports": {
+-    ".": {
+-      "umd": "./dist/d3-time-format.min.js",
+-      "default": "./src/index.js"
+-    },
+-    "./locale/*": "./locale/*.json"
+-  },
+   "sideEffects": [
+     "./src/defaultLocale.js"
+   ],

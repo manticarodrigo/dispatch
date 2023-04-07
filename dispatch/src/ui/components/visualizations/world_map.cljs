@@ -10,7 +10,7 @@
 (defn- feature-shape? [f]
   (= (.-type f) "Feature"))
 
-(defn- topo->geo [topo]
+(defn- topo->geo [^js topo]
   (let [world (feature topo (-> topo .-objects .-units))
         features (->> (.-features world)
                       (filter feature-shape?))]
