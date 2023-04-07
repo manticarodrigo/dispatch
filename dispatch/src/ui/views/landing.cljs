@@ -1,6 +1,9 @@
 (ns ui.views.landing
   (:require ["@faker-js/faker" :refer (faker)]
+            [ui.lib.router :refer (link)]
             [ui.utils.date :as d]
+            [ui.utils.string :refer (class-names)]
+            [ui.components.inputs.button :refer (button-class)]
             [ui.components.icons.dispatch
              :refer (dispatch-text)
              :rename {dispatch dispatch-icon}]
@@ -12,9 +15,16 @@
             [ui.components.forms.shipment :refer (shipment-form)]))
 
 (defn landing-header []
-  [:header {:class "p-6 flex items-center"}
-   [dispatch-icon]
-   [dispatch-text {:class "ml-2 -mb-1 h-6 w-28"}]])
+  [:header {:class "p-6 flex justify-between items-center"}
+   [:div {:class "flex items-center"}
+    [dispatch-icon]
+    [dispatch-text {:class "ml-2 -mb-1 h-6 w-28"}]
+    [:span {:class "sr-only"} "Dispatch"]]
+   [:div
+    [link {:to "/login" :class (class-names "ml-2" button-class)}
+     "Log in"]
+    [link {:to "/register" :class (class-names "ml-2" button-class)}
+     "Sign up"]]])
 
 (defn landing-intro []
   [:section {:class "relative"}
@@ -34,8 +44,8 @@
       [:div {:class "flex flex-col items-start"}
        [:div {:class "relative group"}
         [:div {:class "absolute -inset-0.5 rounded-lg bg-gradient-to-r from-teal-600 to-violet-600 blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"}]
-        [:a {:href "https://dispatch.ambito.app/register"
-             :class "relative block rounded-lg border-4 border-zinc-900/50 py-3 px-5 bg-zinc-900 bg-clip-padding"}
+        [link {:to "/register"
+               :class "relative block rounded-lg border-4 border-zinc-900/50 py-3 px-5 bg-zinc-900 bg-clip-padding"}
          "Get started for free"]]
        [:span {:class "text-sm text-neutral-300 pt-4"} "* First 100 monthly optimized visits are on us."]]]
      [browser

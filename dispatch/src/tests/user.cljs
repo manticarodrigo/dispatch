@@ -102,4 +102,4 @@
     (with-submit-confirm
       {:mocks [confirm-mock]}
       (fn [^js component]
-        (-> (.findByText component (tr [:view.login/title])))))))
+        (-> (.findByText component "Dispatch"))))))

@@ -12,7 +12,7 @@
         url (case scope
               "organization" "/organization"
               "agent" "/agent"
-              "/login")]
+              "/landing")]
     (if loading
       [base-loader]
       [navigate url])))

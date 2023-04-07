@@ -15,6 +15,11 @@
 
 (rtl/configure #js{:asyncUtilTimeout 5000})
 
+(def observer (fn []
+                (->js {:observe (fn [])
+                       :unobserve (fn [])
+                       :disconnect (fn [])})))
+
 (defn before []
   (.setLocale faker "es")
   (set! (. js/window -matchMedia)
@@ -22,11 +27,9 @@
           (->js {:matches false
                  :addListener (fn [])
                  :removeListener (fn [])})))
-  (set! js/IntersectionObserver
-        (fn []
-          (->js {:observe (fn [])
-                 :unobserve (fn [])
-                 :disconnect (fn [])}))))
+  (set! js/IntersectionObserver observer)
+  (set! (.. js/window -ResizeObserver) observer)
+  (set! js/ResizeObserver observer))
 
 (defn after []
   (rtl/cleanup))
