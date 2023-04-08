@@ -2,7 +2,7 @@ exports.handler = (event, context, callback) => {
   const request = event.Records[0].cf.request;
   const headers = request.headers;
 
-  const redirect_url = `https://dispatch.${process.env.DOMAIN}${request.uri}`;
+  const redirect_url = `https://dispatch.ambito.app${request.uri}`;
 
   const response = {
     status: "301",
