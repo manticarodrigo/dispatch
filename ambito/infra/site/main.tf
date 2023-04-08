@@ -100,12 +100,17 @@ resource "aws_s3_bucket_acl" "site_acl" {
 resource "aws_s3_bucket_website_configuration" "site_config" {
   bucket = aws_s3_bucket.site_bucket.bucket
 
-  index_document {
-    suffix = "index.html"
-  }
+  # index_document {
+  #   suffix = "index.html"
+  # }
 
-  error_document {
-    key = "index.html"
+  # error_document {
+  #   key = "index.html"
+  # }
+
+  redirect_all_requests_to {
+    protocol  = "https"
+    host_name = "dispatch.${var.domain_name}" # Replace this with the target URL
   }
 }
 
