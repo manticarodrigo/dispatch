@@ -61,7 +61,7 @@
     :subtitle "95.6%"
     :content [area-chart {:format-x #(str % "%")
                           :data perfect-visit-rate-data}]}
-   {:title "Revenue per liter of gas"
+   {:title (tr [:view.analytics.charts.revenue-per-gas-liter/title])
     :subtitle "$91.23"
     :content [area-chart {:format-x-axis #(str "$" (js/Math.round %))
                           :format-x #(str "$" (.toFixed % 2))

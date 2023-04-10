@@ -41,6 +41,16 @@
                 :required "required"
                 :optional "optional"}
     :view {:not-found "Page not found"
+           :landing {:intro {:title (fn [] [:<> "Optimize your" [:br] "spend on travel"])
+                             :subtitle (fn [] [:<> "Intelligently increase revenue" [:br] "and decrease costs for fleet operations."])
+                             :cta "Get started for free"
+                             :cta-note "First 100 optimized visits are on us."}
+                     :optimization {:title "Use AI to automatically assign and optimize visits"
+                                    :subtitle "Save time and money by letting us crunch the hard numbers."}
+                     :constraints {:title (fn [] [:<> "Constrain visits" [:br] "to improve the solution"])
+                                   :subtitle (fn [] [:<> "Optionally define volume, weight, time windows, " [:br] " and more to automatically generate an intelligent plan."])}
+                     :monitoring {:title (fn [] [:<> "Solve problems on the road" [:br] "with real-time feedback"])
+                                  :subtitle (fn [] [:<> "Detect issues and regenerate" [:br] "stop sequences, constraints, and more."])}}
            :register {:title "Register"
                       :login-link {:title "Already have an account?"
                                    :link "Login here."}}
@@ -50,7 +60,10 @@
            :login-confirm {:title "Confirm login"
                            :return-link {:title "Didn't receive a code?"
                                          :link "Return to login."}}
-           :analytics {:title "Analytics"}
+           :analytics {:title "Analytics"
+                       :charts {:revenue-per-gas-liter
+                                {:title "Revenue per liter of gas"
+                                 :subtitle "Last 30 days"}}}
            :task {:list {:title "Tasks"}
                   :create {:title "Create task"}
                   :update {:title "Update task"}}
@@ -251,7 +264,18 @@
                 :required "requerido"
                 :optional "opcional"}
 
-    :view {:register {:title "Registrar"
+    :view {:not-found "Página no encontrada"
+           :landing {:intro {:title (fn [] [:<> "Optimiza tu" [:br] "gasto de viajes"])
+                             :subtitle (fn [] [:<> "Aumenta tus ingresos" [:br] "y disminuye tus costos de operación."])
+                             :cta "Empieza gratis ahora"
+                             :cta-note "Las primeras 100 visitas optimizadas son gratis."}
+                     :optimization {:title "Usa IA para asignar y optimizar visitas automáticamente"
+                                    :subtitle "Ahorra tiempo y dinero al dejar que nosotros hagamos los cálculos."}
+                     :constraints {:title (fn [] [:<> "Restringe visitas" [:br] "para mejorar la solución"])
+                                   :subtitle (fn [] [:<> "Opcionalmente define volumen, peso, ventanas de tiempo, " [:br] " y más para generar un plan inteligente."])}
+                     :monitoring {:title (fn [] [:<> "Resuelve problemas en el camino" [:br] "con retroalimentación en tiempo real"])
+                                  :subtitle (fn [] [:<> "Detecta problemas y regenera" [:br] "secuencias de paradas, restricciones, y más."])}}
+           :register {:title "Registrar"
                       :login-link {:title "¿Ya tienes una cuenta?"
                                    :link "Ingresar aquí."}}
            :login {:title "Ingresar"
@@ -260,7 +284,9 @@
            :login-confirm {:title "Confirmar ingreso"
                            :return-link {:title "No recibiste el código?"
                                          :link "Regresar a ingresar."}}
-           :analytics {:title "Analítica"}
+           :analytics {:title "Analítica"
+                       :charts {:revenue-per-gas-liter {:title "Ingresos por litro de gasolina"
+                                                        :subtitle "Ultimos 30 días"}}}
            :task {:list {:title "Tareas"}
                   :create {:title "Crear tarea"}
                   :update {:title "Actualizar tarea"}}
@@ -287,7 +313,6 @@
            :vehicle {:list {:title "Vehículos"}
                      :upload {:title "Subir vehículos"}
                      :create {:title "Crear vehículo"}}
-           :not-found "Página no encontrada"
            :subscription {:title "Administrar suscripción"
                           :payment {:title "Pagos"
                                     :subtitle "Administra tus métodos de pago."

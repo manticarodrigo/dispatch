@@ -3,6 +3,7 @@
             [ui.lib.router :refer (link)]
             [ui.utils.date :as d]
             [ui.utils.string :refer (class-names)]
+            [ui.utils.i18n :refer (tr)]
             [ui.components.inputs.button :refer (button-class)]
             [ui.components.icons.dispatch
              :refer (dispatch-text)
@@ -22,9 +23,9 @@
     [:span {:class "sr-only"} "Dispatch"]]
    [:div
     [link {:to "/login" :class (class-names "ml-2" button-class)}
-     "Log in"]
+     (tr [:view.login/title])]
     [link {:to "/register" :class (class-names "ml-2" button-class)}
-     "Sign up"]]])
+     (tr [:view.register/title])]]])
 
 (defn landing-intro []
   [:section {:class "relative"}
@@ -34,34 +35,28 @@
      [:div {:class "py-8"}
       [:div {:class "pb-12"}
        [:h1 {:class "pb-2 text-5xl font-bold"}
-        "Optimize your"
-        [:br]
-        "spend on travel"]
+        (tr [:view.landing.intro/title])]
        [:p {:class "text-xl text-neutral-400"}
-        "Measure and increase your revenue"
-        [:br]
-        "while decreasing your cost per kilometer traveled."]]
+        (tr [:view.landing.intro/subtitle])]]
       [:div {:class "flex flex-col items-start"}
        [:div {:class "relative group"}
         [:div {:class "absolute -inset-0.5 rounded-lg bg-gradient-to-r from-teal-600 to-violet-600 blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"}]
         [link {:to "/register"
                :class "relative block rounded-lg border-4 border-zinc-900/50 py-3 px-5 bg-zinc-900 bg-clip-padding"}
-         "Get started for free"]]
-       [:span {:class "text-sm text-neutral-300 pt-4"} "* First 100 monthly optimized visits are on us."]]]
+         (tr [:view.landing.intro/cta])]]
+       [:span {:class "text-sm text-neutral-300 pt-4"} "* " (tr [:view.landing.intro/cta-note])]]]
      [browser
       [:div {:class "flex flex-col w-full lg:w-[40rem] h-[20rem] lg:h-[35rem] max-h-full relative flex-auto"}
        [:div {:class "p-4"}
-        [:div {:class "text-lg font-medium"} "Daily revenue"]
-        [:div {:class "text-neutral-400 font-light"} "Last 30 days"]]
+        [:div {:class "text-lg font-medium"} (tr [:view.analytics.charts.revenue-per-gas-liter/title])]
+        [:div {:class "text-neutral-400 font-light"} (tr [:view.analytics.charts.revenue-per-gas-liter/subtitle])]]
        [:div {:class "px-2 w-full h-full min-h-0"}
         [area-chart {:format-x (fn [dollars]
-                                 (str "$" (if (> dollars 999)
-                                            (str (int (/ dollars 1000)) "k")
-                                            dollars)))
+                                 (str "$" dollars))
                      :data (map
                             (fn [idx]
                               {:x (d/subDays (js/Date.) (- 29 idx))
-                               :y (max 5000 (rand-int 10000))})
+                               :y (+ 50 (rand-int 50))})
                             (range 0 30))}]]]]]]])
 
 (defn landing-ai []
@@ -69,46 +64,43 @@
    [:div {:class "pb-8 flex flex-col max-w-7xl mx-auto"}
     [:div {:class "py-8 text-center"}
      [:h1 {:class "text-4xl font-bold"}
-      "Use AI to automatically assign and optimize visits"]
-     [:p {:class "text-xl text-neutral-400"} "Save time and money by letting us do the heavy lifting."]]
+      (tr [:view.landing.optimization/title])]
+     [:p {:class "text-xl text-neutral-400"} (tr [:view.landing.optimization/subtitle])]]
     [browser
      [:div {:class "w-full overflow-auto"}
-      [route-table {:agents [{:id 1
-                              :name "Agent 1"
-                              :location {:lat 40.7128
-                                         :lng -74.0060}}
-                             {:id 2
-                              :name "Agent 2"
-                              :location {:lat 40.7128
-                                         :lng -74.0060}}]
-                    :result [{:vehicle {:id 1 :name "Vehicle 1" :volume 100 :weight 100}
-                              :start (d/startOfDay (js/Date.))
-                              :end (d/endOfDay (js/Date.))
-                              :meters 100000
-                              :volume 100
-                              :weight 100
-                              :visits (apply array
-                                             (map
-                                              (fn [idx]
-                                                {:arrival (-> (js/Date.) d/startOfDay (d/addHours idx))
-                                                 :shipment {}})
-                                              (range 10)))}]
+      [route-table {:agents (map (fn [idx]
+                                   {:id idx
+                                    :name (.. faker -name fullName)})
+                                 (range 5))
+                    :result (map (fn [idx]
+                                   {:vehicle {:id idx
+                                              :name (str (.. faker -vehicle vrm) " " (rand-int 8) "L")
+                                              :volume 100
+                                              :weight 100}
+                                    :start (d/startOfDay (js/Date.))
+                                    :end (d/endOfDay (js/Date.))
+                                    :meters (+ 99999 (rand 500000))
+                                    :volume (+ 80 (rand-int 20))
+                                    :weight (+ 80 (rand-int 20))
+                                    :visits (apply array
+                                                   (map
+                                                    (fn [idx]
+                                                      {:arrival (-> (js/Date.) d/startOfDay (d/addHours idx))
+                                                       :shipment {}})
+                                                    (range 10)))})
+                                 (range 5))
                     :selected-rows #js[]
                     :set-selected-rows #()
-                    :selected-agents [1]}]]]]])
+                    :selected-agents (into [] (range 5))}]]]]])
 
 (defn landing-constraints []
   [:section {:class "relative p-6 w-full lg:min-h-screen bg-gradient-to-b from-transparent via-transparent to-teal-950"}
    [:div {:class "py-8 flex flex-col lg:flex-row lg:justify-between max-w-7xl mx-auto"}
     [:div {:class "py-8"}
      [:h1 {:class "pb-2 text-4xl font-bold"}
-      "Constrain the system"
-      [:br]
-      "to improve the solution"]
+      (tr [:view.landing.constraints/title])]
      [:p {:class "text-xl text-neutral-400"}
-      "Optionally define time windows, volume, weight,"
-      [:br]
-      "skills, and travel costs to feed the model."]]
+      (tr [:view.landing.constraints/subtitle])]]
     [browser
      [:div {:class "p-4"}
       [shipment-form]]]]])
@@ -119,13 +111,9 @@
     [:div {:class "py-8"}
      [:div {:class "pb-8"}
       [:h1 {:class "pb-2 text-4xl font-bold"}
-       "Solve problems on the road"
-       [:br]
-       "with real-time feedback"]
+       (tr [:view.landing.monitoring/title])]
       [:p {:class "text-lg text-neutral-400"}
-       "Detect issues and update"
-       [:br]
-       "stop sequences, constraints, and statuses."]]]
+       (tr [:view.landing.monitoring/subtitle])]]]
     [browser
      [:div {:class "w-full lg:min-w-[33rem] relative flex-auto overflow-auto"}
       (doall
