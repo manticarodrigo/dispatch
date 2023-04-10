@@ -1,7 +1,6 @@
 (ns ui.components.icons.ambito)
 
 (defn ambito [{:keys [class]}]
-  (prn class)
   [:svg {:xmlns "http://www.w3.org/2000/svg"
          :viewBox "0 0 1005.12 888.12"
          :fill "currentColor"

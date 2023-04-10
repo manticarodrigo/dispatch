@@ -51,6 +51,7 @@
     "@visx/gradient": "^3.0.0",
     "@visx/grid": "^3.0.1",
     "@visx/group": "^3.0.0",
+    "@visx/legend": "^3.0.0",
     "@visx/marker": "^3.0.0",
     "@visx/mock-data": "^3.0.0",
     "@visx/responsive": "^3.0.0",

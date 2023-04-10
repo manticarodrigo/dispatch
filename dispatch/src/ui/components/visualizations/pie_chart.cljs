@@ -1,102 +1,97 @@
 (ns ui.components.visualizations.pie-chart
-  (:require [reagent.core :as r]
-            ["@visx/shape" :refer (Pie)]
+  (:require ["@visx/shape" :refer (Pie)]
             ["@visx/scale" :refer (scaleOrdinal)]
             ["@visx/group" :refer (Group)]
-            ["@visx/mock-data" :refer (letterFrequency browserUsage)]
-            ["@visx/annotation" :refer (Annotation Connector Label)]
-            ["@visx/responsive" :refer (withParentSize)]))
-
-;; data and types
-(def letters (.slice letterFrequency 0 4))
-(def browser-names (remove #(= "date" %) (js-keys (first browserUsage))))
-(def browsers (map (fn [name] #js {:label name :usage (aget (first browserUsage) name)}) browser-names))
-
-;; accessor functions
-(defn usage [^js d] (.-usage d))
-(defn frequency [^js d] (.-frequency d))
-
-;; color scales
-(def get-browser-color
-  (scaleOrdinal #js {:domain browser-names
-                     :range ["rgba(59,130,246,0.7)"
-                             "rgba(59,130,246,0.6)"
-                             "rgba(59,130,246,0.5)"
-                             "rgba(59,130,246,0.4)"
-                             "rgba(59,130,246,0.3)"
-                             "rgba(59,130,246,0.2)"
-                             "rgba(59,130,246,0.1)"]}))
-
-(def from-leave-transition
-  (fn [{:keys [end-angle]}] #js {:start-angle (if (> end-angle js/Math.PI) (* 2 js/Math.PI) 0)
-                                 :end-angle (if (> end-angle js/Math.PI) (* 2 js/Math.PI) 0)
-                                 :opacity 0}))
-
-(def enter-update-transition
-  (fn [{:keys [start-angle end-angle]}] #js {:start-angle start-angle
-                                             :end-angle end-angle
-                                             :opacity 1}))
+            ["@visx/legend" :refer (LegendItem LegendLabel LegendOrdinal)]
+            ["@visx/responsive" :refer (ParentSize)]
+            [reagent.core :as r]
+            [cljs-bean.core :refer (->clj ->js)]))
 
 (defn animated-pie
-  [{:keys [pie get-key get-color on-click-datum]}]
-  (js/console.log pie)
+  [{:keys [pie get-key get-percentage get-color on-click-datum]}]
   [:<>
    (for [arc (.-arcs pie)]
-     (let [space-for-label? (>= (- (.-endAngle arc) (.-startAngle arc)) 0.1)
-           key (get-key arc)
-           [centroid-x centroid-y] (.centroid (.-path pie) arc)
-           angle (-> (+ (.-startAngle arc) (.-endAngle arc) (.-padAngle arc)) (/ 2))
-           label-offset 20]
-       (prn angle)
+     (let [key (get-key arc)
+           [centroid-x centroid-y] (-> pie .-path (.centroid arc))
+           has-space-for-label (>= (- (.-endAngle arc) (.-startAngle arc)) 0.1)]
        [:g {:key key}
         [:path {:d (.path pie arc)
                 :fill (get-color arc)
                 :on-click #(on-click-datum arc)
                 :on-touch-start #(on-click-datum arc)}]
-        (when space-for-label?
-          [:> Annotation
-           {:x centroid-x
-            :y centroid-y
-            :dx (if (< angle js/Math.PI) label-offset (- label-offset))
-            :dy (if (< angle js/Math.PI) label-offset (- label-offset))
-            ;; :dx dx
-            ;; :dy dy
-            }
-           [:> Connector
-            {:stroke "white"
-             :stroke-width 1
-             :type "elbow"}]
-           [:> Label
-            {:title (get-key arc)
-             :fill "white"
-             :font-size 9
-             :text-anchor "middle"}]])]))])
+        (when has-space-for-label
+          [:g
+           [:text {:fill "white"
+                   :x centroid-x
+                   :y centroid-y
+                   :dy ".33em"
+                   :fontSize 9
+                   :textAnchor "middle"
+                   :pointerEvents "none"}
+            (js/Math.round (get-percentage arc)) "%"]])]))])
 
-(defn pie-chart-base
-  [{:keys [margin]
-    width :parentWidth
-    height :parentHeight
-    :or {margin #js{:top 20 :right 20 :bottom 20 :left 20}}}]
-  (let [inner-width (- width (.-left margin) (.-right margin))
-        inner-height (- height (.-top margin) (.-bottom margin))
-        radius (/ (min inner-width inner-height) 2)
-        center-y (/ inner-height 2)
-        center-x (/ inner-width 2)
-        donut-thickness 50]
-    (if (< width 10)
-      nil
-      [:svg {:width width :height height}
-       [:> Group {:top (+ center-y (.-top margin)) :left (+ center-x (.-left margin))}
-        [:> Pie {:data browsers
-                 :pie-value usage
-                 :outer-radius radius
-                 :inner-radius (- radius donut-thickness)
-                 :pad-angle 0.005}
-         (fn [pie]
-           (r/as-element
-            [animated-pie {:pie pie
-                           :get-key (fn [arc] (str (.-usage (.-data arc)) "%"))
-                           :get-color (fn [arc] (get-browser-color (.-label (.-data arc))))
-                           :on-click-datum (fn [arc])}]))]]])))
+(defn legend [scale]
+  [:div {:class "flex justify-center items-center w-full min-w-0"}
+   [:> LegendOrdinal {:scale scale}
+    (fn [labels]
+      (r/as-element
+       [:div {:class "max-w-full max-h-full overflow-auto"}
+        (for [label labels]
+          (let [i (.-index label)
+                legend-glyph-size 15]
+            (r/as-element
+             [:> LegendItem
+              {:key (str "legend-ordinal-" i)
+               :margin "0 5px"
+               :on-click #()}
+              [:svg {:width legend-glyph-size :height legend-glyph-size}
+               [:rect {:fill (.-value label)
+                       :width legend-glyph-size
+                       :height legend-glyph-size}]]
+              [:> LegendLabel
+               {:align "left" :margin "0 0 0 4px"}
+               (.-text label)]])))]))]])
 
-(def pie-chart (r/adapt-react-class (withParentSize (r/reactify-component pie-chart-base))))
+(defn pie-chart [{:keys [data margin get-label get-scale] :or {margin {:top 20 :right 20 :bottom 20 :left 20}
+                                                               get-label :label
+                                                               get-scale :percent}}]
+  (let [{:keys [top right bottom left]} margin
+        data-labels (map get-label data)
+        pie-scale (scaleOrdinal (->js {:domain data-labels
+                                       :range ["rgba(59,130,246,0.7)"
+                                               "rgba(59,130,246,0.6)"
+                                               "rgba(59,130,246,0.5)"
+                                               "rgba(59,130,246,0.4)"
+                                               "rgba(59,130,246,0.3)"
+                                               "rgba(59,130,246,0.2)"
+                                               "rgba(59,130,246,0.1)"]}))]
+    [:div {:class "flex w-full h-full"}
+     [:> ParentSize
+      (fn [parent]
+        (let [width (.-width parent)
+              height (.-height parent)
+              inner-width (- width left right)
+              inner-height (- height top bottom)
+              radius (/ (min inner-width inner-height) 2)
+              center-y (/ inner-height 2)
+              center-x (/ inner-width 2)
+              donut-thickness 50]
+          (r/as-element
+           (when (> width 10)
+             [:svg {:width width :height height}
+              [:> Group {:top (+ center-y top) :left (+ center-x left)}
+               [:> Pie {:data data
+                        :pie-value #(get-scale (->clj %))
+                        :outer-radius radius
+                        :corner-radius 3
+                        :inner-radius (- radius donut-thickness)
+                        :pad-angle 0.025}
+                (fn [pie]
+                  (r/as-element
+                   [animated-pie
+                    {:pie pie
+                     :get-key (fn [arc] (get-label (->clj (.-data arc))))
+                     :get-percentage (fn [arc] (get-scale (->clj (.-data arc))))
+                     :get-color (fn [arc] (pie-scale (get-label (->clj (.-data arc)))))
+                     :on-click-datum #()}]))]]]))))]
+     [legend pie-scale]]))
