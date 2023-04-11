@@ -1,5 +1,6 @@
 (ns ui.views.landing
   (:require ["@faker-js/faker" :refer (faker)]
+            [ui.subs :refer (listen)]
             [ui.lib.router :refer (link)]
             [ui.utils.date :as d]
             [ui.utils.string :refer (class-names)]
@@ -139,6 +140,7 @@
              [:div {:class "mb-2 font-light text-xs text-neutral-400"} (.. faker -address (streetAddress true))]]])))]]]])
 
 (defn landing-view []
+  (.. faker (setLocale (listen [:language])))
   [:<>
    [landing-header]
    [landing-intro]

@@ -20,6 +20,7 @@
                  options :options
                  option-to-label :option-to-label
                  option-to-value :option-to-value
+                 option-to-render :option-to-render
                  on-text :on-text
                  on-change :on-change
                  on-select :on-select
@@ -98,4 +99,4 @@
                                          menu-item-class
                                          (when active menu-item-active-class)
                                          (when selected "underline")))}
-           (option-to-label option)])]]]]))
+           ((or option-to-render option-to-label) option)])]]]]))
