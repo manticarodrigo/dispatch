@@ -79,13 +79,25 @@
 (defn clear-overlay [^js overlay]
   (.setMap overlay nil))
 
-(defn set-overlays [^js gmap locations]
-  (mapv (fn [{:keys [title position]}]
-          (let [overlay (create-overlay gmap)]
-            (.update overlay title position)
-            overlay))
-        locations))
-
 (defn clear-overlays [overlays]
   (doseq [overlay overlays]
     (clear-overlay overlay)))
+
+(def !overlays (atom []))
+
+(defn update-overlays [^js gmap locations]
+  (doseq [[idx overlay] (map-indexed vector @!overlays)]
+    (when (> idx (dec (count locations)))
+      (clear-overlay overlay)))
+  (mapv
+   (fn [[idx {:keys [title position]}]]
+     (let [^js existing-overlay (get @!overlays idx)
+           overlay (or existing-overlay
+                       (create-overlay gmap))]
+       (.update overlay title position)
+       (if existing-overlay
+         (when-not (.. existing-overlay -map)
+           (.setMap existing-overlay gmap))
+         (swap! !overlays conj overlay))
+       overlay))
+   (map-indexed vector locations)))

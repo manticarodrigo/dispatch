@@ -7,19 +7,29 @@
 (defn- create-service []
   (js/google.maps.DirectionsService.))
 
-(defn- create-route-request [places]
-  (let [stops (map (fn [%] {:location (->js %) :stopover true}) places)]
-    (->js {:origin (-> stops first :location ->js)
-           :destination (-> stops last :location ->js)
-           :waypoints (->> stops (drop-last 1) ->js)
-           ;; :optimizeWaypoints true
-           :travelMode "DRIVING"})))
+(defn- create-route-request [places options]
+  (let [stops (map (fn [%] {:location % :stopover true}) places)]
+    (->js (merge {:origin (-> stops first :location ->js)
+                  :destination (-> stops last :location ->js)
+                  :waypoints (->> stops (drop-last 1) ->js)
+                  :travelMode "DRIVING"}
+                 options))))
 
 (defn calc-route [places]
   (js/Promise.
    (fn [resolve _]
      (let [^js service @!service
-           request (create-route-request places)]
+           request (create-route-request places {})]
+       (.route service request
+               (fn [response status]
+                 (when (= status "OK")
+                   (resolve (parse-route response)))))))))
+
+(defn calc-optimized-route [places]
+  (js/Promise.
+   (fn [resolve _]
+     (let [^js service @!service
+           request (create-route-request places {:optimizeWaypoints true})]
        (.route service request
                (fn [response status]
                  (when (= status "OK")

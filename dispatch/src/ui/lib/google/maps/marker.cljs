@@ -1,9 +1,10 @@
 (ns ui.lib.google.maps.marker
-  (:require ["@googlemaps/markerclusterer" :refer (MarkerClusterer)]
-            [reagent.dom.server :refer (render-to-string)]
-            [cljs-bean.core :refer (->js)]))
+  (:require
+  ;;  ["@googlemaps/markerclusterer" :refer (MarkerClusterer NoopAlgorithm)]
+   [reagent.dom.server :refer (render-to-string)]
+   [cljs-bean.core :refer (->js)]))
 
-(def !clusterer (atom nil))
+;; (def !clusterer (atom nil))
 
 (defn create-marker [options]
   (js/google.maps.Marker. (->js options)))
@@ -17,6 +18,8 @@
             :width 30
             :height 30
             :viewBox "0 0 20 20"
+            :stroke-width 0.5
+            :stroke "black"
             :fill color}
       [:path {:fill-rule "evenodd"
               :d "M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 NaN"
@@ -38,30 +41,40 @@
 (defn set-markers [^js gmap points]
   (let [markers (->js
                  (mapv
-                  (fn [[idx {:keys [position title]}]]
+                  (fn [[idx {:keys [position title color]}]]
                     (create-marker
                      {:map gmap
                       :zIndex idx
                       :position position
-                      :label {:text title
+                      :label {:text " " ;; title
                               :fontSize "0.875rem"}
-                      :icon {:url (render-marker "#ef4444")
+                      :icon {:url (render-marker (or color "#ef4444"))
                              :scaledSize (js/google.maps.Size. 30 30)
                              :labelOrigin (js/google.maps.Point. 15 -6)}}))
                   (map-indexed vector points)))
-        ^js clusterer @!clusterer]
-    (if clusterer
-      (do
-        (.setMap clusterer gmap)
-        (.addMarkers clusterer markers))
-      (reset!
-       !clusterer
-       (MarkerClusterer.
-        (->js {:map gmap
-               :markers markers
-               :renderer {:render render}}))))
+        ;; ^js clusterer @!clusterer
+        ]
+    (doseq [^js marker markers]
+      (.setMap marker gmap))
+    ;; (if clusterer
+    ;;   (do
+    ;;     (.setMap clusterer gmap)
+    ;;     (.addMarkers clusterer markers))
+    ;;   (reset!
+    ;;    !clusterer
+    ;;    (MarkerClusterer.
+    ;;     (->js {:map gmap
+    ;;            :markers markers
+    ;;            :algorithm NoopAlgorithm
+    ;;            :renderer {:render render}}))))
     markers))
 
-(defn clear-markers [_]
-  (when-let [^js clusterer @!clusterer]
-    (.clearMarkers clusterer)))
+(defn clear-markers [markers]
+  (doseq [^js marker markers]
+    (.setMap marker nil))
+
+  ;; (when-let [^js clusterer @!clusterer]
+  ;;   (.clearMarkers clusterer))
+  )
+
+

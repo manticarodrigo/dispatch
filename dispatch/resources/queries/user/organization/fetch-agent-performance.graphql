@@ -1,0 +1,23 @@
+query OrganizationPerformance($start: Date!, $end: Date!) {
+  user {
+    organization {
+      performance(start: $start, end: $end) {
+        id
+        name
+        places {
+          id
+          name
+          description
+          lat
+          lng
+          createdAt
+        }
+        locations {
+          id
+          position
+          createdAt
+        }
+      }
+    }
+  }
+}

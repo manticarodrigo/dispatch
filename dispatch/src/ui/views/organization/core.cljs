@@ -22,11 +22,13 @@
                        {:path "tasks/:task" :element [task/detail-view]}
                        {:path "tasks/:task/update" :element [task/update-view]}
                        {:path "agents" :element [agent/list-view]}
-                       {:path "agents/:agent" :element [agent/detail-view]}
                        {:path "agents/create" :element [agent/create-view]}
+                       {:path "agents/performance" :element [agent/performance-view]}
+                       {:path "agents/:agent" :element [agent/detail-view]}
+                       {:path "agents/:agent/locations" :element [agent/locations-view]}
                        {:path "places" :element [place/list-view]}
-                       {:path "places/:place" :element [place/detail-view]}
                        {:path "places/create" :element [place/create-view]}
+                       {:path "places/:place" :element [place/detail-view]}
                        {:path "stops/:stop" :element [stop/detail-view]}
                        {:path "vehicles" :element [vehicle/list-view]}
                        {:path "shipments" :element [shipment/list-view]}

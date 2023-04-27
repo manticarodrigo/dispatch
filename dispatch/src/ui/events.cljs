@@ -40,6 +40,13 @@
  (assoc-key :map))
 
 (rf/reg-event-db
+ :map/locations
+ [trim-v]
+ (fn [db [v]]
+   (assoc-in
+    db [:map :locations] v)))
+
+(rf/reg-event-db
  :layout/toggle-nav
  (fn [db]
    (assoc-in

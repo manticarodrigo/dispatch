@@ -34,7 +34,7 @@
 (defn decode-polyline [encoded-polyline]
   (let [^js google (some-> js/window .-google)
         decode (when google (.. google -maps -geometry -encoding -decodePath))]
-    (when google
+    (when (and decode encoded-polyline)
       (->> (decode encoded-polyline)
            (mapv (fn [^js latlng]
                    (let [lat (.lat latlng)

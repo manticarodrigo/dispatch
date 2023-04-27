@@ -33,7 +33,7 @@
     (.forEach
      agents
      (fn [^js agent]
-       (set! (.-location agent) (first (.-locations agent)))))
+       (set! (.-location agent) (last (.-locations agent)))))
     ;; this moves null values to the end of the list
     (sort-by #(some-> ^js % .-location .-createdAt) > agents)))
 
@@ -47,11 +47,28 @@
                           {:where {:id agentId}
                            :include
                            {:user true
-                            :locations {:take 1
-                                        :orderBy {:createdAt "desc"}}
+                            :places {:orderBy {:createdAt "asc"}}
+                            :locations {:orderBy {:createdAt "asc"}}
                             :tasks {:where (filters/task filters)
                                     :orderBy {:startAt "asc"}
                                     :include {:stops {:include {:place true}}}}}}}}}})
           ^js agent (first (.. result -organization -agents))]
-    (set! (.-location agent) (first (.. agent -locations)))
+    (set! (.-location agent) (last (.. agent -locations)))
     agent))
+
+(defn fetch-organization-performance [^js context {:keys [start end]}]
+  (p/let [^js user (active-user
+                    context
+                    {:include
+                     {:organization
+                      {:include
+                       {:agents
+                        {:include
+                         {:user true
+                          :places
+                          {:where {:createdAt {:gte start :lte end}}
+                           :orderBy {:createdAt "asc"}}
+                          :locations
+                          {:where {:createdAt {:gte start :lte end}}
+                           :orderBy {:createdAt "asc"}}}}}}}})]
+    (.. user -organization -agents)))

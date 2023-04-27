@@ -63,7 +63,8 @@
                  :organization #()
                  :agent #()}
                 :Organization
-                {:agents agent/fetch-organization-agents
+                {:performance agent/fetch-organization-performance
+                 :agents agent/fetch-organization-agents
                  :agent agent/fetch-organization-agent
                  :places place/fetch-organization-places
                  :place place/fetch-organization-place

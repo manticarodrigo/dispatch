@@ -68,6 +68,7 @@ type Organization {
   vehicles: [Vehicle]
   plans: [Plan]
   plan(planId: ID!): Plan
+  performance(start: Date!, end: Date!): [Agent]
 }
 
 type Agent {
@@ -75,6 +76,7 @@ type Agent {
   name: String!
   user: User
   location: Location
+  locations: [Location]
   places: [Place]
   place(placeId: ID!, filters: TaskFilters): Place
   tasks(filters: TaskFilters): [Task]
@@ -109,6 +111,7 @@ type Place {
   lat: Float!
   lng: Float!
   tasks: [Task]
+  createdAt: Date
 }
 
 type Stop {
