@@ -15,8 +15,9 @@
   (place/fetch-organization-place context (->clj args)))
 
 (defn fetch-agent-places
-  [_ _ context _]
-  (place/fetch-agent-places context))
+  [^js parent _ context _]
+  (or (.. parent -places)
+      (place/fetch-agent-places context)))
 
 (defn fetch-agent-place
   [_ args context _]

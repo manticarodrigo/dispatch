@@ -13,3 +13,7 @@
 (defn fetch-organization-agent
   [_ args context _]
   (agent/fetch-organization-agent context (->clj args)))
+
+(defn fetch-organization-performance
+  [_ args context _]
+  (agent/fetch-organization-performance context (->clj args)))

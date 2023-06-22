@@ -1,0 +1,26 @@
+query OrganizationAgentLocations($agentId: ID!) {
+  user {
+    organization {
+      agent(agentId: $agentId) {
+        id
+        name
+        user {
+          phone
+        }
+        places {
+          id
+          name
+          description
+          lat
+          lng
+          createdAt
+        }
+        locations {
+          id
+          position
+          createdAt
+        }
+      }
+    }
+  }
+}

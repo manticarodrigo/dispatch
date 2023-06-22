@@ -8,7 +8,7 @@
             [ui.lib.google.maps.core :refer (init-api)]
             [ui.lib.google.maps.polyline :refer (set-polylines clear-polylines decode-polyline)]
             [ui.lib.google.maps.marker :refer (set-markers clear-markers)]
-            [ui.lib.google.maps.overlay :refer (set-overlays clear-overlays)]
+            [ui.lib.google.maps.overlay :refer (update-overlays)]
             [ui.utils.location :refer (position-to-lat-lng)]))
 
 (def ^:private !el (atom nil))
@@ -60,16 +60,24 @@
 
     (useEffect
      (fn []
-       (if @!map (let [polylines (when (seq paths) (set-polylines @!map paths))
-                       markers (when (seq points) (set-markers @!map points))
-                       overlays (when (or (seq locations) position)
-                                  (set-overlays @!map (remove nil? (conj locations position))))]
-                   #(do
-                      (clear-polylines polylines)
-                      (clear-markers markers)
-                      (clear-overlays overlays)))
+       (if @!map (let [polylines (when (seq paths) (set-polylines @!map paths))]
+                   #(clear-polylines polylines))
            #()))
-     #js[@!map paths points locations position])
+     #js[@!map (js/JSON.stringify paths)])
+
+    (useEffect
+     (fn []
+       (if @!map (let [markers (when (seq points) (set-markers @!map points))]
+                   #(clear-markers markers))
+           #()))
+     #js[@!map (js/JSON.stringify points)])
+
+    (useEffect
+     (fn []
+       (when @!map
+         (update-overlays @!map (remove nil? (conj locations position)))
+         #()))
+     #js[@!map locations position])
 
     {:ref map-ref
      :center center}))
@@ -96,9 +104,10 @@
           (filterv
            some?
            (mapv
-            (fn [{:keys [lat lng name]}]
+            (fn [{:keys [lat lng name color]}]
               (when (and lat lng)
                 {:title (or name "???")
+                 :color color
                  :position {:lat lat :lng lng}}))
             places))
           :locations
