@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    vercel = {
+      source  = "vercel/vercel"
+      version = "0.11.5"
+    }
+  }
+}
+
 locals {
   subdomain = "dispatch.${var.domain_name}"
 }
@@ -174,4 +183,37 @@ resource "aws_cloudfront_origin_access_identity" "oai" {
 
 output "cloudfront_domain" {
   value = aws_cloudfront_distribution.s3_distribution.domain_name
+}
+
+# In this example, we are assuming that a nextjs UI
+# exists in a `ui` directory and any terraform exists in a `terraform` directory.
+# E.g.
+# ```
+# ui/
+#    src/
+#        index.js
+#    package.json
+#    // etc...
+# terraform/
+#    main.tf
+# ```
+
+data "vercel_project_directory" "ambito" {
+  path = "../ambito"
+}
+
+resource "vercel_project" "ambito" {
+  name = "ambito"
+  framework = "nextjs"
+}
+
+resource "vercel_deployment" "ambito" {
+  project_id  = vercel_project.ambito.id
+  files       = data.vercel_project_directory.ambito.files
+  path_prefix = data.vercel_project_directory.ambito.path
+  production  = true
+
+  environment = {
+    STAGE = terraform.workspace
+  }
 }

@@ -1,7 +1,11 @@
 terraform {
-  required_version = "1.3.6"
+  required_version = "1.4.6"
 
   required_providers {
+    vercel = {
+      source  = "vercel/vercel"
+      version = "0.11.5"
+    }
     aws = {
       source  = "hashicorp/aws"
       version = "4.46.0"
@@ -37,7 +41,7 @@ module "ambito" {
   domain_name = local.domain_name
 }
 
-module "dispatch" {
-  source      = "../dispatch/infra"
-  domain_name = local.domain_name
-}
+# module "dispatch" {
+#   source      = "../dispatch/infra"
+#   domain_name = local.domain_name
+# }
