@@ -18,6 +18,9 @@ terraform {
       source  = "DataDog/datadog"
       version = "3.21.0"
     }
+    null = {
+      source = "hashicorp/null"
+    }
   }
 
   backend "s3" {
