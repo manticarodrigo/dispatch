@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: oven-sh/setup-bun@v1
       - name: Build Clojurescript Artifacts
         run: cd dispatch && npm install && npm run build
       - name: Install Vercel CLI
