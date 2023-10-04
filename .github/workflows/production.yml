@@ -1,4 +1,4 @@
-name: Vercel Preview Deployment
+name: Vercel Production Deployment
 env:
   VERCEL_ORG_ID: team_Lg0K43FpG8zwMKKQv32wQeet
   VERCEL_PROJECT_ID: prj_0AqZ3Zu8crW1SZgp1IAxOUSZ1Hrm
@@ -7,7 +7,7 @@ on:
     branches:
       - main
 jobs:
-  deploy-preview:
+  deploy-production:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
