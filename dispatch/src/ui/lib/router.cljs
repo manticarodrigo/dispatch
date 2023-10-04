@@ -13,10 +13,15 @@
                                useLocation
                                useParams
                                useSearchParams)]
+   ["react-router-dom/server" :refer (StaticRouter)]
    [reagent.core :as r]
    [cljs-bean.core :refer (->clj ->js)]
    [ui.subs :refer (listen)]
    [ui.utils.session :refer (remove-session)]))
+
+(defn static-router [& children]
+  [:> StaticRouter
+   (into [:<>] children)])
 
 (defn browser-router [& children]
   [:> BrowserRouter

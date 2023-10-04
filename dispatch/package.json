@@ -4,6 +4,8 @@
   "version": "0.0.14",
   "scripts": {
     "postinstall": "patch-package --exclude 'nothing'",
+    "dev": "shadow-cljs watch app",
+    "build": "shadow-cljs release app",
     "ancient": "clojure -Sdeps '{:deps {com.github.liquidz/antq {:mvn/version \"RELEASE\"}}}' -m antq.core",
     "report": "shadow-cljs run shadow.cljs.build-report ui target/build-report.html",
     "assets": "capacitor-assets generate --iconBackgroundColor \"#171717\" --splashBackgroundColor \"#171717\"",

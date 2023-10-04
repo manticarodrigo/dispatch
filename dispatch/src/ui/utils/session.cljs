@@ -12,8 +12,9 @@
   (set! (.. js/document -cookie) str))
 
 (defn get-session []
-  (let [cookie-str (.. js/document -cookie)]
-    (gobj/get (parse cookie-str) cookie-name)))
+  (when (exists? js/document)
+    (let [cookie-str (.. js/document -cookie)]
+      (gobj/get (parse cookie-str) cookie-name))))
 
 (defn create-session [session-id]
   (let [web? (= platform "web")

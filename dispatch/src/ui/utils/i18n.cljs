@@ -1,7 +1,8 @@
 (ns ui.utils.i18n
-  (:require [taoensso.tempura :as tempura]
-            [ui.subs :refer (listen)]
-            [ui.utils.date :as d]))
+  (:require
+   [clojure.string :as s]
+   [ui.subs :refer (listen)]
+   [ui.utils.date :as d]))
 
 (def ^:private dict
   {:en
@@ -455,9 +456,13 @@
             :account-not-found "La cuenta que busca no existe."
             :verification-not-found "El código de verificación que ingresaste es inválido."}}})
 
-(def ^:private opts {:dict dict})
-
 (defn tr [& args]
-  (apply
-   (partial tempura/tr opts [(keyword (listen [:language]))])
-   args))
+  (let [[[kw] params] args
+        lang (listen [:language])
+        strings (-> kw str (s/replace-first ":" "") (s/split #"[./]"))
+        keywords (map keyword strings)
+        path (cons (keyword lang) keywords)
+        val (get-in dict path)]
+    (if (fn? val)
+      (apply val params)
+      val)))

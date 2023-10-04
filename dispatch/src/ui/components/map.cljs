@@ -8,11 +8,12 @@
             [ui.components.inputs.button :refer (button)]))
 
 (defn global-map []
-  (let [!el (use-map)]
-    (createPortal
-     (r/as-element
-      [:div {:ref #(reset! !el %) :class "w-full h-full"}])
-     (js/document.getElementById "map-container"))))
+  ;; (let [!el (use-map)]
+  ;;   (createPortal
+  ;;    (r/as-element
+  ;;     [:div {:ref #(reset! !el %) :class "w-full h-full"}])
+  ;;    (js/document.getElementById "map-container")))
+  [:<>])
 
 (defn gmap [class]
   (let [{:keys [ref center]} (use-map-render)]
