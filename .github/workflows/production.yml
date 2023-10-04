@@ -4,7 +4,7 @@ env:
   VERCEL_PROJECT_ID: prj_0AqZ3Zu8crW1SZgp1IAxOUSZ1Hrm
 on:
   push:
-    branches-ignore:
+    branches:
       - main
 jobs:
   deploy-preview:
@@ -20,6 +20,6 @@ jobs:
       - name: Build & Deploy Next
         run: |
           bun install --global vercel@latest
-          vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_API_TOKEN }}
-          vercel build --token=${{ secrets.VERCEL_API_TOKEN }}
-          vercel deploy --prebuilt --token=${{ secrets.VERCEL_API_TOKEN }}
+          vercel pull --yes --environment=production --token=${{ secrets.VERCEL_API_TOKEN }}
+          vercel build --prod --token=${{ secrets.VERCEL_API_TOKEN }}
+          vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_API_TOKEN }}
