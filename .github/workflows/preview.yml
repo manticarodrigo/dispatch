@@ -15,9 +15,10 @@ jobs:
         run: cd dispatch && npm install && npm run build
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
-      - name: Pull Vercel Environment Information
-        run: echo pwd && vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_API_TOKEN }}
-      - name: Build Project Artifacts
-        run: cd next && vercel build --token=${{ secrets.VERCEL_API_TOKEN }}
       - name: Deploy Project Artifacts to Vercel
-        run: cd next && vercel deploy --prebuilt --token=${{ secrets.VERCEL_API_TOKEN }}
+        run: |
+          pwd
+          cd next
+          vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_API_TOKEN }}
+          vercel build --token=${{ secrets.VERCEL_API_TOKEN }}
+          vercel deploy --prebuilt --token=${{ secrets.VERCEL_API_TOKEN }}
