@@ -12,14 +12,18 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: oven-sh/setup-bun@v1
-      - name: Build Clojurescript
-        run: |
-          cd cljs
-          bun install
-          bun run build
-      - name: Build & Deploy Next
+      - name: Setup Environment
         run: |
           bun install --global vercel@latest
           vercel pull --yes --environment=production --token=${{ secrets.VERCEL_API_TOKEN }}
+      - name: Build Clojurescript
+        run: |
+          . ./.vercel/.env.production.local
+          cd cljs
+          bunx prisma generate
+          bun install
+          bun run build
+      - name: Build & Deploy
+        run: |
           vercel build --prod --token=${{ secrets.VERCEL_API_TOKEN }}
           vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_API_TOKEN }}

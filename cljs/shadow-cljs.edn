@@ -1,6 +1,6 @@
 {:source-paths ["src" "resources"]
 
- :nrepl {:port 8777}
+;;  :nrepl {:port 8777}
 
  :dependencies
  [[reagent "1.1.1"]
@@ -16,12 +16,12 @@
                  :output-to "out/test.js"
                  :ns-regexp "tests*"}
 
-          :api {:target :node-library
-                :output-to "out/api.js"
-                :exports {:handler api.core/handler}}
+          :api {:target :npm-module
+                :output-dir "out/api"
+                :entries [api.core]}
 
           :app {:target :npm-module
-                :output-dir "out"
+                :output-dir "out/app"
                 :entries [ui.core]}
 
           :ui {:target     :browser
@@ -54,11 +54,11 @@
                                                               "75%" {:transform "rotate(-1deg)"}}}
                                            :backgroundImage {:gradient-radial "radial-gradient(var(--tw-gradient-stops))"}}}}
 
-               :devtools {:after-load ui.core/refresh
-                          :http-root   "public/"
-                          :http-port   8000
-                        ;;   :devtools-url "http://0.0.0.0/shadow-cljs"
-                          }
+            ;;    :devtools {:after-load ui.core/refresh
+            ;;               :http-root   "public/"
+            ;;               :http-port   8000
+            ;;             ;;   :devtools-url "http://0.0.0.0/shadow-cljs"
+            ;;               }
 
 
                :dev {:build-hooks

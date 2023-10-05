@@ -4,7 +4,7 @@
   "version": "0.0.14",
   "scripts": {
     "postinstall": "patch-package --exclude 'nothing'",
-    "dev": "shadow-cljs watch app",
+    "dev": "shadow-cljs watch app api",
     "build": "shadow-cljs release app",
     "ancient": "clojure -Sdeps '{:deps {com.github.liquidz/antq {:mvn/version \"RELEASE\"}}}' -m antq.core",
     "report": "shadow-cljs run shadow.cljs.build-report ui target/build-report.html",
@@ -27,6 +27,7 @@
   "dependencies": {
     "@apollo/client": "^3.7.0",
     "@apollo/server": "^4.0.4",
+    "@as-integrations/next": "^2.0.2",
     "@capacitor-community/background-geolocation": "^1.2.7",
     "@capacitor/android": "^4.6.2",
     "@capacitor/app": "^4.1.1",
@@ -79,6 +80,7 @@
     "react-dropzone": "^14.2.3",
     "react-feather": "^2.0.10",
     "react-router-dom": "^6.4.2",
+    "resend": "^1.1.0",
     "serverless-http": "^3.1.0",
     "stripe": "^11.11.0",
     "topojson-client": "^3.1.0",

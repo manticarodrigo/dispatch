@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model User {
@@ -25,8 +26,8 @@ model Organization {
   name      String
   admin     User       @relation(fields: [adminId], references: [id])
   adminId   String     @unique
-  stripe    Stripe     @relation(fields: [stripeId], references: [id])
-  stripeId  String     @unique
+  stripe    Stripe?    @relation(fields: [stripeId], references: [id])
+  stripeId  String?    @unique
   agents    Agent[]
   places    Place[]
   tasks     Task[]

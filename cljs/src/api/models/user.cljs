@@ -2,7 +2,7 @@
   (:require [reagent.dom.server :refer (render-to-string)]
             [promesa.core :as p]
             [api.config :as config]
-            [api.lib.stripe :as stripe]
+            ;; [api.lib.stripe :as stripe]
             [api.lib.google.gmail :as gmail]
             [api.lib.notification :as notification]
             [api.util.prisma :as prisma]
@@ -35,13 +35,13 @@
 
 (defn register-user [^js context {:keys [email password organization]}]
   (p/let [encrypted-password (when password (crypto/encrypt-string password))
-          ^js customer (stripe/create-customer email)
+          ;; ^js customer (stripe/create-customer email)
           ^js organization (prisma/create!
                             (.. context -prisma -organization)
                             {:data {:name organization
-                                    :stripe
-                                    {:create
-                                     {:customerId (.-id customer)}}
+                                    ;; :stripe
+                                    ;; {:create
+                                    ;;  {:customerId (.-id customer)}}
                                     :admin
                                     {:create
                                      {:email email
