@@ -27,7 +27,7 @@
 
 (defonce http-link
   (createHttpLink
-   (->js {:uri config/API_URL})))
+   (->js {:uri "/api"})))
 
 (defonce auth-link
   (setContext #(->js (get-session-request))))
