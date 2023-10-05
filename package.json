@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@prisma/client": "^5.4.1",
+    "@prisma/nextjs-monorepo-workaround-plugin": "^5.4.1",
     "encoding": "^0.1.13",
     "next": "latest",
     "react": "latest",
