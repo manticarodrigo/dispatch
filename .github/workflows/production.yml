@@ -25,5 +25,6 @@ jobs:
           bun run build
       - name: Build & Deploy
         run: |
+          bunx prisma generate --schema=./cljs/prisma/schema.prisma
           vercel build --prod --token=${{ secrets.VERCEL_API_TOKEN }}
           vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_API_TOKEN }}
