@@ -1,6 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,6 +27,7 @@ export default function RootLayout({
         <div id="map-bench">
           <div id="map-container" className="w-full h-full"></div>
         </div>
+        <Analytics />
       </body>
     </html>
   );
