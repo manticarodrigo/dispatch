@@ -22,7 +22,7 @@ jobs:
           pnpm dlx prisma generate
       - name: Build Clojurescript
         run: |
-          . ./.vercel/.env.production.local
+          . ./.vercel/.env.preview.local
           pnpm run build
       - name: Build & Deploy
         run: |
