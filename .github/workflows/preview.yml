@@ -23,7 +23,7 @@ jobs:
       - name: Build Clojurescript
         run: |
           . ./.vercel/.env.preview.local
-          pnpm run build
+          pnpm shadow:build
       - name: Build & Deploy
         run: |
           vercel build --token=${{ secrets.VERCEL_API_TOKEN }}
