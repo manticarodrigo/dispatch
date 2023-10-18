@@ -15,7 +15,6 @@
             [cljs-bean.core :refer (->clj ->js)]
             [common.utils.date :refer (date-scalar-map)]
             [common.utils.json :refer (json-scalar-map)]
-            [ui.config :as config]
             [ui.utils.session :refer (get-session-request remove-session)]))
 
 (def gql apollo/gql)

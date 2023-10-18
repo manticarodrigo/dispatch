@@ -2,7 +2,6 @@
   (:require ["@apollo/server" :refer (ApolloServer)]
             ["@apollo/server/express4" :refer (expressMiddleware)]
             ["@apollo/server/errors" :refer (unwrapResolverError)]
-            ["@as-integrations/next" :refer (startServerAndCreateNextHandler)]
             [graphql :refer (GraphQLScalarType)]
             [shadow.resource :refer (inline)]
             [cljs-bean.core :refer (->clj ->js)]
@@ -104,11 +103,7 @@
    (->js
     {:typeDefs (inline "schema.graphql")
      :resolvers resolvers
-     :formatError format-error
-     :context
-     (fn [^js ctx]
-       (let [session (some-> ctx .-req .-headers ->clj :authorization)]
-         #js{:prisma prisma :session session}))})))
+     :formatError format-error})))
 
 (defn start-server []
   (.startInBackgroundHandlingStartupErrorsByLoggingAndFailingAllRequests server)
@@ -116,6 +111,3 @@
 
 (defn create-middleware [server]
   (expressMiddleware server options))
-
-(defn create-next-handler []
-  (startServerAndCreateNextHandler server options))

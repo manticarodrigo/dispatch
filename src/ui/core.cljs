@@ -1,8 +1,6 @@
 (ns ui.core
   (:require
-   ["react-dom/client" :refer (createRoot)]
    ["@capgo/capacitor-updater" :refer (CapacitorUpdater)]
-   [goog.dom :as gdom]
    [reagent.core :as r]
    [re-frame.core :as rf]
    [ui.events :as events]
@@ -33,18 +31,7 @@
    [global-map]])
 
 (def ^:export react-app (r/reactify-component app))
-;; (defonce !root (atom nil))
 
-(defn mount []
-  (rf/clear-subscription-cache!)
-  ;; (reset! !root (createRoot (gdom/getElement "app")))
-  ;; (.render ^js @!root (r/as-element [app]))
-  )
-
-(defn init []
+(defn ^:export init []
   (rf/dispatch-sync [::events/initialize-db])
-  (mount))
-
-(defn refresh []
-  ;; (.unmount ^js @!root)
-  (mount))
+  (rf/clear-subscription-cache!))
