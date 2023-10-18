@@ -3,7 +3,7 @@
             [goog.object :as gobj]
             [cljs-bean.core :refer (->js)]
             [re-frame.core :refer (dispatch-sync dispatch)]
-            [ui.config :as config]
+            [common.config :as config]
             [ui.lib.platform :refer (platform)]))
 
 (def cookie-name "sessionId")
