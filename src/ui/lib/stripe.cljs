@@ -4,7 +4,7 @@
             ["@stripe/react-stripe-js" :refer (Elements PaymentElement useStripe useElements)]
             [cljs-bean.core :refer (->js ->clj)]
             [ui.subs :refer (listen)]
-            [ui.config :as config]))
+            [common.config :as config]))
 
 (def !stripe-promise (atom nil))
 

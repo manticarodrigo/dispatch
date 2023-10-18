@@ -1,7 +1,7 @@
 (ns api.lib.notification
   (:require ["aws-sdk" :as aws]
             [promesa.core :as p]
-            [api.config :as config]))
+            [common.config :as config]))
 
 (aws/config.update #js{:region "us-east-1"})
 

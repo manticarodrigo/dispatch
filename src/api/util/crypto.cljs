@@ -1,6 +1,6 @@
 (ns api.util.crypto
   (:require ["bcryptjs" :as bcrypt]
-            [api.config :as config]))
+            [common.config :as config]))
 
 (defn short-code []
   (+ (rand-int 900000) 100000))

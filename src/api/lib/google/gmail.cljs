@@ -1,7 +1,7 @@
 (ns api.lib.google.gmail
   (:require
    ["resend" :refer (Resend)]
-   [api.config :as config]
+   [common.config :as config]
   ;;  ["googleapis" :refer (google)]
   ;;  ["nodemailer" :as nodemailer]
   ;;  [shadow.resource :refer (inline)]

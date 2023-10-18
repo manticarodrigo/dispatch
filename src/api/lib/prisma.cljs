@@ -1,6 +1,6 @@
 (ns api.lib.prisma
   (:require ["@prisma/client" :refer (PrismaClient)]
-            [api.config :as config]))
+            [common.config :as config]))
 
 (def prisma (PrismaClient.
              (when (and (not= config/STAGE "test")

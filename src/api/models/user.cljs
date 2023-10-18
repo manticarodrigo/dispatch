@@ -1,7 +1,7 @@
 (ns api.models.user
   (:require [reagent.dom.server :refer (render-to-string)]
             [promesa.core :as p]
-            [api.config :as config]
+            [common.config :as config]
             ;; [api.lib.stripe :as stripe]
             [api.lib.google.gmail :as gmail]
             [api.lib.notification :as notification]

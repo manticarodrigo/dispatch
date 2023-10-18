@@ -1,5 +1,6 @@
 (ns ui.components.map
-  (:require ["react-dom" :refer (createPortal)]
+  (:require ["react" :refer (useState useEffect)]
+            ["react-dom" :refer (createPortal)]
             ["react-feather" :refer (Crosshair)]
             [reagent.core :as r]
             [ui.hooks.use-map :refer (use-map use-map-render)]
@@ -7,13 +8,25 @@
             [ui.utils.string :refer (class-names)]
             [ui.components.inputs.button :refer (button)]))
 
+(defn base-map []
+  (let [!el (use-map)]
+    (createPortal
+     (r/as-element
+      [:div {:ref #(reset! !el %) :class "w-full h-full"}])
+     (js/document.getElementById "map-container"))))
+
 (defn global-map []
-  ;; (let [!el (use-map)]
-  ;;   (createPortal
-  ;;    (r/as-element
-  ;;     [:div {:ref #(reset! !el %) :class "w-full h-full"}])
-  ;;    (js/document.getElementById "map-container")))
-  [:<>])
+  (let [[mounted set-mounted] (useState false)]
+
+    (useEffect
+     (fn []
+       (set-mounted true)
+       (fn []
+         (set-mounted false)))
+     #js[])
+
+    (when mounted
+      [base-map])))
 
 (defn gmap [class]
   (let [{:keys [ref center]} (use-map-render)]

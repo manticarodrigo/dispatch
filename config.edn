@@ -1,7 +1,0 @@
-{:closure-defines
- {ui.config/STAGE #shadow/env "STAGE"
-  ui.config/VERSION #shadow/env "VERSION"
-  ui.config/API_URL #shadow/env "API_URL"
-  ui.config/SECURE_COOKIE #shadow/env "SECURE_COOKIE"
-  ui.config/GOOGLE_API_KEY #shadow/env "GOOGLE_API_KEY"
-  ui.config/STRIPE_PUBLIC_KEY #shadow/env "STRIPE_PUBLIC_KEY"}}

@@ -3,7 +3,7 @@
    ["@googlemaps/js-api-loader" :refer (Loader)]
    [promesa.core :as p]
    [cljs-bean.core :refer (->js)]
-   [ui.config :as config]
+   [common.config :as config]
    [ui.subs :refer (listen)]
    [ui.lib.google.maps.styles :refer (styles)]
    [ui.lib.google.maps.autocomplete :refer (init-autocomplete)]

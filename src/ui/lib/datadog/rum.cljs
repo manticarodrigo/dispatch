@@ -1,7 +1,7 @@
 (ns ui.lib.datadog.rum
   (:require ["@datadog/browser-rum" :refer (datadogRum)]
             [cljs-bean.core :refer (->js)]
-            [ui.config :as config]))
+            [common.config :as config]))
 
 (when config/STAGE
   (.init
