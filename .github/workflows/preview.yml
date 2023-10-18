@@ -11,15 +11,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: oven-sh/setup-bun@v1
+      - uses: pnpm/action-setup@v2
+      - name: Setup Environment
+        run: |
+          pnpm install --global vercel@latest
+          vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_API_TOKEN }}
+          pnpm install
+          pnpm dlx prisma generate
       - name: Build Clojurescript
         run: |
-          cd cljs
-          bun install
-          bun run build
-      - name: Build & Deploy Next
+          . ./.vercel/.env.production.local
+          pnpm run build
+      - name: Build & Deploy
         run: |
-          bun install --global vercel@latest
-          vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_API_TOKEN }}
           vercel build --token=${{ secrets.VERCEL_API_TOKEN }}
           vercel deploy --prebuilt --token=${{ secrets.VERCEL_API_TOKEN }}

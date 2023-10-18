@@ -1,4 +1,4 @@
-import { create_next_handler } from "../../../cljs/out/api/api.core";
+import { create_next_handler } from "../../../out/api/api.core";
 
 const handler = create_next_handler();
 

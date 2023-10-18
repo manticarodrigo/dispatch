@@ -35,5 +35,10 @@ yarn-error.log*
 next-env.d.ts
 
 # clojurescript
+/out/
+/.calva/
+/.shadow-cljs/
 .clj-kondo/.cache/
 .lsp/
+.nrepl-port
+
