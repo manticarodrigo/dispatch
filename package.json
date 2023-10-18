@@ -3,13 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "postinstall": "patch-package --exclude 'nothing'",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "shadow:dev": "shadow-cljs watch app api",
-    "shadow:build": "shadow-cljs release app api"
+    "shadow:build": "shadow-cljs release app api",
+    "db:migrate": "pnpm with-env prisma migrate dev --create-only",
+    "db:deploy": "pnpm with-env prisma migrate deploy",
+    "with-env": "dotenv -e ./.env.local --"
   },
   "dependencies": {
     "@apollo/client": "^3.7.0",
@@ -95,6 +99,8 @@
     "@vercel/ncc": "^0.38.0",
     "autoprefixer": "latest",
     "cross-fetch": "^4.0.0",
+    "dotenv": "^16.3.1",
+    "dotenv-cli": "^7.3.0",
     "eslint": "latest",
     "eslint-config-next": "latest",
     "global-jsdom": "^9.1.0",
