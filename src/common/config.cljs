@@ -3,6 +3,7 @@
 (def STAGE (or js/process.env.STAGE "local"))
 (def VERSION (or js/process.env.VERSION ""))
 (def SALT (or js/process.env.SALT "$2a$04$9pk37pctRggG8IEEn8oBf.Q/UrxA07gut3e0UiH9JKHSpf2YaLbOO"))
+(def SECURE_COOKIE (or js/process.env.SECURE_COOKIE false))
 (def API_URL (or js/process.env.API_URL "http://localhost:3000/api"))
 (def SITE_BUCKET_NAME (or js/process.env.SITE_BUCKET_NAME ""))
 (def GOOGLE_API_KEY (or js/process.env.NEXT_PUBLIC_GOOGLE_API_KEY ""))

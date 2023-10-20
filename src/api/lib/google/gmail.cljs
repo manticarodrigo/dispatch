@@ -54,4 +54,4 @@
 ;;  :textEncoding "base64"}
 (defn send-mail [options]
   (let [^js resend (Resend. config/RESEND_API_KEY)]
-    (-> resend .-emails (.send (->js (merge options {:from "onboarding@resend.dev"}))))))
+    (-> resend .-emails (.send (->js (merge options {:from "Dispatch Notifications <updates@ambito.dev>"}))))))

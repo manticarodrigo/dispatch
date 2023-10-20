@@ -170,7 +170,8 @@
          :render-item (fn [idx stop]
                         (let [{:keys [place shipment finishedAt]} stop
                               {:keys [name description]} place
-                              {:keys [duration distance]} (-> route :legs (nth idx))
+                              {:keys [legs]} route
+                              {:keys [duration distance]} (when (< idx (count legs)) (nth legs idx))
                               {:keys [weight volume]
                                shipment-duration :duration} shipment
                               start-at (some->> durations (take idx) (reduce + 960) (d/addSeconds startAt))
