@@ -22,15 +22,20 @@
 (def router (if (exists? js/document) browser-router static-router))
 
 (defn app []
-  [:<>
-   [router
-    [apollo-provider
-     [device-loader
-      [listener
-       [views]]]]]
-   [global-map]])
+  [router
+   [views]])
 
 (def ^:export react-app (r/reactify-component app))
+
+(defn providers [& children]
+  [:<>
+   [apollo-provider
+    [device-loader
+     [listener
+      (into [:<>] children)]]]
+   [global-map]])
+
+(def ^:export react-providers (r/reactify-component providers))
 
 (defn ^:export init []
   (rf/dispatch-sync [::events/initialize-db])
