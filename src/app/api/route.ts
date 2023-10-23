@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
 
-import { server, prisma } from "../../../out/api/api.core";
+import { server, prisma } from "~/api.core";
 
 const handler = startServerAndCreateNextHandler<NextRequest>(server, {
   context: async (req) => {

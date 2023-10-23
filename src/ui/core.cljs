@@ -16,16 +16,13 @@
 (when (not= platform "web")
   (.notifyAppReady CapacitorUpdater))
 
-(def functional-compiler (r/create-compiler {:function-components true}))
-(r/set-default-compiler! functional-compiler)
+(r/set-default-compiler! (r/create-compiler {:function-components true}))
 
 (def router (if (exists? js/document) browser-router static-router))
 
 (defn app []
   [router
    [views]])
-
-(def ^:export react-app (r/reactify-component app))
 
 (defn providers [& children]
   [:<>
@@ -35,7 +32,8 @@
       (into [:<>] children)]]]
    [global-map]])
 
-(def ^:export react-providers (r/reactify-component providers))
+(def ^:export Views (r/reactify-component app))
+(def ^:export Providers (r/reactify-component providers))
 
 (defn ^:export init []
   (rf/dispatch-sync [::events/initialize-db])
