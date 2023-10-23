@@ -9,3 +9,6 @@
 (def GOOGLE_API_KEY (or js/process.env.NEXT_PUBLIC_GOOGLE_API_KEY ""))
 (def STRIPE_SECRET_KEY (or js/process.env.STRIPE_SECRET_KEY ""))
 (def RESEND_API_KEY (or js/process.env.RESEND_API_KEY ""))
+(def TWILIO_ACCOUNT_SID (or js/process.env.TWILIO_ACCOUNT_SID ""))
+(def TWILIO_AUTH_TOKEN (or js/process.env.TWILIO_AUTH_TOKEN ""))
+(def TWILIO_PHONE_NUMBER (or js/process.env.TWILIO_PHONE_NUMBER ""))
