@@ -457,7 +457,7 @@
             :verification-not-found "El código de verificación que ingresaste es inválido."}}})
 
 (defn tr [& args]
-  (let [[[kw] params] args
+  (let [[[kw] & params] args
         lang (listen [:language])
         strings (-> kw str (s/replace-first ":" "") (s/split #"[./]"))
         keywords (map keyword strings)
