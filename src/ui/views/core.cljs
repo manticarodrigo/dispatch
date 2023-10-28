@@ -6,5 +6,4 @@
 (defn views []
   (router/use-routes
    [agent/route
-    {:path "logout" :element [router/remove-auth-route]}
     {:path "*" :element [not-found/view]}]))
