@@ -1,5 +1,6 @@
-(ns app.organization.agent.detail
-  (:require [shadow.resource :refer (inline)]
+(ns app.organization.agents.detail
+  (:require [reagent.core :as r]
+            [shadow.resource :refer (inline)]
             [common.utils.date :refer (parse-date)]
             [ui.lib.apollo :refer (gql use-query)]
             [ui.lib.router :refer (use-params use-search-params)]
@@ -26,6 +27,8 @@
         {:keys [tasks]} (some-> data :user :organization :agent)
         {:keys [name location]} (some-> (or data previousData) :user :organization :agent)
         {:keys [createdAt]} location]
+    
+    (prn name)
 
     (use-map-items
      loading
@@ -43,3 +46,6 @@
                                      (dissoc search-params :status)
                                      (assoc search-params :status %)))}]
      [task-list {:tasks tasks :loading loading}]]))
+
+(def ^:export OrganizationAgentsDetailView (r/reactify-component (fn [props]
+                                                                   [:f> view props])))

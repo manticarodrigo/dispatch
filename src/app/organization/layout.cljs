@@ -16,13 +16,13 @@
 (def nav-items
   [["analytics" :view.analytics/title AnalyticsIcon]
    {:label (s/capitalize (tr [:noun/monitoring]))
-    :items [["agents" :view.agent.list/title AgentIcon]
-            ["places" :view.place.list/title PlaceIcon]
-            ["tasks" :view.task.list/title TaskIcon]]}
+    :items [["/organization/agents" :view.agent.list/title AgentIcon]
+            ["/organization/places" :view.place.list/title PlaceIcon]
+            ["/organization/tasks" :view.task.list/title TaskIcon]]}
    {:label (s/capitalize (tr [:noun/planning]))
-    :items [["vehicles" :view.vehicle.list/title VehicleIcon]
-            ["shipments" :view.shipment.list/title ShipmentIcon]
-            ["plans" :view.plan.list/title PlanIcon]]}])
+    :items [["/organization/vehicles" :view.vehicle.list/title VehicleIcon]
+            ["/organization/shipments" :view.shipment.list/title ShipmentIcon]
+            ["/organization/plans" :view.plan.list/title PlanIcon]]}])
 
 (def menu-items
   [[{:label  (tr [:view.subscription/title]) :to "subscription/payment"}]

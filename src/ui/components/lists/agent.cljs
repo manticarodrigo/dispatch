@@ -13,6 +13,7 @@
               (let [{:keys [createdAt]} location
                     active? (and createdAt (d/isAfter createdAt (d/subHours (js/Date.) 26)))]
                 {:id id
+                 :to (str "agents/" id)
                  :icon UserIcon
                  :title name
                  :subtitle (tr [:status/last-seen] [createdAt])

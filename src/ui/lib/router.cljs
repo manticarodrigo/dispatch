@@ -1,15 +1,14 @@
 (ns ui.lib.router
   (:require
    ["next/link" :as Link]
-   ["next/navigation" :refer (useRouter usePathname useSearchParams)]
+   ["next/navigation" :refer (useRouter usePathname useSearchParams useParams)]
    ["@apollo/client" :refer (useApolloClient)]
    ["react-router-dom" :refer (BrowserRouter
                                Routes
                                Route
                                Navigate
                                Outlet
-                               useRoutes
-                               useParams)]
+                               useRoutes)]
    ["react-router-dom/server" :refer (StaticRouter)]
    [reagent.core :as r]
    [cljs-bean.core :refer (->clj ->js)]

@@ -1,4 +1,4 @@
-(ns app.organization.agents.page
+(ns app.organization.agents.list
   (:require [reagent.core :as r]
             [shadow.resource :refer (inline)]
             [ui.lib.apollo :refer (gql use-query)]
@@ -24,7 +24,7 @@
      [agents text])
 
     [map-layout {:title (tr [:view.agent.list/title])
-                 :create-link "create"}
+                 :create-link "agents/create"}
      [filters {:search text
                :on-search-change #(set-search-params
                                    (if (empty? %)
