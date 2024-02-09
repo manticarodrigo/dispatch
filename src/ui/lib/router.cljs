@@ -1,18 +1,14 @@
 (ns ui.lib.router
   (:require
+   ["next/link" :as Link]
+   ["next/navigation" :refer (useRouter usePathname useSearchParams useParams)]
    ["@apollo/client" :refer (useApolloClient)]
    ["react-router-dom" :refer (BrowserRouter
                                Routes
                                Route
                                Navigate
-                               NavLink
-                               Link
                                Outlet
-                               useRoutes
-                               useNavigate
-                               useLocation
-                               useParams
-                               useSearchParams)]
+                               useRoutes)]
    ["react-router-dom/server" :refer (StaticRouter)]
    [reagent.core :as r]
    [cljs-bean.core :refer (->clj ->js)]
@@ -64,7 +60,8 @@
     [navigate "/login"]))
 
 (defn use-navigate []
-  (useNavigate))
+  (let [router (useRouter)]
+    #(.push router %)))
 
 (defn use-window-location []
   (let [location (some-> js/window .-location)]
@@ -81,21 +78,33 @@
   (let [params (useParams)]
     (->clj params)))
 
-(defn use-location []
-  (let [location (useLocation)]
-    (->clj location)))
+(defn use-pathname []
+  (usePathname))
 
 (defn use-search-params []
-  (let [[params set-params] (useSearchParams)]
-    [(->> params (js/URLSearchParams.) (.fromEntries js/Object) ->clj)
-     #(-> % ->js set-params)]))
+  (let [navigate (use-navigate)
+        pathname (use-pathname)
+        params (useSearchParams)
+        search-params (->> params (.fromEntries js/Object) ->clj)
+        set-search-params (fn [next-params]
+                            (let [current (js/URLSearchParams.)
+                                  _ (doseq [[k v] next-params]
+                                      (if v
+                                        (.set current (name k) (.trim v))
+                                        (.delete current (name k))))
+                                  search (.toString current)
+                                  query (if (empty? search) "" (str "?" search))
+                                  route (str pathname query)]
+                              (navigate route)))]
+    [search-params set-search-params]))
 
 (defn nav-link [{to :to class-fn :class} & children]
-  (into [:> NavLink {:to to
-                     :class (fn [props]
-                              (class-fn (->clj props)))}]
-        children))
+  (let [pathname (use-pathname)
+        active? (= to pathname)]
+    (into [:> Link {:href to
+                    :class (class-fn {:isActive active?})}]
+          children)))
 
 (defn link [{to :to class :class} & children]
-  (into [:> Link {:to to :class class}]
+  (into [:> Link {:href to :class class}]
         children))

@@ -1,7 +1,11 @@
-"use client"
+"use client";
 
-import { react_providers as ReactProviders } from "../../out/app/ui.core";
+import { useEffect } from "react";
+import { Providers as CLJSProviders, init } from "~/ui.core";
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  return <ReactProviders>{children}</ReactProviders>;
+  useEffect(() => {
+    init();
+  }, []);
+  return <CLJSProviders>{children}</CLJSProviders>;
 }

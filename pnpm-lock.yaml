@@ -68,6 +68,9 @@ dependencies:
   '@tanstack/react-table':
     specifier: ^8.7.9
     version: 8.7.9(react-dom@18.2.0)(react@18.2.0)
+  '@types/cookie':
+    specifier: ^0.5.3
+    version: 0.5.3
   '@vercel/analytics':
     specifier: ^1.0.2
     version: 1.0.2
@@ -173,6 +176,9 @@ dependencies:
   graphql:
     specifier: ^16.6.0
     version: 16.6.0
+  graphql-tag:
+    specifier: ^2.12.6
+    version: 2.12.6(graphql@16.6.0)
   next:
     specifier: ^13.5.5
     version: 13.5.5(react-dom@18.2.0)(react@18.2.0)
@@ -1790,6 +1796,10 @@ packages:
     resolution: {integrity: sha512-P63Zd/JUGq+PdrM1lv0Wv5SBYeA2+CORvbrXbngriYY0jzLUWfQMQQxOhjONEz/wlHOAxOdY7CY65rgQdTjq2w==}
     dependencies:
       '@types/node': 20.8.6
+    dev: false
+
+  /@types/cookie@0.5.3:
+    resolution: {integrity: sha512-SLg07AS9z1Ab2LU+QxzU8RCmzsja80ywjf/t5oqw+4NSH20gIGlhLOrBDm1L3PBWzPa4+wkgFQVZAjE6Ioj2ug==}
     dev: false
 
   /@types/d3-color@3.1.1:

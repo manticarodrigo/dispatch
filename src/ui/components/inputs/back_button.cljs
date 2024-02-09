@@ -1,6 +1,7 @@
 (ns ui.components.inputs.back-button
-  (:require ["react-feather" :rename {ArrowLeft ArrowLeftIcon}]
-            [ui.lib.router :refer (use-location use-navigate)]))
+  (:require ["next/navigation" :refer (useRouter)]
+            ["react-feather" :rename {ArrowLeft ArrowLeftIcon}]
+            [ui.lib.router :refer (use-pathname)]))
 
 (def root-paths ["/organization/analytics"
                  "/organization/agents"
@@ -13,9 +14,9 @@
                  "/agent/places"])
 
 (defn back-button [{:keys [class]}]
-  (let [navigate (use-navigate)
-        {:keys [pathname]} (use-location)]
+  (let [router (useRouter)
+        pathname (use-pathname)]
     (when (empty? (filter #(= pathname %) root-paths))
       [:button {:class class
-                :on-click #(navigate -1)}
+                :on-click #(.back router)}
        [:> ArrowLeftIcon {:class "w-4 h-4"}]])))
